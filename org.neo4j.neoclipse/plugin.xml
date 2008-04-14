@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            id="org.neo4j.neoclipse.NeoCategory"
+            name="Neo">
+      </category>
+      <view
+            allowMultiple="false"
+            category="org.neo4j.neoclipse.NeoCategory"
+            class="org.neo4j.neoclipse.view.NeoGraphViewPart"
+            icon="icons/obj16/neo.ico"
+            id="org.neo4j.neoclipse.view.NeoGraphViewPart"
+            name="Neo Graph">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="org.neo4j.neoclipse.preference.NeoPreferenceInitializer">
+      </initializer>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="Neo"
+            class="org.neo4j.neoclipse.preference.NeoPreferencePage"
+            id="org.neo4j.neoclipse.preference.NeoPreferencePage"
+            name="Neo">
+      </page>
+   </extension>
+
+</plugin>
