@@ -35,10 +35,8 @@ public class Activator extends AbstractUIPlugin
         super.start(context);
         plugin = this;
         
-        // TODO use neo icons
-        // getImageRegistry().put(NeoIcons.SMALL, Activator.imageDescriptorFromPlugin(
-        //PLUGIN_ID, "icons/obj16/neo.ico"));
-        
+        NeoIcons.init(this);
+
         neoManager = new NeoServiceManager();
     }
 

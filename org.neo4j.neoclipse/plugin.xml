@@ -31,5 +31,14 @@
             name="Neo">
       </page>
    </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="org.neo4j.neoclipse.perspective.NeoPerspectiveFactory"
+            icon="icons/obj16/neo.ico"
+            id="org.neo4j.neoclipse.NeoPerspective"
+            name="Neo">
+      </perspective>
+   </extension>
 
 </plugin>

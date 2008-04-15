@@ -6,6 +6,10 @@ package org.neo4j.neoclipse.view;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.jface.action.GroupMarker;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
@@ -13,25 +17,32 @@ import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.mylyn.zest.core.viewers.GraphViewer;
-import org.eclipse.mylyn.zest.core.viewers.IGraphContentProvider;
-import org.eclipse.mylyn.zest.layouts.LayoutStyles;
-import org.eclipse.mylyn.zest.layouts.algorithms.SpringLayoutAlgorithm;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySheetPage;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.eclipse.ui.views.properties.IPropertySourceProvider;
 import org.eclipse.ui.views.properties.PropertySheetPage;
+import org.eclipse.zest.core.viewers.GraphViewer;
+import org.eclipse.zest.core.viewers.IGraphEntityRelationshipContentProvider;
+import org.eclipse.zest.layouts.LayoutStyles;
+import org.eclipse.zest.layouts.algorithms.SpringLayoutAlgorithm;
+import org.neo4j.api.core.Direction;
 import org.neo4j.api.core.NeoService;
 import org.neo4j.api.core.Node;
 import org.neo4j.api.core.Relationship;
 import org.neo4j.api.core.Transaction;
 import org.neo4j.neoclipse.Activator;
+import org.neo4j.neoclipse.NeoIcons;
+import org.neo4j.neoclipse.action.RefreshAction;
+import org.neo4j.neoclipse.action.ShowGridLayoutAction;
+import org.neo4j.neoclipse.action.ShowRadialLayoutAction;
+import org.neo4j.neoclipse.action.ShowReferenceNodeAction;
+import org.neo4j.neoclipse.action.ShowSpringLayoutAction;
+import org.neo4j.neoclipse.action.ShowTreeLayoutAction;
 import org.neo4j.neoclipse.neo.NeoServiceEvent;
 import org.neo4j.neoclipse.neo.NeoServiceEventListener;
 import org.neo4j.neoclipse.neo.NeoServiceManager;
@@ -45,6 +56,11 @@ import org.neo4j.neoclipse.neo.NeoServiceStatus;
  */
 public class NeoGraphViewPart extends ViewPart
 {
+    /**
+     * The Eclipse view ID.
+     */
+    public static final String ID = "org.neo4j.neoclipse.view.NeoGraphViewPart";
+    
     /**
      * The property sheet page.
      */
@@ -67,6 +83,8 @@ public class NeoGraphViewPart extends ViewPart
         viewer.setLayoutAlgorithm(new SpringLayoutAlgorithm(
                 LayoutStyles.NO_LAYOUT_NODE_RESIZING));
 
+        makeContributions();
+        
         NeoServiceManager sm = Activator.getDefault().getNeoServiceManager(); 
         sm.addServiceEventListener(new NeoGraphServiceEventListener());
 
@@ -76,9 +94,87 @@ public class NeoGraphViewPart extends ViewPart
     }
     
     /**
+     * Initializes menus, toolbars etc.
+     */
+    protected void makeContributions()
+    {
+        // initialize actions
+        IToolBarManager tm = getViewSite().getActionBars().getToolBarManager();
+        IMenuManager mm = getViewSite().getActionBars().getMenuManager();
+        
+        // standard actions
+        {
+            ShowReferenceNodeAction refNodeAction = new ShowReferenceNodeAction(this);
+            refNodeAction.setText("Show Reference Node");
+            refNodeAction.setToolTipText("Show Reference Node");
+            refNodeAction.setImageDescriptor(Activator.getDefault().getImageRegistry().getDescriptor(NeoIcons.HOME));
+            
+            tm.add(refNodeAction);
+            
+            RefreshAction refreshAction = new RefreshAction(this);
+            refreshAction.setText("Refresh");
+            refreshAction.setToolTipText("Refresh");
+            refreshAction.setImageDescriptor(
+                    Activator.getDefault().getImageRegistry().getDescriptor(NeoIcons.REFRESH));
+            
+            tm.add(refreshAction);
+
+            tm.add(new Separator());
+        }
+        
+        // layout actions
+        {
+            String groupName = "layout";
+            GroupMarker layoutGroup = new GroupMarker(groupName);
+            tm.add(layoutGroup);
+            mm.add(layoutGroup);
+    
+            // spring layout
+            ShowSpringLayoutAction springLayoutAction = new ShowSpringLayoutAction(this);
+            springLayoutAction.setText("Spring Layout");
+            springLayoutAction.setToolTipText("Spring Layout");
+            springLayoutAction.setImageDescriptor(NeoIcons.getDescriptor(NeoIcons.SPRING));
+            springLayoutAction.setChecked(true);
+    
+            tm.appendToGroup(groupName, springLayoutAction);
+            mm.appendToGroup(groupName, springLayoutAction);
+    
+            // tree layout
+            ShowTreeLayoutAction treeLayoutAction = new ShowTreeLayoutAction(this);
+            treeLayoutAction.setText("Tree Layout");
+            treeLayoutAction.setToolTipText("Tree Layout");
+            treeLayoutAction.setImageDescriptor(NeoIcons.getDescriptor(NeoIcons.TREE));
+            treeLayoutAction.setChecked(false);
+    
+            tm.appendToGroup(groupName, treeLayoutAction);
+            mm.appendToGroup(groupName, treeLayoutAction);
+            
+            // radial layout
+            ShowRadialLayoutAction radialLayoutAction = new ShowRadialLayoutAction(this);
+            radialLayoutAction.setText("Radial Layout");
+            radialLayoutAction.setToolTipText("Radial Layout");
+            radialLayoutAction.setImageDescriptor(NeoIcons.getDescriptor(NeoIcons.RADIAL));
+            radialLayoutAction.setChecked(false);
+    
+            tm.appendToGroup(groupName, radialLayoutAction);
+            mm.appendToGroup(groupName, radialLayoutAction);
+            
+            // grid layout
+            ShowGridLayoutAction gridLayoutAction = new ShowGridLayoutAction(this);
+            gridLayoutAction.setText("Grid Layout");
+            gridLayoutAction.setToolTipText("Grid Layout");
+            gridLayoutAction.setImageDescriptor(NeoIcons.getDescriptor(NeoIcons.GRID));
+            gridLayoutAction.setChecked(false);
+    
+            tm.appendToGroup(groupName, gridLayoutAction);
+            mm.appendToGroup(groupName, gridLayoutAction);
+        }        
+    }
+    
+    /**
      * Returns the viewer that contains the graph.
      */
-    protected Viewer getViewer()
+    public GraphViewer getViewer()
     {
         return viewer;
     }
@@ -132,6 +228,7 @@ public class NeoGraphViewPart extends ViewPart
      */
     public void setFocus()
     {
+        viewer.getControl().setFocus();
     }
     
     /**
@@ -181,6 +278,28 @@ public class NeoGraphViewPart extends ViewPart
     }
 
     /**
+     * Focuses the view on the given node.
+     */
+    public void showNode(Node node)
+    {
+        NeoServiceManager sm = Activator.getDefault().getNeoServiceManager(); 
+        NeoService ns = sm.getNeoService();
+        if (ns != null)
+        {
+            Transaction txn = Transaction.begin();
+
+            try
+            {
+                viewer.setInput(node);
+            }
+            finally
+            {
+                txn.finish();
+            }
+        }
+    }
+
+    /**
      * Updates the view according to service changes.
      */
     class NeoGraphServiceEventListener implements NeoServiceEventListener
@@ -192,7 +311,11 @@ public class NeoGraphViewPart extends ViewPart
         {
             if (event.getStatus() == NeoServiceStatus.STOPPED)
             {
-                getViewer().setInput(null);                
+                // when called during shutdown the content provider may already have been disposed
+                if (getViewer().getContentProvider() != null)
+                {
+                    getViewer().setInput(null);
+                }
             }
             else if (event.getStatus() == NeoServiceStatus.STARTED)
             {
@@ -229,6 +352,11 @@ public class NeoGraphViewPart extends ViewPart
      */
     static class NeoNodePropertySource implements IPropertySource
     {
+        private static final String NODE_CATEGORY = "Node";
+        private static final String PROPERTIES_CATEGORY = "Properties";
+        
+        private static final String NODE_ID = "Id";
+        
         /**
          * The node.
          */
@@ -256,12 +384,16 @@ public class NeoGraphViewPart extends ViewPart
 
             try
             {
-                Iterable<String> keys = node.getPropertyKeys();
-
                 List<IPropertyDescriptor> descs = new ArrayList<IPropertyDescriptor>();
+
+                // standard properties for nodes
+                descs.add(new NeoPropertyDescriptor(NODE_ID, NODE_ID, NODE_CATEGORY));
+
+                // custom properties for nodes
+                Iterable<String> keys = node.getPropertyKeys();
                 for (String key : keys)
                 {
-                    descs.add(new NeoPropertyDescriptor(key));
+                    descs.add(new NeoPropertyDescriptor(key, key, PROPERTIES_CATEGORY));
                 }
 
                 return descs.toArray(new IPropertyDescriptor[descs.size()]);
@@ -281,7 +413,14 @@ public class NeoGraphViewPart extends ViewPart
 
             try
             {
-                return node.getProperty((String) id);
+                if (id == NODE_ID)
+                {
+                    return String.valueOf(node.getId());                    
+                }
+                else
+                {
+                    return node.getProperty((String) id);
+                }
             }
             finally
             {
@@ -298,7 +437,14 @@ public class NeoGraphViewPart extends ViewPart
 
             try
             {
-                return node.hasProperty((String) id);
+                if (id == NODE_ID)
+                {
+                    return true;                    
+                }
+                else
+                {
+                    return node.hasProperty((String) id);
+                }
             }
             finally
             {
@@ -326,6 +472,12 @@ public class NeoGraphViewPart extends ViewPart
      */
     static class NeoRelationshipPropertySource implements IPropertySource
     {
+        private static final String RELATIONSHIP_CATEGORY   = "Relationship";
+        private static final String PROPERTIES_CATEGORY     = "Properties";
+        
+        private static final String RELATIONSHIP_ID         = "Id";
+        private static final String RELATIONSHIP_TYPE       = "Type";
+        
         /**
          * The relationship.
          */
@@ -353,12 +505,17 @@ public class NeoGraphViewPart extends ViewPart
 
             try
             {
-                Iterable<String> keys = rs.getPropertyKeys();
-
                 List<IPropertyDescriptor> descs = new ArrayList<IPropertyDescriptor>();
+
+                // standard properties for relationships
+                descs.add(new NeoPropertyDescriptor(RELATIONSHIP_ID, RELATIONSHIP_ID, RELATIONSHIP_CATEGORY));
+                descs.add(new NeoPropertyDescriptor(RELATIONSHIP_TYPE, RELATIONSHIP_TYPE, RELATIONSHIP_CATEGORY));
+                
+                // custom properties for relationships
+                Iterable<String> keys = rs.getPropertyKeys();
                 for (String key : keys)
                 {
-                    descs.add(new NeoPropertyDescriptor(key));
+                    descs.add(new NeoPropertyDescriptor(key, key, PROPERTIES_CATEGORY));
                 }
 
                 return descs.toArray(new IPropertyDescriptor[descs.size()]);
@@ -378,7 +535,18 @@ public class NeoGraphViewPart extends ViewPart
 
             try
             {
-                return rs.getProperty((String) id);
+                if (id == RELATIONSHIP_ID)
+                {
+                    return String.valueOf(rs.getId());
+                }
+                else if (id == RELATIONSHIP_TYPE)
+                {
+                    return String.valueOf(rs.getType().name());
+                }
+                else
+                {
+                    return rs.getProperty((String) id);
+                }
             }
             finally
             {
@@ -395,7 +563,18 @@ public class NeoGraphViewPart extends ViewPart
 
             try
             {
-                return rs.hasProperty((String) id);
+                if (id == RELATIONSHIP_ID)
+                {
+                    return true;
+                }
+                else if (id == RELATIONSHIP_TYPE)
+                {
+                    return true;
+                }
+                else
+                {
+                    return rs.hasProperty((String) id);
+                }
             }
             finally
             {
@@ -424,16 +603,28 @@ public class NeoGraphViewPart extends ViewPart
     static class NeoPropertyDescriptor implements IPropertyDescriptor
     {
         /**
-         * The property name.
+         * The key for identifying the value of the property.
          */
-        private String key;
+        private Object key;
+        
+        /**
+         * The name of the property.
+         */
+        private String name;
+        
+        /**
+         * The category of the property.
+         */
+        private String category;
 
         /**
          * The constructor.
          */
-        public NeoPropertyDescriptor(String key)
+        public NeoPropertyDescriptor(Object key, String name, String category)
         {
             this.key = key;
+            this.name = name;
+            this.category = category;
         }
 
         public CellEditor createPropertyEditor(Composite parent)
@@ -443,7 +634,7 @@ public class NeoGraphViewPart extends ViewPart
 
         public String getCategory()
         {
-            return null;
+            return category;
         }
 
         public String getDescription()
@@ -453,7 +644,7 @@ public class NeoGraphViewPart extends ViewPart
 
         public String getDisplayName()
         {
-            return key;
+            return name;
         }
 
         public String[] getFilterFlags()
@@ -511,55 +702,60 @@ public class NeoGraphViewPart extends ViewPart
             }
         }
     }
-
+    
     /**
      * Provides the elements that must be displayed in the graph.
      */
-    static class NeoGraphContentProvider implements IGraphContentProvider
+    static class NeoGraphContentProvider implements IGraphEntityRelationshipContentProvider
     {
         /**
-         * Returns the end node for a relationship.
+         * Returns the relationships between the given nodes.
          */
-        public Object getDestination(Object rel)
+        public Object[] getRelationships(Object source, Object dest)
         {
-            Relationship rs = (Relationship) rel;
-            return rs.getEndNode();
-        }
-
-        /**
-         * Returns the relationships of the input node.
-         */
-        public Object[] getElements(Object input)
-        {
-            Node node = (Node) input;
-
-            // collect all relationships to be displayed
-            // TODO check for some maximum count in order to limit number of
-            // nodes
-            // TODO retrieve with configurable nesting level
+            Node start = (Node) source;
+            Node end = (Node) dest;
+            
             List<Relationship> rels = new ArrayList<Relationship>();
-
-            Iterable<Relationship> rs = node.getRelationships();
+            
+            Iterable<Relationship> rs = start.getRelationships(Direction.OUTGOING);
             for (Relationship r : rs)
             {
-                rels.add(r);
-            }
-
+                if (r.getEndNode().getId() == end.getId())
+                {
+                    rels.add(r);
+                }
+            }            
+            
             return rels.toArray();
         }
 
         /**
-         * Returns the start node of a relationship.
+         * Returns all nodes the given node is connected with.
          */
-        public Object getSource(Object rel)
+        public Object[] getElements(Object inputElement)
         {
-            Relationship rs = (Relationship) rel;
-            return rs.getStartNode();
-        }
+            Node node = (Node) inputElement;
+            
+            // TODO use traverser with configurable depth
+            List<Node> nodes = new ArrayList<Node>();            
+            
+            // add the start node too
+            nodes.add(node);
+            
+            Iterable<Relationship> rs = node.getRelationships(Direction.INCOMING);
+            for (Relationship r : rs)
+            {
+                nodes.add(r.getStartNode());
+            }
 
-        public double getWeight(Object connection)
-        {
-            return 0;
+            rs = node.getRelationships(Direction.OUTGOING);
+            for (Relationship r : rs)
+            {
+                nodes.add(r.getEndNode());
+            }
+            
+            return nodes.toArray();
         }
 
         public void dispose()
@@ -568,7 +764,7 @@ public class NeoGraphViewPart extends ViewPart
 
         public void inputChanged(Viewer viewer, Object oldInput, Object newInput)
         {
-        }
+        }        
     }
 
     /**
@@ -579,18 +775,12 @@ public class NeoGraphViewPart extends ViewPart
         /**
          * The icon for nodes.
          */
-        // TODO use neo icons
-        // private Image nodeImage = Activator.getDefault().getImageRegistry().get(NeoIcons.SMALL);
-
-        private Image nodeImage = Display.getDefault().getSystemImage(
-                SWT.ICON_INFORMATION);
+        private Image nodeImage = NeoIcons.getImage(NeoIcons.NEO);
 
         /**
          * The icon for the root node.
          */
-        // TODO use neo icons
-        private Image rootImage = Display.getDefault().getSystemImage(
-                SWT.ICON_WARNING);
+        private Image rootImage = NeoIcons.getImage(NeoIcons.NEO_ROOT);
 
         /**
          * Returns the icon for an element.

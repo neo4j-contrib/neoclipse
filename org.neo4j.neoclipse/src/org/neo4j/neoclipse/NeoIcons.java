@@ -3,12 +3,84 @@
  */
 package org.neo4j.neoclipse;
 
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.resource.ImageRegistry;
+import org.eclipse.swt.graphics.Image;
+
 /**
- * Some constants representing neo icons.
+ * This class manages neo icons.
  * 
  * @author	Peter H&auml;nsgen
  */
-public interface NeoIcons
+public class NeoIcons
 {
-    public static final String SMALL = "small";
+    /*
+     * Some constants representing icons.
+     */
+    public static final String HOME     = "home";
+    public static final String REFRESH  = "refresh";
+    
+    public static final String GRID     = "grid";
+    public static final String RADIAL   = "radial";
+    public static final String SPRING   = "spring";
+    public static final String TREE     = "tree";
+    
+    public static final String NEO      = "small";
+    public static final String NEO_ROOT = "root";
+    
+    /**
+     * The image registry.
+     */
+    protected static ImageRegistry reg;
+    
+    /**
+     * Initializes the neo images.
+     */
+    public static void init(Activator activator)
+    {
+        reg = activator.getImageRegistry();
+        
+        // TODO use neo icons
+        reg.put(NeoIcons.NEO, Activator.imageDescriptorFromPlugin(
+                Activator.PLUGIN_ID, "icons/obj16/neo.ico"));
+
+        reg.put(NeoIcons.NEO_ROOT, Activator.imageDescriptorFromPlugin(
+                Activator.PLUGIN_ID, "icons/obj16/neo_red.ico"));
+
+        // misc
+        reg.put(NeoIcons.HOME, Activator.imageDescriptorFromPlugin(
+                Activator.PLUGIN_ID, "icons/enabled/home.gif"));
+
+        reg.put(NeoIcons.REFRESH, Activator.imageDescriptorFromPlugin(
+                Activator.PLUGIN_ID, "icons/enabled/refresh.gif"));
+
+        // layouts
+        reg.put(NeoIcons.GRID, Activator.imageDescriptorFromPlugin(
+                Activator.PLUGIN_ID, "icons/enabled/grid.gif"));
+        
+        reg.put(NeoIcons.RADIAL, Activator.imageDescriptorFromPlugin(
+                Activator.PLUGIN_ID, "icons/enabled/radial.gif"));
+        
+        reg.put(NeoIcons.SPRING, Activator.imageDescriptorFromPlugin(
+                Activator.PLUGIN_ID, "icons/enabled/spring.gif"));
+
+        reg.put(NeoIcons.TREE, Activator.imageDescriptorFromPlugin(
+                Activator.PLUGIN_ID, "icons/enabled/tree.gif"));
+    }
+    
+    /**
+     * Looks up the image for the given name.
+     */
+    public static Image getImage(String name)
+    {
+        return reg.get(name);
+    }
+    
+    /**
+     * Looks up the image descriptor for the given name.
+     */
+    public static ImageDescriptor getDescriptor(String name)
+    {
+        return reg.getDescriptor(name);
+    }
 }
