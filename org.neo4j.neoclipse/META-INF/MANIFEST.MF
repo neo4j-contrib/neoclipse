@@ -5,12 +5,26 @@ Bundle-SymbolicName: org.neo4j.neoclipse;singleton:=true
 Bundle-Version: 1.0.0
 Bundle-Activator: org.neo4j.neoclipse.Activator
 Bundle-Vendor: org.neo4j
-Require-Bundle: org.eclipse.ui,
- org.eclipse.core.runtime,
- org.eclipse.ui.views,
- org.eclipse.mylyn.zest.core,
- org.eclipse.mylyn.zest.layouts
 Eclipse-LazyStart: true
 Bundle-ClassPath: lib/jta-spec1_0_1.jar,
  lib/neo-1.0-b6.jar,
  .
+Import-Package: org.eclipse.core.commands.common,
+ org.eclipse.core.runtime,
+ org.eclipse.core.runtime.preferences,
+ org.eclipse.jface,
+ org.eclipse.jface.preference,
+ org.eclipse.jface.viewers,
+ org.eclipse.swt,
+ org.eclipse.swt.graphics,
+ org.eclipse.swt.layout,
+ org.eclipse.swt.widgets,
+ org.eclipse.ui,
+ org.eclipse.ui.part,
+ org.eclipse.ui.plugin,
+ org.eclipse.ui.views,
+ org.eclipse.ui.views.properties,
+ org.eclipse.zest.core.viewers,
+ org.eclipse.zest.layouts,
+ org.eclipse.zest.layouts.algorithms,
+ org.osgi.framework;version="1.4.0"
