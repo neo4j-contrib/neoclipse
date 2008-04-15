@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.neo4j.neoclipse;singleton:=true
 Bundle-Version: 1.0.0
 Bundle-Activator: org.neo4j.neoclipse.Activator
 Bundle-Vendor: org.neo4j
-Eclipse-LazyStart: true
+Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: lib/jta-spec1_0_1.jar,
  lib/neo-1.0-b6.jar,
  .
@@ -13,7 +13,9 @@ Import-Package: org.eclipse.core.commands.common,
  org.eclipse.core.runtime,
  org.eclipse.core.runtime.preferences,
  org.eclipse.jface,
+ org.eclipse.jface.action,
  org.eclipse.jface.preference,
+ org.eclipse.jface.resource,
  org.eclipse.jface.viewers,
  org.eclipse.swt,
  org.eclipse.swt.graphics,
