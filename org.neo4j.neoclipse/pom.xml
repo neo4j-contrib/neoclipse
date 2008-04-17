@@ -16,36 +16,31 @@
          <artifactId>neo</artifactId>
          <version>1.0-b6</version>
       </dependency>
+    <dependency>
+         <groupId>org.neo4j</groupId>
+         <artifactId>shell</artifactId>
+         <version>1.0-b6</version>
+      </dependency>
       <dependency>
 	     <groupId>org.eclipse.zest</groupId>
 	     <artifactId>core</artifactId>
-	     <version>1.0.0-v20080115</version>
+	     <version>1.0.0</version>
 	  </dependency>
 	  <dependency>
 	     <groupId>org.eclipse.zest</groupId>
 	     <artifactId>layouts</artifactId>
-	     <version>1.0.0-v20080226</version>
-	  </dependency>
-	  <dependency>
-	     <groupId>org.eclipse.swt.win32.win32</groupId>
-	     <artifactId>x86</artifactId>
-	     <version>3.4.0-v3436</version>
+	     <version>1.0.0</version>
 	  </dependency>
 	  <dependency>
 	     <groupId>org.eclipse.ui</groupId>
 	     <artifactId>views</artifactId>
-	     <version>3.3.0-I20080324-1800</version>
-	  </dependency>
-	  <dependency>
-	     <groupId>org.eclipse.core</groupId>
-	     <artifactId>runtime</artifactId>
-	     <version>[3.3.0,4.0.0)</version>
+	     <version>3.3.0</version>
 	  </dependency>
   </dependencies>
   <build>
     <sourceDirectory>${basedir}/src</sourceDirectory>
     <plugins>
-	  <plugin>
+	  <!--plugin>
 		<groupId>org.apache.maven.plugins</groupId>
 		<artifactId>maven-dependency-plugin</artifactId>
 		<executions>
@@ -72,16 +67,17 @@
 			</configuration>
 			</execution>
 		</executions>
-	  </plugin>
+	  </plugin-->
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
         <extensions>true</extensions>
         <configuration>
-          <manifestLocation>${basedir}/META-INF</manifestLocation>
+          <!--manifestLocation>${basedir}/META-INF</manifestLocation-->
 		  <instructions>
-            <Embed-Dependency>*;scope=compile|runtime;inline=true</Embed-Dependency>
+            <Embed-Dependency>neo|shell|jta;scope=compile|runtime;inline=false</Embed-Dependency>
             <Embed-Transitive>false</Embed-Transitive>
+            <Import-Package>!sun.*,*</Import-Package>
           </instructions>
         </configuration>
         <executions>
@@ -114,9 +110,61 @@
          <id>neo4j-public-repository</id>
          <url>http://m2.neo4j.org</url>
       </repository>
-      <repository>
+      <!--repository>
          <id>local-eclipse-repository</id>
-         <url>file:///c:/repo-eclipse</url>
-      </repository>
+         <url>file:///Users/peter/.m2/repo</url>
+      </repository-->
    </repositories>
+   <profiles>
+    <profile>
+        <id>org.eclipse.swt.win32</id>
+        <activation>
+            <os>
+                <name>windows xp</name>
+                <arch>x86</arch>
+            </os>
+        </activation>
+        <dependencies>
+            <dependency>
+                <groupId>org.eclipse.swt.win32.win32</groupId>
+                <artifactId>x86</artifactId>
+                <version>3.4.0</version>
+            </dependency>
+        </dependencies>
+    </profile>
+    <profile>
+        <id>org.eclipse.swt.macosx</id>
+        <activation>
+            <os>
+                <name>mac os x</name>
+                <arch>i386</arch>
+            </os>
+        </activation>
+        <dependencies>
+          <dependency>
+	        <groupId>org.eclipse.swt.carbon</groupId>
+	        <artifactId>macosx</artifactId>
+	        <version>3.4.0</version>
+	      </dependency>
+        </dependencies>
+    </profile>
+    <profile>
+        <id>org.eclipse.swt.linux</id>
+        <activation>
+            <os>
+                <name>linux</name>
+                <arch>i386</arch>
+            </os>
+        </activation>
+        <dependencies>
+            <dependency>
+                <groupId>org.eclipse.swt.gtk.linux</groupId>
+                <artifactId>x86</artifactId>
+                <version>3.4.0</version>
+                <type>jar</type>
+            </dependency>
+        </dependencies>
+    </profile>
+   </profiles>
+   
 </project>
