@@ -4,7 +4,9 @@
 package org.neo4j.neoclipse.view;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.IMenuManager;
@@ -37,6 +39,8 @@ import org.neo4j.api.core.Relationship;
 import org.neo4j.api.core.Transaction;
 import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.NeoIcons;
+import org.neo4j.neoclipse.action.DecreaseTraversalDepthAction;
+import org.neo4j.neoclipse.action.IncreaseTraversalDepthAction;
 import org.neo4j.neoclipse.action.RefreshAction;
 import org.neo4j.neoclipse.action.ShowGridLayoutAction;
 import org.neo4j.neoclipse.action.ShowRadialLayoutAction;
@@ -70,6 +74,16 @@ public class NeoGraphViewPart extends ViewPart
      * The graph.
      */
     protected GraphViewer viewer;
+    
+    /**
+     * The decrease traversal depth action.
+     */
+    protected DecreaseTraversalDepthAction decAction;
+
+    /**
+     * The depth how deep we should traverse into the network.
+     */
+    private int traversalDepth = 1;
     
     /**
      * Creates the view.
@@ -118,7 +132,26 @@ public class NeoGraphViewPart extends ViewPart
                     Activator.getDefault().getImageRegistry().getDescriptor(NeoIcons.REFRESH));
             
             tm.add(refreshAction);
-
+            tm.add(new Separator());
+        }
+        
+        // recursion level actions
+        {
+            IncreaseTraversalDepthAction incAction = new IncreaseTraversalDepthAction(this);
+            incAction.setText("Increase Traversal Depth");
+            incAction.setToolTipText("Increase Traversal Depth");
+            incAction.setImageDescriptor(Activator.getDefault().getImageRegistry().getDescriptor(NeoIcons.PLUS_ENABLED));
+            incAction.setDisabledImageDescriptor(Activator.getDefault().getImageRegistry().getDescriptor(NeoIcons.PLUS_DISABLED));
+            
+            tm.add(incAction);
+            
+            decAction = new DecreaseTraversalDepthAction(this);
+            decAction.setText("Decrease Traversal Depth");
+            decAction.setToolTipText("Decrease Traversal Depth");
+            decAction.setImageDescriptor(Activator.getDefault().getImageRegistry().getDescriptor(NeoIcons.MINUS_ENABLED));
+            decAction.setDisabledImageDescriptor(Activator.getDefault().getImageRegistry().getDescriptor(NeoIcons.MINUS_DISABLED));
+            
+            tm.add(decAction);
             tm.add(new Separator());
         }
         
@@ -169,6 +202,15 @@ public class NeoGraphViewPart extends ViewPart
             tm.appendToGroup(groupName, gridLayoutAction);
             mm.appendToGroup(groupName, gridLayoutAction);
         }        
+    }
+    
+    /**
+     * Updates the content of the status bar.
+     */
+    protected void refreshStatusBar()
+    {
+        getViewSite().getActionBars().getStatusLineManager().setMessage(
+                "Traversal Depth: " + String.valueOf(traversalDepth));
     }
     
     /**
@@ -291,6 +333,102 @@ public class NeoGraphViewPart extends ViewPart
             try
             {
                 viewer.setInput(node);
+            }
+            finally
+            {
+                txn.finish();
+            }
+        }
+    }
+
+    /**
+     * Returns the current traversal depth.
+     */
+    public int getTraversalDepth()
+    {
+        return traversalDepth;
+    }
+
+    /**
+     * Increments the traversal depth.
+     */
+    public void incTraversalDepth()
+    {
+        NeoServiceManager sm = Activator.getDefault().getNeoServiceManager(); 
+        NeoService ns = sm.getNeoService();
+        if (ns != null)
+        {
+            Transaction txn = Transaction.begin();
+
+            try
+            {
+                traversalDepth++;
+                refreshStatusBar();
+                
+                viewer.refresh();
+                viewer.applyLayout();
+            }
+            finally
+            {
+                txn.finish();
+            }
+        }
+        
+        if (traversalDepth > 0)
+        {
+            decAction.setEnabled(true);
+        }
+    }
+
+    /**
+     * Decrements the traversal depth.
+     */
+    public void decTraversalDepth()
+    {
+        if (traversalDepth > 0)
+        {
+            NeoServiceManager sm = Activator.getDefault().getNeoServiceManager(); 
+            NeoService ns = sm.getNeoService();
+            if (ns != null)
+            {
+                Transaction txn = Transaction.begin();
+
+                try
+                {
+                    traversalDepth--;
+                    refreshStatusBar();
+                    
+                    viewer.refresh();
+                    viewer.applyLayout();
+                }
+                finally
+                {
+                    txn.finish();
+                }
+            }
+            
+            if (traversalDepth == 0)
+            {
+                decAction.setEnabled(false);
+            }
+        }
+    }
+
+    /**
+     * Refreshes the view.
+     */
+    public void refresh()
+    {
+        NeoServiceManager sm = Activator.getDefault().getNeoServiceManager(); 
+        NeoService ns = sm.getNeoService();
+        if (ns != null)
+        {
+            Transaction txn = Transaction.begin();
+
+            try
+            {
+                viewer.refresh();
+                viewer.applyLayout();
             }
             finally
             {
@@ -706,7 +844,7 @@ public class NeoGraphViewPart extends ViewPart
     /**
      * Provides the elements that must be displayed in the graph.
      */
-    static class NeoGraphContentProvider implements IGraphEntityRelationshipContentProvider
+    class NeoGraphContentProvider implements IGraphEntityRelationshipContentProvider
     {
         /**
          * Returns the relationships between the given nodes.
@@ -737,27 +875,48 @@ public class NeoGraphViewPart extends ViewPart
         {
             Node node = (Node) inputElement;
             
-            // TODO use traverser with configurable depth
-            List<Node> nodes = new ArrayList<Node>();            
-            
-            // add the start node too
-            nodes.add(node);
-            
-            Iterable<Relationship> rs = node.getRelationships(Direction.INCOMING);
-            for (Relationship r : rs)
-            {
-                nodes.add(r.getStartNode());
-            }
+            Map<Long, Node> nodes = new HashMap<Long, Node>();            
+            getElements(node, nodes, traversalDepth);
 
-            rs = node.getRelationships(Direction.OUTGOING);
-            for (Relationship r : rs)
-            {
-                nodes.add(r.getEndNode());
-            }
-            
-            return nodes.toArray();
+            return nodes.values().toArray();
         }
+        
+        /**
+         * Determines the connected nodes within the given traversal depth.
+         */
+        private void getElements(Node node, Map<Long, Node> nodes, int depth)
+        {
+            // add the start node too
+            nodes.put(node.getId(), node);
+            
+            if (depth > 0)
+            {
+                Iterable<Relationship> rs = node.getRelationships(Direction.INCOMING);
+                for (Relationship r : rs)
+                {
+                    Node start = r.getStartNode();
+                    if (!nodes.containsKey(start.getId()))
+                    {
+                        nodes.put(start.getId(), start);
+                
+                        getElements(start, nodes, depth - 1);
+                    }
+                }
 
+                rs = node.getRelationships(Direction.OUTGOING);
+                for (Relationship r : rs)
+                {
+                    Node end = r.getEndNode();
+                    if (!nodes.containsKey(end.getId()))
+                    {
+                        nodes.put(end.getId(), end);
+                    
+                        getElements(end, nodes, depth - 1);
+                    }
+                }
+            }
+        }
+        
         public void dispose()
         {
         }

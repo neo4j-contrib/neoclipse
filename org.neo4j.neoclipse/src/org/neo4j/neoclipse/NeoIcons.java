@@ -20,6 +20,11 @@ public class NeoIcons
     public static final String HOME     = "home";
     public static final String REFRESH  = "refresh";
     
+    public static final String PLUS_ENABLED     = "plus_enabled";
+    public static final String PLUS_DISABLED    = "plus_disabled";
+    public static final String MINUS_ENABLED    = "minus_enabled";
+    public static final String MINUS_DISABLED   = "minus_disabled";
+
     public static final String GRID     = "grid";
     public static final String RADIAL   = "radial";
     public static final String SPRING   = "spring";
@@ -53,6 +58,19 @@ public class NeoIcons
 
         reg.put(NeoIcons.REFRESH, Activator.imageDescriptorFromPlugin(
                 Activator.PLUGIN_ID, "icons/enabled/refresh.gif"));
+
+        // traversal depth
+        reg.put(NeoIcons.PLUS_ENABLED, Activator.imageDescriptorFromPlugin(
+                Activator.PLUGIN_ID, "icons/enabled/plus.gif"));
+
+        reg.put(NeoIcons.PLUS_DISABLED, Activator.imageDescriptorFromPlugin(
+                Activator.PLUGIN_ID, "icons/disabled/plus.gif"));
+
+        reg.put(NeoIcons.MINUS_ENABLED, Activator.imageDescriptorFromPlugin(
+                Activator.PLUGIN_ID, "icons/enabled/minus.gif"));
+        
+        reg.put(NeoIcons.MINUS_DISABLED, Activator.imageDescriptorFromPlugin(
+                Activator.PLUGIN_ID, "icons/disabled/minus.gif"));
 
         // layouts
         reg.put(NeoIcons.GRID, Activator.imageDescriptorFromPlugin(

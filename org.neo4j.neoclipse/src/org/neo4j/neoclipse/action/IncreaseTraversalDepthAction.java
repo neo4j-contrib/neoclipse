@@ -1,5 +1,5 @@
 /*
- * RefreshAction.java
+ * IncreaseTraversalDepthAction.java
  */
 package org.neo4j.neoclipse.action;
 
@@ -7,12 +7,11 @@ import org.eclipse.jface.action.Action;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**
- * This action refreshes the graph view, e.g. it sets the current node again
- * as input source.
+ * Increases the traversal depth of the neo graph view.
  * 
  * @author	Peter H&auml;nsgen
  */
-public class RefreshAction extends Action
+public class IncreaseTraversalDepthAction extends Action
 {
     /**
      * The view.
@@ -22,9 +21,9 @@ public class RefreshAction extends Action
     /**
      * The constructor.
      */
-    public RefreshAction(NeoGraphViewPart view)
+    public IncreaseTraversalDepthAction(NeoGraphViewPart view)
     {
-        super("Refresh", Action.AS_PUSH_BUTTON);
+        super("Increase Traversal Depth", Action.AS_PUSH_BUTTON);
         
         this.view = view;
     }
@@ -34,6 +33,6 @@ public class RefreshAction extends Action
      */
     public void run()
     {
-        view.refresh();
+        view.incTraversalDepth();
     }
 }
