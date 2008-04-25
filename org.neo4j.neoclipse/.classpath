@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="src/main/java"/>
 	<classpathentry exported="true" kind="lib" path="lib/jta-spec1_0_1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/neo-1.0-b6.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
