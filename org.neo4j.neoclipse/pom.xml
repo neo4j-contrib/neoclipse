@@ -41,7 +41,6 @@
 	  </dependency>
   </dependencies>
   <build>
-    <!--sourceDirectory>${basedir}/src</sourceDirectory-->
     <resources>
       <resource>
         <directory>${basedir}</directory>
@@ -62,6 +61,7 @@
             <Embed-Transitive>true</Embed-Transitive>
             <Import-Package>*,!sun.*</Import-Package>
             <Export-Package>!*</Export-Package>
+            <Private-Package>org.neo4j.neoclipse.*</Private-Package>
             <Bundle-SymbolicName>${project.groupId}.${project.artifactId};singleton:=true</Bundle-SymbolicName>
           </instructions>
         </configuration>
