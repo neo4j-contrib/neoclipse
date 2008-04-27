@@ -59,10 +59,11 @@
 		  <instructions>
             <Embed-Dependency>neo|shell|jta;scope=compile|runtime;inline=false</Embed-Dependency>
             <Embed-Transitive>true</Embed-Transitive>
-            <Import-Package>*,!sun.*</Import-Package>
+            <Import-Package>!sun.*,*</Import-Package>
+            <Include-Resource>icons=icons, plugin.xml</Include-Resource>
             <Export-Package>!*</Export-Package>
             <Private-Package>org.neo4j.neoclipse.*</Private-Package>
-            <Bundle-SymbolicName>${project.groupId}.${project.artifactId};singleton:=true</Bundle-SymbolicName>
+            <Bundle-SymbolicName>${project.groupId}.${project.artifactId}.maven;singleton:=true</Bundle-SymbolicName>
           </instructions>
         </configuration>
       </plugin>
