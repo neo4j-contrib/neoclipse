@@ -16,7 +16,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.views.properties.IPropertySheetPage;
 import org.eclipse.ui.views.properties.PropertySheetPage;
+import org.eclipse.zest.core.viewers.AbstractZoomableViewer;
 import org.eclipse.zest.core.viewers.GraphViewer;
+import org.eclipse.zest.core.viewers.IZoomableWorkbenchPart;
 import org.eclipse.zest.layouts.LayoutStyles;
 import org.eclipse.zest.layouts.algorithms.SpringLayoutAlgorithm;
 import org.neo4j.api.core.NeoService;
@@ -32,6 +34,7 @@ import org.neo4j.neoclipse.action.ShowRadialLayoutAction;
 import org.neo4j.neoclipse.action.ShowReferenceNodeAction;
 import org.neo4j.neoclipse.action.ShowSpringLayoutAction;
 import org.neo4j.neoclipse.action.ShowTreeLayoutAction;
+import org.neo4j.neoclipse.action.ZoomAction;
 import org.neo4j.neoclipse.neo.NeoServiceEvent;
 import org.neo4j.neoclipse.neo.NeoServiceEventListener;
 import org.neo4j.neoclipse.neo.NeoServiceManager;
@@ -43,7 +46,7 @@ import org.neo4j.neoclipse.neo.NeoServiceStatus;
  * 
  * @author Peter H&auml;nsgen
  */
-public class NeoGraphViewPart extends ViewPart
+public class NeoGraphViewPart extends ViewPart implements IZoomableWorkbenchPart
 {
     /**
      * The Eclipse view ID.
@@ -138,6 +141,18 @@ public class NeoGraphViewPart extends ViewPart
             
             tm.add(decAction);
             tm.add(new Separator());
+        }        
+        
+        // zoom actions
+        {
+            ZoomAction zoomAction = new ZoomAction(this);
+            zoomAction.setText("Zoom");
+            zoomAction.setToolTipText("Zoom");
+            zoomAction.setImageDescriptor(
+                    Activator.getDefault().getImageRegistry().getDescriptor(NeoIcons.ZOOM));
+
+            tm.add(zoomAction);
+            tm.add(new Separator());
         }
         
         // layout actions
@@ -202,6 +217,14 @@ public class NeoGraphViewPart extends ViewPart
      * Returns the viewer that contains the graph.
      */
     public GraphViewer getViewer()
+    {
+        return viewer;
+    }
+
+    /**
+     * Returns the graph viewer for zooming.
+     */
+    public AbstractZoomableViewer getZoomableViewer()
     {
         return viewer;
     }

@@ -18,8 +18,9 @@ public class NeoIcons
      * Some constants representing icons.
      */
     public static final String HOME     = "home";
-    public static final String REFRESH  = "refresh";
-    
+    public static final String REFRESH  = "refresh";    
+    public static final String ZOOM     = "zoom";
+
     public static final String PLUS_ENABLED     = "plus_enabled";
     public static final String PLUS_DISABLED    = "plus_disabled";
     public static final String MINUS_ENABLED    = "minus_enabled";
@@ -58,6 +59,9 @@ public class NeoIcons
 
         reg.put(NeoIcons.REFRESH, Activator.imageDescriptorFromPlugin(
                 Activator.PLUGIN_ID, "icons/enabled/refresh.gif"));
+
+        reg.put(NeoIcons.ZOOM, Activator.imageDescriptorFromPlugin(
+                Activator.PLUGIN_ID, "icons/enabled/zoom.gif"));
 
         // traversal depth
         reg.put(NeoIcons.PLUS_ENABLED, Activator.imageDescriptorFromPlugin(
