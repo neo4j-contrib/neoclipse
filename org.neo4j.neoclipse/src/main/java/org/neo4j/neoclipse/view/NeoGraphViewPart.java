@@ -13,6 +13,7 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.views.properties.IPropertySheetPage;
 import org.eclipse.ui.views.properties.PropertySheetPage;
@@ -28,6 +29,7 @@ import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.NeoIcons;
 import org.neo4j.neoclipse.action.DecreaseTraversalDepthAction;
 import org.neo4j.neoclipse.action.IncreaseTraversalDepthAction;
+import org.neo4j.neoclipse.action.PrintGraphAction;
 import org.neo4j.neoclipse.action.RefreshAction;
 import org.neo4j.neoclipse.action.ShowGridLayoutAction;
 import org.neo4j.neoclipse.action.ShowRadialLayoutAction;
@@ -202,6 +204,10 @@ public class NeoGraphViewPart extends ViewPart implements IZoomableWorkbenchPart
             tm.appendToGroup(groupName, gridLayoutAction);
             mm.appendToGroup(groupName, gridLayoutAction);
         }
+        
+        // printing
+        getViewSite().getActionBars().setGlobalActionHandler(ActionFactory.PRINT.getId(),
+                new PrintGraphAction(this));
     }
     
     /**
