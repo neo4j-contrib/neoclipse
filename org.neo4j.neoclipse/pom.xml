@@ -39,6 +39,12 @@
 	     <version>3.3.0</version>
 	     <scope>provided</scope>
 	  </dependency>
+	  <dependency>
+	     <groupId>org.eclipse</groupId>
+	     <artifactId>gef</artifactId>
+	     <version>3.4.0</version>
+	     <scope>provided</scope>
+	  </dependency>
   </dependencies>
   <build>
     <resources>
@@ -61,6 +67,9 @@
             <Embed-Transitive>true</Embed-Transitive>
             <Import-Package>!sun.*,*</Import-Package>
             <Include-Resource>icons=icons, plugin.xml</Include-Resource>
+            <Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
+            <Bundle-Activator>org.neo4j.neoclipse.Activator</Bundle-Activator>
+            <Bundle-Vendor>Neo4j</Bundle-Vendor>
             <Export-Package>!*</Export-Package>
             <Private-Package>org.neo4j.neoclipse.*</Private-Package>
             <Bundle-SymbolicName>${project.groupId}.${project.artifactId}.maven;singleton:=true</Bundle-SymbolicName>
