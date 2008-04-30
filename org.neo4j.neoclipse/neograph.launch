@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="org.eclipse.pde.ui.RuntimeWorkbench">
+<booleanAttribute key="append.args" value="true"/>
+<booleanAttribute key="askclear" value="false"/>
+<booleanAttribute key="automaticAdd" value="true"/>
+<booleanAttribute key="automaticValidate" value="false"/>
+<stringAttribute key="bootstrap" value=""/>
+<stringAttribute key="checked" value="[NONE]"/>
+<booleanAttribute key="clearConfig" value="false"/>
+<booleanAttribute key="clearws" value="true"/>
+<booleanAttribute key="clearwslog" value="true"/>
+<stringAttribute key="configLocation" value="${workspace_loc}/.metadata/.plugins/org.eclipse.pde.core/neograph"/>
+<booleanAttribute key="default" value="false"/>
+<booleanAttribute key="includeOptional" value="true"/>
+<stringAttribute key="location" value="${workspace_loc}/../runtime-New_configuration"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl}"/>
+<stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.pde.ui.workbenchClasspathProvider"/>
+<stringAttribute key="pde.version" value="3.3"/>
+<stringAttribute key="product" value="org.eclipse.sdk.ide"/>
+<stringAttribute key="selected_target_plugins" value="org.eclipse.ui.cheatsheets*3.3.100.v20080303,org.eclipse.draw2d*3.4.0.v20080401,org.eclipse.jface.databinding*1.2.0.I20080325-0100,org.eclipse.ui.workbench.texteditor*3.4.0.v20080327-1300,org.eclipse.gef*3.4.0.v20080401,com.ibm.icu*3.8.1.v20080304,org.eclipse.core.commands*3.4.0.I20080324-1800,org.eclipse.jface*3.4.0.I20080328-1206,javax.servlet*2.4.0.v200803061910,org.eclipse.ant.core*3.2.0.v20080319,org.eclipse.ui.ide*3.4.0.I20080328-1206,org.eclipse.ui.navigator*3.3.100.I20080324-1800,org.eclipse.ui.win32*3.2.100.I20080324-1800,org.eclipse.swt*3.4.0.v3436a,org.eclipse.ui*3.4.0.I20080328-1206,org.eclipse.core.filesystem*1.2.0.v20080324-0057,org.eclipse.core.expressions*3.4.0.v20080327-1300,org.eclipse.sdk*3.4.0.v20080107,org.eclipse.core.resources.compatibility*3.4.0.v20071204,org.eclipse.core.resources.win32.x86*3.4.0.v20071204,org.apache.commons.logging*1.0.4.v200803061811,org.eclipse.zest.core*1.0.0.v20080115,org.eclipse.osgi.services*3.1.200.v20071203,org.eclipse.swt.win32.win32.x86*3.4.0.v3436,org.eclipse.osgi*3.4.0.v20080326,org.eclipse.equinox.common*3.4.0.v20080320,org.eclipse.help.base*3.3.100.v20080320,org.eclipse.ui.forms*3.3.100.v20080303,org.eclipse.core.filesystem.win32.x86*1.1.0.v20071126,org.eclipse.ui.views*3.3.0.I20080324-1800,org.eclipse.equinox.registry*3.4.0.v20080316,org.eclipse.core.resources*3.4.0.v20080326,org.eclipse.help.ui*3.3.100.v20080322,org.eclipse.core.runtime*3.4.0.v20080324-1725,org.eclipse.ui.workbench*3.4.0.I20080328-1206,org.junit4*4.3.1,org.eclipse.equinox.preferences*3.2.200.v20080201,org.eclipse.core.runtime.compatibility.auth*3.2.100.v20070502,org.eclipse.equinox.http.servlet*1.0.100.v20080201,org.eclipse.zest.layouts*1.0.0.v20080226,org.apache.lucene*1.9.1.v200803061811,org.eclipse.ui.navigator.resources*3.3.100.I20080326-1300,org.eclipse.update.core*3.2.200.v20080318,org.eclipse.equinox.http.jetty*1.0.100.v20080303,org.mortbay.jetty*5.1.11.v200803061811,org.eclipse.core.jobs*3.4.0.v20080310,org.eclipse.core.net*1.0.100.I20080322,org.eclipse.equinox.app*1.0.100.v20080316,org.eclipse.core.runtime.compatibility.registry*3.2.200.v20070717,org.eclipse.jface.text*3.4.0.v20080327-1300,org.apache.lucene.analysis*1.9.1.v200803061811,org.eclipse.ui.views.properties.tabbed*3.4.0.I20080324-1800,org.eclipse.core.variables*3.2.100.v20080324-1600,org.eclipse.core.databinding*1.1.0.I20080325-0100,org.eclipse.text*3.4.0.v20080327-1300,org.eclipse.help*3.3.100.v20080320,org.eclipse.ui.ide.application*1.0.0.I20080324-1800,org.eclipse.update.ui*3.2.100.v20080318,org.eclipse.core.contenttype*3.3.0.v20080201,org.eclipse.update.core.win32*3.2.100.v20080107,org.eclipse.update.configurator*3.2.200.v20080107"/>
+<booleanAttribute key="show_selected_only" value="false"/>
+<stringAttribute key="templateConfig" value="${target_home}\configuration\config.ini"/>
+<booleanAttribute key="tracing" value="false"/>
+<booleanAttribute key="useDefaultConfig" value="true"/>
+<booleanAttribute key="useDefaultConfigArea" value="true"/>
+<booleanAttribute key="useProduct" value="true"/>
+<booleanAttribute key="usefeatures" value="false"/>
+</launchConfiguration>
