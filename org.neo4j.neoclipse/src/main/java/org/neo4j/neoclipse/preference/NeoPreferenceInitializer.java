@@ -22,6 +22,6 @@ public class NeoPreferenceInitializer extends AbstractPreferenceInitializer
         IPreferenceStore pref = Activator.getDefault().getPreferenceStore();
         
         pref.setDefault(NeoPreferences.DATABASE_LOCATION, "");
-        pref.setDefault(NeoPreferences.DEFAULT_PROPERTY_NAME, "NAME");
+        pref.setDefault(NeoPreferences.NODE_PROPERTY_NAMES, "");
     }
 }

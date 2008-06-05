@@ -17,5 +17,5 @@ public interface NeoPreferences
     /**
      * The property to view inside nodes in the graph view.
      */
-    public static final String DEFAULT_PROPERTY_NAME = "defaultPropertyName";
+    public static final String NODE_PROPERTY_NAMES = "nodePropertyNames";
 }

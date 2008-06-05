@@ -59,39 +59,53 @@ public class NeoGraphLabelProvider extends LabelProvider implements
         if ( element instanceof Node )
         {
             Node node = (Node) element;
-            String defaultPropery = Activator.getDefault().getPreferenceStore()
-                .getString( NeoPreferences.DEFAULT_PROPERTY_NAME ).trim();
-            if ( defaultPropery == "" )
+            String defaultProperties = Activator.getDefault()
+                .getPreferenceStore().getString(
+                    NeoPreferences.NODE_PROPERTY_NAMES ).trim();
+            if ( defaultProperties == "" )
             {
                 // don't look for the default property
                 if ( node.getId() == 0 )
                 {
                     // the only difference from other nodes is the text
-                    return ("Reference Node #" + String
+                    return ("Reference Node " + String
                         .valueOf( ((Node) element).getId() ));
                 }
                 else
                 {
-                    return ("Node #" + String
+                    return ("Node " + String
                         .valueOf( ((Node) element).getId() ));
                 }
             }
             else
             {
                 // show the default property
+                String propertyValue;
                 if ( node.getId() == 0 )
                 {
-                    // the only difference from other nodes is the default text
-                    return ((Node) element).getProperty( defaultPropery,
-                        "Reference Node" )
-                        + " #" + String.valueOf( ((Node) element).getId() );
+                    propertyValue = "Reference Node ";
                 }
                 else
                 {
-                    return ((Node) element)
-                        .getProperty( defaultPropery, "Node" )
-                        + " #" + String.valueOf( ((Node) element).getId() );
+                    propertyValue = "Node ";
                 }
+                for ( String propertyName : defaultProperties.split( "," ) )
+                {
+                    propertyName = propertyName.trim();
+                    if ( propertyName == "" )
+                    {
+                        continue;
+                    }
+                    String tmpPropVal = (String) ((Node) element).getProperty(
+                        propertyName, "" );
+                    if ( tmpPropVal != "" )
+                    {
+                        propertyValue = tmpPropVal + " #";
+                        break;
+                    }
+                }
+                return propertyValue
+                    + String.valueOf( ((Node) element).getId() );
             }
         }
         else if ( element instanceof Relationship )
@@ -112,6 +126,8 @@ public class NeoGraphLabelProvider extends LabelProvider implements
     public int getConnectionStyle( Object rel )
     {
         return ZestStyles.CONNECTIONS_DIRECTED;
+        // otherwise be provided from NeoGraphViewPart::createPartControl
+        // viewer.setConnectionStyle( ZestStyles.CONNECTIONS_DIRECTED );
     }
 
     @Override

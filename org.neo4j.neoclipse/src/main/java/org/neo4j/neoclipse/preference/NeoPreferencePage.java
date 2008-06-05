@@ -24,7 +24,7 @@ public class NeoPreferencePage extends AbstractPreferencePage
         locationField.setErrorMessage( "The Neo Database Location is invalid." );
         addField( locationField );
         StringFieldEditor propertyNameField = new StringFieldEditor(
-            NeoPreferences.DEFAULT_PROPERTY_NAME, "Default node property:",
+            NeoPreferences.NODE_PROPERTY_NAMES, "Node property names:",
             getFieldEditorParent() );
         propertyNameField.setEmptyStringAllowed( true );
         addField( propertyNameField );
