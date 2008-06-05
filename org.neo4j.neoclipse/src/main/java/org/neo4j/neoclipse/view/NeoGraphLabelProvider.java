@@ -3,8 +3,12 @@
  */
 package org.neo4j.neoclipse.view;
 
+import org.eclipse.draw2d.IFigure;
 import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.zest.core.viewers.IConnectionStyleProvider;
+import org.eclipse.zest.core.widgets.ZestStyles;
 import org.neo4j.api.core.Node;
 import org.neo4j.api.core.Relationship;
 import org.neo4j.neoclipse.Activator;
@@ -15,7 +19,8 @@ import org.neo4j.neoclipse.preference.NeoPreferences;
  * Provides the labels for graph elements.
  * @author Peter H&auml;nsgen
  */
-public class NeoGraphLabelProvider extends LabelProvider
+public class NeoGraphLabelProvider extends LabelProvider implements
+    IConnectionStyleProvider
 {
     /**
      * The icon for nodes.
@@ -95,5 +100,35 @@ public class NeoGraphLabelProvider extends LabelProvider
                 + String.valueOf( ((Relationship) element).getId() );
         }
         return element.toString();
+    }
+
+    @Override
+    public Color getColor( Object rel )
+    {
+        return null;
+    }
+
+    @Override
+    public int getConnectionStyle( Object rel )
+    {
+        return ZestStyles.CONNECTIONS_DIRECTED;
+    }
+
+    @Override
+    public Color getHighlightColor( Object rel )
+    {
+        return null;
+    }
+
+    @Override
+    public int getLineWidth( Object rel )
+    {
+        return -1;
+    }
+
+    @Override
+    public IFigure getTooltip( Object entity )
+    {
+        return null;
     }
 }
