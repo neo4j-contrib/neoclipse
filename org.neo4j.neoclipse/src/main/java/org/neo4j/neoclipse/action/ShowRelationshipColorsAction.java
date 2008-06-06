@@ -1,5 +1,5 @@
 /*
- * ShowRelationshipTypesAction.java
+ * ShowRelationshipColorsAction.java
  */
 package org.neo4j.neoclipse.action;
 
@@ -7,10 +7,10 @@ import org.eclipse.jface.action.Action;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**
- * This action handles the relationship type setting.
+ * This action handles the relationship colors setting.
  * @author Anders Nawroth
  */
-public class ShowRelationshipTypesAction extends Action
+public class ShowRelationshipColorsAction extends Action
 {
     /**
      * Default state for this view menu alternative.
@@ -24,9 +24,9 @@ public class ShowRelationshipTypesAction extends Action
     /**
      * The constructor.
      */
-    public ShowRelationshipTypesAction( NeoGraphViewPart view )
+    public ShowRelationshipColorsAction( NeoGraphViewPart view )
     {
-        super( "Relationship types", Action.AS_CHECK_BOX );
+        super( "Relationship colors", Action.AS_CHECK_BOX );
         this.view = view;
     }
 
@@ -35,6 +35,6 @@ public class ShowRelationshipTypesAction extends Action
      */
     public void run()
     {
-        view.showRelationshipTypes( this.isChecked() );
+        view.showRelationshipColors( this.isChecked() );
     }
 }

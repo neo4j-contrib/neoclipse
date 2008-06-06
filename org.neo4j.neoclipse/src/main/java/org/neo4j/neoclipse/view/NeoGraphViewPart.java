@@ -31,11 +31,12 @@ import org.neo4j.neoclipse.action.DecreaseTraversalDepthAction;
 import org.neo4j.neoclipse.action.IncreaseTraversalDepthAction;
 import org.neo4j.neoclipse.action.PrintGraphAction;
 import org.neo4j.neoclipse.action.RefreshAction;
-import org.neo4j.neoclipse.action.ShowArrowsAction;
+import org.neo4j.neoclipse.action.ShowRelationshipDirectionsAction;
 import org.neo4j.neoclipse.action.ShowGridLayoutAction;
-import org.neo4j.neoclipse.action.ShowNamesAction;
+import org.neo4j.neoclipse.action.ShowNodeNamesAction;
 import org.neo4j.neoclipse.action.ShowRadialLayoutAction;
 import org.neo4j.neoclipse.action.ShowReferenceNodeAction;
+import org.neo4j.neoclipse.action.ShowRelationshipColorsAction;
 import org.neo4j.neoclipse.action.ShowRelationshipTypesAction;
 import org.neo4j.neoclipse.action.ShowSpringLayoutAction;
 import org.neo4j.neoclipse.action.ShowTreeLayoutAction;
@@ -225,22 +226,29 @@ public class NeoGraphViewPart extends ViewPart implements IZoomableWorkbenchPart
             GroupMarker labelsGroup = new GroupMarker(labelsGroupName);
             mm.add(labelsGroup);
             
-            ShowRelationshipTypesAction showRelationshipTypeAction = new ShowRelationshipTypesAction(this);
-            showRelationshipTypeAction.setText("Relationship Types");
-            showRelationshipTypeAction.setChecked(ShowRelationshipTypesAction.DEFAULT_STATE);    
-            mm.appendToGroup(labelsGroupName, showRelationshipTypeAction);
+            // relationship types actions
+            ShowRelationshipTypesAction showRelationshipTypesAction = new ShowRelationshipTypesAction(this);
+            showRelationshipTypesAction.setText("Relationship types");
+            showRelationshipTypesAction.setChecked(ShowRelationshipTypesAction.DEFAULT_STATE);    
+            mm.appendToGroup(labelsGroupName, showRelationshipTypesAction);
             
-            // arrows actions            
-            ShowArrowsAction showArrowsAction = new ShowArrowsAction(this);
-            showArrowsAction.setText("Arrows");
-            showArrowsAction.setChecked(ShowArrowsAction.DEFAULT_STATE);    
-            mm.appendToGroup(labelsGroupName, showArrowsAction);            
+            // relationship types actions
+            ShowRelationshipColorsAction showRelationshipColorsAction = new ShowRelationshipColorsAction(this);
+            showRelationshipColorsAction.setText("Relationship colors");
+            showRelationshipColorsAction.setChecked(ShowRelationshipColorsAction.DEFAULT_STATE);    
+            mm.appendToGroup(labelsGroupName, showRelationshipColorsAction);
+
+            // relationship directions actions            
+            ShowRelationshipDirectionsAction showRelationshipDirectionAction = new ShowRelationshipDirectionsAction(this);
+            showRelationshipDirectionAction.setText("Relationship directions");
+            showRelationshipDirectionAction.setChecked(ShowRelationshipDirectionsAction.DEFAULT_STATE);    
+            mm.appendToGroup(labelsGroupName, showRelationshipDirectionAction);            
         
             // names actions
-            ShowNamesAction showNamesAction = new ShowNamesAction(this);
-            showNamesAction.setText("Names");
-            showNamesAction.setChecked(ShowNamesAction.DEFAULT_STATE);    
-            mm.appendToGroup(labelsGroupName, showNamesAction);            
+            ShowNodeNamesAction showNodeNamesAction = new ShowNodeNamesAction(this);
+            showNodeNamesAction.setText("Node names");
+            showNodeNamesAction.setChecked(ShowNodeNamesAction.DEFAULT_STATE);    
+            mm.appendToGroup(labelsGroupName, showNodeNamesAction);            
         }
         
         // printing
@@ -499,6 +507,16 @@ public class NeoGraphViewPart extends ViewPart implements IZoomableWorkbenchPart
         this.refresh();
     }
     
+    /**
+     * Show relationship colors in the graph, or hide them.
+     * @param b true to show, false to hide
+     */
+    public void showRelationshipColors( boolean b )
+    {
+        labelProvider.setShowRelationshipColors( b );
+        this.refresh();
+    }
+
     /**
      * Show arrows in the graph, or hide them.
      * @param b true to show, false to hide

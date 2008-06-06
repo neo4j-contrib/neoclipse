@@ -3,6 +3,9 @@
  */
 package org.neo4j.neoclipse.view;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Color;
@@ -11,10 +14,12 @@ import org.eclipse.zest.core.viewers.IConnectionStyleProvider;
 import org.eclipse.zest.core.widgets.ZestStyles;
 import org.neo4j.api.core.Node;
 import org.neo4j.api.core.Relationship;
+import org.neo4j.api.core.RelationshipType;
 import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.NeoIcons;
-import org.neo4j.neoclipse.action.ShowArrowsAction;
-import org.neo4j.neoclipse.action.ShowNamesAction;
+import org.neo4j.neoclipse.action.ShowRelationshipDirectionsAction;
+import org.neo4j.neoclipse.action.ShowNodeNamesAction;
+import org.neo4j.neoclipse.action.ShowRelationshipColorsAction;
 import org.neo4j.neoclipse.action.ShowRelationshipTypesAction;
 import org.neo4j.neoclipse.preference.NeoPreferences;
 
@@ -38,13 +43,25 @@ public class NeoGraphLabelProvider extends LabelProvider implements
      */
     private boolean showRelationshipTypes = ShowRelationshipTypesAction.DEFAULT_STATE;
     /**
+     * Keep track of relationship colors display on/off.
+     */
+    private boolean showRelationshipColors = ShowRelationshipColorsAction.DEFAULT_STATE;
+    /**
      * Keep track of arrows display on/off.
      */
-    private boolean showArrows = ShowArrowsAction.DEFAULT_STATE;
+    private boolean showArrows = ShowRelationshipDirectionsAction.DEFAULT_STATE;
     /**
      * Keep track of node names display on/off.
      */
-    private boolean showNames = ShowNamesAction.DEFAULT_STATE;
+    private boolean showNames = ShowNodeNamesAction.DEFAULT_STATE;
+    /**
+     * Map RelationshipTypes to Colors for the graph.
+     */
+    private Map<RelationshipType,Color> colors = new HashMap<RelationshipType,Color>();
+    /**
+     * Tool that creates colors that differ as much as possible regarding hue.
+     */
+    private NeoGraphColorGenerator colorGenerator = new NeoGraphColorGenerator();
 
     /**
      * Returns the icon for an element.
@@ -86,8 +103,7 @@ public class NeoGraphLabelProvider extends LabelProvider implements
                 }
                 else
                 {
-                    return ("Node " + String
-                        .valueOf( ((Node) element).getId() ));
+                    return ("Node " + String.valueOf( ((Node) element).getId() ));
                 }
             }
             else
@@ -126,7 +142,7 @@ public class NeoGraphLabelProvider extends LabelProvider implements
             if ( showRelationshipTypes )
             {
                 return ((Relationship) element).getType().toString() + " #"
-                + String.valueOf( ((Relationship) element).getId() );
+                    + String.valueOf( ((Relationship) element).getId() );
             }
             else
             {
@@ -138,7 +154,8 @@ public class NeoGraphLabelProvider extends LabelProvider implements
 
     /**
      * Show or hide relationship types.
-     * @param showRelationshipTypes set true to display
+     * @param showRelationshipTypes
+     *            set true to display
      */
     public void setShowRelationshipTypes( boolean showRelationshipTypes )
     {
@@ -146,8 +163,19 @@ public class NeoGraphLabelProvider extends LabelProvider implements
     }
 
     /**
+     * Show or hide relationship colors.
+     * @param showRelationshipTypes
+     *            set true to display
+     */
+    public void setShowRelationshipColors( boolean showRelationshipColors )
+    {
+        this.showRelationshipColors = showRelationshipColors;
+    }
+
+    /**
      * Show or hide arrows.
-     * @param showRelationshipTypes set true to display
+     * @param showRelationshipTypes
+     *            set true to display
      */
     public void setShowArrows( boolean showArrows )
     {
@@ -156,7 +184,8 @@ public class NeoGraphLabelProvider extends LabelProvider implements
 
     /**
      * Show or hide names.
-     * @param showRelationshipTypes set true to display
+     * @param showRelationshipTypes
+     *            set true to display
      */
     public void setShowNames( boolean showNames )
     {
@@ -166,7 +195,18 @@ public class NeoGraphLabelProvider extends LabelProvider implements
     @Override
     public Color getColor( Object rel )
     {
-        return null;
+        if ( !showRelationshipColors )
+        {
+            return null;
+        }
+        RelationshipType type = ((Relationship) rel).getType();
+        Color color = colors.get( type );
+        if ( color == null )
+        {
+            color = colorGenerator.next();
+            colors.put( type, color );
+        }
+        return color;
     }
 
     @Override

@@ -1,5 +1,5 @@
 /*
- * ShowNamesAction.java
+ * ShowNodeNamesAction.java
  */
 package org.neo4j.neoclipse.action;
 
@@ -7,11 +7,11 @@ import org.eclipse.jface.action.Action;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**
- * This action handles if node names are showed or not.
+ * This action handles if node names are shown or not.
  * 
  * @author  Anders Nawroth
  */
-public class ShowNamesAction extends Action
+public class ShowNodeNamesAction extends Action
 {
     /**
      * Default state for this view menu alternative.
@@ -25,9 +25,9 @@ public class ShowNamesAction extends Action
     /**
      * The constructor.
      */
-    public ShowNamesAction(NeoGraphViewPart view)
+    public ShowNodeNamesAction(NeoGraphViewPart view)
     {
-        super("Arrows", Action.AS_CHECK_BOX);    
+        super("Node names", Action.AS_CHECK_BOX);    
         this.view = view;
     }
 
