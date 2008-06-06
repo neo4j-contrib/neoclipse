@@ -13,6 +13,9 @@ import org.neo4j.api.core.Node;
 import org.neo4j.api.core.Relationship;
 import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.NeoIcons;
+import org.neo4j.neoclipse.action.ShowArrowsAction;
+import org.neo4j.neoclipse.action.ShowNamesAction;
+import org.neo4j.neoclipse.action.ShowRelationshipTypesAction;
 import org.neo4j.neoclipse.preference.NeoPreferences;
 
 /**
@@ -30,6 +33,18 @@ public class NeoGraphLabelProvider extends LabelProvider implements
      * The icon for the root node.
      */
     private Image rootImage = NeoIcons.getImage( NeoIcons.NEO_ROOT );
+    /**
+     * Keep track of relationship types display on/off.
+     */
+    private boolean showRelationshipTypes = ShowRelationshipTypesAction.DEFAULT_STATE;
+    /**
+     * Keep track of arrows display on/off.
+     */
+    private boolean showArrows = ShowArrowsAction.DEFAULT_STATE;
+    /**
+     * Keep track of node names display on/off.
+     */
+    private boolean showNames = ShowNamesAction.DEFAULT_STATE;
 
     /**
      * Returns the icon for an element.
@@ -62,14 +77,12 @@ public class NeoGraphLabelProvider extends LabelProvider implements
             String defaultProperties = Activator.getDefault()
                 .getPreferenceStore().getString(
                     NeoPreferences.NODE_PROPERTY_NAMES ).trim();
-            if ( defaultProperties == "" )
+            if ( !showNames || defaultProperties == "" )
             {
                 // don't look for the default property
                 if ( node.getId() == 0 )
                 {
-                    // the only difference from other nodes is the text
-                    return ("Reference Node " + String
-                        .valueOf( ((Node) element).getId() ));
+                    return ("Reference Node");
                 }
                 else
                 {
@@ -98,7 +111,7 @@ public class NeoGraphLabelProvider extends LabelProvider implements
                     }
                     String tmpPropVal = (String) ((Node) element).getProperty(
                         propertyName, "" );
-                    if ( tmpPropVal != "" )
+                    if ( tmpPropVal != "" ) // no empty strings
                     {
                         propertyValue = tmpPropVal + " #";
                         break;
@@ -110,10 +123,44 @@ public class NeoGraphLabelProvider extends LabelProvider implements
         }
         else if ( element instanceof Relationship )
         {
-            return ((Relationship) element).getType().toString() + " #"
+            if ( showRelationshipTypes )
+            {
+                return ((Relationship) element).getType().toString() + " #"
                 + String.valueOf( ((Relationship) element).getId() );
+            }
+            else
+            {
+                return String.valueOf( ((Relationship) element).getId() );
+            }
         }
         return element.toString();
+    }
+
+    /**
+     * Show or hide relationship types.
+     * @param showRelationshipTypes set true to display
+     */
+    public void setShowRelationshipTypes( boolean showRelationshipTypes )
+    {
+        this.showRelationshipTypes = showRelationshipTypes;
+    }
+
+    /**
+     * Show or hide arrows.
+     * @param showRelationshipTypes set true to display
+     */
+    public void setShowArrows( boolean showArrows )
+    {
+        this.showArrows = showArrows;
+    }
+
+    /**
+     * Show or hide names.
+     * @param showRelationshipTypes set true to display
+     */
+    public void setShowNames( boolean showNames )
+    {
+        this.showNames = showNames;
     }
 
     @Override
@@ -125,9 +172,11 @@ public class NeoGraphLabelProvider extends LabelProvider implements
     @Override
     public int getConnectionStyle( Object rel )
     {
-        return ZestStyles.CONNECTIONS_DIRECTED;
-        // otherwise be provided from NeoGraphViewPart::createPartControl
-        // viewer.setConnectionStyle( ZestStyles.CONNECTIONS_DIRECTED );
+        if ( showArrows )
+        {
+            return ZestStyles.CONNECTIONS_DIRECTED;
+        }
+        return 0;
     }
 
     @Override

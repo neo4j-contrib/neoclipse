@@ -31,9 +31,12 @@ import org.neo4j.neoclipse.action.DecreaseTraversalDepthAction;
 import org.neo4j.neoclipse.action.IncreaseTraversalDepthAction;
 import org.neo4j.neoclipse.action.PrintGraphAction;
 import org.neo4j.neoclipse.action.RefreshAction;
+import org.neo4j.neoclipse.action.ShowArrowsAction;
 import org.neo4j.neoclipse.action.ShowGridLayoutAction;
+import org.neo4j.neoclipse.action.ShowNamesAction;
 import org.neo4j.neoclipse.action.ShowRadialLayoutAction;
 import org.neo4j.neoclipse.action.ShowReferenceNodeAction;
+import org.neo4j.neoclipse.action.ShowRelationshipTypesAction;
 import org.neo4j.neoclipse.action.ShowSpringLayoutAction;
 import org.neo4j.neoclipse.action.ShowTreeLayoutAction;
 import org.neo4j.neoclipse.action.ZoomAction;
@@ -66,6 +69,11 @@ public class NeoGraphViewPart extends ViewPart implements IZoomableWorkbenchPart
     protected GraphViewer viewer;
     
     /**
+     * Label provider for the graph.
+     */
+    protected NeoGraphLabelProvider labelProvider;
+    
+    /**
      * The decrease traversal depth action.
      */
     protected DecreaseTraversalDepthAction decAction;
@@ -82,7 +90,8 @@ public class NeoGraphViewPart extends ViewPart implements IZoomableWorkbenchPart
     {
         viewer = new GraphViewer(parent, SWT.NONE);
         viewer.setContentProvider(new NeoGraphContentProvider(this));
-        viewer.setLabelProvider(new NeoGraphLabelProvider());
+        labelProvider = new NeoGraphLabelProvider();
+        viewer.setLabelProvider(labelProvider);
         viewer.addDoubleClickListener(new NeoGraphDoubleClickListener());
         viewer.setLayoutAlgorithm(new SpringLayoutAlgorithm(
                 LayoutStyles.NO_LAYOUT_NODE_RESIZING));
@@ -203,6 +212,35 @@ public class NeoGraphViewPart extends ViewPart implements IZoomableWorkbenchPart
     
             tm.appendToGroup(groupName, gridLayoutAction);
             mm.appendToGroup(groupName, gridLayoutAction);
+        }
+        
+        // separator
+        {
+            mm.add( new Separator() );
+        }
+        
+        // label settings actions
+        {
+            String labelsGroupName = "labels";
+            GroupMarker labelsGroup = new GroupMarker(labelsGroupName);
+            mm.add(labelsGroup);
+            
+            ShowRelationshipTypesAction showRelationshipTypeAction = new ShowRelationshipTypesAction(this);
+            showRelationshipTypeAction.setText("Relationship Types");
+            showRelationshipTypeAction.setChecked(ShowRelationshipTypesAction.DEFAULT_STATE);    
+            mm.appendToGroup(labelsGroupName, showRelationshipTypeAction);
+            
+            // arrows actions            
+            ShowArrowsAction showArrowsAction = new ShowArrowsAction(this);
+            showArrowsAction.setText("Arrows");
+            showArrowsAction.setChecked(ShowArrowsAction.DEFAULT_STATE);    
+            mm.appendToGroup(labelsGroupName, showArrowsAction);            
+        
+            // names actions
+            ShowNamesAction showNamesAction = new ShowNamesAction(this);
+            showNamesAction.setText("Names");
+            showNamesAction.setChecked(ShowNamesAction.DEFAULT_STATE);    
+            mm.appendToGroup(labelsGroupName, showNamesAction);            
         }
         
         // printing
@@ -449,6 +487,36 @@ public class NeoGraphViewPart extends ViewPart implements IZoomableWorkbenchPart
                 txn.finish();
             }
         }
+    }
+    
+    /**
+     * Show relationship types in the graph, or hide them.
+     * @param b true to show, false to hide
+     */
+    public void showRelationshipTypes (boolean b)
+    {
+        labelProvider.setShowRelationshipTypes( b );
+        this.refresh();
+    }
+    
+    /**
+     * Show arrows in the graph, or hide them.
+     * @param b true to show, false to hide
+     */
+    public void showArrows (boolean b)
+    {
+        labelProvider.setShowArrows( b );
+        this.refresh();
+    }
+
+    /**
+     * Show node names in the graph, or hide them.
+     * @param b true to show, false to hide
+     */
+    public void showNames (boolean b)
+    {
+        labelProvider.setShowNames( b );
+        this.refresh();
     }
 
     /**
