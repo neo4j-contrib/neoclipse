@@ -16,11 +16,11 @@ public class NeoGraphColorGenerator
     /**
      * Saturation of output colors.
      */
-    private final float saturation = 0.9f;
+    private float saturation = 0.9f;
     /**
      * Brightness of output colors.
      */
-    private final float brightness = 0.8f;
+    private float brightness = 0.8f;
     /**
      * Default first color to use.
      */
@@ -57,6 +57,33 @@ public class NeoGraphColorGenerator
     }
 
     /**
+     * Construct the color generator with a specified start hue.
+     * @param hue
+     *            hue of the first color generated
+     */
+    public NeoGraphColorGenerator( float hue )
+    {
+        startHue = limitHue( hue + 180.0f );
+    }
+
+    /**
+     * Construct the color generator with a specified start hue, saturation and
+     * brightness.
+     * @param hue
+     *            hue of the first color generated
+     * @param saturation
+     *            the saturation of generated colors
+     * @param brightness
+     *            the brightness of generated colors
+     */
+    public NeoGraphColorGenerator( float hue, float saturation, float brightness )
+    {
+        this( hue );
+        this.saturation = saturation;
+        this.brightness = brightness;
+    }
+
+    /**
      * Provides a series of well distributed colors.
      * @return next color to use
      */
@@ -78,7 +105,8 @@ public class NeoGraphColorGenerator
 
     /**
      * Limit hues to 0-360.
-     * @param hue the hue to limit
+     * @param hue
+     *            the hue to limit
      * @return the limited hue
      */
     private float limitHue( float hue )

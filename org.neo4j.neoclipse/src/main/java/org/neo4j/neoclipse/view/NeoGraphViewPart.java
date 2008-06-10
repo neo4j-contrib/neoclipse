@@ -31,6 +31,8 @@ import org.neo4j.neoclipse.action.DecreaseTraversalDepthAction;
 import org.neo4j.neoclipse.action.IncreaseTraversalDepthAction;
 import org.neo4j.neoclipse.action.PrintGraphAction;
 import org.neo4j.neoclipse.action.RefreshAction;
+import org.neo4j.neoclipse.action.ShowNodeColorsAction;
+import org.neo4j.neoclipse.action.ShowNodeIconsAction;
 import org.neo4j.neoclipse.action.ShowRelationshipDirectionsAction;
 import org.neo4j.neoclipse.action.ShowGridLayoutAction;
 import org.neo4j.neoclipse.action.ShowNodeNamesAction;
@@ -244,11 +246,25 @@ public class NeoGraphViewPart extends ViewPart implements IZoomableWorkbenchPart
             showRelationshipDirectionAction.setChecked(ShowRelationshipDirectionsAction.DEFAULT_STATE);    
             mm.appendToGroup(labelsGroupName, showRelationshipDirectionAction);            
         
+            // separator
+            {
+                mm.add( new Separator() );
+            }
             // names actions
             ShowNodeNamesAction showNodeNamesAction = new ShowNodeNamesAction(this);
             showNodeNamesAction.setText("Node names");
             showNodeNamesAction.setChecked(ShowNodeNamesAction.DEFAULT_STATE);    
             mm.appendToGroup(labelsGroupName, showNodeNamesAction);            
+            // node colors actions
+            ShowNodeColorsAction showNodeColorsAction = new ShowNodeColorsAction(this);
+            showNodeColorsAction.setText("Node colors");
+            showNodeColorsAction.setChecked(ShowNodeColorsAction.DEFAULT_STATE);    
+            mm.appendToGroup(labelsGroupName, showNodeColorsAction);            
+            // node icons actions
+            ShowNodeIconsAction showNodeIconsAction = new ShowNodeIconsAction(this);
+            showNodeIconsAction.setText("Node icons");
+            showNodeIconsAction.setChecked(ShowNodeIconsAction.DEFAULT_STATE);    
+            mm.appendToGroup(labelsGroupName, showNodeIconsAction);            
         }
         
         // printing
@@ -499,41 +515,61 @@ public class NeoGraphViewPart extends ViewPart implements IZoomableWorkbenchPart
     
     /**
      * Show relationship types in the graph, or hide them.
-     * @param b true to show, false to hide
+     * @param checked true to show, false to hide
      */
-    public void showRelationshipTypes (boolean b)
+    public void showRelationshipTypes (boolean checked)
     {
-        labelProvider.setShowRelationshipTypes( b );
+        labelProvider.setShowRelationshipTypes( checked );
         this.refresh();
     }
     
     /**
      * Show relationship colors in the graph, or hide them.
-     * @param b true to show, false to hide
+     * @param checked true to show, false to hide
      */
-    public void showRelationshipColors( boolean b )
+    public void showRelationshipColors( boolean checked )
     {
-        labelProvider.setShowRelationshipColors( b );
+        labelProvider.setShowRelationshipColors( checked );
         this.refresh();
     }
 
     /**
      * Show arrows in the graph, or hide them.
-     * @param b true to show, false to hide
+     * @param checked true to show, false to hide
      */
-    public void showArrows (boolean b)
+    public void showArrows (boolean checked)
     {
-        labelProvider.setShowArrows( b );
+        labelProvider.setShowArrows( checked );
         this.refresh();
     }
 
     /**
      * Show node names in the graph, or hide them.
-     * @param b true to show, false to hide
+     * @param checked true to show, false to hide
      */
-    public void showNames (boolean b)
+    public void showNames (boolean checked)
     {
-        labelProvider.setShowNames( b );
+        labelProvider.setShowNames( checked );
+        this.refresh();
+    }
+
+    /**
+     * Show node icons in the graph, or hide them.
+     * @param checked true to show, false to hide
+     */
+    public void showNodeIcons( boolean checked )
+    {
+        labelProvider.setShowNodeIcons( checked );
+        this.refresh();
+    }
+
+    /**
+     * Show node colors in the graph, or hide them.
+     * @param checked true to show, false to hide
+     */
+    public void showNodeColors( boolean checked )
+    {
+        labelProvider.setShowNodeColors( checked );
         this.refresh();
     }
 
@@ -591,4 +627,6 @@ public class NeoGraphViewPart extends ViewPart implements IZoomableWorkbenchPart
             }
         }
     }
+
+
 }

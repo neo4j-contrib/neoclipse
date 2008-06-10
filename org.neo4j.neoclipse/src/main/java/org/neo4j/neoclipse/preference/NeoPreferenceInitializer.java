@@ -23,5 +23,7 @@ public class NeoPreferenceInitializer extends AbstractPreferenceInitializer
         
         pref.setDefault(NeoPreferences.DATABASE_LOCATION, "");
         pref.setDefault(NeoPreferences.NODE_PROPERTY_NAMES, "");
+        pref.setDefault(NeoPreferences.NODE_ICON_LOCATION, "");
+        pref.setDefault(NeoPreferences.NODE_ICON_PROPERTY_NAMES, "");
     }
 }

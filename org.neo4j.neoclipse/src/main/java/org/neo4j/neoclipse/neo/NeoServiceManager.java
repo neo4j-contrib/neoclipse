@@ -6,8 +6,8 @@ package org.neo4j.neoclipse.neo;
 import org.eclipse.core.runtime.ISafeRunnable;
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.core.runtime.SafeRunner;
-import org.eclipse.core.runtime.Preferences.IPropertyChangeListener;
-import org.eclipse.core.runtime.Preferences.PropertyChangeEvent;
+//import org.eclipse.core.runtime.Preferences.IPropertyChangeListener;
+//import org.eclipse.core.runtime.Preferences.PropertyChangeEvent;
 import org.neo4j.api.core.EmbeddedNeo;
 import org.neo4j.api.core.NeoService;
 import org.neo4j.neoclipse.Activator;
@@ -35,24 +35,7 @@ public class NeoServiceManager
      */
     public NeoServiceManager()
     {
-        listeners = new ListenerList();
-        
-        // register as listener at the neo preference page
-        Activator.getDefault().getPluginPreferences().addPropertyChangeListener(
-                new IPropertyChangeListener()
-                {
-                    /**
-                     * Handles neo property change events 
-                     */
-                    public void propertyChange(PropertyChangeEvent event)
-                    {
-                        if (NeoPreferences.DATABASE_LOCATION.equals(event.getProperty()))
-                        {
-                            // restart neo with the new location
-                            stopNeoService();
-                            startNeoService();
-                        }
-                    }});
+        listeners = new ListenerList();        
     }
     
     /**

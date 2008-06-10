@@ -18,4 +18,12 @@ public interface NeoPreferences
      * The property to view inside nodes in the graph view.
      */
     public static final String NODE_PROPERTY_NAMES = "nodePropertyNames";
+    /**
+     * The location of icons for the nodes.
+     */
+    public static final String NODE_ICON_LOCATION = "iconLocation";
+    /**
+     * The property to use for icon names.
+     */
+    public static final String NODE_ICON_PROPERTY_NAMES = "nodeIconPropertyNames";
 }

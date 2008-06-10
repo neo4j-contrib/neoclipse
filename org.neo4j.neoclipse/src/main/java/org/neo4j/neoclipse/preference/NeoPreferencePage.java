@@ -9,6 +9,7 @@ import org.eclipse.jface.preference.StringFieldEditor;
 /**
  * The page for neo preferences.
  * @author Peter H&auml;nsgen
+ * @author Anders Nawroth
  */
 public class NeoPreferencePage extends AbstractPreferencePage
 {
@@ -28,5 +29,16 @@ public class NeoPreferencePage extends AbstractPreferencePage
             getFieldEditorParent() );
         propertyNameField.setEmptyStringAllowed( true );
         addField( propertyNameField );
+        DirectoryFieldEditor iconLocationField = new DirectoryFieldEditor(
+            NeoPreferences.NODE_ICON_LOCATION, "Node Icons Location:",
+            getFieldEditorParent() );
+        iconLocationField.setEmptyStringAllowed( true );
+        iconLocationField.setErrorMessage( "The Icons Location is invalid." );
+        addField( iconLocationField );
+        StringFieldEditor iconPropertyNameField = new StringFieldEditor(
+            NeoPreferences.NODE_ICON_PROPERTY_NAMES, "Node category property names:",
+            getFieldEditorParent() );
+        iconPropertyNameField.setEmptyStringAllowed( true );
+        addField( iconPropertyNameField );
     }
 }

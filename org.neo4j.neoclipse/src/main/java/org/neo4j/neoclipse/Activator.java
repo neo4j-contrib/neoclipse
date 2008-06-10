@@ -3,8 +3,12 @@
  */
 package org.neo4j.neoclipse;
 
+import org.eclipse.core.runtime.Preferences.IPropertyChangeListener;
+import org.eclipse.core.runtime.Preferences.PropertyChangeEvent;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.neo4j.neoclipse.neo.NeoServiceManager;
+import org.neo4j.neoclipse.preference.NeoPreferences;
+import org.neo4j.neoclipse.view.NeoGraphLabelProvider;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -16,12 +20,10 @@ public class Activator extends AbstractUIPlugin
      * The plug-in ID.
      */
     public static final String PLUGIN_ID = "org.neo4j.neoclipse";
-
     /**
      * The neo manager.
      */
     protected NeoServiceManager neoManager;
-    
     /**
      * The shared instance.
      */
@@ -38,23 +40,49 @@ public class Activator extends AbstractUIPlugin
         NeoIcons.init(this);
 
         neoManager = new NeoServiceManager();
+        plugin.getPluginPreferences().addPropertyChangeListener(
+            new IPropertyChangeListener()
+            {
+                /**
+                 * Handles neo property change events 
+                 */
+                public void propertyChange(PropertyChangeEvent event)
+                {
+                    String property = event.getProperty();
+                    if (NeoPreferences.DATABASE_LOCATION.equals(property))
+                    {
+                        // restart neo with the new location
+                        neoManager.stopNeoService();
+                        neoManager.startNeoService();
+                    }
+                    else if (NeoPreferences.NODE_PROPERTY_NAMES.equals(property))
+                    {
+                        NeoGraphLabelProvider.readNodePropertyNames();
+                    }
+                    else if (NeoPreferences.NODE_ICON_LOCATION.equals(property))
+                    {
+                        NeoGraphLabelProvider.readNodeIconLocation();
+                    }
+                    else if (NeoPreferences.NODE_ICON_PROPERTY_NAMES.equals(property))
+                    {
+                        NeoGraphLabelProvider.readNodeIconPropertyNames();
+                    }
+                }});
+
     }
 
     /**
      * Stops the plug-in and shuts down the neo service.
      */
-    public void stop(BundleContext context) throws Exception
+    public void stop( BundleContext context ) throws Exception
     {
         plugin = null;
-        
         neoManager.stopNeoService();
-        
-        super.stop(context);
+        super.stop( context );
     }
-    
+
     /**
      * Returns the shared instance.
-     * 
      * @return the shared instance
      */
     public static Activator getDefault()
