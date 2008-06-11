@@ -54,6 +54,8 @@ public class Activator extends AbstractUIPlugin
                         // restart neo with the new location
                         neoManager.stopNeoService();
                         neoManager.startNeoService();
+                        // throw away old relationship colors
+                        NeoGraphLabelProvider.refreshRelationshipColors();
                     }
                     else if (NeoPreferences.NODE_PROPERTY_NAMES.equals(property))
                     {

@@ -38,6 +38,44 @@ public class NeoGraphLabelProvider extends LabelProvider implements
     IConnectionStyleProvider, IColorProvider
 {
     /**
+     * Brightness of node background colors.
+     */
+    private static final float NODE_BRIGHTNESS = 1.0f;
+    /**
+     * Saturation of node background colors.
+     */
+    private static final float NODE_SATURATION = 0.15f;
+    /**
+     * Hue of the first node background color.
+     */
+    private static final float NODE_HUE = 240.0f;
+    /**
+     * Color of node foreground/text.
+     */
+    private static final Color NODE_FOREGROUND_COLOR = new Color( Display
+        .getDefault(), new RGB( 0, 0, 0 ) );
+    /**
+     * Brightness of relationship stroke colors.
+     */
+    private static final float RELATIONSHIP_BRIGHTNESS = 0.8f;
+    /**
+     * Saturation of relationship stroke colors.
+     */
+    private static final float RELATIONSHIP_SATURATION = 0.9f;
+    /**
+     * Hue of the first relationship stroke color.
+     */
+    private static final float RELATIONSHIP_HUE = 60.0f;
+    /**
+     * Default node background color.
+     */
+    private static final Color NODE_BACKGROUND_COLOR = new Color( Display
+        .getDefault(), new RGB( 255, 255, 255 ) );
+    /**
+     * Id of the reference node.
+     */
+    private static final long REFERENCE_NODE_ID = 0L;
+    /**
      * The icon for nodes.
      */
     private Image nodeImage = NeoIcons.getImage( NeoIcons.NEO );
@@ -84,12 +122,11 @@ public class NeoGraphLabelProvider extends LabelProvider implements
     /**
      * Create colors for relationships.
      */
-    private NeoGraphColorGenerator relationshipColorGenerator = new NeoGraphColorGenerator();
+    private static NeoGraphColorGenerator relationshipColorGenerator;
     /**
      * Create colors for node.
      */
-    private static NeoGraphColorGenerator nodeColorGenerator = new NeoGraphColorGenerator(
-        160.0f, 0.15f, 1.0f );
+    private static NeoGraphColorGenerator nodeColorGenerator;
     /**
      * Location of node icons.
      */
@@ -109,6 +146,8 @@ public class NeoGraphLabelProvider extends LabelProvider implements
         readNodeIconLocation();
         readNodePropertyNames();
         readNodeIconPropertyNames();
+        // refresh relationship colors
+        refreshRelationshipColors();
     }
 
     /**
@@ -120,7 +159,7 @@ public class NeoGraphLabelProvider extends LabelProvider implements
         {
             Image img;
             Long id = ((Node) element).getId();
-            if ( id.longValue() == 0L )
+            if ( id.longValue() == REFERENCE_NODE_ID )
             {
                 img = rootImage;
             }
@@ -213,6 +252,15 @@ public class NeoGraphLabelProvider extends LabelProvider implements
     }
 
     /**
+     * Remove relationship colors, start over creating new ones.
+     */
+    public static void refreshRelationshipColors()
+    {
+        relationshipColorGenerator = new NeoGraphColorGenerator(
+            RELATIONSHIP_HUE, RELATIONSHIP_SATURATION, RELATIONSHIP_BRIGHTNESS );
+    }
+
+    /**
      * Read the location of node icons from preferences.
      */
     public static void readNodeIconLocation()
@@ -237,7 +285,8 @@ public class NeoGraphLabelProvider extends LabelProvider implements
      */
     public static void readNodeIconPropertyNames()
     {
-        nodeColorGenerator = new NeoGraphColorGenerator( 240.0f, 0.15f, 1.0f );
+        nodeColorGenerator = new NeoGraphColorGenerator( NODE_HUE,
+            NODE_SATURATION, NODE_BRIGHTNESS );
         String names = Activator.getDefault().getPreferenceStore().getString(
             NeoPreferences.NODE_ICON_PROPERTY_NAMES ).trim();
         nodeIconPropertyNames = listFromString( names );
@@ -368,7 +417,7 @@ public class NeoGraphLabelProvider extends LabelProvider implements
                     return color;
                 }
             }
-            return new Color( Display.getDefault(), new RGB( 255, 255, 255 ) );
+            return NODE_BACKGROUND_COLOR;
         }
         return null;
     }
@@ -376,7 +425,7 @@ public class NeoGraphLabelProvider extends LabelProvider implements
     @Override
     public Color getForeground( Object element )
     {
-        return new Color( Display.getDefault(), new RGB( 0, 0, 0 ) );
+        return NODE_FOREGROUND_COLOR;
     }
 
     /**
