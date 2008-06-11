@@ -2,6 +2,7 @@ package examples.createNodeSpace;
 
 import org.junit.Test;
 import org.neo4j.api.core.Node;
+import org.neo4j.api.core.Relationship;
 import org.neo4j.api.core.Transaction;
 
 import examples.NeoclipseExample;
@@ -32,7 +33,8 @@ public class CreateNodeSpace extends NeoclipseExample
             Node woff = neo.createNode();
             woff.setProperty( NAME, "woff" );
             woff.setProperty( NODE_TYPE, "animal" );
-            referenceNode.createRelationshipTo( peter, MyRels.ROOT );
+            Relationship peterRootRel = referenceNode.createRelationshipTo( peter, MyRels.ROOT );
+            peterRootRel.setProperty( "TEST_PROPERTY", "test value" );
             referenceNode.createRelationshipTo( li, MyRels.ROOT );
             li.createRelationshipTo( peter, MyRels.KNOWS );
             peter.createRelationshipTo( woff, MyRels.OWNS );
