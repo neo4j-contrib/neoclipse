@@ -1,3 +1,4 @@
+package examples.createNodeSpace;
 import org.neo4j.api.core.RelationshipType;
 
 
