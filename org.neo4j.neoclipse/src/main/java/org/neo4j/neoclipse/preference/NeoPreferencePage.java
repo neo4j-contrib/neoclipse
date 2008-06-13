@@ -25,7 +25,7 @@ public class NeoPreferencePage extends AbstractPreferencePage
         locationField.setErrorMessage( "The Neo Database Location is invalid." );
         addField( locationField );
         StringFieldEditor propertyNameField = new StringFieldEditor(
-            NeoPreferences.NODE_PROPERTY_NAMES, "Node property names:",
+            NeoPreferences.NODE_PROPERTY_NAMES, "Node Label property:",
             getFieldEditorParent() );
         propertyNameField.setEmptyStringAllowed( true );
         addField( propertyNameField );
@@ -36,7 +36,7 @@ public class NeoPreferencePage extends AbstractPreferencePage
         iconLocationField.setErrorMessage( "The Icons Location is invalid." );
         addField( iconLocationField );
         StringFieldEditor iconPropertyNameField = new StringFieldEditor(
-            NeoPreferences.NODE_ICON_PROPERTY_NAMES, "Node category property names:",
+            NeoPreferences.NODE_ICON_PROPERTY_NAMES, "Node Icon filename property:",
             getFieldEditorParent() );
         iconPropertyNameField.setEmptyStringAllowed( true );
         addField( iconPropertyNameField );
