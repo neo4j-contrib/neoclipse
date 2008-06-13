@@ -352,7 +352,7 @@ public class NeoGraphLabelProvider extends LabelProvider implements
         this.showNodeColors = state;
     }
 
-    @Override
+    
     public Color getColor( Object rel )
     {
         if ( !showRelationshipColors )
@@ -369,7 +369,6 @@ public class NeoGraphLabelProvider extends LabelProvider implements
         return color;
     }
 
-    @Override
     public int getConnectionStyle( Object rel )
     {
         if ( showArrows )
@@ -379,25 +378,21 @@ public class NeoGraphLabelProvider extends LabelProvider implements
         return 0;
     }
 
-    @Override
     public Color getHighlightColor( Object rel )
     {
         return null;
     }
 
-    @Override
     public int getLineWidth( Object rel )
     {
         return -1;
     }
 
-    @Override
     public IFigure getTooltip( Object entity )
     {
         return null;
     }
 
-    @Override
     public Color getBackground( Object element )
     {
         if ( element instanceof Node && showNodeColors )
@@ -422,7 +417,6 @@ public class NeoGraphLabelProvider extends LabelProvider implements
         return null;
     }
 
-    @Override
     public Color getForeground( Object element )
     {
         return NODE_FOREGROUND_COLOR;

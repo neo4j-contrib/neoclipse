@@ -36,7 +36,7 @@ public class Activator extends AbstractUIPlugin
     {
         super.start(context);
         plugin = this;
-        
+        System.out.println("testing");
         NeoIcons.init(this);
 
         neoManager = new NeoServiceManager();

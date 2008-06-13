@@ -49,7 +49,7 @@ public class NeoIcons
         // TODO use neo icons
         reg.put(NeoIcons.NEO, Activator.imageDescriptorFromPlugin(
                 Activator.PLUGIN_ID, "icons/obj16/neo.ico"));
-
+        System.out.println("loaded one icon.");
         reg.put(NeoIcons.NEO_ROOT, Activator.imageDescriptorFromPlugin(
                 Activator.PLUGIN_ID, "icons/obj16/neo_red.ico"));
 

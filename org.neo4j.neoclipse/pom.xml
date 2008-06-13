@@ -76,6 +76,7 @@
             <Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
             <Bundle-Activator>org.neo4j.neoclipse.Activator</Bundle-Activator>
             <Bundle-Vendor>Neo4j</Bundle-Vendor>
+            <Bundle-RequiredExecutionEnvironment>J2SE-1.5</Bundle-RequiredExecutionEnvironment>
             <Export-Package>!*</Export-Package>
             <Private-Package>org.neo4j.neoclipse.*</Private-Package>
             <Bundle-SymbolicName>${project.groupId}.${project.artifactId}.maven;singleton:=true</Bundle-SymbolicName>

@@ -13,6 +13,7 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.views.properties.IPropertySheetPage;
@@ -43,6 +44,7 @@ import org.neo4j.neoclipse.action.ShowRelationshipTypesAction;
 import org.neo4j.neoclipse.action.ShowSpringLayoutAction;
 import org.neo4j.neoclipse.action.ShowTreeLayoutAction;
 import org.neo4j.neoclipse.action.ZoomAction;
+import org.neo4j.neoclipse.help.HelpContextConstants;
 import org.neo4j.neoclipse.neo.NeoServiceEvent;
 import org.neo4j.neoclipse.neo.NeoServiceEventListener;
 import org.neo4j.neoclipse.neo.NeoServiceManager;
@@ -107,6 +109,10 @@ public class NeoGraphViewPart extends ViewPart implements IZoomableWorkbenchPart
         getSite().setSelectionProvider(viewer);
         
         showReferenceNode();
+        
+        PlatformUI.getWorkbench().getHelpSystem().setHelp(viewer.getControl(),
+        		HelpContextConstants.NEO_GRAPH_VIEW_PART);
+        		    
     }
     
     /**
