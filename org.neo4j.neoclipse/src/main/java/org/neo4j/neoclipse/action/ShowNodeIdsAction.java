@@ -1,5 +1,5 @@
 /*
- * ShowelationshipDirectionsAction.java
+ * ShowNodeIdsAction.java
  */
 package org.neo4j.neoclipse.action;
 
@@ -7,11 +7,11 @@ import org.eclipse.jface.action.Action;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**
- * This action handles the relationship directions setting.
+ * This action handles the node id setting.
  * 
  * @author  Anders Nawroth
  */
-public class ShowRelationshipDirectionsAction extends Action
+public class ShowNodeIdsAction extends Action
 {
     /**
      * Default state for this view menu alternative.
@@ -25,9 +25,9 @@ public class ShowRelationshipDirectionsAction extends Action
     /**
      * The constructor.
      */
-    public ShowRelationshipDirectionsAction(NeoGraphViewPart view)
+    public ShowNodeIdsAction(NeoGraphViewPart view)
     {
-        super("Relationship directions", Action.AS_CHECK_BOX);
+        super("Node id", Action.AS_CHECK_BOX);
         this.view = view;
     }
 
@@ -36,6 +36,6 @@ public class ShowRelationshipDirectionsAction extends Action
      */
     public void run()
     {
-        view.showArrows( this.isChecked() );
+        view.showNodeIds( this.isChecked() );
     }
 }

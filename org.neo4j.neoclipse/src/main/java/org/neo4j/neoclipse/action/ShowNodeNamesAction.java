@@ -7,7 +7,7 @@ import org.eclipse.jface.action.Action;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**
- * This action handles if node names are shown or not.
+ * This action handles the node names setting.
  * 
  * @author  Anders Nawroth
  */

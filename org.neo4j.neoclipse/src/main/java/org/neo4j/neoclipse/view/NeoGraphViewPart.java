@@ -34,12 +34,14 @@ import org.neo4j.neoclipse.action.PrintGraphAction;
 import org.neo4j.neoclipse.action.RefreshAction;
 import org.neo4j.neoclipse.action.ShowNodeColorsAction;
 import org.neo4j.neoclipse.action.ShowNodeIconsAction;
+import org.neo4j.neoclipse.action.ShowNodeIdsAction;
 import org.neo4j.neoclipse.action.ShowRelationshipDirectionsAction;
 import org.neo4j.neoclipse.action.ShowGridLayoutAction;
 import org.neo4j.neoclipse.action.ShowNodeNamesAction;
 import org.neo4j.neoclipse.action.ShowRadialLayoutAction;
 import org.neo4j.neoclipse.action.ShowReferenceNodeAction;
 import org.neo4j.neoclipse.action.ShowRelationshipColorsAction;
+import org.neo4j.neoclipse.action.ShowRelationshipIdsAction;
 import org.neo4j.neoclipse.action.ShowRelationshipTypesAction;
 import org.neo4j.neoclipse.action.ShowSpringLayoutAction;
 import org.neo4j.neoclipse.action.ShowTreeLayoutAction;
@@ -240,6 +242,12 @@ public class NeoGraphViewPart extends ViewPart implements IZoomableWorkbenchPart
             showRelationshipTypesAction.setChecked(ShowRelationshipTypesAction.DEFAULT_STATE);    
             mm.appendToGroup(labelsGroupName, showRelationshipTypesAction);
             
+            // relationship id's actions
+            ShowRelationshipIdsAction showRelationshipIdsAction = new ShowRelationshipIdsAction(this);
+            showRelationshipIdsAction.setText("Relationship id");
+            showRelationshipIdsAction.setChecked(ShowRelationshipIdsAction.DEFAULT_STATE);    
+            mm.appendToGroup(labelsGroupName, showRelationshipIdsAction);
+
             // relationship types actions
             ShowRelationshipColorsAction showRelationshipColorsAction = new ShowRelationshipColorsAction(this);
             showRelationshipColorsAction.setText("Relationship colors");
@@ -261,6 +269,11 @@ public class NeoGraphViewPart extends ViewPart implements IZoomableWorkbenchPart
             showNodeNamesAction.setText("Node names");
             showNodeNamesAction.setChecked(ShowNodeNamesAction.DEFAULT_STATE);    
             mm.appendToGroup(labelsGroupName, showNodeNamesAction);            
+            // relationship id's actions
+            ShowNodeIdsAction showNodeIdsAction = new ShowNodeIdsAction(this);
+            showNodeIdsAction.setText("Node id");
+            showNodeIdsAction.setChecked(ShowNodeIdsAction.DEFAULT_STATE);    
+            mm.appendToGroup(labelsGroupName, showNodeIdsAction);
             // node colors actions
             ShowNodeColorsAction showNodeColorsAction = new ShowNodeColorsAction(this);
             showNodeColorsAction.setText("Node colors");
@@ -530,6 +543,16 @@ public class NeoGraphViewPart extends ViewPart implements IZoomableWorkbenchPart
     }
     
     /**
+     * Show relationship id in the graph, or hide them.
+     * @param checked true to show, false to hide
+     */
+    public void showRelationshipIds( boolean checked )
+    {
+        labelProvider.setShowRelationshipIds( checked );
+        this.refresh();
+    }
+    
+    /**
      * Show relationship colors in the graph, or hide them.
      * @param checked true to show, false to hide
      */
@@ -556,6 +579,16 @@ public class NeoGraphViewPart extends ViewPart implements IZoomableWorkbenchPart
     public void showNames (boolean checked)
     {
         labelProvider.setShowNames( checked );
+        this.refresh();
+    }
+
+    /**
+     * Show node id in the graph, or hide them.
+     * @param checked true to show, false to hide
+     */
+    public void showNodeIds( boolean checked )
+    {
+        labelProvider.setShowNodeIds( checked );
         this.refresh();
     }
 
@@ -633,6 +666,4 @@ public class NeoGraphViewPart extends ViewPart implements IZoomableWorkbenchPart
             }
         }
     }
-
-
 }

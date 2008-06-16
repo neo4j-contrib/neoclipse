@@ -23,9 +23,11 @@ import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.NeoIcons;
 import org.neo4j.neoclipse.action.ShowNodeColorsAction;
 import org.neo4j.neoclipse.action.ShowNodeIconsAction;
+import org.neo4j.neoclipse.action.ShowNodeIdsAction;
 import org.neo4j.neoclipse.action.ShowRelationshipDirectionsAction;
 import org.neo4j.neoclipse.action.ShowNodeNamesAction;
 import org.neo4j.neoclipse.action.ShowRelationshipColorsAction;
+import org.neo4j.neoclipse.action.ShowRelationshipIdsAction;
 import org.neo4j.neoclipse.action.ShowRelationshipTypesAction;
 import org.neo4j.neoclipse.preference.NeoPreferences;
 
@@ -92,6 +94,10 @@ public class NeoGraphLabelProvider extends LabelProvider implements
      */
     private boolean showRelationshipTypes = ShowRelationshipTypesAction.DEFAULT_STATE;
     /**
+     * Keep track of relationship id's display on/off.
+     */
+    private boolean showRelationshipIds = ShowRelationshipIdsAction.DEFAULT_STATE;
+    /**
      * Keep track of relationship colors display on/off.
      */
     private boolean showRelationshipColors = ShowRelationshipColorsAction.DEFAULT_STATE;
@@ -99,6 +105,10 @@ public class NeoGraphLabelProvider extends LabelProvider implements
      * Keep track of arrows display on/off.
      */
     private boolean showArrows = ShowRelationshipDirectionsAction.DEFAULT_STATE;
+    /**
+     * Keep track of node id's display on/off.
+     */
+    private boolean showNodeIds = ShowNodeIdsAction.DEFAULT_STATE;
     /**
      * Keep track of node names display on/off.
      */
@@ -195,6 +205,7 @@ public class NeoGraphLabelProvider extends LabelProvider implements
      */
     public String getText( Object element )
     {
+        String text = "";
         if ( element instanceof Node )
         {
             Node node = (Node) element;
@@ -203,11 +214,11 @@ public class NeoGraphLabelProvider extends LabelProvider implements
                 // don't look for the default property
                 if ( node.getId() == 0 )
                 {
-                    return ("Reference Node");
+                    text += "Reference Node";
                 }
                 else
                 {
-                    return ("Node " + String.valueOf( ((Node) element).getId() ));
+                    text += "Node" + String.valueOf( ((Node) element).getId() );
                 }
             }
             else
@@ -216,11 +227,11 @@ public class NeoGraphLabelProvider extends LabelProvider implements
                 String propertyValue;
                 if ( node.getId() == 0 )
                 {
-                    propertyValue = "Reference Node ";
+                    propertyValue = "Reference Node";
                 }
                 else
                 {
-                    propertyValue = "Node ";
+                    propertyValue = "Node";
                 }
                 for ( String propertyName : nodePropertyNames )
                 {
@@ -228,25 +239,29 @@ public class NeoGraphLabelProvider extends LabelProvider implements
                         propertyName, "" );
                     if ( tmpPropVal != "" ) // no empty strings
                     {
-                        propertyValue = tmpPropVal + " #";
+                        propertyValue = tmpPropVal;
                         break;
                     }
                 }
-                return propertyValue
-                    + String.valueOf( ((Node) element).getId() );
+                text +=  propertyValue;
             }
+            if (showNodeIds)
+            {
+                text += " " + String.valueOf( ((Node) element).getId() );
+            }
+            return text;
         }
         else if ( element instanceof Relationship )
         {
             if ( showRelationshipTypes )
             {
-                return ((Relationship) element).getType().toString() + " #"
-                    + String.valueOf( ((Relationship) element).getId() );
+                text += ((Relationship) element).getType().toString();
             }
-            else
+            if ( showRelationshipIds )
             {
-                return String.valueOf( ((Relationship) element).getId() );
+                text += " " + String.valueOf( ((Relationship) element).getId() );
             }
+            return text;
         }
         return element.toString();
     }
@@ -303,6 +318,16 @@ public class NeoGraphLabelProvider extends LabelProvider implements
     }
 
     /**
+     * Show or hide relationship id's.
+     * @param state
+     *            set true to display
+     */
+    public void setShowRelationshipIds( boolean state )
+    {
+        this.showRelationshipIds = state;
+    }
+
+    /**
      * Show or hide relationship colors.
      * @param state
      *            set true to display
@@ -320,6 +345,16 @@ public class NeoGraphLabelProvider extends LabelProvider implements
     public void setShowArrows( boolean state )
     {
         this.showArrows = state;
+    }
+
+    /**
+     * Show or hide node id's.
+     * @param state
+     *            set true to display
+     */
+    public void setShowNodeIds( boolean state )
+    {
+        this.showNodeIds = state;
     }
 
     /**
@@ -352,7 +387,6 @@ public class NeoGraphLabelProvider extends LabelProvider implements
         this.showNodeColors = state;
     }
 
-    
     public Color getColor( Object rel )
     {
         if ( !showRelationshipColors )
