@@ -15,7 +15,7 @@ public class CreateNodeSpace extends NeoclipseExample
     @Test
     public void testCreateSimpleNodeSpace()
     {
-        Transaction transaction = Transaction.begin();
+        Transaction tx = Transaction.begin();
         try
         {
             Node referenceNode = neo.getReferenceNode();
@@ -39,11 +39,11 @@ public class CreateNodeSpace extends NeoclipseExample
             li.createRelationshipTo( peter, MyRels.KNOWS );
             peter.createRelationshipTo( woff, MyRels.OWNS );
             li.createRelationshipTo( blaff, MyRels.OWNS );
-            transaction.success();
+            tx.success();
         }
         finally
         {
-            transaction.finish();
+            tx.finish();
         }
     }
 }

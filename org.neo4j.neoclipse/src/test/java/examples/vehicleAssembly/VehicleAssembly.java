@@ -23,7 +23,7 @@ public class VehicleAssembly extends NeoclipseExample
     @Test
     public void createTrike()
     {
-        Transaction transaction = Transaction.begin();
+        Transaction tx = Transaction.begin();
         try
         {
             Node referenceNode = neo.getReferenceNode();
@@ -82,18 +82,18 @@ public class VehicleAssembly extends NeoclipseExample
             pedal.setProperty( COST, 1 );
             frame.createRelationshipTo( pedal, VehicleRels.CONTAINS )
                 .setProperty( QUANTITY, 1 );
-            transaction.success();
+            tx.success();
         }
         finally
         {
-            transaction.finish();
+            tx.finish();
         }
     }
 
     @Test
     public void showParts()
     {
-        Transaction transaction = Transaction.begin();
+        Transaction tx = Transaction.begin();
         try
         {
             for ( Relationship vehicles : neo.getReferenceNode()
@@ -122,18 +122,18 @@ public class VehicleAssembly extends NeoclipseExample
                     System.out.println();
                 }
             }
-            transaction.success();
+            tx.success();
         }
         finally
         {
-            transaction.finish();
+            tx.finish();
         }
     }
 
     @Test
     public void productCosts()
     {
-        Transaction transaction = Transaction.begin();
+        Transaction tx = Transaction.begin();
         try
         {
             for ( Relationship vehicles : neo.getReferenceNode()
@@ -143,11 +143,11 @@ public class VehicleAssembly extends NeoclipseExample
                 System.out.println( vehicle.getProperty( NAME ) + ": "
                     + getCost( vehicle ) );
             }
-            transaction.success();
+            tx.success();
         }
         finally
         {
-            transaction.finish();
+            tx.finish();
         }
     }
 
