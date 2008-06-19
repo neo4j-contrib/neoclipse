@@ -7,6 +7,10 @@ import org.junit.BeforeClass;
 import org.neo4j.api.core.EmbeddedNeo;
 import org.neo4j.api.core.NeoService;
 
+/**
+ * Utility to set up a Neo4j instance for test cases.
+ * @author Anders Nawroth
+ */
 public abstract class NeoclipseExample
 {
     private static String STORE_LOCATION_DIR = "target"

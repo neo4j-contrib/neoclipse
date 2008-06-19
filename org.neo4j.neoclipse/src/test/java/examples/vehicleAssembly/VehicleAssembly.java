@@ -11,6 +11,11 @@ import org.neo4j.api.core.Traverser;
 
 import examples.NeoclipseExample;
 
+/**
+ * Example for parts inventory and assembly. From Database Management Systems,
+ * Raghu Ramakrishnan / Johannes Gehrke, page 799 ff.
+ * @author Anders Nawroth
+ */
 public class VehicleAssembly extends NeoclipseExample
 {
     private static final String NT_REFERENCE = "referenceNode";
