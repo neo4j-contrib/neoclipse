@@ -57,6 +57,11 @@ public class NeoGraphLabelProvider extends LabelProvider implements
     private static final Color NODE_FOREGROUND_COLOR = new Color( Display
         .getDefault(), new RGB( 0, 0, 0 ) );
     /**
+     * Default relationship "color" (gray).
+     */
+    private static final Color RELATIONSHIP_COLOR = new Color( Display
+        .getDefault(), new RGB( 85, 85, 85 ) );
+    /**
      * Brightness of relationship stroke colors.
      */
     private static final float RELATIONSHIP_BRIGHTNESS = 0.8f;
@@ -391,7 +396,7 @@ public class NeoGraphLabelProvider extends LabelProvider implements
     {
         if ( !showRelationshipColors )
         {
-            return null;
+            return RELATIONSHIP_COLOR;
         }
         RelationshipType type = ((Relationship) rel).getType();
         Color color = relationshipColors.get( type );
