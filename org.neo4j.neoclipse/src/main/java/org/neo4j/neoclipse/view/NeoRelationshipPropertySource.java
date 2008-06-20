@@ -13,17 +13,14 @@ import org.neo4j.api.core.Transaction;
 
 /**
  * Resolves the properties for a Neo relationship.
- * 
- * @author	Peter H&auml;nsgen
+ * @author Peter H&auml;nsgen
  */
 public class NeoRelationshipPropertySource implements IPropertySource
 {
-    private static final String RELATIONSHIP_CATEGORY   = "Relationship";
-    private static final String PROPERTIES_CATEGORY     = "Properties";
-    
-    private static final String RELATIONSHIP_ID         = "Id";
-    private static final String RELATIONSHIP_TYPE       = "Type";
-    
+    private static final String RELATIONSHIP_CATEGORY = "Relationship";
+    private static final String PROPERTIES_CATEGORY = "Properties";
+    private static final String RELATIONSHIP_ID = "Id";
+    private static final String RELATIONSHIP_TYPE = "Type";
     /**
      * The relationship.
      */
@@ -32,7 +29,7 @@ public class NeoRelationshipPropertySource implements IPropertySource
     /**
      * The constructor.
      */
-    public NeoRelationshipPropertySource(Relationship rs)
+    public NeoRelationshipPropertySource( Relationship rs )
     {
         this.rs = rs;
     }
@@ -48,23 +45,22 @@ public class NeoRelationshipPropertySource implements IPropertySource
     public IPropertyDescriptor[] getPropertyDescriptors()
     {
         Transaction txn = Transaction.begin();
-
         try
         {
             List<IPropertyDescriptor> descs = new ArrayList<IPropertyDescriptor>();
-
             // standard properties for relationships
-            descs.add(new NeoPropertyDescriptor(RELATIONSHIP_ID, RELATIONSHIP_ID, RELATIONSHIP_CATEGORY));
-            descs.add(new NeoPropertyDescriptor(RELATIONSHIP_TYPE, RELATIONSHIP_TYPE, RELATIONSHIP_CATEGORY));
-            
+            descs.add( new NeoPropertyDescriptor( RELATIONSHIP_ID,
+                RELATIONSHIP_ID, RELATIONSHIP_CATEGORY ) );
+            descs.add( new NeoPropertyDescriptor( RELATIONSHIP_TYPE,
+                RELATIONSHIP_TYPE, RELATIONSHIP_CATEGORY ) );
             // custom properties for relationships
             Iterable<String> keys = rs.getPropertyKeys();
-            for (String key : keys)
+            for ( String key : keys )
             {
-                descs.add(new NeoPropertyDescriptor(key, key, PROPERTIES_CATEGORY));
+                descs.add( new NeoPropertyDescriptor( key, key,
+                    PROPERTIES_CATEGORY, true ) );
             }
-
-            return descs.toArray(new IPropertyDescriptor[descs.size()]);
+            return descs.toArray( new IPropertyDescriptor[descs.size()] );
         }
         finally
         {
@@ -75,23 +71,22 @@ public class NeoRelationshipPropertySource implements IPropertySource
     /**
      * Returns the value of the given property.
      */
-    public Object getPropertyValue(Object id)
+    public Object getPropertyValue( Object id )
     {
         Transaction txn = Transaction.begin();
-
         try
         {
-            if (id == RELATIONSHIP_ID)
+            if ( id == RELATIONSHIP_ID )
             {
-                return String.valueOf(rs.getId());
+                return String.valueOf( rs.getId() );
             }
-            else if (id == RELATIONSHIP_TYPE)
+            else if ( id == RELATIONSHIP_TYPE )
             {
-                return String.valueOf(rs.getType().name());
+                return String.valueOf( rs.getType().name() );
             }
             else
             {
-                return rs.getProperty((String) id);
+                return String.valueOf( rs.getProperty( (String) id ) );
             }
         }
         finally
@@ -103,23 +98,22 @@ public class NeoRelationshipPropertySource implements IPropertySource
     /**
      * Checks if the property is set.
      */
-    public boolean isPropertySet(Object id)
+    public boolean isPropertySet( Object id )
     {
         Transaction txn = Transaction.begin();
-
         try
         {
-            if (id == RELATIONSHIP_ID)
+            if ( id == RELATIONSHIP_ID )
             {
                 return true;
             }
-            else if (id == RELATIONSHIP_TYPE)
+            else if ( id == RELATIONSHIP_TYPE )
             {
                 return true;
             }
             else
             {
-                return rs.hasProperty((String) id);
+                return rs.hasProperty( (String) id );
             }
         }
         finally
@@ -131,14 +125,81 @@ public class NeoRelationshipPropertySource implements IPropertySource
     /**
      * Does nothing.
      */
-    public void resetPropertyValue(Object id)
+    public void resetPropertyValue( Object id )
     {
     }
 
     /**
-     * Does nothing.
+     * Sets value.
      */
-    public void setPropertyValue(Object id, Object value)
+    public void setPropertyValue( Object id, Object value )
     {
+        Transaction tx = Transaction.begin();
+        try
+        {
+            if ( rs.hasProperty( (String) id ) )
+            {
+                // try to keep the same type as the previous value
+                Class<?> c = rs.getProperty( (String) id ).getClass();
+                if ( c.equals( Integer.class ) )
+                {
+                    rs.setProperty( (String) id, Integer
+                        .parseInt( (String) value ) );
+                }
+                else if ( c.equals( Double.class ) )
+                {
+                    rs.setProperty( (String) id, Double
+                        .parseDouble( (String) value ) );
+                }
+                else if ( c.equals( Float.class ) )
+                {
+                    rs.setProperty( (String) id, Float
+                        .parseFloat( (String) value ) );
+                }
+                else if ( c.equals( Boolean.class ) )
+                {
+                    rs.setProperty( (String) id, Boolean
+                        .parseBoolean( (String) value ) );
+                }
+                else if ( c.equals( Byte.class ) )
+                {
+                    rs.setProperty( (String) id, Byte
+                        .parseByte( (String) value ) );
+                }
+                else if ( c.equals( Short.class ) )
+                {
+                    rs.setProperty( (String) id, Short
+                        .parseShort( (String) value ) );
+                }
+                else if ( c.equals( Long.class ) )
+                {
+                    rs.setProperty( (String) id, Long
+                        .parseLong( (String) value ) );
+                }
+                else if ( c.equals( Character.class ) )
+                {
+                    String s = (String) value;
+                    if ( s.length() > 0 )
+                    {
+                        rs.setProperty( (String) id, ((String) value)
+                            .charAt( 0 ) );
+                    }
+                    // else we can't set the char property, or? TODO?
+                }
+                else
+                {
+                    rs.setProperty( (String) id, value );
+                }
+            }
+            else
+            {
+                rs.setProperty( (String) id, value );
+            }
+            tx.success();
+        }
+        finally
+        {
+            tx.finish();
+        }
     }
 }
