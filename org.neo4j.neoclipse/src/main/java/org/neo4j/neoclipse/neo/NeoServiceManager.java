@@ -6,8 +6,6 @@ package org.neo4j.neoclipse.neo;
 import org.eclipse.core.runtime.ISafeRunnable;
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.core.runtime.SafeRunner;
-//import org.eclipse.core.runtime.Preferences.IPropertyChangeListener;
-//import org.eclipse.core.runtime.Preferences.PropertyChangeEvent;
 import org.neo4j.api.core.EmbeddedNeo;
 import org.neo4j.api.core.NeoService;
 import org.neo4j.neoclipse.Activator;
@@ -15,129 +13,128 @@ import org.neo4j.neoclipse.preference.NeoPreferences;
 
 /**
  * This manager controls the neo service.
- * 
- * @author	Peter H&auml;nsgen
+ * @author Peter H&auml;nsgen
  */
-public class NeoServiceManager 
+public class NeoServiceManager
 {
     /**
      * The service instance.
      */
     protected NeoService neo;
-    
     /**
      * The registered service change listeners.
      */
     protected ListenerList listeners;
-    
+
     /**
      * The constructor.
      */
     public NeoServiceManager()
     {
-        listeners = new ListenerList();        
+        listeners = new ListenerList();
     }
-    
+
     /**
      * Starts the neo service.
      */
     public void startNeoService()
     {
-        if (neo == null)
+        if ( neo == null )
         {
             // determine the neo directory from the preferences
-            String location = Activator.getDefault().getPreferenceStore().getString(
-                    NeoPreferences.DATABASE_LOCATION);
-            
-            if ((location != null) && (location.trim().length() > 0))
+            String location = Activator.getDefault().getPreferenceStore()
+                .getString( NeoPreferences.DATABASE_LOCATION );
+            if ( (location != null) && (location.trim().length() > 0) )
             {
                 // seems to be a valid directory
-                neo = new EmbeddedNeo(location);
-                
+                try
+                {
+                    neo = new EmbeddedNeo( location );
+                }
+                catch ( Exception e )
+                {
+                    e.printStackTrace(); // TODO real solution on exceptions
+                    System.exit( 1 );
+                }
                 // notify listeners
-                fireServiceChangedEvent(NeoServiceStatus.STARTED);
-            }    
+                fireServiceChangedEvent( NeoServiceStatus.STARTED );
+            }
         }
     }
-    
+
     /**
      * Returns the neo service or null, if it could not be started (due to
      * configuration problems).
      */
     public NeoService getNeoService()
     {
-        if (neo == null)
+        if ( neo == null )
         {
             startNeoService();
         }
-        
-        return neo;    
+        return neo;
     }
-    
+
     /**
      * Stops the neo service.
      */
     public void stopNeoService()
     {
-        if (neo != null)
+        if ( neo != null )
         {
             try
             {
                 neo.shutdown();
-                
                 // notify listeners
-                fireServiceChangedEvent(NeoServiceStatus.STOPPED);
+                fireServiceChangedEvent( NeoServiceStatus.STOPPED );
             }
             finally
             {
                 neo = null;
             }
-        }        
+        }
     }
-    
+
     /**
      * Registers a service listener.
      */
-    public void addServiceEventListener(NeoServiceEventListener listener)
+    public void addServiceEventListener( NeoServiceEventListener listener )
     {
-        listeners.add(listener);
+        listeners.add( listener );
     }
-    
+
     /**
      * Unregisters a service listener.
      */
-    public void removeServiceEventListener(NeoServiceEventListener listener)
+    public void removeServiceEventListener( NeoServiceEventListener listener )
     {
-        listeners.remove(listener);        
+        listeners.remove( listener );
     }
-    
+
     /**
      * Notifies all registered listeners about the new service status.
      */
-    protected void fireServiceChangedEvent(NeoServiceStatus status)
+    protected void fireServiceChangedEvent( NeoServiceStatus status )
     {
         Object[] changeListeners = listeners.getListeners();
-        
-        if (changeListeners.length > 0)
+        if ( changeListeners.length > 0 )
         {
-            final NeoServiceEvent e = new NeoServiceEvent(this, status);
-            
-            for (int i = 0; i < changeListeners.length; i++)
+            final NeoServiceEvent e = new NeoServiceEvent( this, status );
+            for ( int i = 0; i < changeListeners.length; i++ )
             {
                 final NeoServiceEventListener l = (NeoServiceEventListener) changeListeners[i];
-                
                 ISafeRunnable job = new ISafeRunnable()
                 {
-                    public void handleException(Throwable exception)
+                    public void handleException( Throwable exception )
                     {
                     }
-    
+
                     public void run() throws Exception
                     {
-                        l.serviceChanged(e);
+                        l.serviceChanged( e );
                     }
                 };
-                SafeRunner.run(job);
+                SafeRunner.run( job );
             }
         }
     }
