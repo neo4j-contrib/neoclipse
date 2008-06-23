@@ -11,7 +11,7 @@ public class CreateNodeSpace extends NeoclipseExample
 {
     private static final String NAME = "NAME";
     private static final String NODE_TYPE = "NODE_TYPE";
-    
+
     @Test
     public void testCreateSimpleNodeSpace()
     {
@@ -24,6 +24,8 @@ public class CreateNodeSpace extends NeoclipseExample
             Node peter = neo.createNode();
             peter.setProperty( NAME, "Peter" );
             peter.setProperty( NODE_TYPE, "human" );
+            peter.setProperty( "int-test", 7 );
+            peter.setProperty( "a-int-test", new int[] { 1, 2, 3 } );
             Node li = neo.createNode();
             li.setProperty( NAME, "Li" );
             li.setProperty( NODE_TYPE, "human" );
@@ -33,7 +35,8 @@ public class CreateNodeSpace extends NeoclipseExample
             Node woff = neo.createNode();
             woff.setProperty( NAME, "woff" );
             woff.setProperty( NODE_TYPE, "animal" );
-            Relationship peterRootRel = referenceNode.createRelationshipTo( peter, MyRels.ROOT );
+            Relationship peterRootRel = referenceNode.createRelationshipTo(
+                peter, MyRels.ROOT );
             peterRootRel.setProperty( "TEST_PROPERTY", "test value" );
             referenceNode.createRelationshipTo( li, MyRels.ROOT );
             li.createRelationshipTo( peter, MyRels.KNOWS );

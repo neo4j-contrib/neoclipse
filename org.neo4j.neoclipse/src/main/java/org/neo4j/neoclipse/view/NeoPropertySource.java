@@ -1,13 +1,17 @@
 package org.neo4j.neoclipse.view;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.neo4j.api.core.PropertyContainer;
 import org.neo4j.api.core.Transaction;
 
+@SuppressWarnings( "serial" )
 public class NeoPropertySource implements IPropertySource
 {
     protected static final String PROPERTIES_CATEGORY = "Properties";
@@ -15,6 +19,78 @@ public class NeoPropertySource implements IPropertySource
      * The container of the properties (either Relationship or Node).
      */
     protected PropertyContainer container;
+
+    protected interface Transformer
+    {
+        Object transform( Object o );
+    }
+
+    protected static final Map<Class<?>,Transformer> parserMap = new HashMap<Class<?>,Transformer>()
+    {
+        {
+            put( Integer.class, new Transformer()
+            {
+                public Object transform( Object o )
+                {
+                    return Integer.parseInt( (String) o );
+                }
+            } );
+            put( Double.class, new Transformer()
+            {
+                public Object transform( Object o )
+                {
+                    return Double.parseDouble( (String) o );
+                }
+            } );
+            put( Float.class, new Transformer()
+            {
+                public Object transform( Object o )
+                {
+                    return Float.parseFloat( (String) o );
+                }
+            } );
+            put( Boolean.class, new Transformer()
+            {
+                public Object transform( Object o )
+                {
+                    return Boolean.parseBoolean( (String) o );
+                }
+            } );
+            put( Byte.class, new Transformer()
+            {
+                public Object transform( Object o )
+                {
+                    return Byte.parseByte( (String) o );
+                }
+            } );
+            put( Short.class, new Transformer()
+            {
+                public Object transform( Object o )
+                {
+                    return Short.parseShort( (String) o );
+                }
+            } );
+            put( Long.class, new Transformer()
+            {
+                public Object transform( Object o )
+                {
+                    return Long.parseLong( (String) o );
+                }
+            } );
+            put( Character.class, new Transformer()
+            {
+                public Object transform( Object o )
+                {
+                    String s = (String) o;
+                    if ( s.length() > 0 )
+                    {
+                        return ((String) o).charAt( 0 );
+                    }
+                    return null;
+                }
+            } );
+        }
+    };
 
     /**
      * The constructor.
@@ -82,7 +158,19 @@ public class NeoPropertySource implements IPropertySource
      */
     protected Object getValue( Object id )
     {
-        return String.valueOf( container.getProperty( (String) id ) );
+        Object value = container.getProperty( (String) id );
+        if ( value.getClass().isArray() )
+        {
+            if ( value instanceof int[] )
+            {
+                return Arrays.toString( (int[]) value );
+            }
+            return value.getClass().getComponentType();
+        }
+        else
+        {
+            return String.valueOf( value );
+        }
     }
 
     /**
@@ -131,54 +219,14 @@ public class NeoPropertySource implements IPropertySource
             {
                 // try to keep the same type as the previous value
                 Class<?> c = container.getProperty( (String) id ).getClass();
-                if ( c.equals( Integer.class ) )
+                Transformer transformer = parserMap.get( c );
+                if ( transformer != null )
                 {
-                    container.setProperty( (String) id, Integer
-                        .parseInt( (String) value ) );
-                }
-                else if ( c.equals( Double.class ) )
-                {
-                    container.setProperty( (String) id, Double
-                        .parseDouble( (String) value ) );
-                }
-                else if ( c.equals( Float.class ) )
-                {
-                    container.setProperty( (String) id, Float
-                        .parseFloat( (String) value ) );
-                }
-                else if ( c.equals( Boolean.class ) )
-                {
-                    container.setProperty( (String) id, Boolean
-                        .parseBoolean( (String) value ) );
-                }
-                else if ( c.equals( Byte.class ) )
-                {
-                    container.setProperty( (String) id, Byte
-                        .parseByte( (String) value ) );
-                }
-                else if ( c.equals( Short.class ) )
-                {
-                    container.setProperty( (String) id, Short
-                        .parseShort( (String) value ) );
-                }
-                else if ( c.equals( Long.class ) )
-                {
-                    container.setProperty( (String) id, Long
-                        .parseLong( (String) value ) );
-                }
-                else if ( c.equals( Character.class ) )
-                {
-                    String s = (String) value;
-                    if ( s.length() > 0 )
+                    Object o = transformer.transform( value );
+                    if ( o != null )
                     {
-                        container.setProperty( (String) id, ((String) value)
-                            .charAt( 0 ) );
+                        container.setProperty( (String) id, o );
                     }
-                    // else we can't set the char property, or? TODO?
-                }
-                else
-                {
-                    container.setProperty( (String) id, value );
                 }
             }
             else
