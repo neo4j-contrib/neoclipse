@@ -14,7 +14,7 @@
     <dependency>
          <groupId>org.neo4j</groupId>
          <artifactId>neo</artifactId>
-         <version>1.0-b6</version>
+         <version>1.0-b7-SNAPSHOT</version>
       </dependency>
     <dependency>
          <groupId>org.neo4j</groupId>

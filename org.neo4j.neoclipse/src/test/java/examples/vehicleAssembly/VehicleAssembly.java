@@ -13,7 +13,7 @@ import examples.NeoclipseExample;
 
 /**
  * Example for parts inventory and assembly. From Database Management Systems,
- * Raghu Ramakrishnan / Johannes Gehrke, page 799 ff.
+ * 2nd edition, Raghu Ramakrishnan / Johannes Gehrke, page 799 ff.
  * @author Anders Nawroth
  */
 public class VehicleAssembly extends NeoclipseExample

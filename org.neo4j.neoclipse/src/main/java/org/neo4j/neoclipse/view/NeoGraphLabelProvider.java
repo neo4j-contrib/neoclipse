@@ -260,7 +260,7 @@ public class NeoGraphLabelProvider extends LabelProvider implements
         {
             if ( showRelationshipTypes )
             {
-                text += ((Relationship) element).getType().toString();
+                text += ((Relationship) element).getType().name();
             }
             if ( showRelationshipIds )
             {

@@ -31,7 +31,14 @@ public abstract class NeoclipseExample
     @AfterClass
     public static void stopNeo()
     {
-        neo.shutdown();
+        try
+        {
+            neo.shutdown();
+        }
+        catch ( Exception e )
+        {
+            e.printStackTrace();
+        }
     }
 
     private static boolean deleteDir( File directory )
