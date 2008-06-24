@@ -7,12 +7,14 @@ Bundle-Activator: org.neo4j.neoclipse.Activator
 Bundle-Vendor: org.neo4j
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: lib/jta-spec1_0_1.jar,
- lib/neo-1.0-b7.jar,
- .
+ .,
+ lib/neo-1.0-b7-SNAPSHOT.jar
 Import-Package: org.eclipse.core.commands.common,
  org.eclipse.core.runtime,
  org.eclipse.core.runtime.preferences,
  org.eclipse.draw2d,
+ org.eclipse.equinox.app,
+ org.eclipse.equinox.internal.app,
  org.eclipse.gef.ui.actions,
  org.eclipse.jface,
  org.eclipse.jface.action,
