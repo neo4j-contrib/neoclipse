@@ -40,5 +40,22 @@
             name="Neo">
       </perspective>
    </extension>
-
+   
+	<extension
+		id="application"
+		point="org.eclipse.core.runtime.applications">
+		<application
+        cardinality="singleton-global"
+        thread="any"
+        visible="true">
+			<run
+				class="org.neo4j.neoclipse.Application">
+			</run>
+		</application>
+	</extension> 
+	<extension id="neoclipseProduct" point="org.eclipse.core.runtime.products">
+     <product name="NeoclipseProduct" application="org.neo4j.neoclipse.application" description="Description">
+    </product>
+  </extension>
+ 
 </plugin>
