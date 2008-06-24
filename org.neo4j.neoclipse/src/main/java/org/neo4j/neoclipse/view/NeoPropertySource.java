@@ -148,18 +148,27 @@ public class NeoPropertySource implements IPropertySource
                 Parser parser = NeoPropertyTransform.parserMap.get( c );
                 if ( parser != null )
                 {
-                    Object o = parser.transform( value );
-                    if ( o != null )
+                    try
                     {
-                        container.setProperty( (String) id, o );
+                        Object o = parser.transform( value );
+                        if ( o != null )
+                        {
+                            container.setProperty( (String) id, o );
+                            tx.success();
+                        }
+                    }
+                    catch ( Exception e )
+                    {
+                        // TODO: handle exception
+                        e.printStackTrace();
                     }
                 }
             }
             else
             {
                 container.setProperty( (String) id, value );
+                tx.success();
             }
-            tx.success();
         }
         finally
         {
