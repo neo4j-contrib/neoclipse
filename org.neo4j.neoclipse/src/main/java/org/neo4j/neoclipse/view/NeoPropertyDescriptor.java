@@ -4,6 +4,7 @@
 package org.neo4j.neoclipse.view;
 
 import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.jface.viewers.CheckboxCellEditor;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.widgets.Composite;
@@ -15,6 +16,32 @@ import org.eclipse.ui.views.properties.IPropertyDescriptor;
  */
 public class NeoPropertyDescriptor implements IPropertyDescriptor
 {
+    public enum Editors
+    {
+        NONE
+        {
+            CellEditor getEditor( Composite parent )
+            {
+                return null;
+            }
+        },
+        TEXT
+        {
+            CellEditor getEditor( Composite parent )
+            {
+                return new TextCellEditor( parent );
+            }
+        },
+        BOOLEAN
+        {
+            CellEditor getEditor( Composite parent )
+            {
+                return new CheckboxCellEditor( parent );
+            }
+        };
+        abstract CellEditor getEditor( Composite parent );
+    }
+
     /**
      * The key for identifying the value of the property.
      */
@@ -30,31 +57,58 @@ public class NeoPropertyDescriptor implements IPropertyDescriptor
     /**
      * If we allow edit on this cell or not.
      */
-    private boolean allowEdit = false;
+    private Editors editorType = Editors.NONE;
+    /**
+     * Class of property content.
+     */
+    private Class<?> cls = null;
 
     /**
      * Create a Neo property cell.
-     * @param key the key of the property
-     * @param name the name of the property
-     * @param category the category of the property
-     * @param allowEdit choose if this cell should be possible to edit
+     * @param key
+     *            the key of the property
+     * @param name
+     *            the name of the property
+     * @param category
+     *            the category of the property
+     * @param allowEdit
+     *            choose if this cell should be possible to edit
      */
     public NeoPropertyDescriptor( Object key, String name, String category,
-        boolean allowEdit )
+        Class<?> cls )
     {
         this.key = key;
         this.name = name;
         this.category = category;
-        this.allowEdit = allowEdit;
+        this.cls = cls;
+        if ( NeoPropertyTransform.parserMap.containsKey( cls ) )
+        {
+            if ( cls.equals( Boolean.class ) )
+            {
+                this.editorType = Editors.BOOLEAN;
+            }
+            else
+            {
+                this.editorType = Editors.TEXT;
+            }
+        }
+        else
+        {
+            this.editorType = Editors.NONE;
+        }
     }
 
     /**
-     * Create a Neo property cell without editing capabilities.
-     * Use this for id and relationship types "fake properties".
-     * @param key the key of the property
-     * @param name the name of the property
-     * @param category the category of the property
-     * @param allowEdit choose if this cell should be possible to edit
+     * Create a Neo property cell without editing capabilities. Use this for id
+     * and relationship types "fake properties".
+     * @param key
+     *            the key of the property
+     * @param name
+     *            the name of the property
+     * @param category
+     *            the category of the property
+     * @param allowEdit
+     *            choose if this cell should be possible to edit
      */
     public NeoPropertyDescriptor( Object key, String name, String category )
     {
@@ -65,7 +119,7 @@ public class NeoPropertyDescriptor implements IPropertyDescriptor
 
     public CellEditor createPropertyEditor( Composite parent )
     {
-        return allowEdit ? new TextCellEditor( parent ) : null;
+        return editorType.getEditor( parent );
     }
 
     public String getCategory()
@@ -75,7 +129,10 @@ public class NeoPropertyDescriptor implements IPropertyDescriptor
 
     public String getDescription()
     {
-        return "The property with the name '" + key + "'.";
+        return "The property '" + key + "' is of type " + cls.getSimpleName()
+            + " and is "
+            + (editorType.compareTo( Editors.NONE ) == 0 ? "not " : "")
+            + "editable.";
     }
 
     public String getDisplayName()

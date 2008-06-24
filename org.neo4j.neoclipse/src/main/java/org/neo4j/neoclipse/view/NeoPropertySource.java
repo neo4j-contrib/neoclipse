@@ -1,17 +1,15 @@
 package org.neo4j.neoclipse.view;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.neo4j.api.core.PropertyContainer;
 import org.neo4j.api.core.Transaction;
+import org.neo4j.neoclipse.view.NeoPropertyTransform.Parser;
+import org.neo4j.neoclipse.view.NeoPropertyTransform.Renderer;
 
-@SuppressWarnings( "serial" )
 public class NeoPropertySource implements IPropertySource
 {
     protected static final String PROPERTIES_CATEGORY = "Properties";
@@ -19,78 +17,6 @@ public class NeoPropertySource implements IPropertySource
      * The container of the properties (either Relationship or Node).
      */
     protected PropertyContainer container;
-
-    protected interface Transformer
-    {
-        Object transform( Object o );
-    }
-
-    protected static final Map<Class<?>,Transformer> parserMap = new HashMap<Class<?>,Transformer>()
-    {
-        {
-            put( Integer.class, new Transformer()
-            {
-                public Object transform( Object o )
-                {
-                    return Integer.parseInt( (String) o );
-                }
-            } );
-            put( Double.class, new Transformer()
-            {
-                public Object transform( Object o )
-                {
-                    return Double.parseDouble( (String) o );
-                }
-            } );
-            put( Float.class, new Transformer()
-            {
-                public Object transform( Object o )
-                {
-                    return Float.parseFloat( (String) o );
-                }
-            } );
-            put( Boolean.class, new Transformer()
-            {
-                public Object transform( Object o )
-                {
-                    return Boolean.parseBoolean( (String) o );
-                }
-            } );
-            put( Byte.class, new Transformer()
-            {
-                public Object transform( Object o )
-                {
-                    return Byte.parseByte( (String) o );
-                }
-            } );
-            put( Short.class, new Transformer()
-            {
-                public Object transform( Object o )
-                {
-                    return Short.parseShort( (String) o );
-                }
-            } );
-            put( Long.class, new Transformer()
-            {
-                public Object transform( Object o )
-                {
-                    return Long.parseLong( (String) o );
-                }
-            } );
-            put( Character.class, new Transformer()
-            {
-                public Object transform( Object o )
-                {
-                    String s = (String) o;
-                    if ( s.length() > 0 )
-                    {
-                        return ((String) o).charAt( 0 );
-                    }
-                    return null;
-                }
-            } );
-        }
-    };
 
     /**
      * The constructor.
@@ -118,8 +44,10 @@ public class NeoPropertySource implements IPropertySource
             Iterable<String> keys = container.getPropertyKeys();
             for ( String key : keys )
             {
+                Object value = container.getProperty( (String) key );
+                Class<?> c = value.getClass();
                 descs.add( new NeoPropertyDescriptor( key, key,
-                    PROPERTIES_CATEGORY, true ) );
+                    PROPERTIES_CATEGORY, c ) );
             }
             return descs.toArray( new IPropertyDescriptor[descs.size()] );
         }
@@ -159,17 +87,15 @@ public class NeoPropertySource implements IPropertySource
     protected Object getValue( Object id )
     {
         Object value = container.getProperty( (String) id );
-        if ( value.getClass().isArray() )
+        Renderer renderer = NeoPropertyTransform.rendererMap.get( value
+            .getClass() );
+        if ( renderer != null )
         {
-            if ( value instanceof int[] )
-            {
-                return Arrays.toString( (int[]) value );
-            }
-            return value.getClass().getComponentType();
+            return renderer.transform( value );
         }
         else
         {
-            return String.valueOf( value );
+            return "(no rendering available)";
         }
     }
 
@@ -219,10 +145,10 @@ public class NeoPropertySource implements IPropertySource
             {
                 // try to keep the same type as the previous value
                 Class<?> c = container.getProperty( (String) id ).getClass();
-                Transformer transformer = parserMap.get( c );
-                if ( transformer != null )
+                Parser parser = NeoPropertyTransform.parserMap.get( c );
+                if ( parser != null )
                 {
-                    Object o = transformer.transform( value );
+                    Object o = parser.transform( value );
                     if ( o != null )
                     {
                         container.setProperty( (String) id, o );
