@@ -54,7 +54,35 @@
 		</application>
 	</extension> 
 	<extension id="neoclipseProduct" point="org.eclipse.core.runtime.products">
-     <product name="NeoclipseProduct" application="org.neo4j.neoclipse.application" description="Description">
+     <product name="Neoclipse Product" application="org.neo4j.neoclipse.application" description="Description">
+        <property
+              name="appName"
+              value="Neoclipse Product">
+        </property>
+        <property
+              name="aboutImage"
+              value="eclipse_lg.gif">
+        </property>
+        <property
+              name="aboutText"
+              value="%productBlurb">
+        </property>
+        <property
+              name="windowImages"
+              value="eclipse.gif,eclipse32.gif,eclipse48.gif,eclipse.png,eclipse32.png">
+        </property>
+        <property
+              name="startupForegroundColor"
+              value="C8D5EA">
+        </property>
+        <property
+              name="startupMessageRect"
+              value="7,220,441,20">
+        </property>
+        <property
+              name="startupProgressRect"
+              value="0,280,455,15">
+        </property>
     </product>
   </extension>
  

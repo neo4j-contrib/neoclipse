@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.4"?>
 
-<product name="Neoclipse Product" id="org.eclipse.sdk.ide" application="org.neo4j.neoclipse.application" version="1.0.0" useFeatures="false">
+<product name="Neoclipse Product" id="org.neo4j.neoclipse.neoclipseProduct" application="org.neo4j.neoclipse.application" version="1.0.0" useFeatures="false">
 
    <aboutInfo>
       <image path="eclipse_lg.gif"/>
