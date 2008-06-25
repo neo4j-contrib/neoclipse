@@ -60,16 +60,8 @@
               value="Neoclipse Product">
         </property>
         <property
-              name="aboutImage"
-              value="eclipse_lg.gif">
-        </property>
-        <property
               name="aboutText"
               value="%productBlurb">
-        </property>
-        <property
-              name="windowImages"
-              value="eclipse.gif,eclipse32.gif,eclipse48.gif,eclipse.png,eclipse32.png">
         </property>
         <property
               name="startupForegroundColor"
@@ -82,6 +74,10 @@
         <property
               name="startupProgressRect"
               value="0,280,455,15">
+        </property>
+        <property
+              name="preferenceCustomization"
+              value="plugin_customization.ini">
         </property>
     </product>
   </extension>
