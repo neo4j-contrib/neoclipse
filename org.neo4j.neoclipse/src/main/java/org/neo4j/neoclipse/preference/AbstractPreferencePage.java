@@ -3,9 +3,11 @@
  */
 package org.neo4j.neoclipse.preference;
 
+import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
@@ -45,7 +47,31 @@ public abstract class AbstractPreferencePage extends FieldEditorPreferencePage
                 | SWT.HORIZONTAL);
 
         GridData spacerData = new GridData(GridData.FILL_HORIZONTAL);
-        spacerData.horizontalSpan = 2;
+        spacerData.horizontalSpan = 3;
         spacer.setLayoutData(spacerData);
     }
+    
+    public void addNote (String title, String message)
+    {
+        Composite note = createNoteComposite( getFieldEditorParent().getFont(), getFieldEditorParent(), title, message );
+        GridData spacerData = new GridData(GridData.FILL_HORIZONTAL);
+        spacerData.horizontalSpan = 3;
+        note.setLayoutData(spacerData);
+    }
+
+    @Override
+    protected void addField( FieldEditor editor)
+    {
+        super.addField( editor );
+        addSeparator();
+    }
+
+    protected void addField( FieldEditor editor, String note )
+    {
+        super.addField( editor );
+        addNote("Note:", note);
+        addSeparator();
+    }
+
+    
 }

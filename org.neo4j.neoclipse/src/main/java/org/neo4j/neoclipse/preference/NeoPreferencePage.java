@@ -3,11 +3,8 @@
  */
 package org.neo4j.neoclipse.preference;
 
-import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.preference.DirectoryFieldEditor;
 import org.eclipse.jface.preference.StringFieldEditor;
-import org.eclipse.swt.SWT;
-import org.neo4j.neoclipse.NeoIcons;
 
 /**
  * The page for neo preferences.
@@ -17,21 +14,18 @@ import org.neo4j.neoclipse.NeoIcons;
 public class NeoPreferencePage extends AbstractPreferencePage
 {
     // database location
-    private static final String NEO_DATABASE_LOCATION_LABEL = "Neo Database Location:";
-    private static final String NEO_DATABASE_LOCATION_ERROR = "The Neo Database Location is invalid.";
-    private static final String DATABASE_LOCATION_EXPLANATION = "the directory where the database files are stored";
+    private static final String NEO_DATABASE_LOCATION_LABEL = "Neo database location:";
+    private static final String NEO_DATABASE_LOCATION_ERROR = "The Neo database location is invalid.";
     // node label properties
-    private static final String NODE_LABEL_PROPERTIES_LABEL = "Node Label properties:";
-    private static final String PROPTERTY_NAMES_EXPLANATION = "comma-separated list of property names; will be evaluated from left to right, and the first non-empty value is used";
+    private static final String NODE_LABEL_PROPERTIES_LABEL = "Node label properties:";
+    private static final String PROPTERTY_NAMES_NOTE = "comma-separated list of property names; will be evaluated from left to right, and the first non-empty value is used";
     // icon locations
-    private static final String NODE_ICONS_LOCATION_LABEL = "Node Icons Location:";
-    private static final String NODE_ICONS_LOCATION_ERROR = "The Icons Location is invalid.";
-    private static final String ICON_LOCATION_EXPLANATION = "the icon filenames should correspond to the settings for node icon filename properties";
+    private static final String NODE_ICONS_LOCATION_LABEL = "Node icons location:";
+    private static final String NODE_ICONS_LOCATION_ERROR = "The Node icons location is invalid.";
+    private static final String ICON_LOCATION_NOTE = "the icon filenames should correspond to the settings for node icon filename properties";
     // node icon filename properties
-    private static final String NODE_ICON_FILENAME_PROPERTIES_LABEL = "Node Icon filename properties:";
-    private static final String ICON_PROPERTY_NAMES_EXPLANATION_ADDITION = "; file extensions are added automatically to the property values found";
-    // help icon text
-    private static final String MORE_INFORMATION = "move over the field to see more information!";
+    private static final String NODE_ICON_FILENAME_PROPERTIES_LABEL = "Node icon filename properties:";
+    private static final String ICON_PROPERTY_NAMES_NOTE = "comma-separated list (see node labels), file extensions are added automatically to the property values found";
 
     /**
      * Initializes the several input fields.
@@ -44,58 +38,26 @@ public class NeoPreferencePage extends AbstractPreferencePage
             getFieldEditorParent() );
         locationField.setEmptyStringAllowed( false );
         locationField.setErrorMessage( NEO_DATABASE_LOCATION_ERROR );
-        addDecorationOnDirectoryField( locationField,
-            DATABASE_LOCATION_EXPLANATION );
         addField( locationField );
         // node label properties
         StringFieldEditor propertyNameField = new StringFieldEditor(
             NeoPreferences.NODE_PROPERTY_NAMES, NODE_LABEL_PROPERTIES_LABEL,
             getFieldEditorParent() );
         propertyNameField.setEmptyStringAllowed( true );
-        addDecorationOnStringField( propertyNameField,
-            PROPTERTY_NAMES_EXPLANATION );
-        addField( propertyNameField );
+        addField( propertyNameField, PROPTERTY_NAMES_NOTE );
         // icon locations
         DirectoryFieldEditor iconLocationField = new DirectoryFieldEditor(
             NeoPreferences.NODE_ICON_LOCATION, NODE_ICONS_LOCATION_LABEL,
             getFieldEditorParent() );
         iconLocationField.setEmptyStringAllowed( true );
         iconLocationField.setErrorMessage( NODE_ICONS_LOCATION_ERROR );
-        addDecorationOnDirectoryField( iconLocationField,
-            ICON_LOCATION_EXPLANATION );
-        addField( iconLocationField );
+        addField( iconLocationField, ICON_LOCATION_NOTE );
         // node icon filename properties
         StringFieldEditor iconPropertyNameField = new StringFieldEditor(
             NeoPreferences.NODE_ICON_PROPERTY_NAMES,
             NODE_ICON_FILENAME_PROPERTIES_LABEL, getFieldEditorParent() );
         iconPropertyNameField.setEmptyStringAllowed( true );
-        addDecorationOnStringField( iconPropertyNameField,
-            PROPTERTY_NAMES_EXPLANATION
-                + ICON_PROPERTY_NAMES_EXPLANATION_ADDITION );
-        addField( iconPropertyNameField );
+        addField( iconPropertyNameField, ICON_PROPERTY_NAMES_NOTE );
     }
 
-    protected void addDecorationOnStringField( StringFieldEditor field,
-        String helptext )
-    {
-        ControlDecoration fieldDecoration = new ControlDecoration( field
-            .getTextControl( getFieldEditorParent() ), SWT.LEAD );
-        fieldDecoration
-            .setDescriptionText( MORE_INFORMATION );
-        fieldDecoration.setImage( NeoIcons.getImage( NeoIcons.HELP ) );
-        field.getTextControl( getFieldEditorParent() )
-            .setToolTipText( helptext );
-    }
-
-    protected void addDecorationOnDirectoryField( DirectoryFieldEditor field,
-        String helptext )
-    {
-        ControlDecoration fieldDecoration = new ControlDecoration( field
-            .getTextControl( getFieldEditorParent() ), SWT.LEAD );
-        fieldDecoration
-            .setDescriptionText( MORE_INFORMATION );
-        fieldDecoration.setImage( NeoIcons.getImage( NeoIcons.HELP ) );
-        field.getTextControl( getFieldEditorParent() )
-            .setToolTipText( helptext );
-    }
 }
