@@ -18,18 +18,33 @@ package org.neo4j.neoclipse;
 
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.application.WorkbenchAdvisor;
 
-public class Application implements IApplication {
+public class Application extends WorkbenchAdvisor implements IApplication {
 
 	public Object start(IApplicationContext context) throws Exception {
 		System.out.println("Hello world!");
-	    return IApplication.EXIT_OK;
+		Display display = PlatformUI.createDisplay();
+	     int returnCode = PlatformUI.createAndRunWorkbench(display, this);
+	     if (returnCode == PlatformUI.RETURN_RESTART) {
+	        return IApplication.EXIT_RESTART;
+	     } else {
+	        return IApplication.EXIT_OK;
+	   }
 
 	}
 
 	public void stop() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public String getInitialWindowPerspectiveId() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
