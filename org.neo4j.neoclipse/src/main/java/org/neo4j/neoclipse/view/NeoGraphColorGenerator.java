@@ -1,6 +1,3 @@
-/*
- * NeoGraphColorGenerator.java
- */
 package org.neo4j.neoclipse.view;
 
 import org.eclipse.swt.graphics.Color;

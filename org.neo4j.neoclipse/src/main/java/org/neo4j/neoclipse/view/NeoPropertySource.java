@@ -7,9 +7,13 @@ import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.neo4j.api.core.PropertyContainer;
 import org.neo4j.api.core.Transaction;
-import org.neo4j.neoclipse.view.NeoPropertyTransform.Parser;
-import org.neo4j.neoclipse.view.NeoPropertyTransform.Renderer;
+import org.neo4j.neoclipse.view.NeoPropertyTransform.PropertyHandler;
 
+/**
+ * Common property handling for nodes and relationships.
+ * @author Peter H&auml;nsgen
+ * @author Anders Nawroth
+ */
 public class NeoPropertySource implements IPropertySource
 {
     protected static final String PROPERTIES_CATEGORY = "Properties";
@@ -59,7 +63,7 @@ public class NeoPropertySource implements IPropertySource
 
     protected List<IPropertyDescriptor> getHeadPropertyDescriptors()
     {
-        return new ArrayList<IPropertyDescriptor>();
+        return null;
     }
 
     /**
@@ -87,11 +91,11 @@ public class NeoPropertySource implements IPropertySource
     protected Object getValue( Object id )
     {
         Object value = container.getProperty( (String) id );
-        Renderer renderer = NeoPropertyTransform.rendererMap.get( value
-            .getClass() );
-        if ( renderer != null )
+        PropertyHandler propertyHandler = NeoPropertyTransform.handlerMap
+            .get( value.getClass() );
+        if ( propertyHandler != null )
         {
-            return renderer.transform( value );
+            return propertyHandler.render( value );
         }
         else
         {
@@ -116,7 +120,7 @@ public class NeoPropertySource implements IPropertySource
     }
 
     /**
-     * Performs the real testing if a property is set.
+     * Performs the real testing of if a property is set.
      * @param id
      *            id of the property
      * @return true if set
@@ -134,7 +138,7 @@ public class NeoPropertySource implements IPropertySource
     }
 
     /**
-     * Sets value.
+     * Sets property value.
      */
     public void setPropertyValue( Object id, Object value )
     {
@@ -145,12 +149,13 @@ public class NeoPropertySource implements IPropertySource
             {
                 // try to keep the same type as the previous value
                 Class<?> c = container.getProperty( (String) id ).getClass();
-                Parser parser = NeoPropertyTransform.parserMap.get( c );
-                if ( parser != null )
+                PropertyHandler propertyHandler = NeoPropertyTransform.handlerMap
+                    .get( c );
+                if ( propertyHandler != null )
                 {
                     try
                     {
-                        Object o = parser.transform( value );
+                        Object o = propertyHandler.parse( value );
                         if ( o != null )
                         {
                             container.setProperty( (String) id, o );

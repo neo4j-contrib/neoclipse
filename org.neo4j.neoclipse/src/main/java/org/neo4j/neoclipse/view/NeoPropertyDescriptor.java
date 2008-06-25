@@ -4,44 +4,18 @@
 package org.neo4j.neoclipse.view;
 
 import org.eclipse.jface.viewers.CellEditor;
-import org.eclipse.jface.viewers.CheckboxCellEditor;
 import org.eclipse.jface.viewers.ILabelProvider;
-import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
+import org.neo4j.neoclipse.view.NeoPropertyTransform.PropertyHandler;
 
 /**
  * Describes a single property of a Neo node or relationship.
  * @author Peter H&auml;nsgen
+ * @author Anders Nawroth
  */
 public class NeoPropertyDescriptor implements IPropertyDescriptor
 {
-    public enum Editors
-    {
-        NONE
-        {
-            CellEditor getEditor( Composite parent )
-            {
-                return null;
-            }
-        },
-        TEXT
-        {
-            CellEditor getEditor( Composite parent )
-            {
-                return new TextCellEditor( parent );
-            }
-        },
-        BOOLEAN
-        {
-            CellEditor getEditor( Composite parent )
-            {
-                return new CheckboxCellEditor( parent );
-            }
-        };
-        abstract CellEditor getEditor( Composite parent );
-    }
-
     /**
      * The key for identifying the value of the property.
      */
@@ -57,7 +31,7 @@ public class NeoPropertyDescriptor implements IPropertyDescriptor
     /**
      * If we allow edit on this cell or not.
      */
-    private Editors editorType = Editors.NONE;
+    private NeoPropertyEditor editorType = NeoPropertyEditor.NONE;
     /**
      * Class of property content.
      */
@@ -81,20 +55,10 @@ public class NeoPropertyDescriptor implements IPropertyDescriptor
         this.name = name;
         this.category = category;
         this.cls = cls;
-        if ( NeoPropertyTransform.parserMap.containsKey( cls ) )
+        PropertyHandler propertyHandler = NeoPropertyTransform.handlerMap.get( cls );
+        if ( propertyHandler != null )
         {
-            if ( cls.equals( Boolean.class ) )
-            {
-                this.editorType = Editors.BOOLEAN;
-            }
-            else
-            {
-                this.editorType = Editors.TEXT;
-            }
-        }
-        else
-        {
-            this.editorType = Editors.NONE;
+            this.editorType = propertyHandler.getEditorType();
         }
     }
 
@@ -131,7 +95,7 @@ public class NeoPropertyDescriptor implements IPropertyDescriptor
     {
         return "The property '" + key + "' is of type " + cls.getSimpleName()
             + " and is "
-            + (editorType.compareTo( Editors.NONE ) == 0 ? "not " : "")
+            + (editorType.compareTo( NeoPropertyEditor.NONE ) == 0 ? "not " : "")
             + "editable.";
     }
 

@@ -33,6 +33,7 @@ public class CreateNodeSpace extends NeoclipseExample
             peter.setProperty( "double-test", 3.54362e-120D );
             peter.setProperty( "char-test", 'X' );
             peter.setProperty( "String-test", "XYZ" );
+            peter.setProperty( "multiline-test", "XYZ\nABC\nDEF\nGHI" );
             Node li = neo.createNode();
             li.setProperty( NAME, "Li" );
             li.setProperty( NODE_TYPE, "human" );
