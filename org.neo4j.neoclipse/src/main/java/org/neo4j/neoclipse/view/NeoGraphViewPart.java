@@ -45,15 +45,15 @@ import org.neo4j.neoclipse.action.DecreaseTraversalDepthAction;
 import org.neo4j.neoclipse.action.IncreaseTraversalDepthAction;
 import org.neo4j.neoclipse.action.PrintGraphAction;
 import org.neo4j.neoclipse.action.RefreshAction;
+import org.neo4j.neoclipse.action.ShowGridLayoutAction;
 import org.neo4j.neoclipse.action.ShowNodeColorsAction;
 import org.neo4j.neoclipse.action.ShowNodeIconsAction;
 import org.neo4j.neoclipse.action.ShowNodeIdsAction;
-import org.neo4j.neoclipse.action.ShowRelationshipDirectionsAction;
-import org.neo4j.neoclipse.action.ShowGridLayoutAction;
 import org.neo4j.neoclipse.action.ShowNodeNamesAction;
 import org.neo4j.neoclipse.action.ShowRadialLayoutAction;
 import org.neo4j.neoclipse.action.ShowReferenceNodeAction;
 import org.neo4j.neoclipse.action.ShowRelationshipColorsAction;
+import org.neo4j.neoclipse.action.ShowRelationshipDirectionsAction;
 import org.neo4j.neoclipse.action.ShowRelationshipIdsAction;
 import org.neo4j.neoclipse.action.ShowRelationshipTypesAction;
 import org.neo4j.neoclipse.action.ShowSpringLayoutAction;
@@ -97,6 +97,10 @@ public class NeoGraphViewPart extends ViewPart implements
      * The depth how deep we should traverse into the network.
      */
     private int traversalDepth = 1;
+    /**
+     * Current number of nodes.
+     */
+    private int nodesCount = 0;
 
     /**
      * Creates the view.
@@ -128,105 +132,29 @@ public class NeoGraphViewPart extends ViewPart implements
         IToolBarManager tm = getViewSite().getActionBars().getToolBarManager();
         IMenuManager mm = getViewSite().getActionBars().getMenuManager();
         // standard actions
-        {
-            ShowReferenceNodeAction refNodeAction = new ShowReferenceNodeAction(
-                this );
-            refNodeAction.setText( "Show Reference Node" );
-            refNodeAction.setToolTipText( "Show Reference Node" );
-            refNodeAction.setImageDescriptor( Activator.getDefault()
-                .getImageRegistry().getDescriptor( NeoIcons.HOME ) );
-            tm.add( refNodeAction );
-            RefreshAction refreshAction = new RefreshAction( this );
-            refreshAction.setText( "Refresh" );
-            refreshAction.setToolTipText( "Refresh" );
-            refreshAction.setImageDescriptor( Activator.getDefault()
-                .getImageRegistry().getDescriptor( NeoIcons.REFRESH ) );
-            tm.add( refreshAction );
-            tm.add( new Separator() );
-        }
+        contributeStandardActions( tm );
         // recursion level actions
-        {
-            IncreaseTraversalDepthAction incAction = new IncreaseTraversalDepthAction(
-                this );
-            incAction.setText( "Increase Traversal Depth" );
-            incAction.setToolTipText( "Increase Traversal Depth" );
-            incAction.setImageDescriptor( Activator.getDefault()
-                .getImageRegistry().getDescriptor( NeoIcons.PLUS_ENABLED ) );
-            incAction.setDisabledImageDescriptor( Activator.getDefault()
-                .getImageRegistry().getDescriptor( NeoIcons.PLUS_DISABLED ) );
-            tm.add( incAction );
-            decAction = new DecreaseTraversalDepthAction( this );
-            decAction.setText( "Decrease Traversal Depth" );
-            decAction.setToolTipText( "Decrease Traversal Depth" );
-            decAction.setImageDescriptor( Activator.getDefault()
-                .getImageRegistry().getDescriptor( NeoIcons.MINUS_ENABLED ) );
-            decAction.setDisabledImageDescriptor( Activator.getDefault()
-                .getImageRegistry().getDescriptor( NeoIcons.MINUS_DISABLED ) );
-            tm.add( decAction );
-            tm.add( new Separator() );
-        }
+        contributeRecursionLevelActions( tm );
         // zoom actions
-        {
-            ZoomAction zoomAction = new ZoomAction( this );
-            zoomAction.setText( "Zoom" );
-            zoomAction.setToolTipText( "Zoom" );
-            zoomAction.setImageDescriptor( Activator.getDefault()
-                .getImageRegistry().getDescriptor( NeoIcons.ZOOM ) );
-            tm.add( zoomAction );
-            tm.add( new Separator() );
-        }
+        contributeZoomActions( tm );
         // layout actions
-        {
-            String groupName = "layout";
-            GroupMarker layoutGroup = new GroupMarker( groupName );
-            tm.add( layoutGroup );
-            mm.add( layoutGroup );
-            // spring layout
-            ShowSpringLayoutAction springLayoutAction = new ShowSpringLayoutAction(
-                this );
-            springLayoutAction.setText( "Spring Layout" );
-            springLayoutAction.setToolTipText( "Spring Layout" );
-            springLayoutAction.setImageDescriptor( NeoIcons
-                .getDescriptor( NeoIcons.SPRING ) );
-            springLayoutAction.setChecked( true );
-            tm.appendToGroup( groupName, springLayoutAction );
-            mm.appendToGroup( groupName, springLayoutAction );
-            // tree layout
-            ShowTreeLayoutAction treeLayoutAction = new ShowTreeLayoutAction(
-                this );
-            treeLayoutAction.setText( "Tree Layout" );
-            treeLayoutAction.setToolTipText( "Tree Layout" );
-            treeLayoutAction.setImageDescriptor( NeoIcons
-                .getDescriptor( NeoIcons.TREE ) );
-            treeLayoutAction.setChecked( false );
-            tm.appendToGroup( groupName, treeLayoutAction );
-            mm.appendToGroup( groupName, treeLayoutAction );
-            // radial layout
-            ShowRadialLayoutAction radialLayoutAction = new ShowRadialLayoutAction(
-                this );
-            radialLayoutAction.setText( "Radial Layout" );
-            radialLayoutAction.setToolTipText( "Radial Layout" );
-            radialLayoutAction.setImageDescriptor( NeoIcons
-                .getDescriptor( NeoIcons.RADIAL ) );
-            radialLayoutAction.setChecked( false );
-            tm.appendToGroup( groupName, radialLayoutAction );
-            mm.appendToGroup( groupName, radialLayoutAction );
-            // grid layout
-            ShowGridLayoutAction gridLayoutAction = new ShowGridLayoutAction(
-                this );
-            gridLayoutAction.setText( "Grid Layout" );
-            gridLayoutAction.setToolTipText( "Grid Layout" );
-            gridLayoutAction.setImageDescriptor( NeoIcons
-                .getDescriptor( NeoIcons.GRID ) );
-            gridLayoutAction.setChecked( false );
-            tm.appendToGroup( groupName, gridLayoutAction );
-            mm.appendToGroup( groupName, gridLayoutAction );
-        }
+        contributeLayoutActions( tm, mm );
         // separator
         {
             mm.add( new Separator() );
         }
         // label settings actions
+        constributeLabelActions( mm );
+        // printing
+        getViewSite().getActionBars().setGlobalActionHandler(
+            ActionFactory.PRINT.getId(), new PrintGraphAction( this ) );
+    }
+
+    /**
+     * @param mm
+     */
+    private void constributeLabelActions( IMenuManager mm )
+    {
         {
             String labelsGroupName = "labels";
             GroupMarker labelsGroup = new GroupMarker( labelsGroupName );
@@ -288,9 +216,126 @@ public class NeoGraphViewPart extends ViewPart implements
             showNodeIconsAction.setChecked( ShowNodeIconsAction.DEFAULT_STATE );
             mm.appendToGroup( labelsGroupName, showNodeIconsAction );
         }
-        // printing
-        getViewSite().getActionBars().setGlobalActionHandler(
-            ActionFactory.PRINT.getId(), new PrintGraphAction( this ) );
+    }
+
+    /**
+     * @param tm
+     * @param mm
+     */
+    private void contributeLayoutActions( IToolBarManager tm, IMenuManager mm )
+    {
+        {
+            String groupName = "layout";
+            GroupMarker layoutGroup = new GroupMarker( groupName );
+            tm.add( layoutGroup );
+            mm.add( layoutGroup );
+            // spring layout
+            ShowSpringLayoutAction springLayoutAction = new ShowSpringLayoutAction(
+                this );
+            springLayoutAction.setText( "Spring Layout" );
+            springLayoutAction.setToolTipText( "Spring Layout" );
+            springLayoutAction.setImageDescriptor( NeoIcons
+                .getDescriptor( NeoIcons.SPRING ) );
+            springLayoutAction.setChecked( true );
+            tm.appendToGroup( groupName, springLayoutAction );
+            mm.appendToGroup( groupName, springLayoutAction );
+            // tree layout
+            ShowTreeLayoutAction treeLayoutAction = new ShowTreeLayoutAction(
+                this );
+            treeLayoutAction.setText( "Tree Layout" );
+            treeLayoutAction.setToolTipText( "Tree Layout" );
+            treeLayoutAction.setImageDescriptor( NeoIcons
+                .getDescriptor( NeoIcons.TREE ) );
+            treeLayoutAction.setChecked( false );
+            tm.appendToGroup( groupName, treeLayoutAction );
+            mm.appendToGroup( groupName, treeLayoutAction );
+            // radial layout
+            ShowRadialLayoutAction radialLayoutAction = new ShowRadialLayoutAction(
+                this );
+            radialLayoutAction.setText( "Radial Layout" );
+            radialLayoutAction.setToolTipText( "Radial Layout" );
+            radialLayoutAction.setImageDescriptor( NeoIcons
+                .getDescriptor( NeoIcons.RADIAL ) );
+            radialLayoutAction.setChecked( false );
+            tm.appendToGroup( groupName, radialLayoutAction );
+            mm.appendToGroup( groupName, radialLayoutAction );
+            // grid layout
+            ShowGridLayoutAction gridLayoutAction = new ShowGridLayoutAction(
+                this );
+            gridLayoutAction.setText( "Grid Layout" );
+            gridLayoutAction.setToolTipText( "Grid Layout" );
+            gridLayoutAction.setImageDescriptor( NeoIcons
+                .getDescriptor( NeoIcons.GRID ) );
+            gridLayoutAction.setChecked( false );
+            tm.appendToGroup( groupName, gridLayoutAction );
+            mm.appendToGroup( groupName, gridLayoutAction );
+        }
+    }
+
+    /**
+     * @param tm
+     */
+    private void contributeZoomActions( IToolBarManager tm )
+    {
+        {
+            ZoomAction zoomAction = new ZoomAction( this );
+            zoomAction.setText( "Zoom" );
+            zoomAction.setToolTipText( "Zoom" );
+            zoomAction.setImageDescriptor( Activator.getDefault()
+                .getImageRegistry().getDescriptor( NeoIcons.ZOOM ) );
+            tm.add( zoomAction );
+            tm.add( new Separator() );
+        }
+    }
+
+    /**
+     * @param tm
+     */
+    private void contributeRecursionLevelActions( IToolBarManager tm )
+    {
+        {
+            IncreaseTraversalDepthAction incAction = new IncreaseTraversalDepthAction(
+                this );
+            incAction.setText( "Increase Traversal Depth" );
+            incAction.setToolTipText( "Increase Traversal Depth" );
+            incAction.setImageDescriptor( Activator.getDefault()
+                .getImageRegistry().getDescriptor( NeoIcons.PLUS_ENABLED ) );
+            incAction.setDisabledImageDescriptor( Activator.getDefault()
+                .getImageRegistry().getDescriptor( NeoIcons.PLUS_DISABLED ) );
+            tm.add( incAction );
+            decAction = new DecreaseTraversalDepthAction( this );
+            decAction.setText( "Decrease Traversal Depth" );
+            decAction.setToolTipText( "Decrease Traversal Depth" );
+            decAction.setImageDescriptor( Activator.getDefault()
+                .getImageRegistry().getDescriptor( NeoIcons.MINUS_ENABLED ) );
+            decAction.setDisabledImageDescriptor( Activator.getDefault()
+                .getImageRegistry().getDescriptor( NeoIcons.MINUS_DISABLED ) );
+            tm.add( decAction );
+            tm.add( new Separator() );
+        }
+    }
+
+    /**
+     * @param tm
+     */
+    private void contributeStandardActions( IToolBarManager tm )
+    {
+        {
+            ShowReferenceNodeAction refNodeAction = new ShowReferenceNodeAction(
+                this );
+            refNodeAction.setText( "Show Reference Node" );
+            refNodeAction.setToolTipText( "Show Reference Node" );
+            refNodeAction.setImageDescriptor( Activator.getDefault()
+                .getImageRegistry().getDescriptor( NeoIcons.HOME ) );
+            tm.add( refNodeAction );
+            RefreshAction refreshAction = new RefreshAction( this );
+            refreshAction.setText( "Refresh" );
+            refreshAction.setToolTipText( "Refresh" );
+            refreshAction.setImageDescriptor( Activator.getDefault()
+                .getImageRegistry().getDescriptor( NeoIcons.REFRESH ) );
+            tm.add( refreshAction );
+            tm.add( new Separator() );
+        }
     }
 
     /**
@@ -299,7 +344,8 @@ public class NeoGraphViewPart extends ViewPart implements
     protected void refreshStatusBar()
     {
         getViewSite().getActionBars().getStatusLineManager().setMessage(
-            "Traversal Depth: " + String.valueOf( traversalDepth ) );
+            "Traversal depth: " + String.valueOf( traversalDepth )
+                + "   Nodes: " + String.valueOf( nodesCount ) );
     }
 
     /**
@@ -442,6 +488,24 @@ public class NeoGraphViewPart extends ViewPart implements
     }
 
     /**
+     * Get current number of nodes.
+     * @return
+     */
+    public int getNodesCount()
+    {
+        return nodesCount;
+    }
+
+    /**
+     * Set current number of nodes.
+     * @param nodesCount
+     */
+    public void setNodesCount( int nodesCount )
+    {
+        this.nodesCount = nodesCount;
+    }
+
+    /**
      * Increments the traversal depth.
      */
     public void incTraversalDepth()
@@ -454,8 +518,7 @@ public class NeoGraphViewPart extends ViewPart implements
             try
             {
                 traversalDepth++;
-                refreshStatusBar();
-                viewer.refresh();
+                refreshViewer();
                 viewer.applyLayout();
             }
             finally
@@ -485,8 +548,7 @@ public class NeoGraphViewPart extends ViewPart implements
                 try
                 {
                     traversalDepth--;
-                    refreshStatusBar();
-                    viewer.refresh();
+                    refreshViewer();
                     viewer.applyLayout();
                 }
                 finally
@@ -513,7 +575,7 @@ public class NeoGraphViewPart extends ViewPart implements
             Transaction txn = Transaction.begin();
             try
             {
-                viewer.refresh();
+                refreshViewer();
                 viewer.applyLayout();
             }
             finally
@@ -535,13 +597,22 @@ public class NeoGraphViewPart extends ViewPart implements
             Transaction tn = Transaction.begin();
             try
             {
-                viewer.refresh();
+                refreshViewer();
             }
             finally
             {
                 tn.finish();
             }
         }
+    }
+
+    /**
+     * Refresh viewer and status bar as well.
+     */
+    private void refreshViewer()
+    {
+        viewer.refresh();
+        refreshStatusBar();
     }
 
     /**

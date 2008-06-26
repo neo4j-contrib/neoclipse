@@ -78,7 +78,7 @@ public class NeoGraphContentProvider implements IGraphEntityRelationshipContentP
         
         Map<Long, Node> nodes = new HashMap<Long, Node>();            
         getElements(node, nodes, view.getTraversalDepth());
-
+        view.setNodesCount( nodes.size() );
         return nodes.values().toArray();
     }
     

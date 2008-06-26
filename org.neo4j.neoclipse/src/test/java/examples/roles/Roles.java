@@ -64,7 +64,7 @@ public class Roles extends NeoclipseExample
             createUser( "Demet", helpDesk );
             createUser( "Engin", helpDesk, users );
             createUser( "Fuat", managers );
-            createUser( "Gül", managers );
+            createUser( "Gul", managers );
             createUser( "Hakan", technicians );
             createUser( "Irmak", technicians );
             createUser( "Jale", abcTechnicians );
