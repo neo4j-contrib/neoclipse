@@ -26,13 +26,11 @@ public class NeoRelationshipContentProvider implements IGraphContentProvider
         this.view = view;
     }
 
-    @Override
     public Object getDestination( Object rel )
     {
         return ((Relationship) rel).getEndNode();
     }
 
-    @Override
     public Object[] getElements( Object input )
     {
         Map<Long,Relationship> rels = new HashMap<Long,Relationship>();
@@ -41,7 +39,6 @@ public class NeoRelationshipContentProvider implements IGraphContentProvider
         return rels.values().toArray();
     }
 
-    @Override
     public Object getSource( Object rel )
     {
         return ((Relationship) rel).getStartNode();
@@ -78,13 +75,11 @@ public class NeoRelationshipContentProvider implements IGraphContentProvider
         }
     }
 
-    @Override
     public void dispose()
     {
         // TODO Auto-generated method stub
     }
 
-    @Override
     public void inputChanged( Viewer viewer, Object oldInput, Object newInput )
     {
         // TODO Auto-generated method stub

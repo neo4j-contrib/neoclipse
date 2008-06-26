@@ -40,7 +40,7 @@ public class Activator extends AbstractUIPlugin
     /**
      * The shared instance.
      */
-    private static Activator plugin;
+    public static Activator PLUGIN;
 
     /**
      * Starts up the plug-in and initializes the neo service.
@@ -48,12 +48,11 @@ public class Activator extends AbstractUIPlugin
     public void start(BundleContext context) throws Exception
     {
         super.start(context);
-        plugin = this;
+        PLUGIN = this;
         System.out.println("testing");
-        NeoIcons.init(this);
 
         neoManager = new NeoServiceManager();
-        plugin.getPluginPreferences().addPropertyChangeListener(
+        PLUGIN.getPluginPreferences().addPropertyChangeListener(
             new IPropertyChangeListener()
             {
                 /**
@@ -91,7 +90,7 @@ public class Activator extends AbstractUIPlugin
      */
     public void stop( BundleContext context ) throws Exception
     {
-        plugin = null;
+        PLUGIN = null;
         neoManager.stopNeoService();
         super.stop( context );
     }
@@ -102,7 +101,7 @@ public class Activator extends AbstractUIPlugin
      */
     public static Activator getDefault()
     {
-        return plugin;
+        return PLUGIN;
     }
 
     /**

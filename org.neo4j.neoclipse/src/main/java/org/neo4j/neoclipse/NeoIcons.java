@@ -28,6 +28,7 @@ import org.eclipse.ui.PlatformUI;
  */
 public class NeoIcons
 {
+	
     /*
      * Some constants representing icons.
      */
@@ -59,6 +60,7 @@ public class NeoIcons
      */
     public static void init( Activator activator )
     {
+    	
         reg = activator.getImageRegistry();
         sharedImages = PlatformUI.getWorkbench().getSharedImages();
         // TODO use neo icons
@@ -102,6 +104,10 @@ public class NeoIcons
      */
     public static Image getImage( String name )
     {
+    	if(reg == null)
+    	{
+    		init(Activator.PLUGIN);
+    	}
         return reg.get( name );
     }
 
@@ -110,6 +116,10 @@ public class NeoIcons
      */
     public static ImageDescriptor getDescriptor( String name )
     {
+    	if(reg == null)
+    	{
+    		init(Activator.PLUGIN);
+    	}
         return reg.getDescriptor( name );
     }
 }

@@ -29,6 +29,7 @@ public class Application extends WorkbenchAdvisor implements IApplication {
 		System.out.println("Hello world!");
 		Display display = PlatformUI.createDisplay();
 		int returnCode = PlatformUI.createAndRunWorkbench(display, this);
+
 		if (returnCode == PlatformUI.RETURN_RESTART) {
 			return IApplication.EXIT_RESTART;
 		} else {
