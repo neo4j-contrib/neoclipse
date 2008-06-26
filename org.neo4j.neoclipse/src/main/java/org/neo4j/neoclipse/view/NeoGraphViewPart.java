@@ -43,6 +43,8 @@ import org.neo4j.neoclipse.action.IncreaseTraversalDepthAction;
 import org.neo4j.neoclipse.action.PrintGraphAction;
 import org.neo4j.neoclipse.action.RefreshAction;
 import org.neo4j.neoclipse.action.ShowGridLayoutAction;
+import org.neo4j.neoclipse.action.ShowHorizontalShiftLayoutAction;
+import org.neo4j.neoclipse.action.ShowHorizontalTreeLayoutAction;
 import org.neo4j.neoclipse.action.ShowNodeColorsAction;
 import org.neo4j.neoclipse.action.ShowNodeIconsAction;
 import org.neo4j.neoclipse.action.ShowNodeIdsAction;
@@ -262,6 +264,22 @@ public class NeoGraphViewPart extends ViewPart implements
             gridLayoutAction.setChecked( false );
             tm.appendToGroup( groupName, gridLayoutAction );
             mm.appendToGroup( groupName, gridLayoutAction );
+            // horizontal tree layout
+            ShowHorizontalTreeLayoutAction horizontalTreeLayoutAction = new ShowHorizontalTreeLayoutAction(
+                this );
+            horizontalTreeLayoutAction.setText( "Horizontal Tree Layout" );
+            horizontalTreeLayoutAction
+                .setToolTipText( "Horizontal Tree Layout" );
+            horizontalTreeLayoutAction.setChecked( false );
+            mm.appendToGroup( groupName, horizontalTreeLayoutAction );
+            // horizontal shift layout
+            ShowHorizontalShiftLayoutAction horizontalShiftLayoutAction = new ShowHorizontalShiftLayoutAction(
+                this );
+            horizontalShiftLayoutAction.setText( "Horizontal Shift Layout" );
+            horizontalShiftLayoutAction
+                .setToolTipText( "Horizontal Shift Layout" );
+            horizontalShiftLayoutAction.setChecked( false );
+            mm.appendToGroup( groupName, horizontalShiftLayoutAction );
         }
     }
 
