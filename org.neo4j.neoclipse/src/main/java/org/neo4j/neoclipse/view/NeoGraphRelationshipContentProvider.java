@@ -11,7 +11,7 @@ import org.neo4j.api.core.Direction;
 import org.neo4j.api.core.Node;
 import org.neo4j.api.core.Relationship;
 
-public class NeoRelationshipContentProvider implements IGraphContentProvider
+public class NeoGraphRelationshipContentProvider implements IGraphContentProvider
 {
     /**
      * The view.
@@ -21,7 +21,7 @@ public class NeoRelationshipContentProvider implements IGraphContentProvider
     /**
      * The constructor.
      */
-    public NeoRelationshipContentProvider( NeoGraphViewPart view )
+    public NeoGraphRelationshipContentProvider( NeoGraphViewPart view )
     {
         this.view = view;
     }

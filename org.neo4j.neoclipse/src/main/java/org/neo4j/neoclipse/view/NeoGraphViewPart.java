@@ -99,7 +99,7 @@ public class NeoGraphViewPart extends ViewPart implements
     public void createPartControl( Composite parent )
     {
         viewer = new GraphViewer( parent, SWT.NONE );
-        viewer.setContentProvider( new NeoRelationshipContentProvider( this ) );
+        viewer.setContentProvider( new NeoGraphRelationshipContentProvider( this ) );
         viewer.setLabelProvider( new NeoGraphLabelProvider() );
         viewer.addDoubleClickListener( new NeoGraphDoubleClickListener() );
         viewer.setLayoutAlgorithm( new SpringLayoutAlgorithm(
@@ -134,16 +134,17 @@ public class NeoGraphViewPart extends ViewPart implements
             mm.add( new Separator() );
         }
         // label settings actions
-        constributeLabelActions( mm );
+        contributeLabelActions( mm );
         // printing
         getViewSite().getActionBars().setGlobalActionHandler(
             ActionFactory.PRINT.getId(), new PrintGraphAction( this ) );
     }
 
     /**
-     * @param mm
+     * Add label actions to menu.
+     * @param mm current menu manager
      */
-    private void constributeLabelActions( IMenuManager mm )
+    private void contributeLabelActions( IMenuManager mm )
     {
         {
             String labelsGroupName = "labels";
@@ -209,8 +210,9 @@ public class NeoGraphViewPart extends ViewPart implements
     }
 
     /**
-     * @param tm
-     * @param mm
+     * Add layout actions to the menu and toolbar.
+     * @param tm current tool bar manager
+     * @param mm current menu manager
      */
     private void contributeLayoutActions( IToolBarManager tm, IMenuManager mm )
     {
@@ -279,7 +281,8 @@ public class NeoGraphViewPart extends ViewPart implements
     }
 
     /**
-     * @param tm
+     * Add zoom actions to the tool bar.
+     * @param tm current tool bar manager
      */
     private void contributeZoomActions( IToolBarManager tm )
     {
@@ -295,7 +298,8 @@ public class NeoGraphViewPart extends ViewPart implements
     }
 
     /**
-     * @param tm
+     * Add traversal depth actions to the tool bar.
+     * @param tm current tool bar manager
      */
     private void contributeRecursionLevelActions( IToolBarManager tm )
     {
@@ -322,7 +326,8 @@ public class NeoGraphViewPart extends ViewPart implements
     }
 
     /**
-     * @param tm
+     * Add standard actions to the tool bar. (home , refresh)
+     * @param tm current tool bar manager
      */
     private void contributeStandardActions( IToolBarManager tm )
     {
