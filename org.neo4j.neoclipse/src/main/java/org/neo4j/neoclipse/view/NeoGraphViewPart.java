@@ -85,10 +85,6 @@ public class NeoGraphViewPart extends ViewPart implements
      */
     protected GraphViewer viewer;
     /**
-     * Label provider for the graph.
-     */
-    protected NeoGraphLabelProvider labelProvider;
-    /**
      * The decrease traversal depth action.
      */
     protected DecreaseTraversalDepthAction decAction;
@@ -104,8 +100,7 @@ public class NeoGraphViewPart extends ViewPart implements
     {
         viewer = new GraphViewer( parent, SWT.NONE );
         viewer.setContentProvider( new NeoRelationshipContentProvider( this ) );
-        labelProvider = new NeoGraphLabelProvider();
-        viewer.setLabelProvider( labelProvider );
+        viewer.setLabelProvider( new NeoGraphLabelProvider() );
         viewer.addDoubleClickListener( new NeoGraphDoubleClickListener() );
         viewer.setLayoutAlgorithm( new SpringLayoutAlgorithm(
             LayoutStyles.NO_LAYOUT_NODE_RESIZING ) );
@@ -612,91 +607,12 @@ public class NeoGraphViewPart extends ViewPart implements
     }
 
     /**
-     * Show relationship types in the graph, or hide them.
-     * @param checked
-     *            true to show, false to hide
+     * Get label provider.
+     * @return current label provider
      */
-    public void showRelationshipTypes( boolean checked )
+    public NeoGraphLabelProvider getLabelProvider()
     {
-        labelProvider.setShowRelationshipTypes( checked );
-        this.refreshPreserveLayout();
-    }
-
-    /**
-     * Show relationship id in the graph, or hide them.
-     * @param checked
-     *            true to show, false to hide
-     */
-    public void showRelationshipIds( boolean checked )
-    {
-        labelProvider.setShowRelationshipIds( checked );
-        this.refreshPreserveLayout();
-    }
-
-    /**
-     * Show relationship colors in the graph, or hide them.
-     * @param checked
-     *            true to show, false to hide
-     */
-    public void showRelationshipColors( boolean checked )
-    {
-        labelProvider.setShowRelationshipColors( checked );
-        this.refreshPreserveLayout();
-    }
-
-    /**
-     * Show arrows in the graph, or hide them.
-     * @param checked
-     *            true to show, false to hide
-     */
-    public void showArrows( boolean checked )
-    {
-        labelProvider.setShowArrows( checked );
-        this.refreshPreserveLayout();
-    }
-
-    /**
-     * Show node names in the graph, or hide them.
-     * @param checked
-     *            true to show, false to hide
-     */
-    public void showNames( boolean checked )
-    {
-        labelProvider.setShowNames( checked );
-        this.refreshPreserveLayout();
-    }
-
-    /**
-     * Show node id in the graph, or hide them.
-     * @param checked
-     *            true to show, false to hide
-     */
-    public void showNodeIds( boolean checked )
-    {
-        labelProvider.setShowNodeIds( checked );
-        this.refreshPreserveLayout();
-    }
-
-    /**
-     * Show node icons in the graph, or hide them.
-     * @param checked
-     *            true to show, false to hide
-     */
-    public void showNodeIcons( boolean checked )
-    {
-        labelProvider.setShowNodeIcons( checked );
-        this.refreshPreserveLayout();
-    }
-
-    /**
-     * Show node colors in the graph, or hide them.
-     * @param checked
-     *            true to show, false to hide
-     */
-    public void showNodeColors( boolean checked )
-    {
-        labelProvider.setShowNodeColors( checked );
-        this.refreshPreserveLayout();
+        return (NeoGraphLabelProvider) viewer.getLabelProvider();
     }
 
     /**

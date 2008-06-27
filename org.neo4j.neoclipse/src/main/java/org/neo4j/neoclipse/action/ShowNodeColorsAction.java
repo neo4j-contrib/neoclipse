@@ -47,6 +47,7 @@ public class ShowNodeColorsAction extends Action
      */
     public void run()
     {
-        view.showNodeColors( this.isChecked() );
+        view.getLabelProvider().setShowNodeColors( isChecked() );
+        view.refreshPreserveLayout();
     }
 }

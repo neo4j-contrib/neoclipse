@@ -48,6 +48,7 @@ public class ShowRelationshipTypesAction extends Action
      */
     public void run()
     {
-        view.showRelationshipTypes( this.isChecked() );
+        view.getLabelProvider().setShowRelationshipTypes( isChecked() );
+        view.refreshPreserveLayout();
     }
 }

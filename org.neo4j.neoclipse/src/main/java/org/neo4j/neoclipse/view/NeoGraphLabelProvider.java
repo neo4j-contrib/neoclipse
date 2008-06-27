@@ -130,7 +130,7 @@ public class NeoGraphLabelProvider extends LabelProvider implements
     /**
      * Keep track of node names display on/off.
      */
-    private boolean showNames = ShowNodeNamesAction.DEFAULT_STATE;
+    private boolean showNodeNames = ShowNodeNamesAction.DEFAULT_STATE;
     /**
      * Keep track of node icons display on/off.
      */
@@ -227,7 +227,7 @@ public class NeoGraphLabelProvider extends LabelProvider implements
         if ( element instanceof Node )
         {
             Node node = (Node) element;
-            if ( !showNames || nodePropertyNames.size() == 0 )
+            if ( !showNodeNames || nodePropertyNames.size() == 0 )
             {
                 // don't look for the default property
                 if ( node.getId() == 0 )
@@ -332,7 +332,7 @@ public class NeoGraphLabelProvider extends LabelProvider implements
      */
     public void setShowRelationshipTypes( boolean state )
     {
-        this.showRelationshipTypes = state;
+        showRelationshipTypes = state;
     }
 
     /**
@@ -342,7 +342,7 @@ public class NeoGraphLabelProvider extends LabelProvider implements
      */
     public void setShowRelationshipIds( boolean state )
     {
-        this.showRelationshipIds = state;
+        showRelationshipIds = state;
     }
 
     /**
@@ -352,7 +352,7 @@ public class NeoGraphLabelProvider extends LabelProvider implements
      */
     public void setShowRelationshipColors( boolean state )
     {
-        this.showRelationshipColors = state;
+        showRelationshipColors = state;
     }
 
     /**
@@ -362,7 +362,7 @@ public class NeoGraphLabelProvider extends LabelProvider implements
      */
     public void setShowArrows( boolean state )
     {
-        this.showArrows = state;
+        showArrows = state;
     }
 
     /**
@@ -372,7 +372,7 @@ public class NeoGraphLabelProvider extends LabelProvider implements
      */
     public void setShowNodeIds( boolean state )
     {
-        this.showNodeIds = state;
+        showNodeIds = state;
     }
 
     /**
@@ -380,9 +380,9 @@ public class NeoGraphLabelProvider extends LabelProvider implements
      * @param state
      *            set true to display
      */
-    public void setShowNames( boolean state )
+    public void setShowNodeNames( boolean state )
     {
-        this.showNames = state;
+        showNodeNames = state;
     }
 
     /**
@@ -392,7 +392,7 @@ public class NeoGraphLabelProvider extends LabelProvider implements
      */
     public void setShowNodeIcons( boolean state )
     {
-        this.showNodeIcons = state;
+        showNodeIcons = state;
     }
 
     /**
@@ -402,7 +402,7 @@ public class NeoGraphLabelProvider extends LabelProvider implements
      */
     public void setShowNodeColors( boolean state )
     {
-        this.showNodeColors = state;
+        showNodeColors = state;
     }
 
     public Color getColor( Object rel )

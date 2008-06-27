@@ -48,6 +48,7 @@ public class ShowNodeIdsAction extends Action
      */
     public void run()
     {
-        view.showNodeIds( this.isChecked() );
+        view.getLabelProvider().setShowNodeIds( isChecked() );
+        view.refreshPreserveLayout();
     }
 }

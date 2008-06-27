@@ -71,7 +71,7 @@ public class NeoPropertyDescriptor implements IPropertyDescriptor
         PropertyHandler propertyHandler = NeoPropertyTransform.handlerMap.get( cls );
         if ( propertyHandler != null )
         {
-            this.editorType = propertyHandler.getEditorType();
+            editorType = propertyHandler.getEditorType();
         }
     }
 

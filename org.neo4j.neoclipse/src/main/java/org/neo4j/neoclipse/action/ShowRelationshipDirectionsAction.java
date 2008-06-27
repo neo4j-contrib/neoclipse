@@ -49,6 +49,7 @@ public class ShowRelationshipDirectionsAction extends Action
      */
     public void run()
     {
-        view.showArrows( this.isChecked() );
+        view.getLabelProvider().setShowArrows( isChecked() );
+        view.refreshPreserveLayout();
     }
 }

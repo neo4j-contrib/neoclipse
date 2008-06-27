@@ -49,6 +49,7 @@ public class ShowRelationshipIdsAction extends Action
      */
     public void run()
     {
-        view.showRelationshipIds( this.isChecked() );
+        view.getLabelProvider().setShowRelationshipIds( isChecked() );
+        view.refreshPreserveLayout();
     }
 }

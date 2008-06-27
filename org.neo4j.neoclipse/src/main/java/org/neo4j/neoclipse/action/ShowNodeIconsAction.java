@@ -47,6 +47,7 @@ public class ShowNodeIconsAction extends Action
      */
     public void run()
     {
-        view.showNodeIcons( this.isChecked() );
+        view.getLabelProvider().setShowNodeIcons( isChecked() );
+        view.refreshPreserveLayout();
     }
 }
