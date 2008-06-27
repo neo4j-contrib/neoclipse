@@ -151,7 +151,7 @@ public class VehicleAssembly extends NeoclipseExample
         for ( Relationship rel : node.getRelationships( Direction.OUTGOING ) )
         {
             sum += getCost( rel.getEndNode() )
-                * ((Integer) rel.getProperty( QUANTITY ));
+                * ((Integer) rel.getProperty( QUANTITY, 1 ));
         }
         return sum;
     }

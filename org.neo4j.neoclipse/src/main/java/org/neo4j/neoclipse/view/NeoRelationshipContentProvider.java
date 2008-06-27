@@ -50,7 +50,6 @@ public class NeoRelationshipContentProvider implements IGraphContentProvider
     private void getElements( Node node, Map<Long,Relationship> rels,
         Set<Long> nodes, int depth )
     {
-        nodes.add( node.getId() );
         if ( depth > 0 )
         {
             for ( Relationship r : node.getRelationships( Direction.BOTH ) )
@@ -72,6 +71,10 @@ public class NeoRelationshipContentProvider implements IGraphContentProvider
                     }
                 }
             }
+        }
+        else
+        {
+            nodes.add( node.getId() );            
         }
     }
 
