@@ -99,7 +99,7 @@ public class NeoGraphViewPart extends ViewPart implements
     public void createPartControl( Composite parent )
     {
         viewer = new GraphViewer( parent, SWT.NONE );
-        viewer.setContentProvider( new NeoGraphRelationshipContentProvider(
+        viewer.setContentProvider( new NeoGraphContentProvider(
             this ) );
         viewer.setLabelProvider( new NeoGraphLabelProvider() );
         viewer.addDoubleClickListener( new NeoGraphDoubleClickListener() );
