@@ -21,12 +21,12 @@
 			</arguments>
 		</buildCommand>
 		<buildCommand>
-			<name>org.maven.ide.eclipse.maven2Builder</name>
+			<name>net.sf.eclipsensis.installoptions.InstallOptionsBuilder</name>
 			<arguments>
 			</arguments>
 		</buildCommand>
 		<buildCommand>
-			<name>net.sf.eclipsensis.installoptions.InstallOptionsBuilder</name>
+			<name>org.maven.ide.eclipse.maven2Builder</name>
 			<arguments>
 			</arguments>
 		</buildCommand>

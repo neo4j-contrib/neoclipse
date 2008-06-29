@@ -5,7 +5,7 @@
          point="org.eclipse.ui.views">
       <category
             id="org.neo4j.neoclipse.NeoCategory"
-            name="Neoclipse">
+            name="Neo">
       </category>
       <view
             allowMultiple="false"
@@ -13,7 +13,7 @@
             class="org.neo4j.neoclipse.view.NeoGraphViewPart"
             icon="icons/obj16/neo.ico"
             id="org.neo4j.neoclipse.view.NeoGraphViewPart"
-            name="Neoclipse Graph">
+            name="Neo Graph">
       </view>
    </extension>
    <extension
@@ -25,10 +25,10 @@
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
-            category="org.neo4j.neoclipse.preference.NeoPreferencePage"
+            category="Neo"
             class="org.neo4j.neoclipse.preference.NeoPreferencePage"
             id="org.neo4j.neoclipse.preference.NeoPreferencePage"
-            name="Neoclipse">
+            name="Neo">
       </page>
    </extension>
    <extension
@@ -37,23 +37,23 @@
             class="org.neo4j.neoclipse.perspective.NeoPerspectiveFactory"
             icon="icons/obj16/neo.ico"
             id="org.neo4j.neoclipse.NeoPerspective"
-            name="Neoclipse">
+            name="Neo">
       </perspective>
    </extension>
    
-	<extension
-		id="application"
-		point="org.eclipse.core.runtime.applications">
-		<application
+    <extension
+        id="application"
+        point="org.eclipse.core.runtime.applications">
+        <application
         cardinality="singleton-global"
         thread="any"
         visible="true">
-			<run
-				class="org.neo4j.neoclipse.Application">
-			</run>
-		</application>
-	</extension> 
-	<extension id="neoclipseProduct" point="org.eclipse.core.runtime.products">
+            <run
+                class="org.neo4j.neoclipse.Application">
+            </run>
+        </application>
+    </extension> 
+    <extension id="neoclipseProduct" point="org.eclipse.core.runtime.products">
      <product name="Neoclipse Product" application="org.neo4j.neoclipse.application" description="Description">
         <property
               name="appName"
@@ -61,7 +61,7 @@
         </property>
         <property
               name="aboutText"
-              value="Graph database tool">
+              value="%productBlurb">
         </property>
         <property
               name="startupForegroundColor"

@@ -14,7 +14,7 @@
     <dependency>
          <groupId>org.neo4j</groupId>
          <artifactId>neo</artifactId>
-         <version>1.0-b7-SNAPSHOT</version>
+         <version>1.0-b6</version>
       </dependency>
     <dependency>
          <groupId>org.neo4j</groupId>
@@ -22,35 +22,35 @@
          <version>1.0-b6</version>
       </dependency>
       <dependency>
-	     <groupId>org.eclipse.zest</groupId>
-	     <artifactId>core</artifactId>
-	     <version>1.0.0</version>
-	     <scope>provided</scope>
-	  </dependency>
-	  <dependency>
-	     <groupId>org.eclipse.zest</groupId>
-	     <artifactId>layouts</artifactId>
-	     <version>1.0.0</version>
-	     <scope>provided</scope>
-	  </dependency>
-	  <dependency>
-	     <groupId>org.eclipse.ui</groupId>
-	     <artifactId>views</artifactId>
-	     <version>3.3.0</version>
-	     <scope>provided</scope>
-	  </dependency>
-	  <dependency>
-	     <groupId>org.eclipse</groupId>
-	     <artifactId>gef</artifactId>
-	     <version>3.4.0</version>
-	     <scope>provided</scope>
-	  </dependency>
-	  <dependency>
-	     <groupId>junit</groupId>
-	     <artifactId>junit</artifactId>
-	     <version>4.3.1</version>
-	     <scope>test</scope>
-	  </dependency>
+         <groupId>org.eclipse.zest</groupId>
+         <artifactId>core</artifactId>
+         <version>1.0.0</version>
+         <scope>provided</scope>
+      </dependency>
+      <dependency>
+         <groupId>org.eclipse.zest</groupId>
+         <artifactId>layouts</artifactId>
+         <version>1.0.0</version>
+         <scope>provided</scope>
+      </dependency>
+      <dependency>
+         <groupId>org.eclipse.ui</groupId>
+         <artifactId>views</artifactId>
+         <version>3.3.0</version>
+         <scope>provided</scope>
+      </dependency>
+      <dependency>
+         <groupId>org.eclipse</groupId>
+         <artifactId>gef</artifactId>
+         <version>3.4.0</version>
+         <scope>provided</scope>
+      </dependency>
+      <dependency>
+         <groupId>junit</groupId>
+         <artifactId>junit</artifactId>
+         <version>4.3.1</version>
+         <scope>test</scope>
+      </dependency>
   </dependencies>
   <build>
     <resources>
@@ -68,7 +68,7 @@
         <artifactId>maven-bundle-plugin</artifactId>
         <extensions>true</extensions>
         <configuration>
-		  <instructions>
+          <instructions>
             <Embed-Dependency>neo|shell|jta;scope=compile|runtime;inline=false</Embed-Dependency>
             <Embed-Transitive>true</Embed-Transitive>
             <Import-Package>!sun.*,*</Import-Package>
@@ -132,10 +132,10 @@
         </activation>
         <dependencies>
           <dependency>
-	        <groupId>org.eclipse.swt.carbon</groupId>
-	        <artifactId>macosx</artifactId>
-	        <version>3.4.0</version>
-	      </dependency>
+            <groupId>org.eclipse.swt.carbon</groupId>
+            <artifactId>macosx</artifactId>
+            <version>3.4.0</version>
+          </dependency>
         </dependencies>
     </profile>
     <profile>
