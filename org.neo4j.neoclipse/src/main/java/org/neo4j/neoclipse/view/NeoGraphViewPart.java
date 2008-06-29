@@ -1,15 +1,15 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with this
- * work for additional information regarding copyright ownership. The ASF
- * licenses this file to You under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law
- * or agreed to in writing, software distributed under the License is
- * distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied. See the License for the specific language
- * governing permissions and limitations under the License.
+ * Licensed to "Neo Technology," Network Engine for Objects in Lund AB
+ * (http://neotechnology.com) under one or more contributor license agreements.
+ * See the NOTICE file distributed with this work for additional information
+ * regarding copyright ownership. Neo Technology licenses this file to you under
+ * the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License
+ * at (http://www.apache.org/licenses/LICENSE-2.0). Unless required by
+ * applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS
+ * OF ANY KIND, either express or implied. See the License for the specific
+ * language governing permissions and limitations under the License.
  */
 package org.neo4j.neoclipse.view;
 
@@ -99,7 +99,8 @@ public class NeoGraphViewPart extends ViewPart implements
     public void createPartControl( Composite parent )
     {
         viewer = new GraphViewer( parent, SWT.NONE );
-        viewer.setContentProvider( new NeoGraphRelationshipContentProvider( this ) );
+        viewer.setContentProvider( new NeoGraphRelationshipContentProvider(
+            this ) );
         viewer.setLabelProvider( new NeoGraphLabelProvider() );
         viewer.addDoubleClickListener( new NeoGraphDoubleClickListener() );
         viewer.setLayoutAlgorithm( new SpringLayoutAlgorithm(
@@ -142,7 +143,8 @@ public class NeoGraphViewPart extends ViewPart implements
 
     /**
      * Add label actions to menu.
-     * @param mm current menu manager
+     * @param mm
+     *            current menu manager
      */
     private void contributeLabelActions( IMenuManager mm )
     {
@@ -211,8 +213,10 @@ public class NeoGraphViewPart extends ViewPart implements
 
     /**
      * Add layout actions to the menu and toolbar.
-     * @param tm current tool bar manager
-     * @param mm current menu manager
+     * @param tm
+     *            current tool bar manager
+     * @param mm
+     *            current menu manager
      */
     private void contributeLayoutActions( IToolBarManager tm, IMenuManager mm )
     {
@@ -282,7 +286,8 @@ public class NeoGraphViewPart extends ViewPart implements
 
     /**
      * Add zoom actions to the tool bar.
-     * @param tm current tool bar manager
+     * @param tm
+     *            current tool bar manager
      */
     private void contributeZoomActions( IToolBarManager tm )
     {
@@ -299,7 +304,8 @@ public class NeoGraphViewPart extends ViewPart implements
 
     /**
      * Add traversal depth actions to the tool bar.
-     * @param tm current tool bar manager
+     * @param tm
+     *            current tool bar manager
      */
     private void contributeRecursionLevelActions( IToolBarManager tm )
     {
@@ -327,7 +333,8 @@ public class NeoGraphViewPart extends ViewPart implements
 
     /**
      * Add standard actions to the tool bar. (home , refresh)
-     * @param tm current tool bar manager
+     * @param tm
+     *            current tool bar manager
      */
     private void contributeStandardActions( IToolBarManager tm )
     {

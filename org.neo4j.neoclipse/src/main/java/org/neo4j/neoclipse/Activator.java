@@ -1,18 +1,15 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Licensed to "Neo Technology," Network Engine for Objects in Lund AB
+ * (http://neotechnology.com) under one or more contributor license agreements.
+ * See the NOTICE file distributed with this work for additional information
+ * regarding copyright ownership. Neo Technology licenses this file to you under
+ * the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License
+ * at (http://www.apache.org/licenses/LICENSE-2.0). Unless required by
+ * applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS
+ * OF ANY KIND, either express or implied. See the License for the specific
+ * language governing permissions and limitations under the License.
  */
 package org.neo4j.neoclipse;
 
@@ -45,23 +42,22 @@ public class Activator extends AbstractUIPlugin
     /**
      * Starts up the plug-in and initializes the neo service.
      */
-    public void start(BundleContext context) throws Exception
+    public void start( BundleContext context ) throws Exception
     {
-        super.start(context);
+        super.start( context );
         PLUGIN = this;
-        System.out.println("testing");
-
+        System.out.println( "testing" );
         neoManager = new NeoServiceManager();
         PLUGIN.getPluginPreferences().addPropertyChangeListener(
             new IPropertyChangeListener()
             {
                 /**
-                 * Handles neo property change events 
+                 * Handles neo property change events
                  */
-                public void propertyChange(PropertyChangeEvent event)
+                public void propertyChange( PropertyChangeEvent event )
                 {
                     String property = event.getProperty();
-                    if (NeoPreferences.DATABASE_LOCATION.equals(property))
+                    if ( NeoPreferences.DATABASE_LOCATION.equals( property ) )
                     {
                         // restart neo with the new location
                         neoManager.stopNeoService();
@@ -69,20 +65,23 @@ public class Activator extends AbstractUIPlugin
                         // throw away old relationship colors
                         NeoGraphLabelProvider.refreshRelationshipColors();
                     }
-                    else if (NeoPreferences.NODE_PROPERTY_NAMES.equals(property))
+                    else if ( NeoPreferences.NODE_PROPERTY_NAMES
+                        .equals( property ) )
                     {
                         NeoGraphLabelProvider.readNodePropertyNames();
                     }
-                    else if (NeoPreferences.NODE_ICON_LOCATION.equals(property))
+                    else if ( NeoPreferences.NODE_ICON_LOCATION
+                        .equals( property ) )
                     {
                         NeoGraphLabelProvider.readNodeIconLocation();
                     }
-                    else if (NeoPreferences.NODE_ICON_PROPERTY_NAMES.equals(property))
+                    else if ( NeoPreferences.NODE_ICON_PROPERTY_NAMES
+                        .equals( property ) )
                     {
                         NeoGraphLabelProvider.readNodeIconPropertyNames();
                     }
-                }});
-
+                }
+            } );
     }
 
     /**
