@@ -34,7 +34,7 @@ public class NeoUserIcons
      * Image file extensions to look for.
      */
     public final String[] extensions = new String[] { "png", "gif", "ico",
-        "bmp" };
+        "bmp", "jpg", "jpeg", "tif", "tiff" };
     /**
      * The images.
      */
