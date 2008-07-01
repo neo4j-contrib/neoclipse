@@ -13,6 +13,7 @@
  */
 package examples.vehicleAssembly;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.neo4j.api.core.Direction;
 import org.neo4j.api.core.Node;
@@ -38,6 +39,12 @@ public class VehicleAssembly extends NeoclipseExample
     private static final String NODE_TYPE = "NODE_TYPE";
     private static final String COST = "COST";
     private static final String QUANTITY = "QUANTITY";
+
+    @BeforeClass
+    public static void copyIcons()
+    {
+        NeoclipseExample.copyIcons( "vehicleAssembly" );
+    }
 
     @Test
     public void createTrike()

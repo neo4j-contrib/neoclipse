@@ -13,6 +13,7 @@
  */
 package examples.animals;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.neo4j.api.core.Direction;
 import org.neo4j.api.core.Node;
@@ -36,6 +37,12 @@ public class Animals extends NeoclipseExample
     private static final String NT_RACE = "race";
     private static final String NAME = "NAME";
     private static final String NODE_TYPE = "NODE_TYPE";
+
+    @BeforeClass
+    public static void copyIcons()
+    {
+        NeoclipseExample.copyIcons( "animals" );
+    }
 
     @Test
     public void createAnimals()
