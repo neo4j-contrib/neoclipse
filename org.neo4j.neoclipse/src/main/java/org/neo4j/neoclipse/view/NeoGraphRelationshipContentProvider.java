@@ -13,10 +13,8 @@
  */
 package org.neo4j.neoclipse.view;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
 import java.util.Set;
-import java.util.TreeSet;
 
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.zest.core.viewers.IGraphContentProvider;
@@ -47,10 +45,10 @@ public class NeoGraphRelationshipContentProvider implements
 
     public Object[] getElements( Object input )
     {
-        Map<Long,Relationship> rels = new HashMap<Long,Relationship>();
-        Set<Long> nodes = new TreeSet<Long>();
+        Set<Relationship> rels = new HashSet<Relationship>();
+        Set<Node> nodes = new HashSet<Node>();
         getElements( (Node) input, rels, nodes, view.getTraversalDepth() );
-        return rels.values().toArray();
+        return rels.toArray();
     }
 
     public Object getSource( Object rel )
@@ -61,16 +59,16 @@ public class NeoGraphRelationshipContentProvider implements
     /**
      * Determines the connected nodes within the given traversal depth.
      */
-    private void getElements( Node node, Map<Long,Relationship> rels,
-        Set<Long> nodes, int depth )
+    private void getElements( Node node, Set<Relationship> rels,
+        Set<Node> nodes, int depth )
     {
         if ( depth > 0 )
         {
             for ( Relationship r : node.getRelationships( Direction.BOTH ) )
             {
-                if ( !rels.containsKey( r.getId() ) )
+                if ( !rels.contains( r ) )
                 {
-                    rels.put( r.getId(), r );
+                    rels.add( r );
                     Node other = r.getOtherNode( node );
                     getElements( other, rels, nodes, depth - 1 );
                     if ( depth == 1 )
@@ -78,10 +76,10 @@ public class NeoGraphRelationshipContentProvider implements
                         for ( Relationship otherRel : other
                             .getRelationships( Direction.BOTH ) )
                         {
-                            if ( nodes.contains( otherRel.getOtherNode( other )
-                                .getId() ) )
+                            if ( nodes
+                                .contains( otherRel.getOtherNode( other ) ) )
                             {
-                                rels.put( otherRel.getId(), otherRel );
+                                rels.add( otherRel );
                             }
                         }
                     }
@@ -90,7 +88,7 @@ public class NeoGraphRelationshipContentProvider implements
         }
         else
         {
-            nodes.add( node.getId() );
+            nodes.add( node );
         }
     }
 
