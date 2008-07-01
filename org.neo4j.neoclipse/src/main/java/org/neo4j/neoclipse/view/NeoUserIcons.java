@@ -36,6 +36,18 @@ public class NeoUserIcons
     public final String[] extensions = new String[] { "png", "gif", "ico",
         "bmp", "jpg", "jpeg", "tif", "tiff" };
     /**
+     * Last modified value of icons directory.
+     */
+    private long lastModified = 0;
+    /**
+     * Last icon location.
+     */
+    private String iconLocation = "";
+    /**
+     * Contents of the icon directory.
+     */
+    String[] dirContents = null;
+    /**
      * The images.
      */
     protected Map<String,Image> images = new HashMap<String,Image>();
@@ -46,20 +58,46 @@ public class NeoUserIcons
      */
     public Image getImage( String name, String location )
     {
-        Image img = images.get( name );
-        if ( img == null )
+        if ( name == null || name.trim() == "" )
         {
-            String imgFileName = location
-                + System.getProperty( "file.separator" ) + name + ".";
+            return null; // don't care for now
+        }
+        Image img = images.get( name );
+        if ( img != null )
+        {
+            return img;
+        }
+        if ( !location.equals( iconLocation ) )
+        {
+            iconLocation = location;
+            lastModified = 0;
+        }
+        File directory = new File( location );
+        if ( !directory.exists() || !directory.isDirectory() )
+        {
+            return null; // this sholdn't happen
+        }
+        if ( directory.lastModified() != lastModified )
+        {
+            dirContents = directory.list();
+            lastModified = directory.lastModified();
+        }
+        for ( String fileName : dirContents )
+        {
+            if ( fileName.charAt( 0 ) != name.charAt( 0 ) )
+            {
+                continue;
+            }
             for ( String imgExt : extensions )
             {
-                String fullFileName = imgFileName + imgExt;
-                File file = new File( fullFileName );
-                if ( file.exists() )
+                if ( fileName.equals( name + "." + imgExt )
+                    || fileName.equals( name + "." + imgExt.toUpperCase() ) )
                 {
-                    img = new Image( Display.getDefault(), fullFileName );
+                    String imgFileName = location
+                        + System.getProperty( "file.separator" ) + fileName;
+                    img = new Image( Display.getDefault(), imgFileName );
                     images.put( name, img );
-                    break;
+                    return img;
                 }
             }
         }
