@@ -44,8 +44,8 @@ public class Roles extends NeoclipseExample
         NeoclipseExample.copyIcons( "roles" );
     }
 
-    @Test
-    public void createRoles()
+    @BeforeClass
+    public static void createRoles()
     {
         Transaction tx = Transaction.begin();
         try
@@ -80,23 +80,23 @@ public class Roles extends NeoclipseExample
         }
     }
 
-    private Node createTopLevelGroup( String name )
+    private static Node createTopLevelGroup( String name )
     {
         return createNode( name, NT_GROUP, RoleRels.ROOT, neo
             .getReferenceNode() );
     }
 
-    private Node createGroup( String name, Node... containedIn )
+    private static Node createGroup( String name, Node... containedIn )
     {
         return createNode( name, NT_GROUP, RoleRels.CONTAINS, containedIn );
     }
 
-    private Node createUser( String name, Node... containedIn )
+    private static Node createUser( String name, Node... containedIn )
     {
         return createNode( name, NT_USER, RoleRels.CONTAINS, containedIn );
     }
 
-    private Node createNode( String name, String nodeType,
+    private static Node createNode( String name, String nodeType,
         RelationshipType relType, Node... containedIn )
     {
         Node node = neo.createNode();

@@ -46,8 +46,8 @@ public class VehicleAssembly extends NeoclipseExample
         NeoclipseExample.copyIcons( "vehicleAssembly" );
     }
 
-    @Test
-    public void createTrike()
+    @BeforeClass
+    public static void createTrike()
     {
         Transaction tx = Transaction.begin();
         try
@@ -76,7 +76,7 @@ public class VehicleAssembly extends NeoclipseExample
         }
     }
 
-    private Node createPart( String name, int cost, Node containedIn,
+    private static Node createPart( String name, int cost, Node containedIn,
         int quantity )
     {
         Node part = neo.createNode();

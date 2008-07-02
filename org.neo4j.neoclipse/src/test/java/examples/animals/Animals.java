@@ -44,8 +44,8 @@ public class Animals extends NeoclipseExample
         NeoclipseExample.copyIcons( "animals" );
     }
 
-    @Test
-    public void createAnimals()
+    @BeforeClass
+    public static void createAnimals()
     {
         Transaction tx = Transaction.begin();
         try
@@ -70,22 +70,22 @@ public class Animals extends NeoclipseExample
         }
     }
 
-    private Node createCategory( String name, Node... containedIn )
+    private static Node createCategory( String name, Node... containedIn )
     {
         return createNode( name, NT_CATEGORY, containedIn );
     }
 
-    private Node createSpecies( String name, Node... containedIn )
+    private static Node createSpecies( String name, Node... containedIn )
     {
         return createNode( name, NT_SPECIES, containedIn );
     }
 
-    private Node createRace( String name, Node... containedIn )
+    private static Node createRace( String name, Node... containedIn )
     {
         return createNode( name, NT_RACE, containedIn );
     }
 
-    private Node createNode( String name, String nodeType, Node... containedIn )
+    private static Node createNode( String name, String nodeType, Node... containedIn )
     {
         Node node = neo.createNode();
         node.setProperty( NAME, name );
@@ -100,6 +100,7 @@ public class Animals extends NeoclipseExample
     @Test
     public void getAllLivestock()
     {
+        System.out.println("List of all livestock:");
         Transaction tx = Transaction.begin();
         try
         {

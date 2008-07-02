@@ -35,8 +35,8 @@ public class CreateNodeSpace extends NeoclipseExample
         NeoclipseExample.copyIcons( "createNodeSpace" );
     }
 
-    @Test
-    public void testCreateSimpleNodeSpace()
+    @BeforeClass
+    public static void testCreateSimpleNodeSpace()
     {
         Transaction tx = Transaction.begin();
         try
@@ -98,5 +98,10 @@ public class CreateNodeSpace extends NeoclipseExample
         {
             tx.finish();
         }
+    }
+
+    @Test
+    public void dummy() throws Exception
+    {
     }
 }
