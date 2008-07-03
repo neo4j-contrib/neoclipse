@@ -115,8 +115,13 @@ public abstract class NeoclipseExample
             String[] contents = directory.list();
             for ( int i = 0; i < contents.length; i++ )
             {
-                FileChannel in = new FileInputStream( source + FILE_SEP
-                    + contents[i] ).getChannel();
+                File file = new File (source + FILE_SEP
+                    + contents[i]);
+                if (!file.isFile() || !file.canRead())
+                {
+                    continue;
+                }
+                FileChannel in = new FileInputStream( file ).getChannel();
                 FileChannel out = new FileOutputStream( dest + FILE_SEP
                     + contents[i] ).getChannel();
                 in.transferTo( 0, in.size(), out );
