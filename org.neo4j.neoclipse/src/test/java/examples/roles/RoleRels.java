@@ -21,5 +21,5 @@ import org.neo4j.api.core.RelationshipType;
  */
 public enum RoleRels implements RelationshipType
 {
-    CONTAINS, ROOT;
+    ROOT, PART_OF, MEMBER_OF;
 }

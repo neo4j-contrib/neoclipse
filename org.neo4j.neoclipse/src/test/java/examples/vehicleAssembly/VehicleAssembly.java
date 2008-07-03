@@ -32,14 +32,6 @@ import examples.NeoclipseExample;
  */
 public class VehicleAssembly extends NeoclipseExample
 {
-    private static final String NT_REFERENCE = "referenceNode";
-    private static final String NT_VEHICLE = "vehicle";
-    private static final String NT_PART = "part";
-    private static final String NAME = "NAME";
-    private static final String NODE_TYPE = "NODE_TYPE";
-    private static final String COST = "COST";
-    private static final String QUANTITY = "QUANTITY";
-
     @BeforeClass
     public static void copyIcons()
     {
@@ -53,15 +45,12 @@ public class VehicleAssembly extends NeoclipseExample
         try
         {
             Node referenceNode = neo.getReferenceNode();
-            referenceNode.setProperty( NAME, "referenceNode" );
-            referenceNode.setProperty( NODE_TYPE, NT_REFERENCE );
-            Node trike = neo.createNode();
-            trike.setProperty( NAME, "trike" );
-            trike.setProperty( NODE_TYPE, NT_VEHICLE );
-            trike.setProperty( COST, 3 );
-            referenceNode.createRelationshipTo( trike, VehicleRels.VEHICLE );
-            Node wheel = createPart( "wheel", 3, trike, 3 );
-            Node frame = createPart( "frame", 15, trike, 1 );
+            referenceNode.setProperty( "name", "referenceNode" );
+            referenceNode.setProperty( "node_type", "referenceNode" );
+            Node trike = createVehicle( "trike", 3 );
+            Node motorcycle = createVehicle( "motorcycle", 2 );
+            Node wheel = createPart( "wheel", 3, trike, 3, motorcycle, 2 );
+            Node frame = createPart( "frame", 15, trike, 1, motorcycle, 1 );
             createPart( "spoke", 1, wheel, 2 );
             Node tire = createPart( "tire", 2, wheel, 1 );
             createPart( "rim", 2, tire, 1 );
@@ -76,15 +65,30 @@ public class VehicleAssembly extends NeoclipseExample
         }
     }
 
-    private static Node createPart( String name, int cost, Node containedIn,
-        int quantity )
+    private static Node createVehicle( String name, int cost )
+    {
+        Node vehicle = neo.createNode();
+        vehicle.setProperty( "name", name );
+        vehicle.setProperty( "node_type", "vehicle" );
+        vehicle.setProperty( "cost", cost );
+        neo.getReferenceNode().createRelationshipTo( vehicle,
+            VehicleRels.HAS_VEHICLE );
+        return vehicle;
+    }
+
+    private static Node createPart( String name, int cost,
+        Object... nodesAndQuantities )
     {
         Node part = neo.createNode();
-        part.setProperty( NAME, name );
-        part.setProperty( NODE_TYPE, NT_PART );
-        part.setProperty( COST, cost );
-        containedIn.createRelationshipTo( part, VehicleRels.CONTAINS )
-            .setProperty( QUANTITY, quantity );
+        part.setProperty( "name", name );
+        part.setProperty( "node_type", "part" );
+        part.setProperty( "cost", cost );
+        for ( int i = 0; i < nodesAndQuantities.length; i += 2 )
+        {
+            ((Node) nodesAndQuantities[i]).createRelationshipTo( part,
+                VehicleRels.COMPOSED_BY ).setProperty( "quantity",
+                (Integer) nodesAndQuantities[i + 1] );
+        }
         return part;
     }
 
@@ -94,15 +98,17 @@ public class VehicleAssembly extends NeoclipseExample
         Transaction tx = Transaction.begin();
         try
         {
+            System.out.println( "Product components list" );
             for ( Relationship vehicles : neo.getReferenceNode()
                 .getRelationships( Direction.OUTGOING ) )
             {
                 Node vehicle = vehicles.getEndNode();
-                System.out.println( "Product: " + vehicle.getProperty( NAME ) );
+                System.out
+                    .println( "Product: " + vehicle.getProperty( "name" ) );
                 Traverser traverser = vehicle.traverse(
                     Traverser.Order.DEPTH_FIRST, StopEvaluator.END_OF_NETWORK,
                     ReturnableEvaluator.ALL_BUT_START_NODE,
-                    VehicleRels.CONTAINS, Direction.OUTGOING );
+                    VehicleRels.COMPOSED_BY, Direction.OUTGOING );
                 for ( Node part : traverser )
                 {
                     int depth = traverser.currentPosition().depth();
@@ -110,12 +116,13 @@ public class VehicleAssembly extends NeoclipseExample
                     {
                         System.out.print( "  " );
                     }
-                    System.out.print( part.getProperty( NAME ) );
+                    System.out.print( part.getProperty( "name" ) );
                     Relationship rel = traverser.currentPosition()
                         .lastRelationshipTraversed();
                     if ( rel != null )
                     {
-                        System.out.print( " " + rel.getProperty( QUANTITY, 0 ) );
+                        System.out
+                            .print( " " + rel.getProperty( "quantity", 0 ) );
                     }
                     System.out.println();
                 }
@@ -134,11 +141,12 @@ public class VehicleAssembly extends NeoclipseExample
         Transaction tx = Transaction.begin();
         try
         {
+            System.out.println( "Pricelist:" );
             for ( Relationship vehicles : neo.getReferenceNode()
                 .getRelationships( Direction.OUTGOING ) )
             {
                 Node vehicle = vehicles.getEndNode();
-                System.out.println( vehicle.getProperty( NAME ) + ": "
+                System.out.println( vehicle.getProperty( "name" ) + ": "
                     + getCost( vehicle ) );
             }
             tx.success();
@@ -151,11 +159,11 @@ public class VehicleAssembly extends NeoclipseExample
 
     private int getCost( Node node )
     {
-        Integer sum = (Integer) node.getProperty( COST, 0 );
+        Integer sum = (Integer) node.getProperty( "cost", 0 );
         for ( Relationship rel : node.getRelationships( Direction.OUTGOING ) )
         {
             sum += getCost( rel.getEndNode() )
-                * ((Integer) rel.getProperty( QUANTITY, 1 ));
+                * ((Integer) rel.getProperty( "quantity", 1 ));
         }
         return sum;
     }

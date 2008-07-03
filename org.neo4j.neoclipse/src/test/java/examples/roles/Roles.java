@@ -32,12 +32,6 @@ import examples.NeoclipseExample;
  */
 public class Roles extends NeoclipseExample
 {
-    private static final String NT_REFERENCE = "referenceNode";
-    private static final String NT_GROUP = "group";
-    private static final String NT_USER = "user";
-    private static final String NAME = "NAME";
-    private static final String NODE_TYPE = "NODE_TYPE";
-
     @BeforeClass
     public static void copyIcons()
     {
@@ -51,8 +45,8 @@ public class Roles extends NeoclipseExample
         try
         {
             Node referenceNode = neo.getReferenceNode();
-            referenceNode.setProperty( NAME, "referenceNode" );
-            referenceNode.setProperty( NODE_TYPE, NT_REFERENCE );
+            referenceNode.setProperty( "name", "referenceNode" );
+            referenceNode.setProperty( "node_type", "referenceNode" );
             // add the top level groups
             Node admins = createTopLevelGroup( "Admins" );
             Node users = createTopLevelGroup( "Users" );
@@ -82,29 +76,28 @@ public class Roles extends NeoclipseExample
 
     private static Node createTopLevelGroup( String name )
     {
-        return createNode( name, NT_GROUP, RoleRels.ROOT, neo
-            .getReferenceNode() );
+        return createNode( name, "group", RoleRels.ROOT, neo.getReferenceNode() );
     }
 
     private static Node createGroup( String name, Node... containedIn )
     {
-        return createNode( name, NT_GROUP, RoleRels.CONTAINS, containedIn );
+        return createNode( name, "group", RoleRels.PART_OF, containedIn );
     }
 
     private static Node createUser( String name, Node... containedIn )
     {
-        return createNode( name, NT_USER, RoleRels.CONTAINS, containedIn );
+        return createNode( name, "user", RoleRels.MEMBER_OF, containedIn );
     }
 
     private static Node createNode( String name, String nodeType,
         RelationshipType relType, Node... containedIn )
     {
         Node node = neo.createNode();
-        node.setProperty( NAME, name );
-        node.setProperty( NODE_TYPE, nodeType );
+        node.setProperty( "name", name );
+        node.setProperty( "node_type", nodeType );
         for ( Node parent : containedIn )
         {
-            parent.createRelationshipTo( node, relType );
+            node.createRelationshipTo( parent, relType );
         }
         return node;
     }
@@ -119,12 +112,12 @@ public class Roles extends NeoclipseExample
             Node admins = neo.getNodeById( 1 ); // TODO search?
             Traverser traverser = admins.traverse(
                 Traverser.Order.BREADTH_FIRST, StopEvaluator.END_OF_NETWORK,
-                ReturnableEvaluator.ALL_BUT_START_NODE, RoleRels.CONTAINS,
-                Direction.OUTGOING );
+                ReturnableEvaluator.ALL_BUT_START_NODE, RoleRels.PART_OF,
+                Direction.INCOMING, RoleRels.MEMBER_OF, Direction.INCOMING );
             for ( Node part : traverser )
             {
-                System.out.println( part.getProperty( NAME ) + " "
-                    + traverser.currentPosition().depth() );
+                System.out.println( part.getProperty( "name" ) + " "
+                    + (traverser.currentPosition().depth() - 1) );
             }
             tx.success();
         }
@@ -144,12 +137,65 @@ public class Roles extends NeoclipseExample
             Node jale = neo.getNodeById( 16 ); // TODO search?
             Traverser traverser = jale.traverse( Traverser.Order.DEPTH_FIRST,
                 StopEvaluator.END_OF_NETWORK,
-                ReturnableEvaluator.ALL_BUT_START_NODE, RoleRels.CONTAINS,
-                Direction.INCOMING );
+                ReturnableEvaluator.ALL_BUT_START_NODE, RoleRels.MEMBER_OF,
+                Direction.OUTGOING, RoleRels.PART_OF, Direction.OUTGOING );
             for ( Node part : traverser )
             {
-                System.out.println( part.getProperty( NAME ) + " "
-                    + traverser.currentPosition().depth() );
+                System.out.println( part.getProperty( "name" ) + " "
+                    + (traverser.currentPosition().depth() - 1) );
+            }
+            tx.success();
+        }
+        finally
+        {
+            tx.finish();
+        }
+    }
+
+    @Test
+    public void getAllGroups() throws Exception
+    {
+        Transaction tx = Transaction.begin();
+        try
+        {
+            System.out.println( "All groups:" );
+            Node referenceNode = neo.getReferenceNode();
+            Traverser traverser = referenceNode.traverse(
+                Traverser.Order.BREADTH_FIRST, StopEvaluator.END_OF_NETWORK,
+                ReturnableEvaluator.ALL_BUT_START_NODE, RoleRels.ROOT,
+                Direction.INCOMING, RoleRels.PART_OF, Direction.INCOMING );
+            for ( Node group : traverser )
+            {
+                System.out.println( group.getProperty( "name" ) );
+            }
+            tx.success();
+        }
+        finally
+        {
+            tx.finish();
+        }
+    }
+
+    @Test
+    public void getAllMembers() throws Exception
+    {
+        Transaction tx = Transaction.begin();
+        try
+        {
+            System.out.println( "All members:" );
+            Node referenceNode = neo.getReferenceNode();
+            Traverser traverser = referenceNode.traverse(
+                Traverser.Order.BREADTH_FIRST, StopEvaluator.END_OF_NETWORK,
+                ReturnableEvaluator.ALL_BUT_START_NODE, RoleRels.ROOT,
+                Direction.INCOMING, RoleRels.PART_OF, Direction.INCOMING,
+                RoleRels.MEMBER_OF, Direction.INCOMING );
+            for ( Node group : traverser )
+            {
+                if ( traverser.currentPosition().lastRelationshipTraversed()
+                    .isType( RoleRels.MEMBER_OF ) )
+                {
+                    System.out.println( group.getProperty( "name" ) );
+                }
             }
             tx.success();
         }

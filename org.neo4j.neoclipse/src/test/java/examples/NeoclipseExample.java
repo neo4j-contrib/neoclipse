@@ -18,6 +18,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.nio.channels.FileChannel;
 
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.neo4j.api.core.EmbeddedNeo;
@@ -80,6 +81,12 @@ public abstract class NeoclipseExample
         {
             e.printStackTrace();
         }
+    }
+    
+    @After
+    public void addNewline()
+    {
+        System.out.println();
     }
 
     private static boolean deleteDir( File directory )
