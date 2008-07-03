@@ -139,9 +139,9 @@ public class Roles extends NeoclipseExample
                 StopEvaluator.END_OF_NETWORK,
                 ReturnableEvaluator.ALL_BUT_START_NODE, RoleRels.MEMBER_OF,
                 Direction.OUTGOING, RoleRels.PART_OF, Direction.OUTGOING );
-            for ( Node part : traverser )
+            for ( Node membership : traverser )
             {
-                System.out.println( part.getProperty( "name" ) + " "
+                System.out.println( membership.getProperty( "name" ) + " "
                     + (traverser.currentPosition().depth() - 1) );
             }
             tx.success();

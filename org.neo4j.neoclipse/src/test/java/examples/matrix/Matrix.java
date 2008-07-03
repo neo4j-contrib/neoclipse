@@ -50,7 +50,8 @@ public class Matrix extends NeoclipseExample
             thomas.setProperty( "name", "Thomas Andersson" );
             thomas.setProperty( "age", 29 );
             neoNode = thomas;
-            referenceNode.createRelationshipTo( neoNode, MyRelationshipTypes.ROOT );
+            referenceNode.createRelationshipTo( neoNode,
+                MyRelationshipTypes.ROOT );
             Node trinity = neo.createNode();
             trinity.setProperty( "name", "Trinity" );
             Relationship rel = thomas.createRelationshipTo( trinity,
@@ -138,10 +139,8 @@ public class Matrix extends NeoclipseExample
     private static void findHackers( Node startNode )
     {
         System.out.println( "Hackers:" );
-        Traverser traverser = startNode.traverse(
-            Order.DEPTH_FIRST,
-            StopEvaluator.END_OF_NETWORK,
-            new ReturnableEvaluator()
+        Traverser traverser = startNode.traverse( Order.BREADTH_FIRST,
+            StopEvaluator.END_OF_NETWORK, new ReturnableEvaluator()
             {
                 public boolean isReturnableNode(
                     TraversalPosition currentPosition )
@@ -149,7 +148,7 @@ public class Matrix extends NeoclipseExample
                     Relationship rel = currentPosition
                         .lastRelationshipTraversed();
                     if ( rel != null
-                        && rel.getType().equals( MyRelationshipTypes.CODED_BY ) )
+                        && rel.isType( MyRelationshipTypes.CODED_BY ) )
                     {
                         return true;
                     }
