@@ -11,7 +11,7 @@
  * OF ANY KIND, either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-package examples.vehicleAssembly;
+package examples.warehouse;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -28,15 +28,15 @@ import examples.NeoclipseExample;
 /**
  * Example for parts inventory and assembly. Based off example in Database
  * Management Systems, 3rd edition, Raghu Ramakrishnan / Johannes Gehrke,
- * chapter 25.
+ * chapter 25. Warehouses added in this one.
  * @author Anders Nawroth
  */
-public class VehicleAssembly extends NeoclipseExample
+public class Warehouse extends NeoclipseExample
 {
     @BeforeClass
     public static void copyIcons()
     {
-        NeoclipseExample.copyIcons( "vehicleAssembly" );
+        NeoclipseExample.copyIcons( "warehouse" );
     }
 
     @BeforeClass
@@ -49,15 +49,28 @@ public class VehicleAssembly extends NeoclipseExample
             referenceNode.setProperty( "name", "referenceNode" );
             referenceNode.setProperty( "node_type", "referenceNode" );
             Node trike = createVehicle( "trike", 3 );
-            Node motorcycle = createVehicle( "motorcycle", 2 );
-            Node wheel = createPart( "wheel", 3, trike, 3, motorcycle, 2 );
-            Node frame = createPart( "frame", 15, trike, 1, motorcycle, 1 );
-            createPart( "spoke", 1, wheel, 2 );
+            Node wheel = createPart( "wheel", 3, trike, 3 );
+            Node frame = createPart( "frame", 15, trike, 1 );
+            Node spoke = createPart( "spoke", 1, wheel, 2 );
             Node tire = createPart( "tire", 2, wheel, 1 );
-            createPart( "rim", 2, tire, 1 );
-            createPart( "tube", 1, tire, 1 );
-            createPart( "seat", 4, frame, 1 );
-            createPart( "pedal", 1, frame, 1 );
+            Node rim = createPart( "rim", 2, tire, 1 );
+            Node tube = createPart( "tube", 1, tire, 1 );
+            Node seat = createPart( "seat", 4, frame, 1 );
+            Node pedal = createPart( "pedal", 1, frame, 1 );
+            // create warehouses and add stuff to them
+            Node mainWarehouse = createWarehouse( "mainstore" );
+            Node frameWarehouse = createWarehouse( "framestore" );
+            Node wheelWarehouse = createWarehouse( "wheelstore" );
+            linkPartAndWarehouse( trike, mainWarehouse, 50 );
+            linkPartAndWarehouse( wheel, wheelWarehouse, 200 );
+            linkPartAndWarehouse( frame, frameWarehouse, 30 );
+            linkPartAndWarehouse( spoke, wheelWarehouse, 70 );
+            linkPartAndWarehouse( tire, wheelWarehouse, 60 );
+            linkPartAndWarehouse( rim, frameWarehouse, 60 );
+            linkPartAndWarehouse( rim, wheelWarehouse, 100 );
+            linkPartAndWarehouse( tube, wheelWarehouse, 50 );
+            linkPartAndWarehouse( seat, frameWarehouse, 35 );
+            linkPartAndWarehouse( pedal, frameWarehouse, 30 );
             tx.success();
         }
         finally
@@ -73,7 +86,7 @@ public class VehicleAssembly extends NeoclipseExample
         vehicle.setProperty( "node_type", "vehicle" );
         vehicle.setProperty( "cost", cost );
         neo.getReferenceNode().createRelationshipTo( vehicle,
-            VehicleRels.VEHICLE );
+            WarehouseRels.VEHICLE );
         return vehicle;
     }
 
@@ -87,10 +100,28 @@ public class VehicleAssembly extends NeoclipseExample
         for ( int i = 0; i < nodesAndQuantities.length; i += 2 )
         {
             ((Node) nodesAndQuantities[i]).createRelationshipTo( part,
-                VehicleRels.COMPOSED_BY ).setProperty( "quantity",
+                WarehouseRels.COMPOSED_BY ).setProperty( "quantity",
                 (Integer) nodesAndQuantities[i + 1] );
         }
         return part;
+    }
+
+    private static Node createWarehouse( String name )
+    {
+        Node warehouse = neo.createNode();
+        warehouse.setProperty( "name", name );
+        warehouse.setProperty( "node_type", "warehouse" );
+        neo.getReferenceNode().createRelationshipTo( warehouse,
+            WarehouseRels.WAREHOUSE );
+        return warehouse;
+    }
+
+    private static void linkPartAndWarehouse( Node part, Node warehouse,
+        int quantity )
+    {
+        Relationship rel = part.createRelationshipTo( warehouse,
+            WarehouseRels.STORED_IN );
+        rel.setProperty( "quantity", quantity );
     }
 
     @Test
@@ -109,7 +140,7 @@ public class VehicleAssembly extends NeoclipseExample
                 Traverser traverser = vehicle.traverse(
                     Traverser.Order.DEPTH_FIRST, StopEvaluator.END_OF_NETWORK,
                     ReturnableEvaluator.ALL_BUT_START_NODE,
-                    VehicleRels.COMPOSED_BY, Direction.OUTGOING );
+                    WarehouseRels.COMPOSED_BY, Direction.OUTGOING );
                 for ( Node part : traverser )
                 {
                     int depth = traverser.currentPosition().depth();

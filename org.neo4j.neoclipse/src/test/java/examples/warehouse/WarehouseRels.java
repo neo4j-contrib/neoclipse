@@ -11,14 +11,14 @@
  * OF ANY KIND, either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-package examples.vehicleAssembly;
+package examples.warehouse;
 
 import org.neo4j.api.core.RelationshipType;
 
 /**
  * @author Anders Nawroth
  */
-public enum VehicleRels implements RelationshipType
+public enum WarehouseRels implements RelationshipType
 {
-    COMPOSED_BY, VEHICLE;
+    VEHICLE, COMPOSED_BY, STORED_IN, WAREHOUSE
 }
