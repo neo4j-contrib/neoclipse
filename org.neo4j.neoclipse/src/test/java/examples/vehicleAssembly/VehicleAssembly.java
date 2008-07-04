@@ -120,12 +120,7 @@ public class VehicleAssembly extends NeoclipseExample
                     System.out.print( part.getProperty( "name" ) );
                     Relationship rel = traverser.currentPosition()
                         .lastRelationshipTraversed();
-                    if ( rel != null )
-                    {
-                        System.out
-                            .print( " " + rel.getProperty( "quantity", 1 ) );
-                    }
-                    System.out.println();
+                    System.out.println( " " + rel.getProperty( "quantity", 0 ) );
                 }
             }
             tx.success();

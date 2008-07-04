@@ -131,10 +131,12 @@ public class Warehouse extends NeoclipseExample
         try
         {
             System.out.println( "Product components list" );
-            for ( Relationship vehicleRel : neo.getReferenceNode()
-                .getRelationships( Direction.OUTGOING ) )
+            Traverser vehicles = neo.getReferenceNode().traverse(
+                Traverser.Order.BREADTH_FIRST, StopEvaluator.DEPTH_ONE,
+                ReturnableEvaluator.ALL_BUT_START_NODE, WarehouseRels.VEHICLE,
+                Direction.OUTGOING );
+            for ( Node vehicle : vehicles )
             {
-                Node vehicle = vehicleRel.getEndNode();
                 System.out
                     .println( "Product: " + vehicle.getProperty( "name" ) );
                 Traverser traverser = vehicle.traverse(
@@ -151,12 +153,22 @@ public class Warehouse extends NeoclipseExample
                     System.out.print( part.getProperty( "name" ) );
                     Relationship rel = traverser.currentPosition()
                         .lastRelationshipTraversed();
-                    if ( rel != null )
+                    System.out.print( " " + rel.getProperty( "quantity", 0 )
+                        + " ( " );
+                    Traverser warehouses = part.traverse(
+                        Traverser.Order.BREADTH_FIRST, StopEvaluator.DEPTH_ONE,
+                        ReturnableEvaluator.ALL_BUT_START_NODE,
+                        WarehouseRels.STORED_IN, Direction.OUTGOING );
+                    for ( Node warehouse : warehouses )
                     {
-                        System.out
-                            .print( " " + rel.getProperty( "quantity", 1 ) );
+                        String name = (String) warehouse.getProperty( "name",
+                            "" );
+                        int quantity = (Integer) warehouses.currentPosition()
+                            .lastRelationshipTraversed().getProperty(
+                                "quantity", 0 );
+                        System.out.print( name + " " + quantity + " " );
                     }
-                    System.out.println();
+                    System.out.println( ")" );
                 }
             }
             tx.success();
@@ -174,10 +186,12 @@ public class Warehouse extends NeoclipseExample
         try
         {
             System.out.println( "Pricelist:" );
-            for ( Relationship vehicles : neo.getReferenceNode()
-                .getRelationships( Direction.OUTGOING ) )
+            Traverser vehicles = neo.getReferenceNode().traverse(
+                Traverser.Order.BREADTH_FIRST, StopEvaluator.DEPTH_ONE,
+                ReturnableEvaluator.ALL_BUT_START_NODE, WarehouseRels.VEHICLE,
+                Direction.OUTGOING );
+            for ( Node vehicle : vehicles )
             {
-                Node vehicle = vehicles.getEndNode();
                 System.out.println( vehicle.getProperty( "name" ) + ": "
                     + getCost( vehicle ) );
             }
@@ -192,12 +206,51 @@ public class Warehouse extends NeoclipseExample
     private int getCost( Node part )
     {
         int sum = (Integer) part.getProperty( "cost", 0 );
-        for ( Relationship rel : part.getRelationships( Direction.OUTGOING ) )
+        Traverser subParts = part.traverse( Traverser.Order.BREADTH_FIRST,
+            StopEvaluator.DEPTH_ONE, ReturnableEvaluator.ALL_BUT_START_NODE,
+            WarehouseRels.COMPOSED_BY, Direction.OUTGOING );
+        for ( Node subPart : subParts )
         {
-            Node subPart = rel.getEndNode();
+            Relationship rel = subParts.currentPosition()
+                .lastRelationshipTraversed();
             int quantity = (Integer) rel.getProperty( "quantity", 1 );
             sum += getCost( subPart ) * quantity;
         }
         return sum;
+    }
+
+    @Test
+    public void inventory()
+    {
+        Transaction tx = Transaction.begin();
+        try
+        {
+            System.out.println( "Inventory list" );
+            Traverser warehouses = neo.getReferenceNode().traverse(
+                Traverser.Order.BREADTH_FIRST, StopEvaluator.DEPTH_ONE,
+                ReturnableEvaluator.ALL_BUT_START_NODE,
+                WarehouseRels.WAREHOUSE, Direction.OUTGOING );
+            for ( Node warehouse : warehouses )
+            {
+                System.out.println( "Warehouse: "
+                    + warehouse.getProperty( "name" ) );
+                Traverser traverser = warehouse.traverse(
+                    Traverser.Order.BREADTH_FIRST, StopEvaluator.DEPTH_ONE,
+                    ReturnableEvaluator.ALL_BUT_START_NODE,
+                    WarehouseRels.STORED_IN, Direction.INCOMING );
+                for ( Node part : traverser )
+                {
+                    System.out.print( " " + part.getProperty( "name" ) );
+                    Relationship rel = traverser.currentPosition()
+                        .lastRelationshipTraversed();
+                    System.out.println( " " + rel.getProperty( "quantity", 0 ) );
+                }
+            }
+            tx.success();
+        }
+        finally
+        {
+            tx.finish();
+        }
     }
 }
