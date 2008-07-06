@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?NLS TYPE="org.eclipse.help.toc"?>
+
+<toc label="Reference" link_to="toc.xml#reference">
+ <topic href="html/reference/preferences.html" label="Preferences">
+ </topic> 
+	<topic label="References"  href="html/reference/references.html"> 
+	</topic>
+ <topic href="html/reference/license.html" label="License">
+ </topic>
+ <topic href="html/reference/notice.html" label="Notice">
+ </topic>
+</toc>

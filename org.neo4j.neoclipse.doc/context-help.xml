@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<contexts>
+   <context id="NeoGraphViewPart" title="The Neo Graph View">
+      <description>The graph view visualizes the nodes available in a Neo node space.</description>
+      <topic href="html/tasks/NewGraphViewPart.html" label="Using the view"/>
+      <topic href="html/concepts/NewGraphViewPart.html" label="About the view"/>
+   </context>
+   <context id="org.eclipse.ui.property_sheet_page_help_context" title="Properties ...">
+      <description>Neo properties ...</description>
+   </context>
+</contexts>
