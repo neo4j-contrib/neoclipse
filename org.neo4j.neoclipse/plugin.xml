@@ -5,7 +5,7 @@
          point="org.eclipse.ui.views">
       <category
             id="org.neo4j.neoclipse.NeoCategory"
-            name="Neo">
+            name="Neo4j">
       </category>
       <view
             allowMultiple="false"
@@ -13,7 +13,7 @@
             class="org.neo4j.neoclipse.view.NeoGraphViewPart"
             icon="icons/obj16/neo.ico"
             id="org.neo4j.neoclipse.view.NeoGraphViewPart"
-            name="Neo Graph">
+            name="Neo4j Graph">
       </view>
    </extension>
    <extension
@@ -25,10 +25,10 @@
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
-            category="Neo"
+            category="Neo4j"
             class="org.neo4j.neoclipse.preference.NeoPreferencePage"
             id="org.neo4j.neoclipse.preference.NeoPreferencePage"
-            name="Neo">
+            name="Neo4j">
       </page>
    </extension>
    <extension
@@ -37,7 +37,7 @@
             class="org.neo4j.neoclipse.perspective.NeoPerspectiveFactory"
             icon="icons/obj16/neo.ico"
             id="org.neo4j.neoclipse.NeoPerspective"
-            name="Neo">
+            name="Neo4j">
       </perspective>
    </extension>
    

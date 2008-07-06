@@ -24,8 +24,8 @@ import org.eclipse.jface.preference.StringFieldEditor;
 public class NeoPreferencePage extends AbstractPreferencePage
 {
     // database location
-    private static final String NEO_DATABASE_LOCATION_LABEL = "Neo database location:";
-    private static final String NEO_DATABASE_LOCATION_ERROR = "The Neo database location is invalid.";
+    private static final String NEO_DATABASE_LOCATION_LABEL = "Database location:";
+    private static final String NEO_DATABASE_LOCATION_ERROR = "The database location is invalid.";
     // node label properties
     private static final String NODE_LABEL_PROPERTIES_LABEL = "Node label properties:";
     private static final String PROPTERTY_NAMES_NOTE = "comma-separated list of property names; will be evaluated from left to right, and the first non-empty value is used";
