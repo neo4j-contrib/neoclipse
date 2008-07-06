@@ -25,7 +25,13 @@ import org.neo4j.api.core.EmbeddedNeo;
 import org.neo4j.api.core.NeoService;
 
 /**
- * Utility to set up a Neo4j instance for test cases.
+ * Utility to set up a Neo4j instance for test cases. We use Junit4 to run the
+ * examples. Look at the existing examples for guidance. If icons exists, they
+ * should be put in an "icons" subfolder and the copyIcons() method should be
+ * called in a @BeforeClass method. The basic setup of data should be done in a @BeforeClass
+ * as well. This base class will start (and stop) a Neo4j instance for you,
+ * found in the "neo" variable. A newline is automatically printed after each
+ * test case, to provide a little formatting.
  * @author Anders Nawroth
  */
 public abstract class NeoclipseExample
@@ -41,6 +47,9 @@ public abstract class NeoclipseExample
         + ICON_SUBDIR;
     private static final String EXAMPLES_DIR = "src" + FILE_SEP + "test"
         + FILE_SEP + "java" + FILE_SEP + "examples";
+    /**
+     * Local Neo4j instance.
+     */
     protected static NeoService neo;
 
     @BeforeClass
@@ -57,7 +66,7 @@ public abstract class NeoclipseExample
     /**
      * Method to copy icons.
      * @param exampleDir
-     *            directory name of example
+     *            subdirectory name of example
      */
     protected static void copyIcons( String exampleDir )
     {
@@ -82,7 +91,7 @@ public abstract class NeoclipseExample
             e.printStackTrace();
         }
     }
-    
+
     @After
     public void addNewline()
     {
@@ -122,9 +131,8 @@ public abstract class NeoclipseExample
             String[] contents = directory.list();
             for ( int i = 0; i < contents.length; i++ )
             {
-                File file = new File (source + FILE_SEP
-                    + contents[i]);
-                if (!file.isFile() || !file.canRead())
+                File file = new File( source + FILE_SEP + contents[i] );
+                if ( !file.isFile() || !file.canRead() )
                 {
                     continue;
                 }
