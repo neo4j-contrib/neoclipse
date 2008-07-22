@@ -6,6 +6,16 @@
   <version>1.0</version>
   <name>Neoclipse Eclipse Plugin</name>
   <dependencies>
+	<dependency>
+	      <groupId>org.eclipse.pde</groupId>
+	      <artifactId>core</artifactId>
+	      <version>[3.3.0,4.0.0)</version>
+	</dependency>
+	<dependency>
+	      <groupId>org.apache.maven.shared</groupId>
+	      <artifactId>maven-osgi</artifactId>
+	      <version>[0.1.9,)</version>
+	</dependency>
     <dependency>
       <groupId>org.apache.felix</groupId>
       <artifactId>org.osgi.core</artifactId>
@@ -14,12 +24,12 @@
     <dependency>
          <groupId>org.neo4j</groupId>
          <artifactId>neo</artifactId>
-         <version>1.0-b6</version>
+         <version>1.0-b7-SNAPSHOT</version>
       </dependency>
     <dependency>
          <groupId>org.neo4j</groupId>
          <artifactId>shell</artifactId>
-         <version>1.0-b6</version>
+         <version>1.0-b7-SNAPSHOT</version>
       </dependency>
       <dependency>
          <groupId>org.eclipse.zest</groupId>
