@@ -72,6 +72,11 @@ public class NeoGraphLabelProvider extends LabelProvider implements
     private static final Color RELATIONSHIP_COLOR = new Color( Display
         .getDefault(), new RGB( 85, 85, 85 ) );
     /**
+     * Default relationship "color" (gray).
+     */
+    private static final Color HIGHLIGHTED_RELATIONSHIP_COLOR = new Color( Display
+        .getDefault(), new RGB( 0, 0, 0 ) );
+    /**
      * Brightness of relationship stroke colors.
      */
     private static final float RELATIONSHIP_BRIGHTNESS = 0.8f;
@@ -429,7 +434,7 @@ public class NeoGraphLabelProvider extends LabelProvider implements
 
     public Color getHighlightColor( Object rel )
     {
-        return null;
+        return HIGHLIGHTED_RELATIONSHIP_COLOR;
     }
 
     public int getLineWidth( Object rel )
