@@ -81,5 +81,24 @@
         </property>
     </product>
   </extension>
+    <extension
+          point="org.eclipse.search.searchPages">
+       <page
+             class="org.neo4j.neoclipse.search.NeoSearchPage"
+             icon="icons/obj16/neo.ico"
+             id="org.neo4j.neoclipse.search.NeoSearchPage"
+             label="Neo4j Search">
+       </page>
+    </extension>
+    <extension
+          point="org.eclipse.search.searchResultViewPages">
+       <viewPage
+             class="org.neo4j.neoclipse.search.NeoSearchResultPage"
+             icon="icons/obj16/neo.ico"
+             id="org.neo4j.neoclipse.search.NeoSearchResultPage"
+             label="Neo4j Search Result"
+             searchResultClass="org.neo4j.neoclipse.search.NeoSearchResult">
+       </viewPage>
+    </extension>
  
 </plugin>
