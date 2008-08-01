@@ -190,9 +190,9 @@ public class NeoSearchQuery implements ISearchQuery
         }        
 
         // recursively follow all connections
-        for (Relationship r : node.getRelationships(Direction.OUTGOING))
+        for (Relationship r : node.getRelationships(Direction.BOTH))
         {
-            Node end = r.getEndNode();
+            Node end = r.getOtherNode( node );
 
             checkNode(end, visitedNodes, matches, monitor);
         }
