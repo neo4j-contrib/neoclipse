@@ -47,6 +47,8 @@ public class NeoSearchQuery implements ISearchQuery
      * The found matches.
      */
     private NeoSearchResult result;
+
+    private NeoService neoService;
     
     /**
      * The constructor.
@@ -105,18 +107,18 @@ public class NeoSearchQuery implements ISearchQuery
     public IStatus run(IProgressMonitor monitor)
         throws OperationCanceledException
     {
-        NeoService service = Activator.getDefault().getNeoServiceManager().getNeoService();
-        if (service == null)
+        neoService = Activator.getDefault().getNeoServiceManager().getNeoService();
+        if (neoService == null)
         {
-            return new Status(IStatus.ERROR, Activator.PLUGIN_ID, "There is no active Neo service.");
+            return new Status(IStatus.ERROR, Activator.PLUGIN_ID, "There is no active Neo4j service.");
         }
         
-        Transaction txn = service.beginTx();
+        Transaction txn = neoService.beginTx();
         try
         {
             // TODO here we should do some real search using Neo's index service
             // for now simply navigate along the graph
-            Node root = service.getReferenceNode();
+            Node root = neoService.getReferenceNode();
 
             Iterable<Node> matches = getMatchingNodes(root, monitor);
             result.setMatches(matches);
@@ -149,6 +151,22 @@ public class NeoSearchQuery implements ISearchQuery
 
         Set<Node> visitedNodes = new HashSet<Node>();
         List<Node> matches = new ArrayList<Node>();
+        
+        // try using as id, if possible
+        if (expression.isPossibleId())
+        {
+            try
+            {
+                long id = Long.parseLong( expression.getExpression() );
+                Node nodeFromId = neoService.getNodeById( id );
+                matches.add( nodeFromId );
+                visitedNodes.add( nodeFromId );
+            }
+            catch ( RuntimeException e ) // this also covers NumberFormatException
+            {
+                // do nothing
+            }
+        }
         
         checkNode(node, visitedNodes, matches, monitor);
         

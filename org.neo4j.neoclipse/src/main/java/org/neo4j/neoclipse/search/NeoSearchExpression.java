@@ -26,6 +26,7 @@ public class NeoSearchExpression
      * The compiled regular expression.
      */
     private Pattern pattern;
+    private static final Pattern idPattern = Pattern.compile( "\\d+" );
 
     /**
      * The constructor.
@@ -51,5 +52,14 @@ public class NeoSearchExpression
     public String getExpression()
     {
         return pattern.pattern();
+    }
+    
+    /**
+     * Test if the pattern could be a full node id.
+     * @return true if pattern could be a full id number
+     */
+    public boolean isPossibleId()
+    {
+        return idPattern.matcher( pattern.pattern() ).matches();
     }
 }
