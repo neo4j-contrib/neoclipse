@@ -79,7 +79,7 @@ public class NeoGraphLabelProvider extends LabelProvider implements
     /**
      * Brightness of relationship stroke colors.
      */
-    private static final float RELATIONSHIP_BRIGHTNESS = 0.8f;
+    private static final float RELATIONSHIP_BRIGHTNESS = 0.6f;
     /**
      * Saturation of relationship stroke colors.
      */
@@ -144,11 +144,11 @@ public class NeoGraphLabelProvider extends LabelProvider implements
     /**
      * Map RelationshipTypes to Colors for the graph.
      */
-    private Map<RelationshipType,Color> relationshipColors = new HashMap<RelationshipType,Color>();
+    private static Map<RelationshipType,Color> relationshipColors = new HashMap<RelationshipType,Color>();
     /**
      * Map node types to Colors for the graph.
      */
-    private Map<String,Color> nodeColors = new HashMap<String,Color>();
+    private static Map<String,Color> nodeColors = new HashMap<String,Color>();
     /**
      * Create colors for relationships.
      */

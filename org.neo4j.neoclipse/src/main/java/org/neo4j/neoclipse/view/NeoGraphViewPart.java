@@ -100,7 +100,7 @@ public class NeoGraphViewPart extends ViewPart implements
     {
         viewer = new GraphViewer( parent, SWT.NONE );
         viewer.setContentProvider( new NeoGraphContentProvider( this ) );
-        viewer.setLabelProvider( new NeoGraphLabelProvider() );
+        viewer.setLabelProvider( NeoGraphLabelProviderFactory.getLabelProvider() );
         viewer.addDoubleClickListener( new NeoGraphDoubleClickListener() );
         viewer.setLayoutAlgorithm( new SpringLayoutAlgorithm(
             LayoutStyles.NO_LAYOUT_NODE_RESIZING ) );

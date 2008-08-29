@@ -32,14 +32,13 @@ import org.neo4j.api.core.NeoService;
 import org.neo4j.api.core.Node;
 import org.neo4j.api.core.Transaction;
 import org.neo4j.neoclipse.Activator;
-import org.neo4j.neoclipse.view.NeoGraphLabelProvider;
+import org.neo4j.neoclipse.view.NeoGraphLabelProviderFactory;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**
  * This class represents a page in the search view that displays Neo search
  * results, e.g. lists of Neo nodes matching a search criteria.
- * 
- * @author	Peter H&auml;nsgen
+ * @author Peter H&auml;nsgen
  */
 public class NeoSearchResultPage extends Page implements ISearchResultPage
 {
@@ -47,7 +46,7 @@ public class NeoSearchResultPage extends Page implements ISearchResultPage
      * The id of this page.
      */
     private String id;
-    
+
     /**
      * The list of found nodes.
      */
@@ -56,13 +55,16 @@ public class NeoSearchResultPage extends Page implements ISearchResultPage
     /**
      * Creates the control
      */
-    public void createControl(Composite parent)
+    public void createControl( Composite parent )
     {
-        viewer = new TreeViewer(parent, SWT.NONE);
-        viewer.setContentProvider(new NeoSearchResultContentProvider());
+        viewer = new TreeViewer( parent, SWT.NONE );
+        viewer.setContentProvider( new NeoSearchResultContentProvider() );
         // TODO keep search result labels and graph labels separated?
-        viewer.setLabelProvider(new NeoGraphLabelProvider());
-        viewer.addDoubleClickListener(new NeoSearchResultDoubleClickListener());
+        // no, keep them together to get consistency in the GUI.
+        viewer.setLabelProvider( NeoGraphLabelProviderFactory
+            .getLabelProvider() );
+        viewer
+            .addDoubleClickListener( new NeoSearchResultDoubleClickListener() );
     }
 
     /**
@@ -78,7 +80,7 @@ public class NeoSearchResultPage extends Page implements ISearchResultPage
      */
     public void setFocus()
     {
-        if (viewer != null)
+        if ( viewer != null )
         {
             viewer.getControl().setFocus();
         }
@@ -91,11 +93,11 @@ public class NeoSearchResultPage extends Page implements ISearchResultPage
     {
         return id;
     }
-    
+
     /**
      * Sets the id.
      */
-    public void setID(String id)
+    public void setID( String id )
     {
         this.id = id;
     }
@@ -106,9 +108,10 @@ public class NeoSearchResultPage extends Page implements ISearchResultPage
     public String getLabel()
     {
         NeoSearchResult result = (NeoSearchResult) viewer.getInput();
-        if (result != null)
+        if ( result != null )
         {
-            return "Neo4j - Matches for '" + ((NeoSearchQuery) result.getQuery()).getExpression() + "'";
+            return "Neo4j - Matches for '"
+                + ((NeoSearchQuery) result.getQuery()).getExpression() + "'";
         }
         else
         {
@@ -119,40 +122,44 @@ public class NeoSearchResultPage extends Page implements ISearchResultPage
     /**
      * Sets the search result for a Neo search.
      */
-    public void setInput(ISearchResult result, Object uiState)
+    public void setInput( ISearchResult result, Object uiState )
     {
-        setInput(result);
-        
-        if (result != null)
+        setInput( result );
+
+        if ( result != null )
         {
             // observe changes in the result and update the view accordingly
-            result.addListener(new ISearchResultListener(){
-                public void searchResultChanged(final SearchResultEvent e)
-                {                    
-                    PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable()
-                    {
-                        public void run()
+            result.addListener( new ISearchResultListener()
+            {
+                public void searchResultChanged( final SearchResultEvent e )
+                {
+                    PlatformUI.getWorkbench().getDisplay().syncExec(
+                        new Runnable()
                         {
-                            setInput(e.getSearchResult());
-                        }
-                    });
-                }});
+                            public void run()
+                            {
+                                setInput( e.getSearchResult() );
+                            }
+                        } );
+                }
+            } );
         }
     }
 
     /**
      * Sets the input of the viewer.
      */
-    protected void setInput(ISearchResult result)
+    protected void setInput( ISearchResult result )
     {
-        NeoService service = Activator.getDefault().getNeoServiceManager().getNeoService();
-        if (service != null)
+        NeoService service = Activator.getDefault().getNeoServiceManager()
+            .getNeoService();
+        if ( service != null )
         {
-            Transaction txn = service.beginTx(); 
+            Transaction txn = service.beginTx();
             try
             {
-                viewer.setInput(result);
-                
+                viewer.setInput( result );
+
                 txn.success();
             }
             finally
@@ -165,10 +172,10 @@ public class NeoSearchResultPage extends Page implements ISearchResultPage
     /**
      * Sets the view.
      */
-    public void setViewPart(ISearchResultViewPart part)
+    public void setViewPart( ISearchResultViewPart part )
     {
     }
-    
+
     /**
      * Not supported.
      */
@@ -180,41 +187,43 @@ public class NeoSearchResultPage extends Page implements ISearchResultPage
     /**
      * Not supported.
      */
-    public void restoreState(IMemento memento)
+    public void restoreState( IMemento memento )
     {
     }
 
     /**
      * Not supported.
      */
-    public void saveState(IMemento memento)
+    public void saveState( IMemento memento )
     {
     }
 
     /**
      * The handler for double clicks on search result list entries.
      */
-    static class NeoSearchResultDoubleClickListener implements IDoubleClickListener
+    static class NeoSearchResultDoubleClickListener implements
+        IDoubleClickListener
     {
         /**
          * Sets the selected node as input for the graph viewer.
          */
-        public void doubleClick(DoubleClickEvent event)
+        public void doubleClick( DoubleClickEvent event )
         {
-            StructuredSelection sel = (StructuredSelection) event.getSelection();
-            
+            StructuredSelection sel = (StructuredSelection) event
+                .getSelection();
+
             Object s = sel.getFirstElement();
-            if ((s != null) && (s instanceof Node))
+            if ( (s != null) && (s instanceof Node) )
             {
                 // get the graph viewer
-                NeoGraphViewPart gv = (NeoGraphViewPart) 
-                    PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(
-                            NeoGraphViewPart.ID);
-                
+                NeoGraphViewPart gv = (NeoGraphViewPart) PlatformUI
+                    .getWorkbench().getActiveWorkbenchWindow().getActivePage()
+                    .findView( NeoGraphViewPart.ID );
+
                 // TODO if it does not exist yet - create one? how?
-                if (gv != null)
+                if ( gv != null )
                 {
-                    gv.showNode((Node) s);
+                    gv.showNode( (Node) s );
                 }
             }
         }
