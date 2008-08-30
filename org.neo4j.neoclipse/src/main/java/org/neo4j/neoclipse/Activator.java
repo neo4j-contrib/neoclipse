@@ -18,7 +18,7 @@ import org.eclipse.core.runtime.Preferences.PropertyChangeEvent;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.neo4j.neoclipse.neo.NeoServiceManager;
 import org.neo4j.neoclipse.preference.NeoPreferences;
-import org.neo4j.neoclipse.view.NeoGraphLabelProvider;
+import org.neo4j.neoclipse.view.NeoGraphLabelProviderWrapper;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -63,22 +63,26 @@ public class Activator extends AbstractUIPlugin
                         neoManager.stopNeoService();
                         neoManager.startNeoService();
                         // throw away old relationship colors
-                        NeoGraphLabelProvider.refreshRelationshipColors();
+                        NeoGraphLabelProviderWrapper.getInstance()
+                            .refreshRelationshipColors();
                     }
                     else if ( NeoPreferences.NODE_PROPERTY_NAMES
                         .equals( property ) )
                     {
-                        NeoGraphLabelProvider.readNodePropertyNames();
+                        NeoGraphLabelProviderWrapper.getInstance()
+                            .readNodePropertyNames();
                     }
                     else if ( NeoPreferences.NODE_ICON_LOCATION
                         .equals( property ) )
                     {
-                        NeoGraphLabelProvider.readNodeIconLocation();
+                        NeoGraphLabelProviderWrapper.getInstance()
+                            .readNodeIconLocation();
                     }
                     else if ( NeoPreferences.NODE_ICON_PROPERTY_NAMES
                         .equals( property ) )
                     {
-                        NeoGraphLabelProvider.readNodeIconPropertyNames();
+                        NeoGraphLabelProviderWrapper.getInstance()
+                            .readNodeIconPropertyNames();
                     }
                 }
             } );

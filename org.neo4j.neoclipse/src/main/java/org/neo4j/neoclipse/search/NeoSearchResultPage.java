@@ -32,7 +32,7 @@ import org.neo4j.api.core.NeoService;
 import org.neo4j.api.core.Node;
 import org.neo4j.api.core.Transaction;
 import org.neo4j.neoclipse.Activator;
-import org.neo4j.neoclipse.view.NeoGraphLabelProviderFactory;
+import org.neo4j.neoclipse.view.NeoGraphLabelProviderWrapper;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**
@@ -61,8 +61,8 @@ public class NeoSearchResultPage extends Page implements ISearchResultPage
         viewer.setContentProvider( new NeoSearchResultContentProvider() );
         // TODO keep search result labels and graph labels separated?
         // no, keep them together to get consistency in the GUI.
-        viewer.setLabelProvider( NeoGraphLabelProviderFactory
-            .getLabelProvider() );
+        viewer.setLabelProvider( NeoGraphLabelProviderWrapper
+            .getInstance() );
         viewer
             .addDoubleClickListener( new NeoSearchResultDoubleClickListener() );
     }

@@ -74,8 +74,8 @@ public class NeoGraphLabelProvider extends LabelProvider implements
     /**
      * Default relationship "color" (gray).
      */
-    private static final Color HIGHLIGHTED_RELATIONSHIP_COLOR = new Color( Display
-        .getDefault(), new RGB( 0, 0, 0 ) );
+    private static final Color HIGHLIGHTED_RELATIONSHIP_COLOR = new Color(
+        Display.getDefault(), new RGB( 0, 0, 0 ) );
     /**
      * Brightness of relationship stroke colors.
      */
@@ -144,31 +144,31 @@ public class NeoGraphLabelProvider extends LabelProvider implements
     /**
      * Map RelationshipTypes to Colors for the graph.
      */
-    private static Map<RelationshipType,Color> relationshipColors = new HashMap<RelationshipType,Color>();
+    private Map<RelationshipType,Color> relationshipColors = new HashMap<RelationshipType,Color>();
     /**
      * Map node types to Colors for the graph.
      */
-    private static Map<String,Color> nodeColors = new HashMap<String,Color>();
+    private Map<String,Color> nodeColors = new HashMap<String,Color>();
     /**
      * Create colors for relationships.
      */
-    private static NeoGraphColorGenerator relationshipColorGenerator;
+    private NeoGraphColorGenerator relationshipColorGenerator;
     /**
      * Create colors for node.
      */
-    private static NeoGraphColorGenerator nodeColorGenerator;
+    private NeoGraphColorGenerator nodeColorGenerator;
     /**
      * Location of node icons.
      */
-    private static String nodeIconLocation;
+    private String nodeIconLocation;
     /**
      * Names of properties to look up for node labels.
      */
-    private static ArrayList<String> nodePropertyNames;
+    private ArrayList<String> nodePropertyNames;
     /**
      * Names of properties to look up for node icon names.
      */
-    private static ArrayList<String> nodeIconPropertyNames;
+    private ArrayList<String> nodeIconPropertyNames;
 
     public NeoGraphLabelProvider()
     {
@@ -289,7 +289,7 @@ public class NeoGraphLabelProvider extends LabelProvider implements
     /**
      * Remove relationship colors, start over creating new ones.
      */
-    public static void refreshRelationshipColors()
+    public void refreshRelationshipColors()
     {
         relationshipColorGenerator = new NeoGraphColorGenerator(
             RELATIONSHIP_HUE, RELATIONSHIP_SATURATION, RELATIONSHIP_BRIGHTNESS );
@@ -298,7 +298,7 @@ public class NeoGraphLabelProvider extends LabelProvider implements
     /**
      * Read the location of node icons from preferences.
      */
-    public static void readNodeIconLocation()
+    public void readNodeIconLocation()
     {
         nodeIconLocation = Activator.getDefault().getPreferenceStore()
             .getString( NeoPreferences.NODE_ICON_LOCATION );
@@ -307,7 +307,7 @@ public class NeoGraphLabelProvider extends LabelProvider implements
     /**
      * Read the names of properties to look up for node labels from preferences.
      */
-    public static void readNodePropertyNames()
+    public void readNodePropertyNames()
     {
         String names = Activator.getDefault().getPreferenceStore().getString(
             NeoPreferences.NODE_PROPERTY_NAMES ).trim();
@@ -318,7 +318,7 @@ public class NeoGraphLabelProvider extends LabelProvider implements
      * Read the names of properties to look up for node icon names from
      * preferences.
      */
-    public static void readNodeIconPropertyNames()
+    public void readNodeIconPropertyNames()
     {
         nodeColorGenerator = new NeoGraphColorGenerator( NODE_HUE,
             NODE_SATURATION, NODE_BRIGHTNESS );
@@ -483,7 +483,7 @@ public class NeoGraphLabelProvider extends LabelProvider implements
      *            comma-separated names
      * @return list of names
      */
-    private static ArrayList<String> listFromString( String names )
+    private ArrayList<String> listFromString( String names )
     {
         ArrayList<String> list = new ArrayList<String>();
         for ( String name : names.split( "," ) )

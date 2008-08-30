@@ -14,15 +14,16 @@
 package org.neo4j.neoclipse.view;
 
 /**
- * Simple factory to reuse the same graph label provider in different
- * contexts, to keep consistency in the GUI.
+ * Simple wrapper to control the NeoGraphLabelProvider instance(s). This will
+ * allow for handling multiple instances in a smart way (mapping them to ID's of
+ * some kind).
  * @author Anders Nawroth
  */
-public class NeoGraphLabelProviderFactory
+public class NeoGraphLabelProviderWrapper
 {
     private static NeoGraphLabelProvider labelProvider = null;
 
-    public static NeoGraphLabelProvider getLabelProvider()
+    public static NeoGraphLabelProvider getInstance()
     {
         if ( labelProvider == null )
         {
@@ -30,5 +31,4 @@ public class NeoGraphLabelProviderFactory
         }
         return labelProvider;
     }
-
 }

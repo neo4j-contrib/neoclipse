@@ -100,7 +100,7 @@ public class NeoGraphViewPart extends ViewPart implements
     {
         viewer = new GraphViewer( parent, SWT.NONE );
         viewer.setContentProvider( new NeoGraphContentProvider( this ) );
-        viewer.setLabelProvider( NeoGraphLabelProviderFactory.getLabelProvider() );
+        viewer.setLabelProvider( NeoGraphLabelProviderWrapper.getInstance() );
         viewer.addDoubleClickListener( new NeoGraphDoubleClickListener() );
         viewer.setLayoutAlgorithm( new SpringLayoutAlgorithm(
             LayoutStyles.NO_LAYOUT_NODE_RESIZING ) );
@@ -651,6 +651,7 @@ public class NeoGraphViewPart extends ViewPart implements
             }
         }
     }
+
     /**
      * Handles double clicks on graph figures.
      */
