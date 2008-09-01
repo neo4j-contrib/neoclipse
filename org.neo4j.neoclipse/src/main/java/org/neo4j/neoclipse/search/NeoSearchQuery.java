@@ -14,6 +14,7 @@
 package org.neo4j.neoclipse.search;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -126,7 +127,8 @@ public class NeoSearchQuery implements ISearchQuery
             // for now simply navigate along the graph
             Node root = neoService.getReferenceNode();
 
-            result.setMatches( getMatchingNodes( root, monitor ) );
+            Iterable<Node> matches = getMatchingNodesByTraversing( root, monitor );
+            result.setMatches( matches );
 
             txn.success();
 
@@ -150,7 +152,7 @@ public class NeoSearchQuery implements ISearchQuery
      * Finds all nodes matching the search criteria.
      */
     @SuppressWarnings( "deprecation" )
-    protected Iterable<Node> getMatchingNodes( Node node,
+    protected Iterable<Node> getMatchingNodesByTraversing( Node node,
         IProgressMonitor monitor )
     {
         List<Object> relDirList = new ArrayList<Object>();
@@ -191,47 +193,81 @@ public class NeoSearchQuery implements ISearchQuery
     }
 
     /**
+     * Finds all nodes matching the search criteria.
+     */
+    protected Iterable<Node> getMatchingNodesByRecursion(Node node, IProgressMonitor monitor)
+    {
+        // TODO the Neo traverser API is not sufficient as it does not allow to find ALL connected
+        // nodes regardless of their relationship types
+        // we have to implement a similar functionality ourselves...
+
+        Set<Node> visitedNodes = new HashSet<Node>();
+        List<Node> matches = new ArrayList<Node>();
+        
+        // try using as id, if possible
+        if (expression.isPossibleId())
+        {
+            try
+            {
+                long id = Long.parseLong( expression.getExpression() );
+                Node nodeFromId = neoService.getNodeById( id );
+                matches.add( nodeFromId );
+                visitedNodes.add( nodeFromId );
+            }
+            catch ( RuntimeException e ) // this also covers NumberFormatException
+            {
+                // do nothing
+            }
+        }
+        
+        checkNode(node, visitedNodes, matches, monitor);
+        
+        return matches;
+    }
+
+    /**
      * Checks if a node matches the search criteria and visits all connected
      * nodes.
      */
     protected void checkNode( Node node, Set<Node> visitedNodes,
         List<Node> matches, IProgressMonitor monitor )
     {
-        if (monitor.isCanceled())
+        if ( monitor.isCanceled() )
         {
             return;
         }
-        
-        if (!visitedNodes.add(node))
+
+        if ( !visitedNodes.add( node ) )
         {
             // we have already been here
             return;
         }
 
         // for completeness, also check the id of the node
-        if (expression.matches(node.getId()))
+        if ( expression.matches( node.getId() ) )
         {
-            matches.add(node);
+            matches.add( node );
         }
         else
         {
-            // find at least one property whose value matches the given expression
-            for (Object value : node.getPropertyValues())
+            // find at least one property whose value matches the given
+            // expression
+            for ( Object value : node.getPropertyValues() )
             {
-                if (expression.matches(value))
+                if ( expression.matches( value ) )
                 {
-                    matches.add(node);
+                    matches.add( node );
                     break;
-                }            
+                }
             }
-        }        
+        }
 
         // recursively follow all connections
-        for (Relationship r : node.getRelationships(Direction.BOTH))
+        for ( Relationship r : node.getRelationships( Direction.BOTH ) )
         {
             Node end = r.getOtherNode( node );
 
-            checkNode(end, visitedNodes, matches, monitor);
+            checkNode( end, visitedNodes, matches, monitor );
         }
     }
 }
