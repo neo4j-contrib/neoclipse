@@ -14,7 +14,6 @@
 package org.neo4j.neoclipse.search;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -25,16 +24,21 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.search.ui.ISearchQuery;
 import org.eclipse.search.ui.ISearchResult;
 import org.neo4j.api.core.Direction;
+import org.neo4j.api.core.EmbeddedNeo;
 import org.neo4j.api.core.NeoService;
 import org.neo4j.api.core.Node;
 import org.neo4j.api.core.Relationship;
+import org.neo4j.api.core.RelationshipType;
+import org.neo4j.api.core.ReturnableEvaluator;
+import org.neo4j.api.core.StopEvaluator;
 import org.neo4j.api.core.Transaction;
+import org.neo4j.api.core.TraversalPosition;
+import org.neo4j.api.core.Traverser.Order;
 import org.neo4j.neoclipse.Activator;
 
 /**
  * This class represents a search query for Neo objects.
- * 
- * @author	Peter H&auml;nsgen
+ * @author Peter H&auml;nsgen
  */
 public class NeoSearchQuery implements ISearchQuery
 {
@@ -49,16 +53,16 @@ public class NeoSearchQuery implements ISearchQuery
     private NeoSearchResult result;
 
     private NeoService neoService;
-    
+
     /**
      * The constructor.
      */
-    public NeoSearchQuery(NeoSearchExpression expression)
+    public NeoSearchQuery( NeoSearchExpression expression )
     {
         this.expression = expression;
-        
+
         // initialize an empty result
-        result = new NeoSearchResult(this);
+        result = new NeoSearchResult( this );
     }
 
     /**
@@ -68,7 +72,7 @@ public class NeoSearchQuery implements ISearchQuery
     {
         return expression.getExpression();
     }
-    
+
     /**
      * Returns true.
      */
@@ -104,15 +108,17 @@ public class NeoSearchQuery implements ISearchQuery
     /**
      * Executes the search.
      */
-    public IStatus run(IProgressMonitor monitor)
+    public IStatus run( IProgressMonitor monitor )
         throws OperationCanceledException
     {
-        neoService = Activator.getDefault().getNeoServiceManager().getNeoService();
-        if (neoService == null)
+        neoService = Activator.getDefault().getNeoServiceManager()
+            .getNeoService();
+        if ( neoService == null )
         {
-            return new Status(IStatus.ERROR, Activator.PLUGIN_ID, "There is no active Neo4j service.");
+            return new Status( IStatus.ERROR, Activator.PLUGIN_ID,
+                "There is no active Neo4j service." );
         }
-        
+
         Transaction txn = neoService.beginTx();
         try
         {
@@ -120,63 +126,76 @@ public class NeoSearchQuery implements ISearchQuery
             // for now simply navigate along the graph
             Node root = neoService.getReferenceNode();
 
-            Iterable<Node> matches = getMatchingNodes(root, monitor);
-            result.setMatches(matches);
-            
-            txn.success();            
+            result.setMatches( getMatchingNodes( root, monitor ) );
 
-            if (monitor.isCanceled())
+            txn.success();
+
+            if ( monitor.isCanceled() )
             {
-                return new Status(IStatus.CANCEL, Activator.PLUGIN_ID, "Cancelled.");
+                return new Status( IStatus.CANCEL, Activator.PLUGIN_ID,
+                    "Cancelled." );
             }
             else
             {
-                return new Status(IStatus.OK, Activator.PLUGIN_ID, "OK");
+                return new Status( IStatus.OK, Activator.PLUGIN_ID, "OK" );
             }
         }
         finally
         {
-            txn.finish();            
+            txn.finish();
         }
     }
-    
+
     /**
      * Finds all nodes matching the search criteria.
      */
-    protected Iterable<Node> getMatchingNodes(Node node, IProgressMonitor monitor)
+    @SuppressWarnings( "deprecation" )
+    protected Iterable<Node> getMatchingNodes( Node node,
+        IProgressMonitor monitor )
     {
-        // TODO the Neo traverser API is not sufficient as it does not allow to find ALL connected
-        // nodes regardless of their relationship types
-        // we have to implement a similar functionality ourselves...
-
-        Set<Node> visitedNodes = new HashSet<Node>();
-        List<Node> matches = new ArrayList<Node>();
-        
-        // try using as id, if possible
-        if (expression.isPossibleId())
+        List<Object> relDirList = new ArrayList<Object>();
+        for ( RelationshipType relType : ((EmbeddedNeo) neoService)
+            .getRelationshipTypes() )
         {
-            try
-            {
-                long id = Long.parseLong( expression.getExpression() );
-                Node nodeFromId = neoService.getNodeById( id );
-                matches.add( nodeFromId );
-                visitedNodes.add( nodeFromId );
-            }
-            catch ( RuntimeException e ) // this also covers NumberFormatException
-            {
-                // do nothing
-            }
+            relDirList.add( relType );
+            relDirList.add( Direction.BOTH );
         }
-        
-        checkNode(node, visitedNodes, matches, monitor);
-        
-        return matches;
+
+        return node.traverse( Order.DEPTH_FIRST, StopEvaluator.END_OF_NETWORK,
+            new ReturnableEvaluator()
+            {
+                public boolean isReturnableNode( TraversalPosition currentPos )
+                {
+                    Node currentNode = currentPos.currentNode();
+                    // for completeness, also check the id of the node
+                    if ( expression.matches( currentNode.getId() ) )
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        // find at least one property whose value matches the
+                        // given
+                        // expression
+                        for ( Object value : currentNode.getPropertyValues() )
+                        {
+                            if ( expression.matches( value ) )
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                    return false;
+                }
+            }, relDirList.toArray() );
     }
-    
+
     /**
-     * Checks if a node matches the search criteria and visits all connected nodes.
+     * Checks if a node matches the search criteria and visits all connected
+     * nodes.
      */
-    protected void checkNode(Node node, Set<Node> visitedNodes, List<Node> matches, IProgressMonitor monitor)
+    protected void checkNode( Node node, Set<Node> visitedNodes,
+        List<Node> matches, IProgressMonitor monitor )
     {
         if (monitor.isCanceled())
         {

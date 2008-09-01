@@ -14,6 +14,7 @@
 package org.neo4j.neoclipse.search;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.core.runtime.ISafeRunnable;
@@ -56,7 +57,7 @@ public class NeoSearchResult implements ISearchResult
         
         // we have to initialize an empty list, as the result will already be shown before
         // the search is actually started
-        this.matches = new ArrayList<Node>();
+        this.matches = Collections.emptyList();
         
         listeners = new ArrayList<ISearchResultListener>();
     }
