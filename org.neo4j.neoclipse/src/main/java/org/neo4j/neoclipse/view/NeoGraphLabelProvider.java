@@ -489,7 +489,7 @@ public class NeoGraphLabelProvider extends LabelProvider implements
         for ( String name : names.split( "," ) )
         {
             name = name.trim();
-            if ( name == "" )
+            if ( "".equals( name ) )
             {
                 continue;
             }
