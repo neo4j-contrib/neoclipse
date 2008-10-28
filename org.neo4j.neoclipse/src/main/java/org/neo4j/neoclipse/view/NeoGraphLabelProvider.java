@@ -14,6 +14,7 @@
 package org.neo4j.neoclipse.view;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,6 +27,7 @@ import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.zest.core.viewers.IConnectionStyleProvider;
 import org.eclipse.zest.core.widgets.ZestStyles;
+import org.neo4j.api.core.Direction;
 import org.neo4j.api.core.Node;
 import org.neo4j.api.core.Relationship;
 import org.neo4j.api.core.RelationshipType;
@@ -34,9 +36,9 @@ import org.neo4j.neoclipse.NeoIcons;
 import org.neo4j.neoclipse.action.ShowNodeColorsAction;
 import org.neo4j.neoclipse.action.ShowNodeIconsAction;
 import org.neo4j.neoclipse.action.ShowNodeIdsAction;
-import org.neo4j.neoclipse.action.ShowRelationshipDirectionsAction;
 import org.neo4j.neoclipse.action.ShowNodeNamesAction;
 import org.neo4j.neoclipse.action.ShowRelationshipColorsAction;
+import org.neo4j.neoclipse.action.ShowRelationshipDirectionsAction;
 import org.neo4j.neoclipse.action.ShowRelationshipIdsAction;
 import org.neo4j.neoclipse.action.ShowRelationshipTypesAction;
 import org.neo4j.neoclipse.preference.NeoPreferences;
@@ -69,30 +71,8 @@ public class NeoGraphLabelProvider extends LabelProvider implements
     /**
      * Default relationship "color" (gray).
      */
-    private static final Color RELATIONSHIP_COLOR = new Color( Display
-        .getDefault(), new RGB( 85, 85, 85 ) );
-    /**
-     * Default relationship "color" (gray).
-     */
     private static final Color HIGHLIGHTED_RELATIONSHIP_COLOR = new Color(
         Display.getDefault(), new RGB( 0, 0, 0 ) );
-    /**
-     * Brightness of relationship stroke colors.
-     */
-    private static final float RELATIONSHIP_BRIGHTNESS = 0.6f;
-    /**
-     * Saturation of relationship stroke colors.
-     */
-    private static final float RELATIONSHIP_SATURATION = 0.9f;
-    /**
-     * Hue of the first relationship stroke color.
-     */
-    private static final float RELATIONSHIP_HUE = 60.0f;
-    /**
-     * Default node background color.
-     */
-    private static final Color NODE_BACKGROUND_COLOR = new Color( Display
-        .getDefault(), new RGB( 255, 255, 255 ) );
     /**
      * Id of the reference node.
      */
@@ -142,17 +122,9 @@ public class NeoGraphLabelProvider extends LabelProvider implements
      */
     private boolean showNodeColors = ShowNodeColorsAction.DEFAULT_STATE;
     /**
-     * Map RelationshipTypes to Colors for the graph.
-     */
-    private Map<RelationshipType,Color> relationshipColors = new HashMap<RelationshipType,Color>();
-    /**
      * Map node types to Colors for the graph.
      */
     private Map<String,Color> nodeColors = new HashMap<String,Color>();
-    /**
-     * Create colors for relationships.
-     */
-    private NeoGraphColorGenerator relationshipColorGenerator;
     /**
      * Create colors for node.
      */
@@ -169,6 +141,10 @@ public class NeoGraphLabelProvider extends LabelProvider implements
      * Names of properties to look up for node icon names.
      */
     private ArrayList<String> nodeIconPropertyNames;
+    /**
+     * Color generator for relationships.
+     */
+    private NeoRelationshipColors relationshipColors;
 
     public NeoGraphLabelProvider()
     {
@@ -291,8 +267,8 @@ public class NeoGraphLabelProvider extends LabelProvider implements
      */
     public void refreshRelationshipColors()
     {
-        relationshipColorGenerator = new NeoGraphColorGenerator(
-            RELATIONSHIP_HUE, RELATIONSHIP_SATURATION, RELATIONSHIP_BRIGHTNESS );
+        relationshipColors = new NeoRelationshipColors( Arrays.asList(
+            Direction.INCOMING, Direction.OUTGOING ) );
     }
 
     /**
@@ -411,16 +387,10 @@ public class NeoGraphLabelProvider extends LabelProvider implements
     {
         if ( !showRelationshipColors )
         {
-            return RELATIONSHIP_COLOR;
+            return relationshipColors.getRelationshipColor();
         }
         RelationshipType type = ((Relationship) rel).getType();
-        Color color = relationshipColors.get( type );
-        if ( color == null )
-        {
-            color = relationshipColorGenerator.next();
-            relationshipColors.put( type, color );
-        }
-        return color;
+        return relationshipColors.getRelationshipColor( type );
     }
 
     public int getConnectionStyle( Object rel )
@@ -451,13 +421,19 @@ public class NeoGraphLabelProvider extends LabelProvider implements
     {
         if ( element instanceof Node && showNodeColors )
         {
+            Node node = (Node) element;
+            Color color = relationshipColors.getNodeColor( node );
+            if ( color != null )
+            {
+                return color;
+            }
             for ( String propertyName : nodeIconPropertyNames )
             {
-                String tmpPropVal = (String) ((Node) element).getProperty(
-                    propertyName, "" );
+                String tmpPropVal = (String) node
+                    .getProperty( propertyName, "" );
                 if ( tmpPropVal != "" ) // no empty strings
                 {
-                    Color color = nodeColors.get( tmpPropVal );
+                    color = nodeColors.get( tmpPropVal );
                     if ( color == null )
                     {
                         color = nodeColorGenerator.next();
@@ -466,7 +442,7 @@ public class NeoGraphLabelProvider extends LabelProvider implements
                     return color;
                 }
             }
-            return NODE_BACKGROUND_COLOR;
+            return relationshipColors.getNodeColor();
         }
         return null;
     }

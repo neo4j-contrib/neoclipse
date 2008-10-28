@@ -76,7 +76,7 @@
  	  <plugin>
 		        <groupId>org.codehaus.mojo</groupId>
 		        <artifactId>pde-maven-plugin</artifactId>
-		        <version>1.0-SNAPSHOT</version>
+		        <version>1.0-alpha-1</version>
 		        <extensions>true</extensions>
 		        <configuration>
 		          <eclipseInstall>/Applications/eclipse3.4RC1</eclipseInstall>

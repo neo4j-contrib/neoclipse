@@ -99,6 +99,11 @@ public class NeoGraphColorGenerator
      */
     public Color next()
     {
+        return new Color( Display.getDefault(), new RGB( nextHue(), saturation, brightness ) );
+    }
+
+    public float nextHue()
+    {
         currentStep++;
         if ( currentStep >= totalSteps )
         {
@@ -109,8 +114,7 @@ public class NeoGraphColorGenerator
             hue = startAngle;
         }
         hue = limitHue( hue + moveAngle );
-        return new Color( Display.getDefault(), new RGB( limitHue( startHue
-            + hue ), saturation, brightness ) );
+        return limitHue( startHue + hue );
     }
 
     /**
