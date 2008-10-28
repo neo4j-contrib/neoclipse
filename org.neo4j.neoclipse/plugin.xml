@@ -54,10 +54,10 @@
         </application>
     </extension> 
     <extension id="neoclipseProduct" point="org.eclipse.core.runtime.products">
-     <product name="Neoclipse Product" application="org.eclipse.ui.ide.workbench" description="Description">
+     <product name="Neoclipse" application="org.eclipse.ui.ide.workbench" description="Description">
         <property
               name="appName"
-              value="Neoclipse Product">
+              value="Neoclipse">
         </property>
         <property
               name="aboutText"
