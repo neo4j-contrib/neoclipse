@@ -65,11 +65,11 @@
         </property>
         <property
               name="startupForegroundColor"
-              value="C8D5EA">
+              value="FFFFFF">
         </property>
         <property
               name="startupMessageRect"
-              value="7,220,441,20">
+              value="7,250,441,20">
         </property>
         <property
               name="startupProgressRect"
