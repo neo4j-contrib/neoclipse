@@ -14,13 +14,13 @@ import org.neo4j.api.core.RelationshipType;
 
 public class NeoRelationshipColors
 {
-    private class ColorTriad
+    private static class ColorTriad
     {
-        Color relationship;
-        Color nodeIn;
-        Color nodeOut;
+        public Color relationship;
+        public Color nodeIn;
+        public Color nodeOut;
 
-        Color getByDirection( Direction direction )
+        public Color getByDirection( final Direction direction )
         {
             switch ( direction )
             {
@@ -54,7 +54,7 @@ public class NeoRelationshipColors
     /**
      * Create colors for relationships.
      */
-    private NeoGraphColorGenerator colorGenerator = new NeoGraphColorGenerator(
+    private final NeoGraphColorGenerator colorGenerator = new NeoGraphColorGenerator(
         HUE, RELATIONSHIP_SATURATION, RELATIONSHIP_BRIGHTNESS );
     /**
      * Brightness of node background colors.
@@ -76,13 +76,13 @@ public class NeoRelationshipColors
     /**
      * Map RelationshipTypes to Colors for the graph.
      */
-    private Map<RelationshipType,ColorTriad> colorMap = new HashMap<RelationshipType,ColorTriad>();
+    private final Map<RelationshipType,ColorTriad> colorMap = new HashMap<RelationshipType,ColorTriad>();
     /**
      * List defining order of relationship lookups for nodes.
      */
-    private List<Direction> directions;
+    private final List<Direction> directions;
 
-    public NeoRelationshipColors( List<Direction> directions )
+    public NeoRelationshipColors( final List<Direction> directions )
     {
         this.directions = directions;
     }
@@ -92,14 +92,13 @@ public class NeoRelationshipColors
         return RELATIONSHIP_COLOR;
     }
 
-    public Color getRelationshipColor( RelationshipType type )
+    public Color getRelationshipColor( final RelationshipType type )
     {
         if ( type == null )
         {
             return getRelationshipColor();
         }
-        ColorTriad colors = getColor( type );
-        return colors.relationship;
+        return getColor( type ).relationship;
     }
 
     public Color getNodeColor()
@@ -107,15 +106,14 @@ public class NeoRelationshipColors
         return NODE_BACKGROUND_COLOR;
     }
 
-    public Color getNodeColor( Node node )
+    public Color getNodeColor( final Node node )
     {
         ColorTriad colors;
         Relationship randomRel = null;
         Direction randomDir = null;
         for ( Direction direction : directions )
         {
-            Iterable<Relationship> rels = node.getRelationships( direction );
-            for ( Relationship rel : rels )
+            for ( Relationship rel : node.getRelationships( direction ) )
             {
                 colors = colorMap.get( rel.getType() );
                 if ( colors == null )
@@ -137,14 +135,14 @@ public class NeoRelationshipColors
         return getNodeColor();
     }
 
-    private ColorTriad getColor( RelationshipType type )
+    private ColorTriad getColor( final RelationshipType type )
     {
         ColorTriad colors = colorMap.get( type );
         if ( colors != null )
         {
             return colors;
         }
-        float hue = colorGenerator.nextHue();
+        final float hue = colorGenerator.nextHue();
         colors = new ColorTriad();
         colors.relationship = new Color( Display.getDefault(), new RGB( hue,
             RELATIONSHIP_SATURATION, RELATIONSHIP_BRIGHTNESS ) );

@@ -265,7 +265,7 @@ public class NeoGraphLabelProvider extends LabelProvider implements
     /**
      * Remove relationship colors, start over creating new ones.
      */
-    public void refreshRelationshipColors()
+    final public void refreshRelationshipColors()
     {
         relationshipColors = new NeoRelationshipColors( Arrays.asList(
             Direction.INCOMING, Direction.OUTGOING ) );
@@ -274,7 +274,7 @@ public class NeoGraphLabelProvider extends LabelProvider implements
     /**
      * Read the location of node icons from preferences.
      */
-    public void readNodeIconLocation()
+    final public void readNodeIconLocation()
     {
         nodeIconLocation = Activator.getDefault().getPreferenceStore()
             .getString( NeoPreferences.NODE_ICON_LOCATION );
@@ -283,7 +283,7 @@ public class NeoGraphLabelProvider extends LabelProvider implements
     /**
      * Read the names of properties to look up for node labels from preferences.
      */
-    public void readNodePropertyNames()
+    final public void readNodePropertyNames()
     {
         String names = Activator.getDefault().getPreferenceStore().getString(
             NeoPreferences.NODE_PROPERTY_NAMES ).trim();
@@ -294,7 +294,7 @@ public class NeoGraphLabelProvider extends LabelProvider implements
      * Read the names of properties to look up for node icon names from
      * preferences.
      */
-    public void readNodeIconPropertyNames()
+    final public void readNodeIconPropertyNames()
     {
         nodeColorGenerator = new NeoGraphColorGenerator( NODE_HUE,
             NODE_SATURATION, NODE_BRIGHTNESS );

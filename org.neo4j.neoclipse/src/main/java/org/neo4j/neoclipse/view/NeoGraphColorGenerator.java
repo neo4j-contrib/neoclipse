@@ -71,7 +71,7 @@ public class NeoGraphColorGenerator
      * @param hue
      *            hue of the first color generated
      */
-    public NeoGraphColorGenerator( float hue )
+    public NeoGraphColorGenerator( final float hue )
     {
         startHue = limitHue( hue + 180.0f );
     }
@@ -86,7 +86,8 @@ public class NeoGraphColorGenerator
      * @param brightness
      *            the brightness of generated colors
      */
-    public NeoGraphColorGenerator( float hue, float saturation, float brightness )
+    public NeoGraphColorGenerator( final float hue, final float saturation,
+        final float brightness )
     {
         this( hue );
         this.saturation = saturation;
@@ -99,7 +100,8 @@ public class NeoGraphColorGenerator
      */
     public Color next()
     {
-        return new Color( Display.getDefault(), new RGB( nextHue(), saturation, brightness ) );
+        return new Color( Display.getDefault(), new RGB( nextHue(), saturation,
+            brightness ) );
     }
 
     public float nextHue()
@@ -123,12 +125,13 @@ public class NeoGraphColorGenerator
      *            the hue to limit
      * @return the limited hue
      */
-    private float limitHue( float hue )
+    private float limitHue( final float hue )
     {
-        while ( hue >= 360.0f )
+        float newHue = hue;
+        while ( newHue >= 360.0f )
         {
-            hue -= 360.0f;
+            newHue -= 360.0f;
         }
-        return hue;
+        return newHue;
     }
 }

@@ -121,7 +121,12 @@ public abstract class NeoclipseExample
             File destination = new File( dest );
             if ( !destination.exists() )
             {
-                destination.mkdir();
+                if ( !destination.mkdir() )
+                {
+                    System.out
+                        .println( "Couldn't create destination directory: "
+                            + destination );
+                }
             }
             File directory = new File( source );
             if ( !directory.exists() || !directory.isDirectory() )

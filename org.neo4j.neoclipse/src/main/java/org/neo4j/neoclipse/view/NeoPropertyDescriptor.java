@@ -46,6 +46,10 @@ public class NeoPropertyDescriptor implements IPropertyDescriptor
      * Class of property content.
      */
     private Class<?> cls = null;
+    /** 
+     * A constant, empty array, to be used instead of a null array.
+     */
+    private static final String[] EMPTY_ARRAY = new String[0];
 
     /**
      * Create a Neo property cell.
@@ -120,7 +124,7 @@ public class NeoPropertyDescriptor implements IPropertyDescriptor
 
     public String[] getFilterFlags()
     {
-        return null;
+        return EMPTY_ARRAY;
     }
 
     public Object getHelpContextIds()
