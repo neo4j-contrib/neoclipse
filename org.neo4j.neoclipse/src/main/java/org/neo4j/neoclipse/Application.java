@@ -24,7 +24,7 @@ public class Application extends WorkbenchAdvisor implements IApplication
 {
     public Object start( IApplicationContext context ) throws Exception
     {
-        System.out.println( "Hello world!" );
+//        System.out.println( "Hello world!" );
         Display display = PlatformUI.createDisplay();
         int returnCode = PlatformUI.createAndRunWorkbench( display, this );
         if ( returnCode == PlatformUI.RETURN_RESTART )

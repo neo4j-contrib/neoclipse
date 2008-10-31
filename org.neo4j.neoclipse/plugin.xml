@@ -11,7 +11,7 @@
             allowMultiple="false"
             category="org.neo4j.neoclipse.NeoCategory"
             class="org.neo4j.neoclipse.view.NeoGraphViewPart"
-            icon="icons/obj16/neo.ico"
+            icon="icons/obj16/neo-16.png"
             id="org.neo4j.neoclipse.view.NeoGraphViewPart"
             name="Neo4j Graph">
       </view>
@@ -35,7 +35,7 @@
          point="org.eclipse.ui.perspectives">
       <perspective
             class="org.neo4j.neoclipse.perspective.NeoPerspectiveFactory"
-            icon="icons/obj16/neo.ico"
+            icon="icons/obj16/neo-16.png"
             id="org.neo4j.neoclipse.NeoPerspective"
             name="Neo4j">
       </perspective>
@@ -54,14 +54,10 @@
         </application>
     </extension> 
     <extension id="neoclipseProduct" point="org.eclipse.core.runtime.products">
-     <product name="Neoclipse" application="org.eclipse.ui.ide.workbench" description="Description">
+     <product name="Neoclipse" application="org.eclipse.ui.ide.workbench" description="Neoclipse Workbench">
         <property
               name="appName"
               value="Neoclipse">
-        </property>
-        <property
-              name="aboutText"
-              value="%productBlurb">
         </property>
         <property
               name="startupForegroundColor"
@@ -79,13 +75,21 @@
               name="preferenceCustomization"
               value="plugin_customization.ini">
         </property>
+        <property
+              name="aboutImage"
+              value="icons/splash.png">
+        </property>
+        <property
+              name="windowImages"
+              value="icons/obj16/neo-16.png">
+        </property>
     </product>
   </extension>
     <extension
           point="org.eclipse.search.searchPages">
        <page
              class="org.neo4j.neoclipse.search.NeoSearchPage"
-             icon="icons/obj16/neo.ico"
+             icon="icons/obj16/neo-16.png"
              id="org.neo4j.neoclipse.search.NeoSearchPage"
              label="Neo4j Search">
        </page>
@@ -94,7 +98,7 @@
           point="org.eclipse.search.searchResultViewPages">
        <viewPage
              class="org.neo4j.neoclipse.search.NeoSearchResultPage"
-             icon="icons/obj16/neo.ico"
+             icon="icons/obj16/neo-16.png"
              id="org.neo4j.neoclipse.search.NeoSearchResultPage"
              label="Neo4j Search Result"
              searchResultClass="org.neo4j.neoclipse.search.NeoSearchResult">

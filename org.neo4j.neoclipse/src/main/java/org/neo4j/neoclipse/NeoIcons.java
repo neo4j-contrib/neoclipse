@@ -60,10 +60,10 @@ public class NeoIcons
         sharedImages = PlatformUI.getWorkbench().getSharedImages();
         // TODO use neo icons
         reg.put( NeoIcons.NEO, Activator.imageDescriptorFromPlugin(
-            Activator.PLUGIN_ID, "icons/obj16/neo.ico" ) );
-        System.out.println( "loaded one icon." );
+            Activator.PLUGIN_ID, "icons/obj16/neo-16.png" ) );
+//        System.out.println( "loaded one icon." );
         reg.put( NeoIcons.NEO_ROOT, Activator.imageDescriptorFromPlugin(
-            Activator.PLUGIN_ID, "icons/obj16/neo_red.ico" ) );
+            Activator.PLUGIN_ID, "icons/obj16/neo-red-16.png" ) );
         // help icon
         reg.put( NeoIcons.HELP, sharedImages
             .getImage( ISharedImages.IMG_LCL_LINKTO_HELP ) );

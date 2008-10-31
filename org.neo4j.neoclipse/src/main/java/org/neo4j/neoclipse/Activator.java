@@ -46,7 +46,7 @@ public class Activator extends AbstractUIPlugin
     {
         super.start( context );
         PLUGIN = this;
-        System.out.println( "testing" );
+//        System.out.println( "testing" );
         neoManager = new NeoServiceManager();
         PLUGIN.getPluginPreferences().addPropertyChangeListener(
             new IPropertyChangeListener()
