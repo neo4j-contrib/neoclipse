@@ -16,12 +16,15 @@ package org.neo4j.neoclipse.decorate;
 import java.util.List;
 
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
 import org.neo4j.api.core.Direction;
 import org.neo4j.api.core.Node;
 import org.neo4j.api.core.Relationship;
 import org.neo4j.api.core.RelationshipType;
+import org.neo4j.neoclipse.NeoIcons;
+import org.neo4j.neoclipse.view.NeoUserIcons;
 
 public class SimpleGraphDecorator
 {
@@ -29,6 +32,18 @@ public class SimpleGraphDecorator
     private final int NODE_INCOMING = 1;
     private final int NODE_OUTGOING = 2;
 
+    /**
+     * The icon for nodes.
+     */
+    private Image nodeImage = NeoIcons.getImage( NeoIcons.NEO );
+    /**
+     * The icon for the root node.
+     */
+    private Image rootImage = NeoIcons.getImage( NeoIcons.NEO_ROOT );
+    /**
+     * User icons for nodes.
+     */
+    private NeoUserIcons userIcons = new NeoUserIcons();
     /**
      * Default relationship "color" (gray).
      */
@@ -39,6 +54,16 @@ public class SimpleGraphDecorator
      */
     private static final Color NODE_BACKGROUND_COLOR = new Color( Display
         .getDefault(), new RGB( 255, 255, 255 ) );
+    /**
+     * Color of node foreground/text.
+     */
+    private static final Color NODE_FOREGROUND_COLOR = new Color( Display
+        .getDefault(), new RGB( 0, 0, 0 ) );
+    /**
+     * Highlight color for relationships.
+     */
+    private static final Color HIGHLIGHTED_RELATIONSHIP_COLOR = new Color(
+        Display.getDefault(), new RGB( 0, 0, 0 ) );
     /**
      * List defining order of relationship lookups for nodes.
      */
@@ -126,5 +151,97 @@ public class SimpleGraphDecorator
     public Color getRelationshipColor( final Relationship rel )
     {
         return colorMapper.getColor( rel.getType(), RELATIONSHIP );
+    }
+
+    public String getNodeText( final Node node, final Node referenceNode )
+    {
+        String text;
+        if ( referenceNode.equals( node ) )
+        {
+            text = "Reference Node";
+        }
+        else
+        {
+            text = "Node" + String.valueOf( node.getId() );
+        }
+        return text;
+    }
+
+    public String getNodeText( final Node node, final Node referenceNode,
+        List<String> nodePropertyNames )
+    {
+        String propertyValue;
+        if ( referenceNode.equals( node ) )
+        {
+            propertyValue = "Reference Node";
+        }
+        else
+        {
+            propertyValue = "Node";
+        }
+        for ( String propertyName : nodePropertyNames )
+        {
+            String tmpPropVal = (String) node.getProperty( propertyName, "" );
+            if ( tmpPropVal != "" ) // no empty strings
+            {
+                propertyValue = tmpPropVal;
+                break;
+            }
+        }
+        return propertyValue;
+    }
+
+    public String getRelationshipText( final Relationship rel )
+    {
+        return rel.getType().name();
+    }
+
+    public Image getNodeImage( final Node node, final Node referenceNode )
+    {
+        Image img;
+        if ( referenceNode.equals( node ) )
+        {
+            img = rootImage;
+        }
+        else
+        {
+            img = nodeImage;
+        }
+        return img;
+    }
+
+    public Image getNodeImage( final Node node, final Node referenceNode,
+        List<String> nodeIconPropertyNames, String nodeIconLocation )
+    {
+        Image img = null;
+        for ( String propertyName : nodeIconPropertyNames )
+        {
+            String tmpPropVal = (String) node.getProperty( propertyName, "" );
+            if ( tmpPropVal != "" ) // no empty strings
+            {
+                Image userImg = userIcons.getImage( tmpPropVal,
+                    nodeIconLocation );
+                if ( userImg != null )
+                {
+                    img = userImg;
+                    break;
+                }
+            }
+        }
+        if ( img != null )
+        {
+            return img;
+        }
+        return getNodeImage( node, referenceNode );
+    }
+
+    public Color getRelationshipHighlightColor( Relationship rel )
+    {
+        return HIGHLIGHTED_RELATIONSHIP_COLOR;
+    }
+
+    public Color getNodeForegroundColor( Node node )
+    {
+        return NODE_FOREGROUND_COLOR;
     }
 }

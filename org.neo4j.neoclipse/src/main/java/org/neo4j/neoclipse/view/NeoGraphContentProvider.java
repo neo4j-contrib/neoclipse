@@ -55,7 +55,7 @@ public class NeoGraphContentProvider implements
         Iterable<Relationship> rs = start.getRelationships( Direction.OUTGOING );
         for ( Relationship r : rs )
         {
-            if ( r.getEndNode().getId() == end.getId() )
+            if ( r.getEndNode().equals( end ) )
             {
                 rels.add( r );
             }

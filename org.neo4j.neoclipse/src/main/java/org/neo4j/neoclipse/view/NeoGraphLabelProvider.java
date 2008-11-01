@@ -21,8 +21,6 @@ import org.eclipse.jface.viewers.IColorProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.RGB;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.zest.core.viewers.IConnectionStyleProvider;
 import org.eclipse.zest.core.widgets.ZestStyles;
 import org.neo4j.api.core.Direction;
@@ -31,7 +29,6 @@ import org.neo4j.api.core.Node;
 import org.neo4j.api.core.Relationship;
 import org.neo4j.api.core.Transaction;
 import org.neo4j.neoclipse.Activator;
-import org.neo4j.neoclipse.NeoIcons;
 import org.neo4j.neoclipse.action.ShowNodeColorsAction;
 import org.neo4j.neoclipse.action.ShowNodeIconsAction;
 import org.neo4j.neoclipse.action.ShowNodeIdsAction;
@@ -52,28 +49,6 @@ import org.neo4j.neoclipse.preference.NeoPreferences;
 public class NeoGraphLabelProvider extends LabelProvider implements
     IConnectionStyleProvider, IColorProvider
 {
-    /**
-     * Color of node foreground/text.
-     */
-    private static final Color NODE_FOREGROUND_COLOR = new Color( Display
-        .getDefault(), new RGB( 0, 0, 0 ) );
-    /**
-     * Default relationship "color" (gray).
-     */
-    private static final Color HIGHLIGHTED_RELATIONSHIP_COLOR = new Color(
-        Display.getDefault(), new RGB( 0, 0, 0 ) );
-    /**
-     * The icon for nodes.
-     */
-    private Image nodeImage = NeoIcons.getImage( NeoIcons.NEO );
-    /**
-     * The icon for the root node.
-     */
-    private Image rootImage = NeoIcons.getImage( NeoIcons.NEO_ROOT );
-    /**
-     * User icons for nodes.
-     */
-    private NeoUserIcons userIcons = new NeoUserIcons();
     /**
      * Keep track of relationship types display on/off.
      */
@@ -143,7 +118,7 @@ public class NeoGraphLabelProvider extends LabelProvider implements
             try
             {
                 referenceNode = Activator.getDefault().getNeoServiceManager()
-                .getNeoService().getReferenceNode();
+                    .getNeoService().getReferenceNode();
             }
             finally
             {
@@ -159,35 +134,16 @@ public class NeoGraphLabelProvider extends LabelProvider implements
     {
         if ( element instanceof Node )
         {
-            Image img;
             Node node = (Node) element;
-            if ( referenceNode.equals( node ) )
+            if ( showNodeIcons && nodeIconLocation != "" )
             {
-                img = rootImage;
+                return graphDecorator.getNodeImage( node, referenceNode,
+                    nodeIconPropertyNames, nodeIconLocation );
             }
             else
             {
-                img = nodeImage;
+                return graphDecorator.getNodeImage( node, referenceNode );
             }
-            if ( showNodeIcons && nodeIconLocation != "" )
-            {
-                for ( String propertyName : nodeIconPropertyNames )
-                {
-                    String tmpPropVal = (String) node.getProperty(
-                        propertyName, "" );
-                    if ( tmpPropVal != "" ) // no empty strings
-                    {
-                        Image userImg = userIcons.getImage( tmpPropVal,
-                            nodeIconLocation );
-                        if ( userImg != null )
-                        {
-                            img = userImg;
-                            break;
-                        }
-                    }
-                }
-            }
-            return img;
         }
         return null;
     }
@@ -204,54 +160,31 @@ public class NeoGraphLabelProvider extends LabelProvider implements
             if ( !showNodeNames || nodePropertyNames.size() == 0 )
             {
                 // don't look for the default property
-                if ( node.getId() == 0 )
-                {
-                    text += "Reference Node";
-                }
-                else
-                {
-                    text += "Node" + String.valueOf( ((Node) element).getId() );
-                }
+                text = graphDecorator.getNodeText( node, referenceNode );
             }
             else
             {
                 // show the default property
-                String propertyValue;
-                if ( node.getId() == 0 )
-                {
-                    propertyValue = "Reference Node";
-                }
-                else
-                {
-                    propertyValue = "Node";
-                }
-                for ( String propertyName : nodePropertyNames )
-                {
-                    String tmpPropVal = (String) ((Node) element).getProperty(
-                        propertyName, "" );
-                    if ( tmpPropVal != "" ) // no empty strings
-                    {
-                        propertyValue = tmpPropVal;
-                        break;
-                    }
-                }
-                text += propertyValue;
+                text = graphDecorator.getNodeText( node, referenceNode,
+                    nodePropertyNames );
             }
             if ( showNodeIds )
             {
-                text += " " + String.valueOf( ((Node) element).getId() );
+                text += " " + String.valueOf( node.getId() );
             }
             return text;
         }
         else if ( element instanceof Relationship )
         {
+
+            Relationship rel = (Relationship) element;
             if ( showRelationshipTypes )
             {
-                text += ((Relationship) element).getType().name();
+                text += graphDecorator.getRelationshipText( rel );
             }
             if ( showRelationshipIds )
             {
-                text += " " + String.valueOf( ((Relationship) element).getId() );
+                text += " " + String.valueOf( rel.getId() );
             }
             return text;
         }
@@ -397,7 +330,8 @@ public class NeoGraphLabelProvider extends LabelProvider implements
 
     public Color getHighlightColor( Object rel )
     {
-        return HIGHLIGHTED_RELATIONSHIP_COLOR;
+        return graphDecorator
+            .getRelationshipHighlightColor( (Relationship) rel );
     }
 
     public int getLineWidth( Object rel )
@@ -421,7 +355,11 @@ public class NeoGraphLabelProvider extends LabelProvider implements
 
     public Color getForeground( Object element )
     {
-        return NODE_FOREGROUND_COLOR;
+        if ( element instanceof Node )
+        {
+            return graphDecorator.getNodeForegroundColor( (Node) element );
+        }
+        return null;
     }
 
     /**
