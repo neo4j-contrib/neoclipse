@@ -54,6 +54,7 @@ import org.neo4j.neoclipse.action.ShowReferenceNodeAction;
 import org.neo4j.neoclipse.action.ShowRelationshipColorsAction;
 import org.neo4j.neoclipse.action.ShowRelationshipDirectionsAction;
 import org.neo4j.neoclipse.action.ShowRelationshipIdsAction;
+import org.neo4j.neoclipse.action.ShowRelationshipNamesAction;
 import org.neo4j.neoclipse.action.ShowRelationshipTypesAction;
 import org.neo4j.neoclipse.action.ShowSpringLayoutAction;
 import org.neo4j.neoclipse.action.ShowTreeLayoutAction;
@@ -158,6 +159,13 @@ public class NeoGraphViewPart extends ViewPart implements
             showRelationshipTypesAction
                 .setChecked( ShowRelationshipTypesAction.DEFAULT_STATE );
             mm.appendToGroup( labelsGroupName, showRelationshipTypesAction );
+            // relationship types actions
+            ShowRelationshipNamesAction showRelationshipNamesAction = new ShowRelationshipNamesAction(
+                this );
+            showRelationshipNamesAction.setText( "Relationship names" );
+            showRelationshipNamesAction
+                .setChecked( ShowRelationshipNamesAction.DEFAULT_STATE );
+            mm.appendToGroup( labelsGroupName, showRelationshipNamesAction );
             // relationship id's actions
             ShowRelationshipIdsAction showRelationshipIdsAction = new ShowRelationshipIdsAction(
                 this );

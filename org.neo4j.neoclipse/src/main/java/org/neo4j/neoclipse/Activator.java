@@ -46,7 +46,7 @@ public class Activator extends AbstractUIPlugin
     {
         super.start( context );
         PLUGIN = this;
-//        System.out.println( "testing" );
+        // System.out.println( "testing" );
         neoManager = new NeoServiceManager();
         PLUGIN.getPluginPreferences().addPropertyChangeListener(
             new IPropertyChangeListener()
@@ -71,6 +71,12 @@ public class Activator extends AbstractUIPlugin
                     {
                         NeoGraphLabelProviderWrapper.getInstance()
                             .readNodePropertyNames();
+                    }
+                    else if ( NeoPreferences.RELATIONSHIP_PROPERTY_NAMES
+                        .equals( property ) )
+                    {
+                        NeoGraphLabelProviderWrapper.getInstance()
+                            .readRelPropertyNames();
                     }
                     else if ( NeoPreferences.NODE_ICON_LOCATION
                         .equals( property ) )

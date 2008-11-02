@@ -21,6 +21,7 @@ import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
 import org.neo4j.api.core.Direction;
 import org.neo4j.api.core.Node;
+import org.neo4j.api.core.PropertyContainer;
 import org.neo4j.api.core.Relationship;
 import org.neo4j.api.core.RelationshipType;
 import org.neo4j.neoclipse.NeoIcons;
@@ -170,7 +171,11 @@ public class SimpleGraphDecorator
     public String getNodeText( final Node node, final Node referenceNode,
         List<String> nodePropertyNames )
     {
-        String propertyValue;
+        String propertyValue = readProperties( node, nodePropertyNames );
+        if ( propertyValue != null )
+        {
+            return propertyValue;
+        }
         if ( referenceNode.equals( node ) )
         {
             propertyValue = "Reference Node";
@@ -179,9 +184,17 @@ public class SimpleGraphDecorator
         {
             propertyValue = "Node";
         }
-        for ( String propertyName : nodePropertyNames )
+        return propertyValue;
+    }
+
+    private String readProperties( final PropertyContainer primitive,
+        final List<String> propertyNames )
+    {
+        String propertyValue = null;
+        for ( String propertyName : propertyNames )
         {
-            String tmpPropVal = (String) node.getProperty( propertyName, "" );
+            String tmpPropVal = (String) primitive.getProperty( propertyName,
+                "" );
             if ( tmpPropVal != "" ) // no empty strings
             {
                 propertyValue = tmpPropVal;
@@ -191,9 +204,14 @@ public class SimpleGraphDecorator
         return propertyValue;
     }
 
-    public String getRelationshipText( final Relationship rel )
+    public String getRelationshipTypeText( final Relationship rel )
     {
         return rel.getType().name();
+    }
+
+    public String getRelationshipNameText( final Relationship rel, final List<String> relPropertyNames )
+    {
+        return readProperties( rel, relPropertyNames );
     }
 
     public Image getNodeImage( final Node node, final Node referenceNode )

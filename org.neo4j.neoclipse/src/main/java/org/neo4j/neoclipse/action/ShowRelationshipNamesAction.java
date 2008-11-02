@@ -11,32 +11,41 @@
  * OF ANY KIND, either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-package org.neo4j.neoclipse.preference;
+package org.neo4j.neoclipse.action;
+
+import org.eclipse.jface.action.Action;
+import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**
- * Defines the preferences of the neo plugin.
- * @author Peter H&auml;nsgen
+ * This action handles the relationship name setting.
+ * @author Anders Nawroth
  */
-public interface NeoPreferences
+public class ShowRelationshipNamesAction extends Action
 {
     /**
-     * The location of the neo database in the file system.
+     * Default state for this view menu alternative.
      */
-    public static final String DATABASE_LOCATION = "databaseLocation";
+    public final static boolean DEFAULT_STATE = true;
     /**
-     * The property to view inside nodes in the graph view.
+     * The view.
      */
-    public static final String NODE_PROPERTY_NAMES = "nodePropertyNames";
+    protected NeoGraphViewPart view;
+
     /**
-     * The property to view inside nodes in the graph view.
+     * The constructor.
      */
-    public static final String RELATIONSHIP_PROPERTY_NAMES = "relPropertyNames";
+    public ShowRelationshipNamesAction( NeoGraphViewPart view )
+    {
+        super( "Relationship names", Action.AS_CHECK_BOX );
+        this.view = view;
+    }
+
     /**
-     * The location of icons for the nodes.
+     * Executes the action.
      */
-    public static final String NODE_ICON_LOCATION = "iconLocation";
-    /**
-     * The property to use for icon names.
-     */
-    public static final String NODE_ICON_PROPERTY_NAMES = "nodeIconPropertyNames";
+    public void run()
+    {
+        view.getLabelProvider().setShowRelationshipNames( isChecked() );
+        view.refreshPreserveLayout();
+    }
 }

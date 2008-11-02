@@ -29,6 +29,8 @@ public class NeoPreferencePage extends AbstractPreferencePage
     // node label properties
     private static final String NODE_LABEL_PROPERTIES_LABEL = "Node label properties:";
     private static final String PROPTERTY_NAMES_NOTE = "comma-separated list of property names; will be evaluated from left to right, and the first non-empty value is used";
+    // relationship label properties
+    private static final String RELATIONSHIP_LABEL_PROPERTIES_LABEL = "Relationship label properties:";
     // icon locations
     private static final String NODE_ICONS_LOCATION_LABEL = "Node icons location:";
     private static final String NODE_ICONS_LOCATION_ERROR = "The Node icons location is invalid.";
@@ -55,6 +57,12 @@ public class NeoPreferencePage extends AbstractPreferencePage
             getFieldEditorParent() );
         propertyNameField.setEmptyStringAllowed( true );
         addField( propertyNameField, PROPTERTY_NAMES_NOTE );
+        // node label properties
+        StringFieldEditor relPropertyNameField = new StringFieldEditor(
+            NeoPreferences.RELATIONSHIP_PROPERTY_NAMES, RELATIONSHIP_LABEL_PROPERTIES_LABEL,
+            getFieldEditorParent() );
+        relPropertyNameField.setEmptyStringAllowed( true );
+        addField( relPropertyNameField, PROPTERTY_NAMES_NOTE );
         // icon locations
         DirectoryFieldEditor iconLocationField = new DirectoryFieldEditor(
             NeoPreferences.NODE_ICON_LOCATION, NODE_ICONS_LOCATION_LABEL,

@@ -15,6 +15,7 @@ package org.neo4j.neoclipse.view;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.jface.viewers.IColorProvider;
@@ -36,6 +37,7 @@ import org.neo4j.neoclipse.action.ShowNodeNamesAction;
 import org.neo4j.neoclipse.action.ShowRelationshipColorsAction;
 import org.neo4j.neoclipse.action.ShowRelationshipDirectionsAction;
 import org.neo4j.neoclipse.action.ShowRelationshipIdsAction;
+import org.neo4j.neoclipse.action.ShowRelationshipNamesAction;
 import org.neo4j.neoclipse.action.ShowRelationshipTypesAction;
 import org.neo4j.neoclipse.decorate.SimpleGraphDecorator;
 import org.neo4j.neoclipse.neo.NeoServiceManager;
@@ -53,6 +55,10 @@ public class NeoGraphLabelProvider extends LabelProvider implements
      * Keep track of relationship types display on/off.
      */
     private boolean showRelationshipTypes = ShowRelationshipTypesAction.DEFAULT_STATE;
+    /**
+     * Keep track of relationship names display on/off.
+     */
+    private boolean showRelationshipNames = ShowRelationshipNamesAction.DEFAULT_STATE;
     /**
      * Keep track of relationship id's display on/off.
      */
@@ -88,11 +94,15 @@ public class NeoGraphLabelProvider extends LabelProvider implements
     /**
      * Names of properties to look up for node labels.
      */
-    private ArrayList<String> nodePropertyNames;
+    private List<String> nodePropertyNames;
+    /**
+     * Names of properties to look up for relationship labels.
+     */
+    private List<String> relPropertyNames;
     /**
      * Names of properties to look up for node icon names.
      */
-    private ArrayList<String> nodeIconPropertyNames;
+    private List<String> nodeIconPropertyNames;
     /**
      * Color generator for relationships.
      */
@@ -107,6 +117,7 @@ public class NeoGraphLabelProvider extends LabelProvider implements
         // read all preferences
         readNodeIconLocation();
         readNodePropertyNames();
+        readRelPropertyNames();
         readNodeIconPropertyNames();
         // refresh relationship colors
         refreshRelationshipColors();
@@ -176,15 +187,23 @@ public class NeoGraphLabelProvider extends LabelProvider implements
         }
         else if ( element instanceof Relationship )
         {
-
             Relationship rel = (Relationship) element;
             if ( showRelationshipTypes )
             {
-                text += graphDecorator.getRelationshipText( rel );
+                text += graphDecorator.getRelationshipTypeText( rel );
             }
             if ( showRelationshipIds )
             {
                 text += " " + String.valueOf( rel.getId() );
+            }
+            if ( showRelationshipNames )
+            {
+                String names = graphDecorator.getRelationshipNameText( rel,
+                    relPropertyNames );
+                if ( names != null )
+                {
+                    text += " " + names;
+                }
             }
             return text;
         }
@@ -220,6 +239,17 @@ public class NeoGraphLabelProvider extends LabelProvider implements
     }
 
     /**
+     * Read the names of properties to look up for relationship labels from
+     * preferences.
+     */
+    final public void readRelPropertyNames()
+    {
+        String names = Activator.getDefault().getPreferenceStore().getString(
+            NeoPreferences.RELATIONSHIP_PROPERTY_NAMES ).trim();
+        relPropertyNames = listFromString( names );
+    }
+
+    /**
      * Read the names of properties to look up for node icon names from
      * preferences.
      */
@@ -238,6 +268,16 @@ public class NeoGraphLabelProvider extends LabelProvider implements
     public void setShowRelationshipTypes( boolean state )
     {
         showRelationshipTypes = state;
+    }
+
+    /**
+     * Show or hide relationship names.
+     * @param state
+     *            set true to display
+     */
+    public void setShowRelationshipNames( boolean state )
+    {
+        showRelationshipNames = state;
     }
 
     /**
@@ -369,9 +409,9 @@ public class NeoGraphLabelProvider extends LabelProvider implements
      *            comma-separated names
      * @return list of names
      */
-    private ArrayList<String> listFromString( String names )
+    private List<String> listFromString( String names )
     {
-        ArrayList<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<String>();
         for ( String name : names.split( "," ) )
         {
             name = name.trim();
