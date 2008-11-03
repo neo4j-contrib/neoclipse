@@ -13,6 +13,7 @@
  */
 package org.neo4j.neoclipse.decorate;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.swt.graphics.Color;
@@ -25,7 +26,6 @@ import org.neo4j.api.core.PropertyContainer;
 import org.neo4j.api.core.Relationship;
 import org.neo4j.api.core.RelationshipType;
 import org.neo4j.neoclipse.NeoIcons;
-import org.neo4j.neoclipse.view.NeoUserIcons;
 
 public class SimpleGraphDecorator
 {
@@ -44,12 +44,12 @@ public class SimpleGraphDecorator
     /**
      * User icons for nodes.
      */
-    private NeoUserIcons userIcons = new NeoUserIcons();
+    private UserIcons userIcons;
     /**
      * Default relationship "color" (gray).
      */
     private static final Color RELATIONSHIP_COLOR = new Color( Display
-        .getDefault(), new RGB( 85, 85, 85 ) );
+        .getDefault(), new RGB( 70, 70, 70 ) );
     /**
      * Default node background color.
      */
@@ -66,22 +66,135 @@ public class SimpleGraphDecorator
     private static final Color HIGHLIGHTED_RELATIONSHIP_COLOR = new Color(
         Display.getDefault(), new RGB( 0, 0, 0 ) );
     /**
-     * List defining order of relationship lookups for nodes.
+     * Map colors to relationship types.
      */
-    private final List<Direction> directions;
     private SimpleColorMapper<RelationshipType> colorMapper;
+    /**
+     * Settings for this decorator.
+     */
+    private Settings settings;
 
-    public SimpleGraphDecorator( final List<Direction> directions )
+    public static class Settings
     {
-        if ( directions == null )
+        /**
+         * List defining order of relationship lookups for nodes.
+         */
+        private List<Direction> directions;
+        /**
+         * Property names to look for in nodes.
+         */
+        private List<String> nodePropertyNames;
+        /**
+         * property names to look for in relationships.
+         */
+        private List<String> relPropertyNames;
+        /**
+         * Properties to look for icon information in.
+         */
+        private List<String> nodeIconPropertyNames;
+        /**
+         * The current reference node.
+         */
+        private Node referenceNode;
+        /**
+         * Current location of icons.
+         */
+        private String nodeIconLocation;
+
+        public List<Direction> getDirections()
+        {
+            return directions;
+        }
+
+        public void setDirections( List<Direction> directions )
+        {
+            this.directions = directions;
+        }
+
+        public Node getReferenceNode()
+        {
+            return referenceNode;
+        }
+
+        public void setReferenceNode( Node referenceNode )
+        {
+            this.referenceNode = referenceNode;
+        }
+
+        public String getNodeIconLocation()
+        {
+            return nodeIconLocation;
+        }
+
+        public void setNodeIconLocation( String nodeIconLocation )
+        {
+            this.nodeIconLocation = nodeIconLocation;
+        }
+
+        public List<String> getNodePropertyNames()
+        {
+            return nodePropertyNames;
+        }
+
+        public void setNodePropertyNames( String nodePropertyNames )
+        {
+            this.nodePropertyNames = listFromString( nodePropertyNames );
+        }
+
+        public List<String> getRelPropertyNames()
+        {
+            return relPropertyNames;
+        }
+
+        public void setRelPropertyNames( String relPropertyNames )
+        {
+            this.relPropertyNames = listFromString( relPropertyNames );
+        }
+
+        public List<String> getNodeIconPropertyNames()
+        {
+            return nodeIconPropertyNames;
+        }
+
+        public void setNodeIconPropertyNames( String nodeIconPropertyNames )
+        {
+            this.nodeIconPropertyNames = listFromString( nodeIconPropertyNames );
+        }
+
+        /**
+         * Convert a string containing a comma-separated list of names to a list
+         * of strings. Ignores "" as a name.
+         * @param names
+         *            comma-separated names
+         * @return list of names
+         */
+        private List<String> listFromString( String names )
+        {
+            List<String> list = new ArrayList<String>();
+            for ( String name : names.split( "," ) )
+            {
+                name = name.trim();
+                if ( "".equals( name ) )
+                {
+                    continue;
+                }
+                list.add( name );
+            }
+            return list;
+        }
+    }
+
+    public SimpleGraphDecorator( Settings settings )
+    {
+        if ( settings.getDirections() == null )
         {
             throw new IllegalArgumentException( "Null directions list given." );
         }
-        if ( directions.size() == 0 )
+        if ( settings.getDirections().size() == 0 )
         {
             throw new IllegalArgumentException( "Empty directions list given." );
         }
-        this.directions = directions;
+        this.settings = settings;
         final float[] saturations = new float[3];
         final float[] brightnesses = new float[3];
         saturations[RELATIONSHIP] = 0.8f;
@@ -92,6 +205,7 @@ public class SimpleGraphDecorator
         brightnesses[NODE_OUTGOING] = 0.95f;
         colorMapper = new SimpleColorMapper<RelationshipType>( saturations,
             brightnesses );
+        userIcons = new UserIcons( settings.getNodeIconLocation() );
     }
 
     public Color getNodeColor()
@@ -103,7 +217,7 @@ public class SimpleGraphDecorator
     {
         Relationship randomRel = null;
         Direction randomDir = null;
-        for ( Direction direction : directions )
+        for ( Direction direction : settings.getDirections() )
         {
             for ( Relationship rel : node.getRelationships( direction ) )
             {
@@ -154,37 +268,27 @@ public class SimpleGraphDecorator
         return colorMapper.getColor( rel.getType(), RELATIONSHIP );
     }
 
-    public String getNodeText( final Node node, final Node referenceNode )
+    public String getNodeText( final Node node )
     {
-        String text;
-        if ( referenceNode.equals( node ) )
+        if ( settings.getReferenceNode().equals( node ) )
         {
-            text = "Reference Node";
+            return "Reference Node";
         }
         else
         {
-            text = "Node" + String.valueOf( node.getId() );
+            return "Node";
         }
-        return text;
     }
 
-    public String getNodeText( final Node node, final Node referenceNode,
-        List<String> nodePropertyNames )
+    public String getNodeTextFromProperty( final Node node )
     {
-        String propertyValue = readProperties( node, nodePropertyNames );
+        String propertyValue = readProperties( node, settings
+            .getNodePropertyNames() );
         if ( propertyValue != null )
         {
             return propertyValue;
         }
-        if ( referenceNode.equals( node ) )
-        {
-            propertyValue = "Reference Node";
-        }
-        else
-        {
-            propertyValue = "Node";
-        }
-        return propertyValue;
+        return getNodeText( node );
     }
 
     private String readProperties( final PropertyContainer primitive,
@@ -209,15 +313,15 @@ public class SimpleGraphDecorator
         return rel.getType().name();
     }
 
-    public String getRelationshipNameText( final Relationship rel, final List<String> relPropertyNames )
+    public String getRelationshipNameTextFromProperty( final Relationship rel )
     {
-        return readProperties( rel, relPropertyNames );
+        return readProperties( rel, settings.getRelPropertyNames() );
     }
 
-    public Image getNodeImage( final Node node, final Node referenceNode )
+    public Image getNodeImage( final Node node )
     {
         Image img;
-        if ( referenceNode.equals( node ) )
+        if ( settings.getReferenceNode().equals( node ) )
         {
             img = rootImage;
         }
@@ -228,29 +332,36 @@ public class SimpleGraphDecorator
         return img;
     }
 
-    public Image getNodeImage( final Node node, final Node referenceNode,
-        List<String> nodeIconPropertyNames, String nodeIconLocation )
+    public Image getNodeImageFromProperty( final Node node )
     {
         Image img = null;
-        for ( String propertyName : nodeIconPropertyNames )
+        // look in properties
+        for ( String propertyName : settings.getNodeIconPropertyNames() )
         {
             String tmpPropVal = (String) node.getProperty( propertyName, "" );
             if ( tmpPropVal != "" ) // no empty strings
             {
-                Image userImg = userIcons.getImage( tmpPropVal,
-                    nodeIconLocation );
-                if ( userImg != null )
+                img = userIcons.getImage( tmpPropVal );
+                if ( img != null )
                 {
-                    img = userImg;
-                    break;
+                    return img;
                 }
             }
         }
-        if ( img != null )
+        // look in relations
+        for ( Direction direction : settings.getDirections() )
         {
-            return img;
+            for ( Relationship rel : node.getRelationships( direction ) )
+            {
+                String typeName = rel.getType().name();
+                img = userIcons.getImage( typeName + "." + direction.name() );
+                if ( img != null )
+                {
+                    return img;
+                }
+            }
         }
-        return getNodeImage( node, referenceNode );
+        return getNodeImage( node );
     }
 
     public Color getRelationshipHighlightColor( Relationship rel )

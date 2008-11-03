@@ -11,11 +11,13 @@
  * OF ANY KIND, either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-package org.neo4j.neoclipse.view;
+package org.neo4j.neoclipse.decorate;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
@@ -24,25 +26,27 @@ import org.eclipse.swt.widgets.Display;
  * This class manages user icons.
  * @author Anders Nawroth
  */
-public class NeoUserIcons
+public class UserIcons
 {
     /**
-     * Prefix to separate user icons.
+     * Separator to use in file paths.
      */
-    public final String PREFIX = "user.";
+    private static final String FILE_SEPARATOR = System
+        .getProperty( "file.separator" );
     /**
      * Image file extensions to look for.
      */
-    public final String[] extensions = new String[] { "png", "gif", "ico",
-        "bmp", "jpg", "jpeg", "tif", "tiff" };
+    public final static String[] extensions = new String[] { "png", "PNG",
+        "gif", "GIF", "ico", "ICO", "bmp", "BMP", "jpg", "JPG", "jpeg", "JPEG",
+        "tif", "TIF", "tiff", "TIFF" };
     /**
      * Last modified value of icons directory.
      */
     private long lastModified = 0;
     /**
-     * Last icon location.
+     * The icon location.
      */
-    private String iconLocation = "";
+    private final String iconLocation;
     /**
      * Contents of the icon directory.
      */
@@ -50,37 +54,45 @@ public class NeoUserIcons
     /**
      * The images.
      */
-    protected Map<String,Image> images = new HashMap<String,Image>();
+    private Map<String,Image> images = new HashMap<String,Image>();
+    /**
+     * Save the names of non-existing images.
+     */
+    private Set<String> misses = new HashSet<String>();
 
     /**
-     * Looks up the user image for the given name, using the given location if
-     * needed.
+     * @param nodeIconLocation
+     *            where to look for icons
      */
-    public Image getImage( String name, String location )
+    public UserIcons( String nodeIconLocation )
     {
-        if ( name == null || name.trim() == "" )
+        this.iconLocation = nodeIconLocation;
+    }
+
+    /**
+     * Looks up the user image for the given name.
+     */
+    public Image getImage( String name )
+    {
+        if ( name == null )
         {
             return null; // don't care for now
         }
         Image img = images.get( name );
-        if ( img != null )
+        if ( img != null || misses.contains( name ) )
         {
             return img;
         }
-        if ( !location.equals( iconLocation ) )
-        {
-            iconLocation = location;
-            lastModified = 0;
-        }
-        File directory = new File( location );
+        File directory = new File( iconLocation );
         if ( !directory.exists() || !directory.isDirectory() )
         {
             return null; // this sholdn't happen
         }
         if ( directory.lastModified() != lastModified )
         {
-            dirContents = directory.list();
             lastModified = directory.lastModified();
+            dirContents = directory.list();
+            misses.clear();
         }
         for ( String fileName : dirContents )
         {
@@ -90,17 +102,17 @@ public class NeoUserIcons
             }
             for ( String imgExt : extensions )
             {
-                if ( fileName.equals( name + "." + imgExt )
-                    || fileName.equals( name + "." + imgExt.toUpperCase() ) )
+                if ( fileName.equals( name + "." + imgExt ) )
                 {
-                    String imgFileName = location
-                        + System.getProperty( "file.separator" ) + fileName;
+                    String imgFileName = iconLocation + FILE_SEPARATOR
+                        + fileName;
                     img = new Image( Display.getDefault(), imgFileName );
                     images.put( name, img );
                     return img;
                 }
             }
         }
-        return img;
+        misses.add( name );
+        return null;
     }
 }

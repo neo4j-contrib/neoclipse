@@ -13,9 +13,7 @@
  */
 package org.neo4j.neoclipse.view;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.jface.viewers.IColorProvider;
@@ -40,6 +38,7 @@ import org.neo4j.neoclipse.action.ShowRelationshipIdsAction;
 import org.neo4j.neoclipse.action.ShowRelationshipNamesAction;
 import org.neo4j.neoclipse.action.ShowRelationshipTypesAction;
 import org.neo4j.neoclipse.decorate.SimpleGraphDecorator;
+import org.neo4j.neoclipse.decorate.SimpleGraphDecorator.Settings;
 import org.neo4j.neoclipse.neo.NeoServiceManager;
 import org.neo4j.neoclipse.preference.NeoPreferences;
 
@@ -88,39 +87,22 @@ public class NeoGraphLabelProvider extends LabelProvider implements
      */
     private boolean showNodeColors = ShowNodeColorsAction.DEFAULT_STATE;
     /**
-     * Location of node icons.
-     */
-    private String nodeIconLocation;
-    /**
-     * Names of properties to look up for node labels.
-     */
-    private List<String> nodePropertyNames;
-    /**
-     * Names of properties to look up for relationship labels.
-     */
-    private List<String> relPropertyNames;
-    /**
-     * Names of properties to look up for node icon names.
-     */
-    private List<String> nodeIconPropertyNames;
-    /**
-     * Color generator for relationships.
+     * Handler for node/relationship decoration..
      */
     private SimpleGraphDecorator graphDecorator;
     /**
-     * Current instance of the reference node.
+     * Settings for {@link SimpleGraphDecorator}
      */
-    private Node referenceNode;
+    private Settings settings = new Settings();
 
     public NeoGraphLabelProvider()
     {
         // read all preferences
-        readNodeIconLocation();
-        readNodePropertyNames();
-        readRelPropertyNames();
-        readNodeIconPropertyNames();
-        // refresh relationship colors
-        refreshRelationshipColors();
+        refreshNodeIconLocation();
+        refreshNodePropertyNames();
+        refreshRelPropertyNames();
+        refreshNodeIconPropertyNames();
+        // get reference node
         NeoServiceManager sm = Activator.getDefault().getNeoServiceManager();
         NeoService ns = sm.getNeoService();
         if ( ns != null )
@@ -128,14 +110,18 @@ public class NeoGraphLabelProvider extends LabelProvider implements
             Transaction txn = Transaction.begin();
             try
             {
-                referenceNode = Activator.getDefault().getNeoServiceManager()
-                    .getNeoService().getReferenceNode();
+                settings.setReferenceNode( Activator.getDefault()
+                    .getNeoServiceManager().getNeoService().getReferenceNode() );
             }
             finally
             {
                 txn.finish();
             }
         }
+        settings.setDirections( Arrays.asList( Direction.INCOMING,
+            Direction.OUTGOING ) );
+        // refresh relationship colors
+        refreshGraphDecorator();
     }
 
     /**
@@ -146,14 +132,13 @@ public class NeoGraphLabelProvider extends LabelProvider implements
         if ( element instanceof Node )
         {
             Node node = (Node) element;
-            if ( showNodeIcons && nodeIconLocation != "" )
+            if ( showNodeIcons && settings.getNodeIconLocation() != "" )
             {
-                return graphDecorator.getNodeImage( node, referenceNode,
-                    nodeIconPropertyNames, nodeIconLocation );
+                return graphDecorator.getNodeImageFromProperty( node );
             }
             else
             {
-                return graphDecorator.getNodeImage( node, referenceNode );
+                return graphDecorator.getNodeImage( node );
             }
         }
         return null;
@@ -168,16 +153,15 @@ public class NeoGraphLabelProvider extends LabelProvider implements
         if ( element instanceof Node )
         {
             Node node = (Node) element;
-            if ( !showNodeNames || nodePropertyNames.size() == 0 )
+            if ( !showNodeNames || settings.getNodePropertyNames().size() == 0 )
             {
                 // don't look for the default property
-                text = graphDecorator.getNodeText( node, referenceNode );
+                text = graphDecorator.getNodeText( node );
             }
             else
             {
                 // show the default property
-                text = graphDecorator.getNodeText( node, referenceNode,
-                    nodePropertyNames );
+                text = graphDecorator.getNodeTextFromProperty( node );
             }
             if ( showNodeIds )
             {
@@ -198,11 +182,11 @@ public class NeoGraphLabelProvider extends LabelProvider implements
             }
             if ( showRelationshipNames )
             {
-                String names = graphDecorator.getRelationshipNameText( rel,
-                    relPropertyNames );
+                String names = graphDecorator
+                    .getRelationshipNameTextFromProperty( rel );
                 if ( names != null )
                 {
-                    text += " " + names;
+                    text += "".equals( text ) ? names : ", " + names;
                 }
             }
             return text;
@@ -213,51 +197,80 @@ public class NeoGraphLabelProvider extends LabelProvider implements
     /**
      * Remove relationship colors, start over creating new ones.
      */
-    final public void refreshRelationshipColors()
+    public void refreshRelationshipColors()
     {
-        graphDecorator = new SimpleGraphDecorator( Arrays.asList(
-            Direction.INCOMING, Direction.OUTGOING ) );
+        refreshGraphDecorator();
+    }
+
+    final private void refreshGraphDecorator()
+    {
+        graphDecorator = new SimpleGraphDecorator( settings );
     }
 
     /**
      * Read the location of node icons from preferences.
      */
-    final public void readNodeIconLocation()
+    public void readNodeIconLocation()
     {
-        nodeIconLocation = Activator.getDefault().getPreferenceStore()
-            .getString( NeoPreferences.NODE_ICON_LOCATION );
+        refreshNodeIconLocation();
+        refreshGraphDecorator();
+    }
+
+    final private void refreshNodeIconLocation()
+    {
+        settings
+            .setNodeIconLocation( Activator.getDefault().getPreferenceStore()
+                .getString( NeoPreferences.NODE_ICON_LOCATION ) );
     }
 
     /**
      * Read the names of properties to look up for node labels from preferences.
      */
-    final public void readNodePropertyNames()
+    public void readNodePropertyNames()
     {
-        String names = Activator.getDefault().getPreferenceStore().getString(
-            NeoPreferences.NODE_PROPERTY_NAMES ).trim();
-        nodePropertyNames = listFromString( names );
+        refreshNodePropertyNames();
+        refreshGraphDecorator();
+    }
+
+    final private void refreshNodePropertyNames()
+    {
+        settings.setNodePropertyNames( Activator.getDefault()
+            .getPreferenceStore()
+            .getString( NeoPreferences.NODE_PROPERTY_NAMES ) );
     }
 
     /**
      * Read the names of properties to look up for relationship labels from
      * preferences.
      */
-    final public void readRelPropertyNames()
+    public void readRelPropertyNames()
     {
-        String names = Activator.getDefault().getPreferenceStore().getString(
-            NeoPreferences.RELATIONSHIP_PROPERTY_NAMES ).trim();
-        relPropertyNames = listFromString( names );
+        refreshRelPropertyNames();
+        refreshGraphDecorator();
+    }
+
+    final private void refreshRelPropertyNames()
+    {
+        settings.setRelPropertyNames( Activator.getDefault()
+            .getPreferenceStore().getString(
+                NeoPreferences.RELATIONSHIP_PROPERTY_NAMES ) );
     }
 
     /**
      * Read the names of properties to look up for node icon names from
      * preferences.
      */
-    final public void readNodeIconPropertyNames()
+    public void readNodeIconPropertyNames()
     {
-        String names = Activator.getDefault().getPreferenceStore().getString(
-            NeoPreferences.NODE_ICON_PROPERTY_NAMES ).trim();
-        nodeIconPropertyNames = listFromString( names );
+        refreshNodeIconPropertyNames();
+        refreshGraphDecorator();
+    }
+
+    final private void refreshNodeIconPropertyNames()
+    {
+        settings.setNodeIconPropertyNames( Activator.getDefault()
+            .getPreferenceStore().getString(
+                NeoPreferences.NODE_ICON_PROPERTY_NAMES ) );
     }
 
     /**
@@ -400,27 +413,5 @@ public class NeoGraphLabelProvider extends LabelProvider implements
             return graphDecorator.getNodeForegroundColor( (Node) element );
         }
         return null;
-    }
-
-    /**
-     * Convert a string containing a comma-separated list of names to a list of
-     * strings. Ignores "" as a name.
-     * @param names
-     *            comma-separated names
-     * @return list of names
-     */
-    private List<String> listFromString( String names )
-    {
-        List<String> list = new ArrayList<String>();
-        for ( String name : names.split( "," ) )
-        {
-            name = name.trim();
-            if ( "".equals( name ) )
-            {
-                continue;
-            }
-            list.add( name );
-        }
-        return list;
     }
 }
