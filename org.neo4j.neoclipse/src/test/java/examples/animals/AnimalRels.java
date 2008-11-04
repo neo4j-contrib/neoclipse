@@ -21,5 +21,5 @@ import org.neo4j.api.core.RelationshipType;
  */
 public enum AnimalRels implements RelationshipType
 {
-    CONTAINS;
+    ANIMAL, CATEGORY, SPECIES, RACE;
 }

@@ -23,11 +23,7 @@ import examples.NeoclipseExample;
 
 public class CreateNodeSpace extends NeoclipseExample
 {
-    private static final String NT_REFERENCE_NODE = "referenceNode";
-    private static final String NT_ANIMAL = "animal";
-    private static final String NT_HUMAN = "human";
     private static final String NAME = "NAME";
-    private static final String NODE_TYPE = "NODE_TYPE";
 
     @BeforeClass
     public static void copyIcons()
@@ -42,11 +38,8 @@ public class CreateNodeSpace extends NeoclipseExample
         try
         {
             Node referenceNode = neo.getReferenceNode();
-            referenceNode.setProperty( NAME, NT_REFERENCE_NODE );
-            referenceNode.setProperty( NODE_TYPE, NT_REFERENCE_NODE );
             Node peter = neo.createNode();
             peter.setProperty( NAME, "Peter" );
-            peter.setProperty( NODE_TYPE, NT_HUMAN );
             peter.setProperty( "int-test", 7 );
             peter.setProperty( "boolean-test", true );
             peter.setProperty( "byte-test", new Byte( "50" ) ); // radix10
@@ -60,7 +53,6 @@ public class CreateNodeSpace extends NeoclipseExample
             peter.setProperty( "multiline-test", "XYZ\nABC\nDEF\nGHI" );
             Node li = neo.createNode();
             li.setProperty( NAME, "Li" );
-            li.setProperty( NODE_TYPE, NT_HUMAN );
             li.setProperty( "int-test", new int[] { 1, 2, 3 } );
             li
                 .setProperty( "boolean-test",
@@ -81,10 +73,8 @@ public class CreateNodeSpace extends NeoclipseExample
                     new String[] { "ABC", "DEF", "GHI" } );
             Node blaff = neo.createNode();
             blaff.setProperty( NAME, "blaff" );
-            blaff.setProperty( NODE_TYPE, NT_ANIMAL );
             Node woff = neo.createNode();
             woff.setProperty( NAME, "woff" );
-            woff.setProperty( NODE_TYPE, NT_ANIMAL );
             Relationship peterRootRel = referenceNode.createRelationshipTo(
                 peter, MyRels.ROOT );
             peterRootRel.setProperty( "TEST_PROPERTY", "test value" );

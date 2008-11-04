@@ -45,9 +45,6 @@ public class VehicleAssembly extends NeoclipseExample
         Transaction tx = Transaction.begin();
         try
         {
-            Node referenceNode = neo.getReferenceNode();
-            referenceNode.setProperty( "name", "referenceNode" );
-            referenceNode.setProperty( "node_type", "referenceNode" );
             Node trike = createVehicle( "trike", 3 );
             Node motorcycle = createVehicle( "motorcycle", 2 );
             Node wheel = createPart( "wheel", 3, trike, 3, motorcycle, 2 );
@@ -70,7 +67,6 @@ public class VehicleAssembly extends NeoclipseExample
     {
         Node vehicle = neo.createNode();
         vehicle.setProperty( "name", name );
-        vehicle.setProperty( "node_type", "vehicle" );
         vehicle.setProperty( "cost", cost );
         neo.getReferenceNode().createRelationshipTo( vehicle,
             VehicleRels.VEHICLE );
@@ -82,7 +78,6 @@ public class VehicleAssembly extends NeoclipseExample
     {
         Node part = neo.createNode();
         part.setProperty( "name", name );
-        part.setProperty( "node_type", "part" );
         part.setProperty( "cost", cost );
         for ( int i = 0; i < nodesAndQuantities.length; i += 2 )
         {

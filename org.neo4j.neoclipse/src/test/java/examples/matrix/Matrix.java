@@ -44,8 +44,6 @@ public class Matrix extends NeoclipseExample
         try
         {
             Node referenceNode = neo.getReferenceNode();
-            referenceNode.setProperty( "NAME", "referenceNode" );
-            referenceNode.setProperty( "NODE_TYPE", "referenceNode" );
             Node thomas = neo.createNode();
             thomas.setProperty( "name", "Thomas Andersson" );
             thomas.setProperty( "age", 29 );

@@ -17,6 +17,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.neo4j.api.core.Direction;
 import org.neo4j.api.core.Node;
+import org.neo4j.api.core.RelationshipType;
 import org.neo4j.api.core.ReturnableEvaluator;
 import org.neo4j.api.core.StopEvaluator;
 import org.neo4j.api.core.Transaction;
@@ -31,12 +32,7 @@ import examples.NeoclipseExample;
  */
 public class Animals extends NeoclipseExample
 {
-    private static final String NT_REFERENCE = "referenceNode";
-    private static final String NT_CATEGORY = "category";
-    private static final String NT_SPECIES = "species";
-    private static final String NT_RACE = "race";
     private static final String NAME = "NAME";
-    private static final String NODE_TYPE = "NODE_TYPE";
 
     @BeforeClass
     public static void copyIcons()
@@ -51,17 +47,17 @@ public class Animals extends NeoclipseExample
         try
         {
             Node referenceNode = neo.getReferenceNode();
-            referenceNode.setProperty( NAME, "referenceNode" );
-            referenceNode.setProperty( NODE_TYPE, NT_REFERENCE );
-            Node animal = createCategory( "Animal", referenceNode );
-            Node pet = createCategory( "Pet", animal );
-            Node livestock = createCategory( "Livestock", animal );
-            createSpecies( "Cat", pet );
-            Node dog = createSpecies( "Dog", pet, livestock );
-            createRace( "Doberman", dog );
-            createRace( "Bulldog", dog );
-            createSpecies( "Sheep", pet, livestock );
-            createSpecies( "Cow", livestock );
+            Node animal = createNode( "Animal", AnimalRels.ANIMAL,
+                referenceNode );
+            Node pet = createNode( "Pet", AnimalRels.CATEGORY, animal );
+            Node livestock = createNode( "Livestock", AnimalRels.CATEGORY,
+                animal );
+            createNode( "Cat", AnimalRels.SPECIES, pet );
+            Node dog = createNode( "Dog", AnimalRels.SPECIES, pet, livestock );
+            createNode( "Doberman", AnimalRels.RACE, dog );
+            createNode( "Bulldog", AnimalRels.RACE, dog );
+            createNode( "Sheep", AnimalRels.SPECIES, pet, livestock );
+            createNode( "Cow", AnimalRels.SPECIES, livestock );
             tx.success();
         }
         finally
@@ -70,29 +66,14 @@ public class Animals extends NeoclipseExample
         }
     }
 
-    private static Node createCategory( String name, Node... containedIn )
-    {
-        return createNode( name, NT_CATEGORY, containedIn );
-    }
-
-    private static Node createSpecies( String name, Node... containedIn )
-    {
-        return createNode( name, NT_SPECIES, containedIn );
-    }
-
-    private static Node createRace( String name, Node... containedIn )
-    {
-        return createNode( name, NT_RACE, containedIn );
-    }
-
-    private static Node createNode( String name, String nodeType, Node... containedIn )
+    private static Node createNode( String name, RelationshipType relType,
+        Node... containedIn )
     {
         Node node = neo.createNode();
         node.setProperty( NAME, name );
-        node.setProperty( NODE_TYPE, nodeType );
         for ( Node parent : containedIn )
         {
-            parent.createRelationshipTo( node, AnimalRels.CONTAINS );
+            parent.createRelationshipTo( node, relType );
         }
         return node;
     }
@@ -100,14 +81,16 @@ public class Animals extends NeoclipseExample
     @Test
     public void getAllLivestock()
     {
-        System.out.println("List of all livestock:");
+        System.out.println( "List of all livestock:" );
         Transaction tx = Transaction.begin();
         try
         {
             Node livestock = neo.getNodeById( 3 );
             Traverser traverser = livestock.traverse(
                 Traverser.Order.DEPTH_FIRST, StopEvaluator.END_OF_NETWORK,
-                ReturnableEvaluator.ALL_BUT_START_NODE, AnimalRels.CONTAINS,
+                ReturnableEvaluator.ALL_BUT_START_NODE, AnimalRels.ANIMAL,
+                Direction.OUTGOING, AnimalRels.CATEGORY, Direction.OUTGOING,
+                AnimalRels.SPECIES, Direction.OUTGOING, AnimalRels.RACE,
                 Direction.OUTGOING );
             for ( Node part : traverser )
             {

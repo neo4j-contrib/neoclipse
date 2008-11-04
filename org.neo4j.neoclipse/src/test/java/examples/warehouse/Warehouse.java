@@ -45,9 +45,6 @@ public class Warehouse extends NeoclipseExample
         Transaction tx = Transaction.begin();
         try
         {
-            Node referenceNode = neo.getReferenceNode();
-            referenceNode.setProperty( "name", "referenceNode" );
-            referenceNode.setProperty( "node_type", "referenceNode" );
             Node trike = createVehicle( "trike", 3 );
             Node wheel = createPart( "wheel", 3, trike, 3 );
             Node frame = createPart( "frame", 15, trike, 1 );
@@ -83,7 +80,6 @@ public class Warehouse extends NeoclipseExample
     {
         Node vehicle = neo.createNode();
         vehicle.setProperty( "name", name );
-        vehicle.setProperty( "node_type", "vehicle" );
         vehicle.setProperty( "cost", cost );
         neo.getReferenceNode().createRelationshipTo( vehicle,
             WarehouseRels.VEHICLE );
@@ -95,7 +91,6 @@ public class Warehouse extends NeoclipseExample
     {
         Node part = neo.createNode();
         part.setProperty( "name", name );
-        part.setProperty( "node_type", "part" );
         part.setProperty( "cost", cost );
         for ( int i = 0; i < nodesAndQuantities.length; i += 2 )
         {
@@ -110,7 +105,6 @@ public class Warehouse extends NeoclipseExample
     {
         Node warehouse = neo.createNode();
         warehouse.setProperty( "name", name );
-        warehouse.setProperty( "node_type", "warehouse" );
         neo.getReferenceNode().createRelationshipTo( warehouse,
             WarehouseRels.WAREHOUSE );
         return warehouse;

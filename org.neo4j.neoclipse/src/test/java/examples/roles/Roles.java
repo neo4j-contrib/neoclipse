@@ -44,9 +44,6 @@ public class Roles extends NeoclipseExample
         Transaction tx = Transaction.begin();
         try
         {
-            Node referenceNode = neo.getReferenceNode();
-            referenceNode.setProperty( "name", "referenceNode" );
-            referenceNode.setProperty( "node_type", "referenceNode" );
             // add the top level groups
             Node admins = createTopLevelGroup( "Admins" );
             Node users = createTopLevelGroup( "Users" );
@@ -76,25 +73,24 @@ public class Roles extends NeoclipseExample
 
     private static Node createTopLevelGroup( String name )
     {
-        return createNode( name, "group", RoleRels.ROOT, neo.getReferenceNode() );
+        return createNode( name, RoleRels.ROOT, neo.getReferenceNode() );
     }
 
     private static Node createGroup( String name, Node... containedIn )
     {
-        return createNode( name, "group", RoleRels.PART_OF, containedIn );
+        return createNode( name, RoleRels.PART_OF, containedIn );
     }
 
     private static Node createUser( String name, Node... containedIn )
     {
-        return createNode( name, "user", RoleRels.MEMBER_OF, containedIn );
+        return createNode( name, RoleRels.MEMBER_OF, containedIn );
     }
 
-    private static Node createNode( String name, String nodeType,
-        RelationshipType relType, Node... containedIn )
+    private static Node createNode( String name, RelationshipType relType,
+        Node... containedIn )
     {
         Node node = neo.createNode();
         node.setProperty( "name", name );
-        node.setProperty( "node_type", nodeType );
         for ( Node parent : containedIn )
         {
             node.createRelationshipTo( parent, relType );
