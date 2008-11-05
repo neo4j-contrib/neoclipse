@@ -81,7 +81,7 @@
         </property>
         <property
               name="windowImages"
-              value="icons/obj16/neo-16.png">
+              value="icons/obj16/neo-16.png,icons/obj16/neo-32.png,icons/obj16/neo-48.png,icons/obj16/neo-64.png,icons/obj16/neo-128.png">
         </property>
     </product>
   </extension>
