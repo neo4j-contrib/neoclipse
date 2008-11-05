@@ -58,10 +58,8 @@ public class NeoIcons
     {
         reg = activator.getImageRegistry();
         sharedImages = PlatformUI.getWorkbench().getSharedImages();
-        // TODO use neo icons
         reg.put( NeoIcons.NEO, Activator.imageDescriptorFromPlugin(
             Activator.PLUGIN_ID, "icons/obj16/neo-16.png" ) );
-//        System.out.println( "loaded one icon." );
         reg.put( NeoIcons.NEO_ROOT, Activator.imageDescriptorFromPlugin(
             Activator.PLUGIN_ID, "icons/obj16/neo-red-16.png" ) );
         // help icon
@@ -101,7 +99,7 @@ public class NeoIcons
     {
         if ( reg == null )
         {
-            init( Activator.PLUGIN );
+            init( Activator.getDefault() );
         }
         return reg.get( name );
     }
@@ -113,7 +111,7 @@ public class NeoIcons
     {
         if ( reg == null )
         {
-            init( Activator.PLUGIN );
+            init( Activator.getDefault() );
         }
         return reg.getDescriptor( name );
     }

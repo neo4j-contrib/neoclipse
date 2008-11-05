@@ -29,9 +29,9 @@ import org.neo4j.neoclipse.NeoIcons;
 
 public class SimpleGraphDecorator
 {
-    private final int RELATIONSHIP = 0;
-    private final int NODE_INCOMING = 1;
-    private final int NODE_OUTGOING = 2;
+    private static final int RELATIONSHIP = 0;
+    private static final int NODE_INCOMING = 1;
+    private static final int NODE_OUTGOING = 2;
 
     /**
      * The icon for nodes.

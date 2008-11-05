@@ -37,8 +37,8 @@ public class Activator extends AbstractUIPlugin
     /**
      * The shared instance.
      */
-    public static Activator PLUGIN;
-
+    private static Activator PLUGIN;
+    
     /**
      * Starts up the plug-in and initializes the neo service.
      */

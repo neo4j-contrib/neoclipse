@@ -44,6 +44,7 @@ public abstract class AbstractPreferencePage extends FieldEditorPreferencePage
      */
     public void init( IWorkbench workbench )
     {
+        // this method is needed!
     }
 
     /**
