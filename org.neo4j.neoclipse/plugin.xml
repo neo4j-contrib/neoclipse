@@ -83,6 +83,10 @@
               name="windowImages"
               value="icons/obj16/neo-16.png,icons/obj16/neo-32.png,icons/obj16/neo-48.png,icons/obj16/neo-64.png,icons/obj16/neo-128.png">
         </property>
+        <property
+              name="aboutText"
+              value="Neoclipse provides an easy to use GUI frontend to the Neo4j graph-oriented database.&#x0A;&#x0A;This software is realeased under the Apache License Version 2.">
+        </property>
     </product>
   </extension>
     <extension
