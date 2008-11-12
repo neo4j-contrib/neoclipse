@@ -127,7 +127,8 @@ public class NeoSearchQuery implements ISearchQuery
             // for now simply navigate along the graph
             Node root = neoService.getReferenceNode();
 
-            Iterable<Node> matches = getMatchingNodesByTraversing( root, monitor );
+            Iterable<Node> matches = getMatchingNodesByTraversing( root,
+                monitor );
             result.setMatches( matches );
 
             txn.success();
@@ -152,8 +153,8 @@ public class NeoSearchQuery implements ISearchQuery
      * Finds all nodes matching the search criteria.
      */
     @SuppressWarnings( "deprecation" )
-    protected Iterable<Node> getMatchingNodesByTraversing( Node node,
-        IProgressMonitor monitor )
+    protected Iterable<Node> getMatchingNodesByTraversing( final Node node,
+        final IProgressMonitor monitor )
     {
         List<Object> relDirList = new ArrayList<Object>();
         for ( RelationshipType relType : ((EmbeddedNeo) neoService)
@@ -163,49 +164,55 @@ public class NeoSearchQuery implements ISearchQuery
             relDirList.add( Direction.BOTH );
         }
 
-        return node.traverse( Order.DEPTH_FIRST, StopEvaluator.END_OF_NETWORK,
-            new ReturnableEvaluator()
+        return node.traverse( Order.DEPTH_FIRST, StopEvaluator.END_OF_GRAPH, new ReturnableEvaluator()
+        {
+            @Override
+            public boolean isReturnableNode( TraversalPosition currentPos )
             {
-                public boolean isReturnableNode( TraversalPosition currentPos )
+                Node currentNode = currentPos.currentNode();
+                // for completeness, also check the id of the node
+                if ( expression.matches( currentNode.getId() ) )
                 {
-                    Node currentNode = currentPos.currentNode();
-                    // for completeness, also check the id of the node
-                    if ( expression.matches( currentNode.getId() ) )
+                    return true;
+                }
+                else
+                {
+                    // find at least one property whose value matches the
+                    // given
+                    // expression
+//                    for ( Object value : currentNode.getPropertyValues() )
+                    // changed due to strange problem in b7
+                    // TODO: change back to old code when OK
+                    for ( String key : currentNode.getPropertyKeys() )
                     {
-                        return true;
-                    }
-                    else
-                    {
-                        // find at least one property whose value matches the
-                        // given
-                        // expression
-                        for ( Object value : currentNode.getPropertyValues() )
+                        Object value = currentNode.getProperty( key );
+                        if ( expression.matches( value ) )
                         {
-                            if ( expression.matches( value ) )
-                            {
-                                return true;
-                            }
+                            return true;
                         }
                     }
-                    return false;
                 }
-            }, relDirList.toArray() );
+                return false;
+            }
+        }, relDirList.toArray() );
     }
 
     /**
      * Finds all nodes matching the search criteria.
      */
-    protected Iterable<Node> getMatchingNodesByRecursion(Node node, IProgressMonitor monitor)
+    protected Iterable<Node> getMatchingNodesByRecursion( Node node,
+        IProgressMonitor monitor )
     {
-        // TODO the Neo traverser API is not sufficient as it does not allow to find ALL connected
+        // TODO the Neo traverser API is not sufficient as it does not allow to
+        // find ALL connected
         // nodes regardless of their relationship types
         // we have to implement a similar functionality ourselves...
 
         Set<Node> visitedNodes = new HashSet<Node>();
         List<Node> matches = new ArrayList<Node>();
-        
+
         // try using as id, if possible
-        if (expression.isPossibleId())
+        if ( expression.isPossibleId() )
         {
             try
             {
@@ -214,14 +221,15 @@ public class NeoSearchQuery implements ISearchQuery
                 matches.add( nodeFromId );
                 visitedNodes.add( nodeFromId );
             }
-            catch ( RuntimeException e ) // this also covers NumberFormatException
+            catch ( RuntimeException e ) // this also covers
+                                         // NumberFormatException
             {
                 // do nothing
             }
         }
-        
-        checkNode(node, visitedNodes, matches, monitor);
-        
+
+        checkNode( node, visitedNodes, matches, monitor );
+
         return matches;
     }
 

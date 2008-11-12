@@ -20,6 +20,7 @@ import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.neo4j.api.core.PropertyContainer;
 import org.neo4j.api.core.Transaction;
+import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.view.NeoPropertyTransform.PropertyHandler;
 
 /**
@@ -53,7 +54,7 @@ public class NeoPropertySource implements IPropertySource
      */
     public IPropertyDescriptor[] getPropertyDescriptors()
     {
-        Transaction tx = Transaction.begin();
+        Transaction tx = Activator.getDefault().beginNeoTx();
         try
         {
             List<IPropertyDescriptor> descs = new ArrayList<IPropertyDescriptor>();
@@ -84,7 +85,7 @@ public class NeoPropertySource implements IPropertySource
      */
     public Object getPropertyValue( Object id )
     {
-        Transaction tx = Transaction.begin();
+        Transaction tx = Activator.getDefault().beginNeoTx();
         try
         {
             return getValue( id );
@@ -121,7 +122,7 @@ public class NeoPropertySource implements IPropertySource
      */
     public boolean isPropertySet( Object id )
     {
-        Transaction tx = Transaction.begin();
+        Transaction tx = Activator.getDefault().beginNeoTx();
         try
         {
             return isSet( id );
@@ -155,7 +156,7 @@ public class NeoPropertySource implements IPropertySource
      */
     public void setPropertyValue( Object id, Object value )
     {
-        Transaction tx = Transaction.begin();
+        Transaction tx = Activator.getDefault().beginNeoTx();
         try
         {
             if ( container.hasProperty( (String) id ) )

@@ -41,7 +41,7 @@ public class Roles extends NeoclipseExample
     @BeforeClass
     public static void createRoles()
     {
-        Transaction tx = Transaction.begin();
+        Transaction tx = neo.beginTx();
         try
         {
             // add the top level groups
@@ -101,13 +101,13 @@ public class Roles extends NeoclipseExample
     @Test
     public void getAllAdmins()
     {
-        Transaction tx = Transaction.begin();
+        Transaction tx = neo.beginTx();
         try
         {
             System.out.println( "All admins:" );
             Node admins = neo.getNodeById( 1 ); // TODO search?
             Traverser traverser = admins.traverse(
-                Traverser.Order.BREADTH_FIRST, StopEvaluator.END_OF_NETWORK,
+                Traverser.Order.BREADTH_FIRST, StopEvaluator.END_OF_GRAPH,
                 ReturnableEvaluator.ALL_BUT_START_NODE, RoleRels.PART_OF,
                 Direction.INCOMING, RoleRels.MEMBER_OF, Direction.INCOMING );
             for ( Node part : traverser )
@@ -126,13 +126,13 @@ public class Roles extends NeoclipseExample
     @Test
     public void getJalesMemberships() throws Exception
     {
-        Transaction tx = Transaction.begin();
+        Transaction tx = neo.beginTx();
         try
         {
             System.out.println( "Jale's memberships:" );
             Node jale = neo.getNodeById( 16 ); // TODO search?
             Traverser traverser = jale.traverse( Traverser.Order.DEPTH_FIRST,
-                StopEvaluator.END_OF_NETWORK,
+                StopEvaluator.END_OF_GRAPH,
                 ReturnableEvaluator.ALL_BUT_START_NODE, RoleRels.MEMBER_OF,
                 Direction.OUTGOING, RoleRels.PART_OF, Direction.OUTGOING );
             for ( Node membership : traverser )
@@ -151,13 +151,13 @@ public class Roles extends NeoclipseExample
     @Test
     public void getAllGroups() throws Exception
     {
-        Transaction tx = Transaction.begin();
+        Transaction tx = neo.beginTx();
         try
         {
             System.out.println( "All groups:" );
             Node referenceNode = neo.getReferenceNode();
             Traverser traverser = referenceNode.traverse(
-                Traverser.Order.BREADTH_FIRST, StopEvaluator.END_OF_NETWORK,
+                Traverser.Order.BREADTH_FIRST, StopEvaluator.END_OF_GRAPH,
                 ReturnableEvaluator.ALL_BUT_START_NODE, RoleRels.ROOT,
                 Direction.INCOMING, RoleRels.PART_OF, Direction.INCOMING );
             for ( Node group : traverser )
@@ -175,13 +175,13 @@ public class Roles extends NeoclipseExample
     @Test
     public void getAllMembers() throws Exception
     {
-        Transaction tx = Transaction.begin();
+        Transaction tx = neo.beginTx();
         try
         {
             System.out.println( "All members:" );
             Node referenceNode = neo.getReferenceNode();
             Traverser traverser = referenceNode.traverse(
-                Traverser.Order.BREADTH_FIRST, StopEvaluator.END_OF_NETWORK,
+                Traverser.Order.BREADTH_FIRST, StopEvaluator.END_OF_GRAPH,
                 ReturnableEvaluator.ALL_BUT_START_NODE, RoleRels.ROOT,
                 Direction.INCOMING, RoleRels.PART_OF, Direction.INCOMING,
                 RoleRels.MEMBER_OF, Direction.INCOMING );

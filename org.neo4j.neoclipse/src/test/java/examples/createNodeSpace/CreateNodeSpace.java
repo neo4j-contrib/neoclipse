@@ -34,7 +34,7 @@ public class CreateNodeSpace extends NeoclipseExample
     @BeforeClass
     public static void testCreateSimpleNodeSpace()
     {
-        Transaction tx = Transaction.begin();
+        Transaction tx = neo.beginTx();
         try
         {
             Node referenceNode = neo.getReferenceNode();

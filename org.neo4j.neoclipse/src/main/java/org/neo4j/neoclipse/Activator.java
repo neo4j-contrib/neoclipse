@@ -16,6 +16,7 @@ package org.neo4j.neoclipse;
 import org.eclipse.core.runtime.Preferences.IPropertyChangeListener;
 import org.eclipse.core.runtime.Preferences.PropertyChangeEvent;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.neo4j.api.core.Transaction;
 import org.neo4j.neoclipse.neo.NeoServiceManager;
 import org.neo4j.neoclipse.preference.NeoPreferences;
 import org.neo4j.neoclipse.view.NeoGraphLabelProviderWrapper;
@@ -38,7 +39,7 @@ public class Activator extends AbstractUIPlugin
      * The shared instance.
      */
     private static Activator PLUGIN;
-    
+
     /**
      * Starts up the plug-in and initializes the neo service.
      */
@@ -119,5 +120,14 @@ public class Activator extends AbstractUIPlugin
     public NeoServiceManager getNeoServiceManager()
     {
         return neoManager;
+    }
+
+    /**
+     * Start a new neo4j transaction.
+     * @return the transaction
+     */
+    public Transaction beginNeoTx()
+    {
+        return getNeoServiceManager().getNeoService().beginTx();
     }
 }

@@ -9,7 +9,7 @@ Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ClassPath: lib/jta-spec1_0_1.jar,
  .,
- lib/neo-1.0-b7-SNAPSHOT.jar
+ lib/neo-1.0-b7.jar
 Import-Package: org.eclipse.core.commands.common,
  org.eclipse.core.runtime,
  org.eclipse.core.runtime.preferences,

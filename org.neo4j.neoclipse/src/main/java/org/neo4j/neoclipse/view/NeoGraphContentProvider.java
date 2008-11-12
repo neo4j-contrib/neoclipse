@@ -14,15 +14,21 @@
 package org.neo4j.neoclipse.view;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.zest.core.viewers.IGraphEntityRelationshipContentProvider;
 import org.neo4j.api.core.Direction;
+import org.neo4j.api.core.EmbeddedNeo;
 import org.neo4j.api.core.Node;
 import org.neo4j.api.core.Relationship;
+import org.neo4j.api.core.RelationshipType;
+import org.neo4j.api.core.ReturnableEvaluator;
+import org.neo4j.api.core.StopEvaluator;
+import org.neo4j.api.core.TraversalPosition;
+import org.neo4j.api.core.Traverser;
+import org.neo4j.api.core.Traverser.Order;
+import org.neo4j.neoclipse.Activator;
 
 /**
  * Provides the elements that must be displayed in the graph.
@@ -66,45 +72,29 @@ public class NeoGraphContentProvider implements
     /**
      * Returns all nodes the given node is connected with.
      */
+    @SuppressWarnings( "deprecation" )
     public Object[] getElements( Object inputElement )
     {
         Node node = (Node) inputElement;
-        Set<Node> nodes = new HashSet<Node>();
-        // add the start node too
-        nodes.add( node );
-        Set<Node> startList = new HashSet<Node>();
-        startList.add( node );
-        getElements( startList, nodes, view.getTraversalDepth() );
-        return nodes.toArray();
-    }
-
-    /**
-     * Determines the connected nodes within the given traversal depth.
-     */
-    private void getElements( Set<Node> oldNodes, Set<Node> nodes, int depth )
-    {
-        if ( depth > 0 )
+        List<Object> relDirList = new ArrayList<Object>();
+        for ( RelationshipType relType : ((EmbeddedNeo) Activator.getDefault()
+            .getNeoServiceManager().getNeoService()).getRelationshipTypes() )
         {
-            Set<Node> newNodes = new HashSet<Node>();
-            for ( Node oldNode : oldNodes )
-            {
-                Iterable<Relationship> rs;
-                rs = oldNode.getRelationships( Direction.INCOMING );
-                for ( Relationship r : rs )
-                {
-                    newNodes.add( r.getStartNode() );
-                }
-                rs = oldNode.getRelationships( Direction.OUTGOING );
-                for ( Relationship r : rs )
-                {
-                    newNodes.add( r.getEndNode() );
-                }
-            }
-            nodes.addAll( newNodes );
-            getElements( newNodes, nodes, depth - 1 );
+            relDirList.add( relType );
+            relDirList.add( Direction.BOTH );
         }
+        final int depth = view.getTraversalDepth();
+        Traverser trav = node.traverse( Order.DEPTH_FIRST, new StopEvaluator()
+        {
+            @Override
+            public boolean isStopNode( TraversalPosition currentPosition )
+            {
+                return currentPosition.depth() >= depth;
+            }
+        }, ReturnableEvaluator.ALL, relDirList.toArray() );
+        return trav.getAllNodes().toArray();
     }
-
+ 
     public void dispose()
     {
     }

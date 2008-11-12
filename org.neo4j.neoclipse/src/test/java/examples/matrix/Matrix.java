@@ -40,7 +40,7 @@ public class Matrix extends NeoclipseExample
     @BeforeClass
     public static void createMatrix()
     {
-        Transaction tx = Transaction.begin();
+        Transaction tx = neo.beginTx();
         try
         {
             Node referenceNode = neo.getReferenceNode();
@@ -92,7 +92,7 @@ public class Matrix extends NeoclipseExample
     @Test
     public void printNeoFriends() throws Exception
     {
-        Transaction tx = Transaction.begin();
+        Transaction tx = neo.beginTx();
         try
         {
             printFriends( neoNode );
@@ -107,7 +107,7 @@ public class Matrix extends NeoclipseExample
     @Test
     public void printMatrixHackers() throws Exception
     {
-        Transaction tx = Transaction.begin();
+        Transaction tx = neo.beginTx();
         try
         {
             findHackers( neoNode );
@@ -123,7 +123,7 @@ public class Matrix extends NeoclipseExample
     {
         System.out.println( person.getProperty( "name" ) + "'s friends:" );
         Traverser traverser = person.traverse( Order.BREADTH_FIRST,
-            StopEvaluator.END_OF_NETWORK,
+            StopEvaluator.END_OF_GRAPH,
             ReturnableEvaluator.ALL_BUT_START_NODE, MyRelationshipTypes.KNOWS,
             Direction.OUTGOING );
         for ( Node friend : traverser )
@@ -138,7 +138,7 @@ public class Matrix extends NeoclipseExample
     {
         System.out.println( "Hackers:" );
         Traverser traverser = startNode.traverse( Order.BREADTH_FIRST,
-            StopEvaluator.END_OF_NETWORK, new ReturnableEvaluator()
+            StopEvaluator.END_OF_GRAPH, new ReturnableEvaluator()
             {
                 public boolean isReturnableNode(
                     TraversalPosition currentPosition )

@@ -43,7 +43,7 @@ public class Animals extends NeoclipseExample
     @BeforeClass
     public static void createAnimals()
     {
-        Transaction tx = Transaction.begin();
+        Transaction tx = neo.beginTx();
         try
         {
             Node referenceNode = neo.getReferenceNode();
@@ -82,12 +82,12 @@ public class Animals extends NeoclipseExample
     public void getAllLivestock()
     {
         System.out.println( "List of all livestock:" );
-        Transaction tx = Transaction.begin();
+        Transaction tx = neo.beginTx();
         try
         {
             Node livestock = neo.getNodeById( 3 );
             Traverser traverser = livestock.traverse(
-                Traverser.Order.DEPTH_FIRST, StopEvaluator.END_OF_NETWORK,
+                Traverser.Order.DEPTH_FIRST, StopEvaluator.END_OF_GRAPH,
                 ReturnableEvaluator.ALL_BUT_START_NODE, AnimalRels.ANIMAL,
                 Direction.OUTGOING, AnimalRels.CATEGORY, Direction.OUTGOING,
                 AnimalRels.SPECIES, Direction.OUTGOING, AnimalRels.RACE,

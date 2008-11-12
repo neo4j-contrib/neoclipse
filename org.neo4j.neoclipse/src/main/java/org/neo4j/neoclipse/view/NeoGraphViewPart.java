@@ -451,7 +451,7 @@ public class NeoGraphViewPart extends ViewPart implements
         NeoService ns = sm.getNeoService();
         if ( ns != null )
         {
-            Transaction txn = Transaction.begin();
+            Transaction txn = ns.beginTx();
             try
             {
                 Node node = ns.getReferenceNode();
@@ -473,7 +473,7 @@ public class NeoGraphViewPart extends ViewPart implements
         NeoService ns = sm.getNeoService();
         if ( ns != null )
         {
-            Transaction txn = Transaction.begin();
+            Transaction txn = ns.beginTx();
             try
             {
                 Node node = ns.getNodeById( nodeId );
@@ -495,7 +495,7 @@ public class NeoGraphViewPart extends ViewPart implements
         NeoService ns = sm.getNeoService();
         if ( ns != null )
         {
-            Transaction txn = Transaction.begin();
+            Transaction txn = ns.beginTx();
             try
             {
                 viewer.setInput( node );
@@ -524,7 +524,7 @@ public class NeoGraphViewPart extends ViewPart implements
         NeoService ns = sm.getNeoService();
         if ( ns != null )
         {
-            Transaction txn = Transaction.begin();
+            Transaction txn = ns.beginTx();
             try
             {
                 traversalDepth++;
@@ -554,7 +554,7 @@ public class NeoGraphViewPart extends ViewPart implements
             NeoService ns = sm.getNeoService();
             if ( ns != null )
             {
-                Transaction txn = Transaction.begin();
+                Transaction txn = ns.beginTx();
                 try
                 {
                     traversalDepth--;
@@ -582,7 +582,7 @@ public class NeoGraphViewPart extends ViewPart implements
         NeoService ns = sm.getNeoService();
         if ( ns != null )
         {
-            Transaction txn = Transaction.begin();
+            Transaction txn = ns.beginTx();
             try
             {
                 refreshViewer();
@@ -604,7 +604,7 @@ public class NeoGraphViewPart extends ViewPart implements
         NeoService ns = sm.getNeoService();
         if ( ns != null )
         {
-            Transaction tn = Transaction.begin();
+            Transaction tn = ns.beginTx();
             try
             {
                 refreshViewer();
@@ -675,7 +675,9 @@ public class NeoGraphViewPart extends ViewPart implements
             Object s = sel.getFirstElement();
             if ( (s != null) && (s instanceof Node) )
             {
-                Transaction txn = Transaction.begin();
+                NeoServiceManager sm = Activator.getDefault().getNeoServiceManager();
+                NeoService ns = sm.getNeoService();
+                Transaction txn = ns.beginTx();
                 try
                 {
                     Viewer viewer = event.getViewer();

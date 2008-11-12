@@ -107,11 +107,10 @@ public class NeoGraphLabelProvider extends LabelProvider implements
         NeoService ns = sm.getNeoService();
         if ( ns != null )
         {
-            Transaction txn = Transaction.begin();
+            Transaction txn = ns.beginTx();
             try
             {
-                settings.setReferenceNode( Activator.getDefault()
-                    .getNeoServiceManager().getNeoService().getReferenceNode() );
+                settings.setReferenceNode( ns.getReferenceNode() );
             }
             finally
             {

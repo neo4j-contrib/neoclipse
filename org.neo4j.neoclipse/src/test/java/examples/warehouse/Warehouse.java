@@ -42,7 +42,7 @@ public class Warehouse extends NeoclipseExample
     @BeforeClass
     public static void createTrike()
     {
-        Transaction tx = Transaction.begin();
+        Transaction tx = neo.beginTx();
         try
         {
             Node trike = createVehicle( "trike", 3 );
@@ -121,7 +121,7 @@ public class Warehouse extends NeoclipseExample
     @Test
     public void showParts()
     {
-        Transaction tx = Transaction.begin();
+        Transaction tx = neo.beginTx();
         try
         {
             System.out.println( "Product components list" );
@@ -134,7 +134,7 @@ public class Warehouse extends NeoclipseExample
                 System.out
                     .println( "Product: " + vehicle.getProperty( "name" ) );
                 Traverser traverser = vehicle.traverse(
-                    Traverser.Order.DEPTH_FIRST, StopEvaluator.END_OF_NETWORK,
+                    Traverser.Order.DEPTH_FIRST, StopEvaluator.END_OF_GRAPH,
                     ReturnableEvaluator.ALL_BUT_START_NODE,
                     WarehouseRels.COMPOSED_BY, Direction.OUTGOING );
                 for ( Node part : traverser )
@@ -176,7 +176,7 @@ public class Warehouse extends NeoclipseExample
     @Test
     public void productCosts()
     {
-        Transaction tx = Transaction.begin();
+        Transaction tx = neo.beginTx();
         try
         {
             System.out.println( "Pricelist:" );
@@ -216,7 +216,7 @@ public class Warehouse extends NeoclipseExample
     @Test
     public void inventory()
     {
-        Transaction tx = Transaction.begin();
+        Transaction tx = neo.beginTx();
         try
         {
             System.out.println( "Inventory list" );
