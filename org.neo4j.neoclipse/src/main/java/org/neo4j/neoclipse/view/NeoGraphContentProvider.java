@@ -38,6 +38,10 @@ public class NeoGraphContentProvider implements
     IGraphEntityRelationshipContentProvider
 {
     /**
+     * Limit the number of nodes returned.
+     */
+    private static final int MAXIMUM_NODES_RETURNED = 500;
+    /**
      * The view.
      */
     protected NeoGraphViewPart view;
@@ -84,17 +88,29 @@ public class NeoGraphContentProvider implements
             relDirList.add( Direction.BOTH );
         }
         final int depth = view.getTraversalDepth();
-        Traverser trav = node.traverse( Order.DEPTH_FIRST, new StopEvaluator()
-        {
-            @Override
-            public boolean isStopNode( TraversalPosition currentPosition )
+        Traverser trav = node.traverse( Order.BREADTH_FIRST,
+            new StopEvaluator()
             {
-                return currentPosition.depth() >= depth;
-            }
-        }, ReturnableEvaluator.ALL, relDirList.toArray() );
+                @Override
+                public boolean isStopNode( TraversalPosition currentPosition )
+                {
+                    return currentPosition.depth() >= depth;
+                }
+            }, new ReturnableEvaluator()
+            {
+                @Override
+                public boolean isReturnableNode( TraversalPosition currentPosition )
+                {
+                    if ( currentPosition.returnedNodesCount() >= MAXIMUM_NODES_RETURNED )
+                    {
+                        return false;
+                    }
+                    return true;
+                }
+            }, relDirList.toArray() );
         return trav.getAllNodes().toArray();
     }
- 
+
     public void dispose()
     {
     }
