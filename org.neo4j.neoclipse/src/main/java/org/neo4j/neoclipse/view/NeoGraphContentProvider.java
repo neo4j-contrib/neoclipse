@@ -92,23 +92,21 @@ public class NeoGraphContentProvider implements
             new StopEvaluator()
             {
                 @Override
-                public boolean isStopNode( TraversalPosition currentPosition )
+                public boolean isStopNode( TraversalPosition currentPos )
                 {
-                    return currentPosition.depth() >= depth;
+                    return currentPos.depth() >= depth;
                 }
-            }, new ReturnableEvaluator()
+            }, ReturnableEvaluator.ALL, relDirList.toArray() );
+        List<Node> nodes = new ArrayList<Node>();
+        for ( Node currentNode : trav )
+        {
+            if ( nodes.size() >= MAXIMUM_NODES_RETURNED )
             {
-                @Override
-                public boolean isReturnableNode( TraversalPosition currentPosition )
-                {
-                    if ( currentPosition.returnedNodesCount() >= MAXIMUM_NODES_RETURNED )
-                    {
-                        return false;
-                    }
-                    return true;
-                }
-            }, relDirList.toArray() );
-        return trav.getAllNodes().toArray();
+                break;
+            }
+            nodes.add( currentNode );
+        }
+        return nodes.toArray();
     }
 
     public void dispose()
