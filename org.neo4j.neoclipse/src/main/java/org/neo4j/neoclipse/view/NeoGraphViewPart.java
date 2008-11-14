@@ -35,6 +35,7 @@ import org.eclipse.zest.layouts.LayoutStyles;
 import org.eclipse.zest.layouts.algorithms.SpringLayoutAlgorithm;
 import org.neo4j.api.core.NeoService;
 import org.neo4j.api.core.Node;
+import org.neo4j.api.core.NotFoundException;
 import org.neo4j.api.core.Transaction;
 import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.NeoIcons;
@@ -112,6 +113,26 @@ public class NeoGraphViewPart extends ViewPart implements
         showReferenceNode();
         PlatformUI.getWorkbench().getHelpSystem().setHelp( viewer.getControl(),
             HelpContextConstants.NEO_GRAPH_VIEW_PART );
+    }
+
+    /**
+     * Gets the current node.
+     * @return current node
+     */
+    public Node getCurrentNode()
+    {
+        Object node = viewer.getInput();
+        if ( node instanceof Node )
+        {
+            return (Node) node;
+        }
+        NeoServiceManager sm = Activator.getDefault().getNeoServiceManager();
+        NeoService ns = sm.getNeoService();
+        if ( ns != null )
+        {
+            return ns.getReferenceNode();
+        }
+        throw new NotFoundException( "No current node could be found." );
     }
 
     /**
@@ -675,7 +696,8 @@ public class NeoGraphViewPart extends ViewPart implements
             Object s = sel.getFirstElement();
             if ( (s != null) && (s instanceof Node) )
             {
-                NeoServiceManager sm = Activator.getDefault().getNeoServiceManager();
+                NeoServiceManager sm = Activator.getDefault()
+                    .getNeoServiceManager();
                 NeoService ns = sm.getNeoService();
                 Transaction txn = ns.beginTx();
                 try

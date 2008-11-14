@@ -61,8 +61,7 @@ public class NeoSearchResultPage extends Page implements ISearchResultPage
         viewer.setContentProvider( new NeoSearchResultContentProvider() );
         // TODO keep search result labels and graph labels separated?
         // no, keep them together to get consistency in the GUI.
-        viewer.setLabelProvider( NeoGraphLabelProviderWrapper
-            .getInstance() );
+        viewer.setLabelProvider( NeoGraphLabelProviderWrapper.getInstance() );
         viewer
             .addDoubleClickListener( new NeoSearchResultDoubleClickListener() );
     }

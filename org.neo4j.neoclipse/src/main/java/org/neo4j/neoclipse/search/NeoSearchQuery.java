@@ -15,6 +15,7 @@ package org.neo4j.neoclipse.search;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -34,8 +35,10 @@ import org.neo4j.api.core.ReturnableEvaluator;
 import org.neo4j.api.core.StopEvaluator;
 import org.neo4j.api.core.Transaction;
 import org.neo4j.api.core.TraversalPosition;
+import org.neo4j.api.core.Traverser;
 import org.neo4j.api.core.Traverser.Order;
 import org.neo4j.neoclipse.Activator;
+import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**
  * This class represents a search query for Neo objects.
@@ -55,12 +58,17 @@ public class NeoSearchQuery implements ISearchQuery
 
     private NeoService neoService;
 
+    private NeoGraphViewPart gv;
+
     /**
      * The constructor.
+     * @param gv
+     *            the current graph view
      */
-    public NeoSearchQuery( NeoSearchExpression expression )
+    public NeoSearchQuery( NeoSearchExpression expression, NeoGraphViewPart gv )
     {
         this.expression = expression;
+        this.gv = gv;
 
         // initialize an empty result
         result = new NeoSearchResult( this );
@@ -120,18 +128,27 @@ public class NeoSearchQuery implements ISearchQuery
                 "There is no active Neo4j service." );
         }
 
-        Transaction txn = neoService.beginTx();
+        Transaction tx = neoService.beginTx();
         try
         {
+
             // TODO here we should do some real search using Neo's index service
             // for now simply navigate along the graph
-            Node root = neoService.getReferenceNode();
+            Node start = null;
+            if ( gv != null )
+            {
+                start = gv.getCurrentNode();
+            }
+            else
+            {
+                start = neoService.getReferenceNode();
+            }
 
-            Iterable<Node> matches = getMatchingNodesByTraversing( root,
+            Iterable<Node> matches = getMatchingNodesByTraversing( start,
                 monitor );
             result.setMatches( matches );
 
-            txn.success();
+            tx.success();
 
             if ( monitor.isCanceled() )
             {
@@ -142,10 +159,11 @@ public class NeoSearchQuery implements ISearchQuery
             {
                 return new Status( IStatus.OK, Activator.PLUGIN_ID, "OK" );
             }
+
         }
         finally
         {
-            txn.finish();
+            tx.finish();
         }
     }
 
@@ -156,6 +174,7 @@ public class NeoSearchQuery implements ISearchQuery
     protected Iterable<Node> getMatchingNodesByTraversing( final Node node,
         final IProgressMonitor monitor )
     {
+//        monitor.beginTask( "Neo4j search operation started.", IProgressMonitor.UNKNOWN );
         List<Object> relDirList = new ArrayList<Object>();
         for ( RelationshipType relType : ((EmbeddedNeo) neoService)
             .getRelationshipTypes() )
@@ -164,37 +183,149 @@ public class NeoSearchQuery implements ISearchQuery
             relDirList.add( Direction.BOTH );
         }
 
-        return node.traverse( Order.DEPTH_FIRST, StopEvaluator.END_OF_GRAPH, new ReturnableEvaluator()
-        {
-            @Override
-            public boolean isReturnableNode( TraversalPosition currentPos )
+        Traverser trav = node.traverse( Order.DEPTH_FIRST,
+            StopEvaluator.END_OF_GRAPH, new ReturnableEvaluator()
             {
-                Node currentNode = currentPos.currentNode();
-                // for completeness, also check the id of the node
-                if ( expression.matches( currentNode.getId() ) )
+                @Override
+                public boolean isReturnableNode( TraversalPosition currentPos )
+                {
+//                    monitor.worked( 1 );
+                    Node currentNode = currentPos.currentNode();
+                    // for completeness, also check the id of the node
+                    if ( expression.matches( currentNode.getId() ) )
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        // find at least one property whose value matches the
+                        // given
+                        // expression
+                        // for ( Object value : currentNode.getPropertyValues()
+                        // )
+                        // changed due to strange problem in b7
+                        // TODO: change back to old code when OK
+                        for ( String key : currentNode.getPropertyKeys() )
+                        {
+                            Object value = currentNode.getProperty( key );
+                            if ( expression.matches( value ) )
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                    return false;
+                }
+            }, relDirList.toArray() );
+        // try using as id, if possible
+        Node nodeFromId = null;
+        if ( expression.isPossibleId() )
+        {
+            try
+            {
+                long id = Long.parseLong( expression.getExpression() );
+                nodeFromId = neoService.getNodeById( id );
+            }
+            catch ( RuntimeException e ) // NumberFormatException included
+            {
+                // do nothing
+            }
+        }
+        if ( nodeFromId != null )
+        {
+            return new IterableMerger( nodeFromId, trav );
+        }
+        return trav;
+    }
+
+   /**
+    * Lots of stuff to just add one node to an Iterable.
+    * @author Anders Nawroth
+    *
+    */
+    private static class IterableMerger implements Iterable<Node>
+    {
+        private MergeIterator iter;
+
+        public IterableMerger( final Node node, final Iterable<Node> traverser )
+        {
+            this.iter = new MergeIterator( node, traverser );
+        }
+
+        private static class MergeIterator implements Iterator<Node>
+        {
+            private Node node;
+            private Node nextNode;
+            private Iterator<Node> travIter;
+            private boolean usedNode = false;
+
+            public MergeIterator( final Node node,
+                final Iterable<Node> traverser )
+            {
+                this.node = node;
+                this.travIter = traverser.iterator();
+            }
+
+            @Override
+            public boolean hasNext()
+            {
+                if ( !usedNode )
                 {
                     return true;
                 }
-                else
+
+                if ( travIter.hasNext() )
                 {
-                    // find at least one property whose value matches the
-                    // given
-                    // expression
-//                    for ( Object value : currentNode.getPropertyValues() )
-                    // changed due to strange problem in b7
-                    // TODO: change back to old code when OK
-                    for ( String key : currentNode.getPropertyKeys() )
+                    nextNode = travIter.next();
+                    if ( node.equals( nextNode ) )
                     {
-                        Object value = currentNode.getProperty( key );
-                        if ( expression.matches( value ) )
+                        if ( travIter.hasNext() )
                         {
+                            nextNode = travIter.next();
                             return true;
                         }
+                        else
+                        {
+                            return false;
+                        }
+                    }
+                    else
+                    {
+                        return true;
                     }
                 }
-                return false;
+                else
+                {
+                    return false;
+                }
             }
-        }, relDirList.toArray() );
+
+            @Override
+            public Node next()
+            {
+                if ( !usedNode )
+                {
+                    usedNode = true;
+                    return node;
+                }
+                return nextNode;
+            }
+
+            @Override
+            public void remove()
+            {
+                if ( usedNode )
+                {
+                    travIter.remove();
+                }
+            }
+        }
+
+        @Override
+        public Iterator<Node> iterator()
+        {
+            return iter;
+        }
     }
 
     /**
@@ -222,7 +353,7 @@ public class NeoSearchQuery implements ISearchQuery
                 visitedNodes.add( nodeFromId );
             }
             catch ( RuntimeException e ) // this also covers
-                                         // NumberFormatException
+            // NumberFormatException
             {
                 // do nothing
             }

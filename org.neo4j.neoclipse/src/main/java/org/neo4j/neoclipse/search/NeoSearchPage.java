@@ -28,13 +28,14 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.PlatformUI;
+import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**
  * This class represents a search page in the search dialog to perform
- * Neo-specific searches. The found nodes will be shown in the search
- * result view.
- * 
- * @author	Peter H&auml;nsgen
+ * Neo-specific searches. The found nodes will be shown in the search result
+ * view.
+ * @author Peter H&auml;nsgen
  */
 public class NeoSearchPage extends DialogPage implements ISearchPage
 {
@@ -42,57 +43,59 @@ public class NeoSearchPage extends DialogPage implements ISearchPage
      * The input field for the search expression.
      */
     private Text expressionField;
-    
+
     /**
      * The container of this page.
      */
     private ISearchPageContainer container;
-    
+
     /**
      * Initializes the content of the search page.
      */
-    public void createControl(Composite parent)
+    public void createControl( Composite parent )
     {
-        initializeDialogUnits(parent);
+        initializeDialogUnits( parent );
 
-        Composite comp = new Composite(parent, SWT.NONE);
-        GridLayout layout= new GridLayout(1, false);
-        comp.setLayout(layout);
-        
-        Label label = new Label(comp, SWT.NONE);
-        label.setText("Search expression:");
-        label.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-        
-        expressionField = new Text(comp, SWT.SINGLE | SWT.BORDER);
-        expressionField.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL |
-                GridData.FILL_HORIZONTAL));
-        
+        Composite comp = new Composite( parent, SWT.NONE );
+        GridLayout layout = new GridLayout( 1, false );
+        comp.setLayout( layout );
+
+        Label label = new Label( comp, SWT.NONE );
+        label.setText( "Search expression:" );
+        label.setLayoutData( new GridData( GridData.FILL_HORIZONTAL ) );
+
+        expressionField = new Text( comp, SWT.SINGLE | SWT.BORDER );
+        expressionField.setLayoutData( new GridData( GridData.GRAB_HORIZONTAL
+            | GridData.FILL_HORIZONTAL ) );
+
         // do some validation
-        expressionField.addModifyListener(new ModifyListener(){
-            public void modifyText(ModifyEvent e)
+        expressionField.addModifyListener( new ModifyListener()
+        {
+            public void modifyText( ModifyEvent e )
             {
                 try
                 {
-                    // try to compile in order to validate input 
+                    // try to compile in order to validate input
                     String expression = expressionField.getText();
-                    Pattern.compile(expression);
-                    
-                    container.setPerformActionEnabled(true);
+                    Pattern.compile( expression );
+
+                    container.setPerformActionEnabled( true );
                 }
-                catch (PatternSyntaxException p)
+                catch ( PatternSyntaxException p )
                 {
-                    setErrorMessage("The search expression is not a valid regular expression.");
-                    container.setPerformActionEnabled(false);
+                    setErrorMessage( "The search expression is not a valid regular expression." );
+                    container.setPerformActionEnabled( false );
                 }
-            }});
-        
-        setControl(comp);
+            }
+        } );
+
+        setControl( comp );
     }
-    
+
     /**
      * Sets the owning search dialog.
      */
-    public void setContainer(ISearchPageContainer container)
+    public void setContainer( ISearchPageContainer container )
     {
         this.container = container;
     }
@@ -107,14 +110,17 @@ public class NeoSearchPage extends DialogPage implements ISearchPage
             // determine expression from input fields
             String expression = expressionField.getText();
 
-            Pattern p = Pattern.compile(expression);
-            NeoSearchExpression ex = new NeoSearchExpression(p);
-            
-            NewSearchUI.runQueryInBackground(new NeoSearchQuery(ex));
-            
+            Pattern p = Pattern.compile( expression );
+            NeoSearchExpression ex = new NeoSearchExpression( p );
+            NeoGraphViewPart gv = (NeoGraphViewPart) PlatformUI.getWorkbench()
+                .getActiveWorkbenchWindow().getActivePage().findView(
+                    NeoGraphViewPart.ID );
+
+            NewSearchUI.runQueryInBackground( new NeoSearchQuery( ex, gv ) );
+
             return true;
         }
-        catch (PatternSyntaxException p)
+        catch ( PatternSyntaxException p )
         {
             return false;
         }

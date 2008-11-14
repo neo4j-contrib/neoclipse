@@ -14,7 +14,6 @@
 package org.neo4j.neoclipse.search;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
@@ -23,42 +22,47 @@ import org.neo4j.api.core.Node;
 
 /**
  * This is the content provider for populating the result list tree viewer.
- * 
- * @author	Peter H&auml;nsgen
+ * @author Peter H&auml;nsgen
  */
 public class NeoSearchResultContentProvider implements ITreeContentProvider
 {
+    private List<Node> list = new ArrayList<Node>();
+
     /**
      * Called when the input has changed, does nothing.
      */
-    public void inputChanged(Viewer viewer, Object oldInput, Object newInput)
+    public void inputChanged( Viewer viewer, Object oldInput, Object newInput )
     {
     }
 
     /**
      * Expects the results of a neo search.
      */
-    public Object[] getElements(Object inputElement)
+    public Object[] getElements( Object inputElement )
     {
         NeoSearchResult result = (NeoSearchResult) inputElement;
         Iterable<Node> matches = result.getMatches();
-        
-        // TODO is there a better way than copying?
-        List<Node> list = new ArrayList<Node>();
-        
-        Iterator<Node> it = matches.iterator();
-        while (it.hasNext())
+
+        // TODO make search results being added to the list
+        // and the UI updated during the search.
+        list.clear();
+
+        // the actual search are not performed until
+        // this iterator is performed.
+        // so this should be run with frequent
+        // updates of the UI somehow.
+        for ( Node node : matches )
         {
-            list.add(it.next());
+            list.add( node );
         }
-        
+
         return list.toArray();
     }
 
     /**
      * Returns an empty array, as there is no hierarchical structure.
      */
-    public Object[] getChildren(Object parentElement)
+    public Object[] getChildren( Object parentElement )
     {
         return new Object[0];
     }
@@ -66,7 +70,7 @@ public class NeoSearchResultContentProvider implements ITreeContentProvider
     /**
      * Returns null, as there is no hierarchical structure.
      */
-    public Object getParent(Object element)
+    public Object getParent( Object element )
     {
         return null;
     }
@@ -74,7 +78,7 @@ public class NeoSearchResultContentProvider implements ITreeContentProvider
     /**
      * Returns false, no hierarchical views supported.
      */
-    public boolean hasChildren(Object element)
+    public boolean hasChildren( Object element )
     {
         return false;
     }
