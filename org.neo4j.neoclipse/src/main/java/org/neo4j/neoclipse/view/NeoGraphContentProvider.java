@@ -91,7 +91,6 @@ public class NeoGraphContentProvider implements
         Traverser trav = node.traverse( Order.BREADTH_FIRST,
             new StopEvaluator()
             {
-                @Override
                 public boolean isStopNode( TraversalPosition currentPos )
                 {
                     return currentPos.depth() >= depth;

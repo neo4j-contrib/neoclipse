@@ -186,7 +186,6 @@ public class NeoSearchQuery implements ISearchQuery
         Traverser trav = node.traverse( Order.DEPTH_FIRST,
             StopEvaluator.END_OF_GRAPH, new ReturnableEvaluator()
             {
-                @Override
                 public boolean isReturnableNode( TraversalPosition currentPos )
                 {
 //                    monitor.worked( 1 );
@@ -266,7 +265,6 @@ public class NeoSearchQuery implements ISearchQuery
                 this.travIter = traverser.iterator();
             }
 
-            @Override
             public boolean hasNext()
             {
                 if ( !usedNode )
@@ -300,7 +298,6 @@ public class NeoSearchQuery implements ISearchQuery
                 }
             }
 
-            @Override
             public Node next()
             {
                 if ( !usedNode )
@@ -311,7 +308,6 @@ public class NeoSearchQuery implements ISearchQuery
                 return nextNode;
             }
 
-            @Override
             public void remove()
             {
                 if ( usedNode )
@@ -321,7 +317,6 @@ public class NeoSearchQuery implements ISearchQuery
             }
         }
 
-        @Override
         public Iterator<Node> iterator()
         {
             return iter;
