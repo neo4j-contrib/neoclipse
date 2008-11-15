@@ -17,6 +17,7 @@ import java.util.Arrays;
 
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.jface.viewers.IColorProvider;
+import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
@@ -48,7 +49,7 @@ import org.neo4j.neoclipse.preference.NeoPreferences;
  * @author Anders Nawroth
  */
 public class NeoGraphLabelProvider extends LabelProvider implements
-    IConnectionStyleProvider, IColorProvider
+    IConnectionStyleProvider, IColorProvider, ILabelProvider
 {
     /**
      * Keep track of relationship types display on/off.
@@ -393,6 +394,7 @@ public class NeoGraphLabelProvider extends LabelProvider implements
 
     public IFigure getTooltip( Object entity )
     {
+        // got this working only for rels. use a Label (draw2d).
         return null;
     }
 

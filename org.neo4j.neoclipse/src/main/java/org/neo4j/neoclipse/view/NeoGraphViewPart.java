@@ -72,7 +72,7 @@ import org.neo4j.neoclipse.neo.NeoServiceStatus;
  * @author Peter H&auml;nsgen
  */
 public class NeoGraphViewPart extends ViewPart implements
-    IZoomableWorkbenchPart
+    IZoomableWorkbenchPart, IDoubleClickListener
 {
     /**
      * The Eclipse view ID.
@@ -104,6 +104,7 @@ public class NeoGraphViewPart extends ViewPart implements
         viewer.setContentProvider( new NeoGraphContentProvider( this ) );
         viewer.setLabelProvider( NeoGraphLabelProviderWrapper.getInstance() );
         viewer.addDoubleClickListener( new NeoGraphDoubleClickListener() );
+        viewer.addDoubleClickListener( this );
         viewer.setLayoutAlgorithm( new SpringLayoutAlgorithm(
             LayoutStyles.NO_LAYOUT_NODE_RESIZING ) );
         makeContributions();
@@ -384,10 +385,15 @@ public class NeoGraphViewPart extends ViewPart implements
         }
     }
 
+    public void doubleClick( DoubleClickEvent arg0 )
+    {
+        refreshStatusBar();
+    }
+
     /**
      * Updates the content of the status bar.
      */
-    protected void refreshStatusBar()
+    public void refreshStatusBar()
     {
         getViewSite().getActionBars().getStatusLineManager().setMessage(
             "Traversal depth: " + String.valueOf( traversalDepth )

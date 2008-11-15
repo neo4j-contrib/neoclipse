@@ -61,7 +61,7 @@ public class NeoIcons
         reg.put( NeoIcons.NEO, Activator.imageDescriptorFromPlugin(
             Activator.PLUGIN_ID, "icons/obj16/neo-16.png" ) );
         reg.put( NeoIcons.NEO_ROOT, Activator.imageDescriptorFromPlugin(
-            Activator.PLUGIN_ID, "icons/obj16/neo-red-16.png" ) );
+            Activator.PLUGIN_ID, "icons/enabled/home.gif" ) );
         // help icon
         reg.put( NeoIcons.HELP, sharedImages
             .getImage( ISharedImages.IMG_LCL_LINKTO_HELP ) );
