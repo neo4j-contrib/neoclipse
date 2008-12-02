@@ -87,6 +87,12 @@ public class NeoGraphContentProvider implements
             relDirList.add( relType );
             relDirList.add( Direction.BOTH );
         }
+        if ( relDirList.isEmpty() )
+        {
+            // if there are no relationship types,
+            // there can't be any relationships ...
+            return new Node[] { node };
+        }
         final int depth = view.getTraversalDepth();
         Traverser trav = node.traverse( Order.BREADTH_FIRST,
             new StopEvaluator()

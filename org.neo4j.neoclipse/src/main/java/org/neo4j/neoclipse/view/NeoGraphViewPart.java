@@ -101,7 +101,8 @@ public class NeoGraphViewPart extends ViewPart implements
     public void createPartControl( Composite parent )
     {
         viewer = new GraphViewer( parent, SWT.NONE );
-        viewer.setContentProvider( new NeoGraphContentProvider( this ) );
+        viewer.setContentProvider( new NeoGraphRelationshipContentProvider(
+            this ) );
         viewer.setLabelProvider( NeoGraphLabelProviderWrapper.getInstance() );
         viewer.addDoubleClickListener( new NeoGraphDoubleClickListener() );
         viewer.addDoubleClickListener( this );
@@ -137,7 +138,17 @@ public class NeoGraphViewPart extends ViewPart implements
     }
 
     /**
-     * Initializes menus, toolbars etc.
+     * Add the current node to the view. Used when traversal find nothing to
+     * show.
+     */
+    @SuppressWarnings( "restriction" )
+    public void addCurrentNode()
+    {
+        viewer.addNode( getCurrentNode() );
+    }
+
+    /**
+     * Initializes menus, tool bars etc.
      */
     protected void makeContributions()
     {
@@ -593,7 +604,7 @@ public class NeoGraphViewPart extends ViewPart implements
                     txn.finish();
                 }
             }
-            if ( traversalDepth == 0 )
+            if ( traversalDepth < 1 )
             {
                 decAction.setEnabled( false );
             }

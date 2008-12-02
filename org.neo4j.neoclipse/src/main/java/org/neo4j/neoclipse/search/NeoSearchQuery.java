@@ -14,6 +14,7 @@
 package org.neo4j.neoclipse.search;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -46,6 +47,13 @@ import org.neo4j.neoclipse.view.NeoGraphViewPart;
  */
 public class NeoSearchQuery implements ISearchQuery
 {
+    /**
+     * Dummy list to return an empty iterable<Node>
+     * when search can't find anything.
+     */
+    private static final List<Node> EMPTY_NODE_LIST = Arrays
+        .asList( new Node[0] );
+
     /**
      * The search expression.
      */
@@ -174,7 +182,8 @@ public class NeoSearchQuery implements ISearchQuery
     protected Iterable<Node> getMatchingNodesByTraversing( final Node node,
         final IProgressMonitor monitor )
     {
-//        monitor.beginTask( "Neo4j search operation started.", IProgressMonitor.UNKNOWN );
+        // monitor.beginTask( "Neo4j search operation started.",
+        // IProgressMonitor.UNKNOWN );
         List<Object> relDirList = new ArrayList<Object>();
         for ( RelationshipType relType : ((EmbeddedNeo) neoService)
             .getRelationshipTypes() )
@@ -183,12 +192,18 @@ public class NeoSearchQuery implements ISearchQuery
             relDirList.add( Direction.BOTH );
         }
 
+        if ( relDirList.isEmpty() )
+        {
+            // there's no relationships, so we can't search
+            return EMPTY_NODE_LIST;
+        }
+
         Traverser trav = node.traverse( Order.DEPTH_FIRST,
             StopEvaluator.END_OF_GRAPH, new ReturnableEvaluator()
             {
                 public boolean isReturnableNode( TraversalPosition currentPos )
                 {
-//                    monitor.worked( 1 );
+                    // monitor.worked( 1 );
                     Node currentNode = currentPos.currentNode();
                     // for completeness, also check the id of the node
                     if ( expression.matches( currentNode.getId() ) )
@@ -237,11 +252,10 @@ public class NeoSearchQuery implements ISearchQuery
         return trav;
     }
 
-   /**
-    * Lots of stuff to just add one node to an Iterable.
-    * @author Anders Nawroth
-    *
-    */
+    /**
+     * Lots of stuff to just add one node to an Iterable.
+     * @author Anders Nawroth
+     */
     private static class IterableMerger implements Iterable<Node>
     {
         private MergeIterator iter;

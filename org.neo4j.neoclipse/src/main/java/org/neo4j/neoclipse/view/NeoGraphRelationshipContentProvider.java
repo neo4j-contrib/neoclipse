@@ -13,18 +13,27 @@
  */
 package org.neo4j.neoclipse.view;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.zest.core.viewers.IGraphContentProvider;
 import org.neo4j.api.core.Direction;
+import org.neo4j.api.core.EmbeddedNeo;
 import org.neo4j.api.core.Node;
 import org.neo4j.api.core.Relationship;
+import org.neo4j.api.core.RelationshipType;
+import org.neo4j.api.core.ReturnableEvaluator;
+import org.neo4j.api.core.StopEvaluator;
+import org.neo4j.api.core.TraversalPosition;
+import org.neo4j.api.core.Traverser;
+import org.neo4j.api.core.Traverser.Order;
+import org.neo4j.neoclipse.Activator;
 
 public class NeoGraphRelationshipContentProvider implements
     IGraphContentProvider
 {
+    private static final Relationship[] EMPTY_REL_ARRAY = new Relationship[0];
     /**
      * The view.
      */
@@ -43,53 +52,68 @@ public class NeoGraphRelationshipContentProvider implements
         return ((Relationship) rel).getEndNode();
     }
 
+    @SuppressWarnings( "deprecation" )
     public Object[] getElements( Object input )
     {
-        Set<Relationship> rels = new HashSet<Relationship>();
-        Set<Node> nodes = new HashSet<Node>();
-        getElements( (Node) input, rels, nodes, view.getTraversalDepth() );
-        return rels.toArray();
+        final int depth = view.getTraversalDepth() - 1;
+        if ( depth == -1 )
+        {
+            view.addCurrentNode();
+            return EMPTY_REL_ARRAY;
+        }
+        List<Object> relDirList = new ArrayList<Object>();
+        for ( RelationshipType relType : ((EmbeddedNeo) Activator.getDefault()
+            .getNeoServiceManager().getNeoService()).getRelationshipTypes() )
+        {
+            relDirList.add( relType );
+            relDirList.add( Direction.BOTH );
+        }
+        if ( relDirList.isEmpty() )
+        {
+            // if there are no relationship types,
+            // there can't be any relationships ...
+            view.addCurrentNode();
+            return EMPTY_REL_ARRAY;
+        }
+        Node node = (Node) input;
+        Traverser trav = node.traverse( Order.BREADTH_FIRST,
+            new StopEvaluator()
+            {
+                public boolean isStopNode( TraversalPosition currentPos )
+                {
+                    return currentPos.depth() >= depth;
+                }
+            }, ReturnableEvaluator.ALL, relDirList.toArray() );
+        List<Relationship> rels = new ArrayList<Relationship>();
+        for ( Node current : trav )
+        {
+            if ( trav.currentPosition().depth() != depth )
+            {
+                for ( Relationship rel : current
+                    .getRelationships( Direction.OUTGOING ) )
+                {
+                    rels.add( rel );
+                }
+            }
+            else
+            {
+                for ( Relationship rel : current.getRelationships() )
+                {
+                    rels.add( rel );
+                }
+            }
+        }
+        if ( rels.isEmpty() )
+        {
+            view.addCurrentNode();
+            return EMPTY_REL_ARRAY;
+        }
+        return rels.toArray( EMPTY_REL_ARRAY );
     }
 
     public Object getSource( Object rel )
     {
         return ((Relationship) rel).getStartNode();
-    }
-
-    /**
-     * Determines the connected nodes within the given traversal depth.
-     */
-    private void getElements( Node node, Set<Relationship> rels,
-        Set<Node> nodes, int depth )
-    {
-        if ( depth > 0 )
-        {
-            for ( Relationship r : node.getRelationships( Direction.BOTH ) )
-            {
-                if ( !rels.contains( r ) )
-                {
-                    rels.add( r );
-                    Node other = r.getOtherNode( node );
-                    getElements( other, rels, nodes, depth - 1 );
-                    if ( depth == 1 )
-                    {
-                        for ( Relationship otherRel : other
-                            .getRelationships( Direction.BOTH ) )
-                        {
-                            if ( nodes
-                                .contains( otherRel.getOtherNode( other ) ) )
-                            {
-                                rels.add( otherRel );
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        else
-        {
-            nodes.add( node );
-        }
     }
 
     public void dispose()
