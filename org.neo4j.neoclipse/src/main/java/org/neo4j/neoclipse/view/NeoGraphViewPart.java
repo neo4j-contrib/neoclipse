@@ -112,7 +112,7 @@ public class NeoGraphViewPart extends ViewPart implements
         NeoServiceManager sm = Activator.getDefault().getNeoServiceManager();
         sm.addServiceEventListener( new NeoGraphServiceEventListener() );
         getSite().setSelectionProvider( viewer );
-        showReferenceNode();
+        showSomeNode();
         PlatformUI.getWorkbench().getHelpSystem().setHelp( viewer.getControl(),
             HelpContextConstants.NEO_GRAPH_VIEW_PART );
     }
@@ -503,6 +503,55 @@ public class NeoGraphViewPart extends ViewPart implements
     }
 
     /**
+     * Focuses the view on the reference node or some other node. If the
+     * reference node has no relationships, it will try to find a node that has
+     * relationships.
+     */
+    public void showSomeNode()
+    {
+        NeoServiceManager sm = Activator.getDefault().getNeoServiceManager();
+        NeoService ns = sm.getNeoService();
+        if ( ns != null )
+        {
+            Transaction txn = ns.beginTx();
+            try
+            {
+                Node node = ns.getReferenceNode();
+                if ( !node.hasRelationship() )
+                {
+                    // so, find a more friendly node if possible!
+                    Node betterNode;
+                    for ( long id = 0; id < 1000; id++ )
+                    {
+                        try
+                        {
+                            betterNode = ns.getNodeById( id );
+                            if ( node.equals( betterNode ) )
+                            {
+                                continue;
+                            }
+                            if ( betterNode.hasRelationship() )
+                            {
+                                node = betterNode;
+                                break;
+                            }
+                        }
+                        catch ( NotFoundException e )
+                        {
+                            // really nothing to do in here
+                        }
+                    }
+                }
+                viewer.setInput( node );
+            }
+            finally
+            {
+                txn.finish();
+            }
+        }
+    }
+
+    /**
      * Focuses the view on the node with the given id.
      */
     public void showNode( long nodeId )
@@ -693,7 +742,7 @@ public class NeoGraphViewPart extends ViewPart implements
             }
             else if ( event.getStatus() == NeoServiceStatus.STARTED )
             {
-                showReferenceNode();
+                showSomeNode();
             }
         }
     }
