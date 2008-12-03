@@ -14,7 +14,9 @@
 package org.neo4j.neoclipse.view;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.zest.core.viewers.IGraphContentProvider;
@@ -84,7 +86,7 @@ public class NeoGraphRelationshipContentProvider implements
                     return currentPos.depth() >= depth;
                 }
             }, ReturnableEvaluator.ALL, relDirList.toArray() );
-        List<Relationship> rels = new ArrayList<Relationship>();
+        Set<Relationship> rels = new HashSet<Relationship>();
         for ( Node current : trav )
         {
             if ( trav.currentPosition().depth() != depth )
