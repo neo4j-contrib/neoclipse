@@ -36,7 +36,7 @@ public class UserIcons
     /**
      * Image file extensions to look for.
      */
-    public final static String[] extensions = new String[] { "png", "PNG",
+    public static final String[] extensions = new String[] { "png", "PNG",
         "gif", "GIF", "ico", "ICO", "bmp", "BMP", "jpg", "JPG", "jpeg", "JPEG",
         "tif", "TIF", "tiff", "TIFF" };
     /**

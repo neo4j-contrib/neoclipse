@@ -186,7 +186,11 @@ public class NeoGraphLabelProvider extends LabelProvider implements
                     .getRelationshipNameTextFromProperty( rel );
                 if ( names != null )
                 {
-                    text += "".equals( text ) ? names : ", " + names;
+                    if ( !"".equals( text ) )
+                    {
+                        text += ", ";
+                    }
+                    text += names;
                 }
             }
             return text;
@@ -202,7 +206,7 @@ public class NeoGraphLabelProvider extends LabelProvider implements
         refreshGraphDecorator();
     }
 
-    final private void refreshGraphDecorator()
+    private final void refreshGraphDecorator()
     {
         graphDecorator = new SimpleGraphDecorator( settings );
     }
@@ -216,7 +220,7 @@ public class NeoGraphLabelProvider extends LabelProvider implements
         refreshGraphDecorator();
     }
 
-    final private void refreshNodeIconLocation()
+    private final void refreshNodeIconLocation()
     {
         settings
             .setNodeIconLocation( Activator.getDefault().getPreferenceStore()
@@ -232,7 +236,7 @@ public class NeoGraphLabelProvider extends LabelProvider implements
         refreshGraphDecorator();
     }
 
-    final private void refreshNodePropertyNames()
+    private final void refreshNodePropertyNames()
     {
         settings.setNodePropertyNames( Activator.getDefault()
             .getPreferenceStore()
@@ -249,7 +253,7 @@ public class NeoGraphLabelProvider extends LabelProvider implements
         refreshGraphDecorator();
     }
 
-    final private void refreshRelPropertyNames()
+    private final void refreshRelPropertyNames()
     {
         settings.setRelPropertyNames( Activator.getDefault()
             .getPreferenceStore().getString(
@@ -266,7 +270,7 @@ public class NeoGraphLabelProvider extends LabelProvider implements
         refreshGraphDecorator();
     }
 
-    final private void refreshNodeIconPropertyNames()
+    private final void refreshNodeIconPropertyNames()
     {
         settings.setNodeIconPropertyNames( Activator.getDefault()
             .getPreferenceStore().getString(

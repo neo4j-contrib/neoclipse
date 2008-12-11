@@ -111,10 +111,7 @@ public class NeoPropertyDescriptor implements IPropertyDescriptor
         return "The property '"
             + key
             + "' is of type "
-            + cls.getSimpleName()
-            + " and is "
-            + (editorType.compareTo( NeoPropertyEditor.NONE ) == 0 ? "not "
-                : "") + "editable.";
+            + cls.getSimpleName();
     }
 
     public String getDisplayName()
