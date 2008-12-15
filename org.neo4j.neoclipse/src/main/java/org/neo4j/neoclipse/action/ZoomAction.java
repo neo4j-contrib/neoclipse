@@ -18,6 +18,7 @@ import org.eclipse.jface.action.IMenuCreator;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.zest.core.viewers.ZoomContributionViewItem;
+import org.neo4j.neoclipse.NeoIcons;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**
@@ -43,6 +44,9 @@ public class ZoomAction extends Action implements IMenuCreator
         super( "ZoomAction", Action.AS_DROP_DOWN_MENU );
         this.view = view;
         setMenuCreator( this );
+        setText( "Zoom" );
+        setToolTipText( "Zoom" );
+        setImageDescriptor( NeoIcons.getDescriptor( NeoIcons.ZOOM ) );
     }
 
     /**

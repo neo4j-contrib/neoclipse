@@ -20,7 +20,6 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.PlatformUI;
@@ -38,8 +37,9 @@ import org.neo4j.api.core.Node;
 import org.neo4j.api.core.NotFoundException;
 import org.neo4j.api.core.Transaction;
 import org.neo4j.neoclipse.Activator;
-import org.neo4j.neoclipse.NeoIcons;
 import org.neo4j.neoclipse.action.DecreaseTraversalDepthAction;
+import org.neo4j.neoclipse.action.GoBackAction;
+import org.neo4j.neoclipse.action.GoForwardAction;
 import org.neo4j.neoclipse.action.IncreaseTraversalDepthAction;
 import org.neo4j.neoclipse.action.PrintGraphAction;
 import org.neo4j.neoclipse.action.RefreshAction;
@@ -70,6 +70,7 @@ import org.neo4j.neoclipse.neo.NeoServiceStatus;
  * This class is a view that shows the contents of a Neo database as a graph of
  * connected objects.
  * @author Peter H&auml;nsgen
+ * @author Anders Nawroth
  */
 public class NeoGraphViewPart extends ViewPart implements
     IZoomableWorkbenchPart, IDoubleClickListener
@@ -86,6 +87,18 @@ public class NeoGraphViewPart extends ViewPart implements
      * The graph.
      */
     protected GraphViewer viewer;
+    /**
+     * Keep track of visited nodes.
+     */
+    private BrowserHistory browserHistory = null;
+    /**
+     * The go back action.
+     */
+    GoBackAction backAction = new GoBackAction( this );
+    /**
+     * The go forward action.
+     */
+    GoForwardAction forwardAction = new GoForwardAction( this );
     /**
      * The decrease traversal depth action.
      */
@@ -155,6 +168,7 @@ public class NeoGraphViewPart extends ViewPart implements
         // initialize actions
         IToolBarManager tm = getViewSite().getActionBars().getToolBarManager();
         IMenuManager mm = getViewSite().getActionBars().getMenuManager();
+
         // standard actions
         contributeStandardActions( tm );
         // recursion level actions
@@ -268,58 +282,30 @@ public class NeoGraphViewPart extends ViewPart implements
             // spring layout
             ShowSpringLayoutAction springLayoutAction = new ShowSpringLayoutAction(
                 this );
-            springLayoutAction.setText( "Spring Layout" );
-            springLayoutAction.setToolTipText( "Spring Layout" );
-            springLayoutAction.setImageDescriptor( NeoIcons
-                .getDescriptor( NeoIcons.SPRING ) );
-            springLayoutAction.setChecked( true );
             tm.appendToGroup( groupName, springLayoutAction );
             mm.appendToGroup( groupName, springLayoutAction );
             // tree layout
             ShowTreeLayoutAction treeLayoutAction = new ShowTreeLayoutAction(
                 this );
-            treeLayoutAction.setText( "Tree Layout" );
-            treeLayoutAction.setToolTipText( "Tree Layout" );
-            treeLayoutAction.setImageDescriptor( NeoIcons
-                .getDescriptor( NeoIcons.TREE ) );
-            treeLayoutAction.setChecked( false );
             tm.appendToGroup( groupName, treeLayoutAction );
             mm.appendToGroup( groupName, treeLayoutAction );
             // radial layout
             ShowRadialLayoutAction radialLayoutAction = new ShowRadialLayoutAction(
                 this );
-            radialLayoutAction.setText( "Radial Layout" );
-            radialLayoutAction.setToolTipText( "Radial Layout" );
-            radialLayoutAction.setImageDescriptor( NeoIcons
-                .getDescriptor( NeoIcons.RADIAL ) );
-            radialLayoutAction.setChecked( false );
             tm.appendToGroup( groupName, radialLayoutAction );
             mm.appendToGroup( groupName, radialLayoutAction );
             // grid layout
             ShowGridLayoutAction gridLayoutAction = new ShowGridLayoutAction(
                 this );
-            gridLayoutAction.setText( "Grid Layout" );
-            gridLayoutAction.setToolTipText( "Grid Layout" );
-            gridLayoutAction.setImageDescriptor( NeoIcons
-                .getDescriptor( NeoIcons.GRID ) );
-            gridLayoutAction.setChecked( false );
             tm.appendToGroup( groupName, gridLayoutAction );
             mm.appendToGroup( groupName, gridLayoutAction );
             // horizontal tree layout
             ShowHorizontalTreeLayoutAction horizontalTreeLayoutAction = new ShowHorizontalTreeLayoutAction(
                 this );
-            horizontalTreeLayoutAction.setText( "Horizontal Tree Layout" );
-            horizontalTreeLayoutAction
-                .setToolTipText( "Horizontal Tree Layout" );
-            horizontalTreeLayoutAction.setChecked( false );
             mm.appendToGroup( groupName, horizontalTreeLayoutAction );
             // horizontal shift layout
             ShowHorizontalShiftLayoutAction horizontalShiftLayoutAction = new ShowHorizontalShiftLayoutAction(
                 this );
-            horizontalShiftLayoutAction.setText( "Horizontal Shift Layout" );
-            horizontalShiftLayoutAction
-                .setToolTipText( "Horizontal Shift Layout" );
-            horizontalShiftLayoutAction.setChecked( false );
             mm.appendToGroup( groupName, horizontalShiftLayoutAction );
         }
     }
@@ -333,10 +319,6 @@ public class NeoGraphViewPart extends ViewPart implements
     {
         {
             ZoomAction zoomAction = new ZoomAction( this );
-            zoomAction.setText( "Zoom" );
-            zoomAction.setToolTipText( "Zoom" );
-            zoomAction.setImageDescriptor( Activator.getDefault()
-                .getImageRegistry().getDescriptor( NeoIcons.ZOOM ) );
             tm.add( zoomAction );
             tm.add( new Separator() );
         }
@@ -352,21 +334,11 @@ public class NeoGraphViewPart extends ViewPart implements
         {
             IncreaseTraversalDepthAction incAction = new IncreaseTraversalDepthAction(
                 this );
-            incAction.setText( "Increase Traversal Depth" );
-            incAction.setToolTipText( "Increase Traversal Depth" );
-            incAction.setImageDescriptor( Activator.getDefault()
-                .getImageRegistry().getDescriptor( NeoIcons.PLUS_ENABLED ) );
-            incAction.setDisabledImageDescriptor( Activator.getDefault()
-                .getImageRegistry().getDescriptor( NeoIcons.PLUS_DISABLED ) );
             tm.add( incAction );
+            
             decAction = new DecreaseTraversalDepthAction( this );
-            decAction.setText( "Decrease Traversal Depth" );
-            decAction.setToolTipText( "Decrease Traversal Depth" );
-            decAction.setImageDescriptor( Activator.getDefault()
-                .getImageRegistry().getDescriptor( NeoIcons.MINUS_ENABLED ) );
-            decAction.setDisabledImageDescriptor( Activator.getDefault()
-                .getImageRegistry().getDescriptor( NeoIcons.MINUS_DISABLED ) );
             tm.add( decAction );
+            
             tm.add( new Separator() );
         }
     }
@@ -379,19 +351,16 @@ public class NeoGraphViewPart extends ViewPart implements
     private void contributeStandardActions( IToolBarManager tm )
     {
         {
+            tm.add( backAction );
+            tm.add( forwardAction );
+
             ShowReferenceNodeAction refNodeAction = new ShowReferenceNodeAction(
                 this );
-            refNodeAction.setText( "Show Reference Node" );
-            refNodeAction.setToolTipText( "Show Reference Node" );
-            refNodeAction.setImageDescriptor( Activator.getDefault()
-                .getImageRegistry().getDescriptor( NeoIcons.HOME ) );
             tm.add( refNodeAction );
+
             RefreshAction refreshAction = new RefreshAction( this );
-            refreshAction.setText( "Refresh" );
-            refreshAction.setToolTipText( "Refresh" );
-            refreshAction.setImageDescriptor( Activator.getDefault()
-                .getImageRegistry().getDescriptor( NeoIcons.REFRESH ) );
             tm.add( refreshAction );
+
             tm.add( new Separator() );
         }
     }
@@ -481,6 +450,32 @@ public class NeoGraphViewPart extends ViewPart implements
     }
 
     /**
+     * Go back to previous node.
+     */
+    public void goBack()
+    {
+        Node node = getBrowserHistory().getPrevious();
+        if ( node != null )
+        {
+            showNode( node );
+        }
+        updateNavStatus();
+    }
+
+    /**
+     * Go forward to next node.
+     */
+    public void goForward()
+    {
+        Node node = getBrowserHistory().getNext();
+        if ( node != null )
+        {
+            showNode( node );
+        }
+        updateNavStatus();
+    }
+
+    /**
      * Focuses the view on the reference node.
      */
     public void showReferenceNode()
@@ -493,7 +488,7 @@ public class NeoGraphViewPart extends ViewPart implements
             try
             {
                 Node node = ns.getReferenceNode();
-                viewer.setInput( node );
+                setInput( node );
             }
             finally
             {
@@ -542,7 +537,7 @@ public class NeoGraphViewPart extends ViewPart implements
                         }
                     }
                 }
-                viewer.setInput( node );
+                setInput( node );
             }
             finally
             {
@@ -722,6 +717,44 @@ public class NeoGraphViewPart extends ViewPart implements
     }
 
     /**
+     * Get browser history.
+     * @return
+     */
+    public BrowserHistory getBrowserHistory()
+    {
+        if ( browserHistory == null )
+        {
+            browserHistory = new BrowserHistory();
+        }
+        return browserHistory;
+    }
+
+    /**
+     * Set new input for the view.
+     * @param node
+     *            the node to use as input/start
+     */
+    private void setInput( Node node )
+    {
+        viewer.setInput( node );
+        if ( node != null )
+        {
+            getBrowserHistory().add( node );
+        }
+        updateNavStatus();
+    }
+
+    /**
+     * Update navigation buttons according to current status. Must be called
+     * after all browser history-related operations.
+     */
+    private void updateNavStatus()
+    {
+        backAction.setEnabled( getBrowserHistory().hasPrevious() );
+        forwardAction.setEnabled( getBrowserHistory().hasNext() );
+    }
+
+    /**
      * Updates the view according to service changes.
      */
     class NeoGraphServiceEventListener implements NeoServiceEventListener
@@ -750,7 +783,7 @@ public class NeoGraphViewPart extends ViewPart implements
     /**
      * Handles double clicks on graph figures.
      */
-    static class NeoGraphDoubleClickListener implements IDoubleClickListener
+    private class NeoGraphDoubleClickListener implements IDoubleClickListener
     {
         /**
          * Sets the selected node as input for the viewer.
@@ -762,14 +795,19 @@ public class NeoGraphViewPart extends ViewPart implements
             Object s = sel.getFirstElement();
             if ( (s != null) && (s instanceof Node) )
             {
+                Node node = (Node) s;
                 NeoServiceManager sm = Activator.getDefault()
                     .getNeoServiceManager();
                 NeoService ns = sm.getNeoService();
                 Transaction txn = ns.beginTx();
                 try
                 {
-                    Viewer viewer = event.getViewer();
-                    viewer.setInput( s );
+                    if ( viewer != event.getViewer() )
+                    {
+                        throw new IllegalStateException(
+                            "Double click event comes from wrong view." );
+                    }
+                    setInput( node );
                 }
                 finally
                 {

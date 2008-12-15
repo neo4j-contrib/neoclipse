@@ -18,10 +18,10 @@ import org.neo4j.neoclipse.NeoIcons;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**
- * This action focuses the graph viewer on the neo reference node.
- * @author Peter H&auml;nsgen
+ * This action moves backward in the browsing history.
+ * @author Anders Nawroth
  */
-public class ShowReferenceNodeAction extends Action
+public class GoBackAction extends Action
 {
     /**
      * The view.
@@ -31,13 +31,16 @@ public class ShowReferenceNodeAction extends Action
     /**
      * The constructor.
      */
-    public ShowReferenceNodeAction( NeoGraphViewPart view )
+    public GoBackAction( NeoGraphViewPart view )
     {
-        super( "Show Reference Node", Action.AS_PUSH_BUTTON );
+        super( "Go Back", Action.AS_PUSH_BUTTON );
         this.view = view;
-        setText( "Show Reference Node" );
-        setToolTipText( "Show Reference Node" );
-        setImageDescriptor( NeoIcons.getDescriptor( NeoIcons.HOME ) );
+        setText( "Go Back" );
+        setToolTipText( "Go Back" );
+        setImageDescriptor( NeoIcons.getDescriptor( NeoIcons.BACK_ENABLED ) );
+        setDisabledImageDescriptor( NeoIcons
+            .getDescriptor( NeoIcons.BACK_DISABLED ) );
+        setEnabled( false );
     }
 
     /**
@@ -45,6 +48,6 @@ public class ShowReferenceNodeAction extends Action
      */
     public void run()
     {
-        view.showReferenceNode();
+        view.goBack();
     }
 }

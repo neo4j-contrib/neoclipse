@@ -14,6 +14,7 @@
 package org.neo4j.neoclipse.action;
 
 import org.eclipse.jface.action.Action;
+import org.neo4j.neoclipse.NeoIcons;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**
@@ -34,6 +35,11 @@ public class DecreaseTraversalDepthAction extends Action
     {
         super( "Decrease Traversal Depth", Action.AS_PUSH_BUTTON );
         this.view = view;
+        setText( "Decrease Traversal Depth" );
+        setToolTipText( "Decrease Traversal Depth" );
+        setImageDescriptor( NeoIcons.getDescriptor( NeoIcons.MINUS_ENABLED ) );
+        setDisabledImageDescriptor( NeoIcons
+            .getDescriptor( NeoIcons.MINUS_DISABLED ) );
     }
 
     /**

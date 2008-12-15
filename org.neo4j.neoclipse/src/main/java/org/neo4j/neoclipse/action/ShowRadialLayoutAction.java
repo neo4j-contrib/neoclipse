@@ -16,6 +16,7 @@ package org.neo4j.neoclipse.action;
 import org.eclipse.jface.action.Action;
 import org.eclipse.zest.layouts.LayoutStyles;
 import org.eclipse.zest.layouts.algorithms.RadialLayoutAlgorithm;
+import org.neo4j.neoclipse.NeoIcons;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**
@@ -36,6 +37,10 @@ public class ShowRadialLayoutAction extends Action
     {
         super( "Radial Layout", Action.AS_RADIO_BUTTON );
         this.view = view;
+        setText( "Radial Layout" );
+        setToolTipText( "Radial Layout" );
+        setImageDescriptor( NeoIcons.getDescriptor( NeoIcons.RADIAL ) );
+        setChecked( false );
     }
 
     /**

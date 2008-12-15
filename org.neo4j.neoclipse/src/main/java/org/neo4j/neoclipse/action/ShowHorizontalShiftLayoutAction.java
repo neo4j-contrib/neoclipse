@@ -36,6 +36,9 @@ public class ShowHorizontalShiftLayoutAction extends Action
     {
         super( "Horizontal Shift Layout", Action.AS_RADIO_BUTTON );
         this.view = view;
+        setText( "Horizontal Shift Layout" );
+        setToolTipText( "Horizontal Shift Layout" );
+        setChecked( false );
     }
 
     /**

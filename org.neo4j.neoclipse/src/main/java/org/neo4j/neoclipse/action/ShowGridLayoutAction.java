@@ -16,6 +16,7 @@ package org.neo4j.neoclipse.action;
 import org.eclipse.jface.action.Action;
 import org.eclipse.zest.layouts.LayoutStyles;
 import org.eclipse.zest.layouts.algorithms.GridLayoutAlgorithm;
+import org.neo4j.neoclipse.NeoIcons;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**
@@ -36,6 +37,10 @@ public class ShowGridLayoutAction extends Action
     {
         super( "Grid Layout", Action.AS_RADIO_BUTTON );
         this.view = view;
+        setText( "Grid Layout" );
+        setToolTipText( "Grid Layout" );
+        setImageDescriptor( NeoIcons.getDescriptor( NeoIcons.GRID ) );
+        setChecked( false );
     }
 
     /**

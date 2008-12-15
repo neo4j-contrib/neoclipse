@@ -36,6 +36,9 @@ public class ShowHorizontalTreeLayoutAction extends Action
     {
         super( "Horizontal Tree Layout", Action.AS_RADIO_BUTTON );
         this.view = view;
+        setText( "Horizontal Tree Layout" );
+        setToolTipText( "Horizontal Tree Layout" );
+        setChecked( false );
     }
 
     /**

@@ -16,6 +16,7 @@ package org.neo4j.neoclipse.action;
 import org.eclipse.jface.action.Action;
 import org.eclipse.zest.layouts.LayoutStyles;
 import org.eclipse.zest.layouts.algorithms.TreeLayoutAlgorithm;
+import org.neo4j.neoclipse.NeoIcons;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**
@@ -36,6 +37,10 @@ public class ShowTreeLayoutAction extends Action
     {
         super( "Tree Layout", Action.AS_RADIO_BUTTON );
         this.view = view;
+        setText( "Tree Layout" );
+        setToolTipText( "Tree Layout" );
+        setImageDescriptor( NeoIcons.getDescriptor( NeoIcons.TREE ) );
+        setChecked( false );
     }
 
     /**

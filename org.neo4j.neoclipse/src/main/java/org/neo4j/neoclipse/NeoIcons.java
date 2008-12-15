@@ -29,6 +29,10 @@ public class NeoIcons
      * Some constants representing icons.
      */
     public static final String HOME = "home";
+    public static final String BACK_ENABLED = "back_enabled";
+    public static final String BACK_DISABLED = "back_disabled";
+    public static final String FORWARD_ENABLED = "forward_enabled";
+    public static final String FORWARD_DISABLED = "forward_disabled";
     public static final String REFRESH = "refresh";
     public static final String ZOOM = "zoom";
     public static final String PLUS_ENABLED = "plus_enabled";
@@ -65,9 +69,18 @@ public class NeoIcons
         // help icon
         reg.put( NeoIcons.HELP, sharedImages
             .getImage( ISharedImages.IMG_LCL_LINKTO_HELP ) );
-        // misc
+        // navigation
         reg.put( NeoIcons.HOME, Activator.imageDescriptorFromPlugin(
             Activator.PLUGIN_ID, "icons/enabled/home.gif" ) );
+        reg.put( NeoIcons.BACK_ENABLED, sharedImages
+            .getImage( ISharedImages.IMG_TOOL_BACK ) );
+        reg.put( NeoIcons.BACK_DISABLED, sharedImages
+            .getImage( ISharedImages.IMG_TOOL_BACK_DISABLED ) );
+        reg.put( NeoIcons.FORWARD_ENABLED, sharedImages
+            .getImage( ISharedImages.IMG_TOOL_FORWARD ) );
+        reg.put( NeoIcons.FORWARD_DISABLED, sharedImages
+            .getImage( ISharedImages.IMG_TOOL_FORWARD_DISABLED ) );
+        // misc
         reg.put( NeoIcons.REFRESH, Activator.imageDescriptorFromPlugin(
             Activator.PLUGIN_ID, "icons/enabled/refresh.gif" ) );
         reg.put( NeoIcons.ZOOM, Activator.imageDescriptorFromPlugin(
