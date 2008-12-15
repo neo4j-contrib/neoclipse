@@ -28,27 +28,47 @@ import org.neo4j.neoclipse.Activator;
  */
 public class BrowserHistory
 {
+    /**
+     * A list of browser states.
+     */
     private List<BrowserState> states = new LinkedList<BrowserState>();
     /**
      * Position of last added item.
      */
     private int position = -1;
 
+    /**
+     * Class to save one browser state.
+     */
     private static class BrowserState
     {
+        /**
+         * Id of current node in state.
+         */
         private long id;
 
+        /**
+         * Create a state.
+         * @param node the starting point of this state
+         */
         public BrowserState( Node node )
         {
             id = node.getId();
         }
 
+        /**
+         * Only instantiate with node info.
+         */
         protected BrowserState()
         {
             throw new IllegalArgumentException(
                 "Must be invoked with a Node as argument." );
         }
 
+        /**
+         * Get starting node of this state.
+         * @return starting node or null if it doesn't exist any more
+         */
         public Node getNode()
         {
             NeoService neoService = Activator.getDefault()
@@ -68,6 +88,10 @@ public class BrowserHistory
         }
     }
 
+    /**
+     * Move backwards in history.
+     * @return previous starting point or null
+     */
     public Node getPrevious()
     {
         Node node = null;
@@ -79,6 +103,10 @@ public class BrowserHistory
         return node;
     }
 
+    /**
+     * Move forward in history.
+     * @return next starting point or null
+     */
     public Node getNext()
     {
         Node node = null;
@@ -90,31 +118,56 @@ public class BrowserHistory
         return node;
     }
 
+    /**
+     * Get next node.
+     * @return next node or null
+     */
     private Node fetchNext()
     {
         return getNode( position + 1 );
     }
 
+    /**
+     * Get previous node.
+     * @return previous node or null
+     */
     private Node fetchPrevious()
     {
         return getNode( position );
     }
 
+    /**
+     * Get node in list from position.
+     * @param pos position in state list
+     * @return node at the position or null
+     */
     private Node getNode( int pos )
     {
         return states.get( pos ).getNode();
     }
 
+    /**
+     * Check for existence of previous state.
+     * @return true if previous state exist
+     */
     public boolean hasPrevious()
     {
         return position > 0 && position <= states.size() - 1;
     }
 
+    /**
+     * Check for existence of forward state.
+     * @return true if forward state exist
+     */
     public boolean hasNext()
     {
         return position > -1 && position + 1 <= states.size() - 1;
     }
 
+    /**
+     * Add a new state.
+     * @param node starting point of state
+     */
     public void add( Node node )
     {
         if ( node == null )
