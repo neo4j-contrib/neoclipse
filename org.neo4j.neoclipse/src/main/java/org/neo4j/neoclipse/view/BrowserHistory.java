@@ -30,7 +30,7 @@ public class BrowserHistory
 {
     private List<BrowserState> states = new LinkedList<BrowserState>();
     /**
-     * Position of last added item. So: points on "previous" item.
+     * Position of last added item.
      */
     private int position = -1;
 
@@ -70,23 +70,23 @@ public class BrowserHistory
 
     public Node getPrevious()
     {
-        if ( !hasPrevious() )
+        Node node = null;
+        while ( node == null && hasPrevious() )
         {
-            return null;
+            --position;
+            node = fetchPrevious();
         }
-        --position;
-        Node node = fetchPrevious();
         return node;
     }
 
     public Node getNext()
     {
-        if ( !hasNext() )
+        Node node = null;
+        while ( node == null && hasNext() )
         {
-            return null;
+            node = fetchNext();
+            ++position;
         }
-        Node node = fetchNext();
-        ++position;
         return node;
     }
 
