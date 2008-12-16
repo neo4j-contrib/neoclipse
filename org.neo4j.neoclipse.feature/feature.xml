@@ -1,27 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.neo4j.neoclipse.feature"
-      label="Feature Feature"
-      version="0.1.0"
-      provider-name="Neo4j">
+      label="Neoclipse Feature"
+      version="1.0.0"
+      provider-name="Neo4j.org">
 
-   <description url="http://www.example.com/description">
-      [Enter Feature Description here.]
+   <description url="http://wiki.neo4j.org/content/Neoclipse">
+      Neo4j integration for Eclipse
    </description>
 
-   <copyright url="http://www.example.com/copyright">
-      [Enter Copyright Description here.]
+   <copyright url="https://svn.neo4j.org/components/neoclipse/trunk/org.neo4j.neoclipse/NOTICE.txt">
+      Copyright by Neo Technology
    </copyright>
 
-   <license url="http://www.example.com/license">
-      [Enter License Description here.]
+   <license url="https://svn.neo4j.org/components/neoclipse/trunk/org.neo4j.neoclipse/LICENSE.txt">
+      Apache License version 2.0
    </license>
+
+   <url>
+      <update label="Neoclipse update site" url="http://www.example.com/"/>
+   </url>
 
    <plugin
          id="org.neo4j.neoclipse"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
+         download-size="877"
+         install-size="877"
+         version="1.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.neo4j.neoclipse.doc"
+         download-size="339"
+         install-size="339"
+         version="1.0.0"
          unpack="false"/>
 
 </feature>

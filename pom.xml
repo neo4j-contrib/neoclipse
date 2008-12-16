@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+	<parent>
+		<groupId>org.neo4j</groupId>
+		<artifactId>parent-pom</artifactId>
+		<version>2</version>
+	</parent>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.neo4j</groupId>
+  <artifactId>neoclipse</artifactId>
+  <name>Neoclipse Project</name>
+  <version>1.0</version>
+  <packaging>pom</packaging>
+  <modules>
+    <module>org.neo4j.neoclipse</module>
+    <module>org.neo4j.neoclipse.doc</module>
+    <module>org.neo4j.neoclipse.feature</module>
+    <module>org.neo4j.neoclipse.updatesite</module>
+  </modules>
+</project>

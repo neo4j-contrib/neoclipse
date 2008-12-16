@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/org.neo4j.neoclipse.feature_0.1.0.jar" id="org.neo4j.neoclipse.feature" version="0.1.0">
-      <category name="neo4j"/>
+   <description>
+      Update site for Neo4j integration for Eclipse plugins
+   </description>
+   <feature url="features/org.neo4j.neoclipse.feature_1.0.0.jar" id="org.neo4j.neoclipse.feature" version="1.0.0">
+      <category name="Neoclipse"/>
    </feature>
-   <category-def name="neo4j" label="Neo4j"/>
+   <category-def name="Neoclipse" label="Neoclipse">
+      <description>
+         Neo4j Eclipse Features
+      </description>
+   </category-def>
 </site>
