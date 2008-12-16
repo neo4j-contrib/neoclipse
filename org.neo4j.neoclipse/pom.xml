@@ -1,5 +1,6 @@
 <project>
 	<modelVersion>4.0.0</modelVersion>
+	<version>0.3.0</version>
 	<parent>
 		<artifactId>neoclipse</artifactId>
 		<groupId>org.neo4j</groupId>
@@ -8,7 +9,6 @@
 	<groupId>org.neo4j</groupId>
 	<artifactId>org.neo4j.neoclipse</artifactId>
 	<packaging>eclipse-plugin</packaging>
-	<version>1.0.0</version>
 	<name>Neoclipse Eclipse Plugin</name>
 	<dependencies>
 		<dependency>

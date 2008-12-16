@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Neoclipse
 Bundle-SymbolicName: org.neo4j.neoclipse;singleton:=true
-Bundle-Version: 1.0.0
+Bundle-Version: 0.3.0
 Bundle-Activator: org.neo4j.neoclipse.Activator
 Bundle-Vendor: Neo4j.org
 Bundle-ActivationPolicy: lazy

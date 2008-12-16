@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <description>
+   <description url="http://m2.neo4j.org/org/neo4j/neoclipse/">
       Update site for Neo4j integration for Eclipse plugins
    </description>
-   <feature url="features/org.neo4j.neoclipse.feature_1.0.0.jar" id="org.neo4j.neoclipse.feature" version="1.0.0">
+   <feature url="features/org.neo4j.neoclipse.feature_0.3.0.jar" id="org.neo4j.neoclipse.feature" version="0.3.0">
       <category name="Neoclipse"/>
    </feature>
    <category-def name="Neoclipse" label="Neoclipse">
