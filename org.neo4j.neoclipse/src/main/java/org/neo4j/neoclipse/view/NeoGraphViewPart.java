@@ -114,8 +114,7 @@ public class NeoGraphViewPart extends ViewPart implements
     public void createPartControl( Composite parent )
     {
         viewer = new GraphViewer( parent, SWT.NONE );
-        viewer.setContentProvider( new NeoGraphRelationshipContentProvider(
-            this ) );
+        viewer.setContentProvider( new NeoGraphContentProvider( this ) );
         viewer.setLabelProvider( NeoGraphLabelProviderWrapper.getInstance() );
         viewer.addDoubleClickListener( new NeoGraphDoubleClickListener() );
         viewer.addDoubleClickListener( this );
@@ -150,15 +149,12 @@ public class NeoGraphViewPart extends ViewPart implements
         throw new NotFoundException( "No current node could be found." );
     }
 
-    /**
+    /*
      * Add the current node to the view. Used when traversal find nothing to
      * show.
+     * @SuppressWarnings( "restriction" ) public void addCurrentNode() {
+     * viewer.addNode( getCurrentNode() ); }
      */
-    @SuppressWarnings( "restriction" )
-    public void addCurrentNode()
-    {
-        viewer.addNode( getCurrentNode() );
-    }
 
     /**
      * Initializes menus, tool bars etc.
@@ -335,10 +331,10 @@ public class NeoGraphViewPart extends ViewPart implements
             IncreaseTraversalDepthAction incAction = new IncreaseTraversalDepthAction(
                 this );
             tm.add( incAction );
-            
+
             decAction = new DecreaseTraversalDepthAction( this );
             tm.add( decAction );
-            
+
             tm.add( new Separator() );
         }
     }

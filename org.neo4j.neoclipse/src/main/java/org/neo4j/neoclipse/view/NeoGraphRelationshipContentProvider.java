@@ -32,6 +32,10 @@ import org.neo4j.api.core.Traverser;
 import org.neo4j.api.core.Traverser.Order;
 import org.neo4j.neoclipse.Activator;
 
+/**
+ * Get content through relations. TODO: view.addCurrentNode(); calls has to be
+ * used to get it working
+ */
 public class NeoGraphRelationshipContentProvider implements
     IGraphContentProvider
 {
@@ -60,7 +64,7 @@ public class NeoGraphRelationshipContentProvider implements
         final int depth = view.getTraversalDepth() - 1;
         if ( depth == -1 )
         {
-            view.addCurrentNode();
+            // view.addCurrentNode();
             return EMPTY_REL_ARRAY;
         }
         List<Object> relDirList = new ArrayList<Object>();
@@ -74,7 +78,7 @@ public class NeoGraphRelationshipContentProvider implements
         {
             // if there are no relationship types,
             // there can't be any relationships ...
-            view.addCurrentNode();
+            // view.addCurrentNode();
             return EMPTY_REL_ARRAY;
         }
         Node node = (Node) input;
@@ -107,7 +111,7 @@ public class NeoGraphRelationshipContentProvider implements
         }
         if ( rels.isEmpty() )
         {
-            view.addCurrentNode();
+            // view.addCurrentNode();
             return EMPTY_REL_ARRAY;
         }
         return rels.toArray( EMPTY_REL_ARRAY );
