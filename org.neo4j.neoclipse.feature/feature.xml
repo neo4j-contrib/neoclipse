@@ -18,7 +18,7 @@
    </license>
 
    <url>
-      <update label="Neoclipse update site" url="http://www.example.com/"/>
+      <update label="Neoclipse update site" url="http://m2.neo4j.org/org/neo4j/neoclipse/"/>
    </url>
 
    <plugin
