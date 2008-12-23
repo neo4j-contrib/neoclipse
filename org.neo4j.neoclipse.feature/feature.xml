@@ -212,7 +212,7 @@ libraries, licensed under the Eclipse Public License,
    </license>
 
    <url>
-      <update label="Neoclipse update site" url="http://m2.neo4j.org/org/neo4j/neoclipse/"/>
+      <update label="Neoclipse update site" url="http://eclipse.neo4j.org/neoclipse/"/>
    </url>
 
    <plugin
