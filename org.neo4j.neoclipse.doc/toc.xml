@@ -2,7 +2,7 @@
 <?NLS TYPE="org.eclipse.help.toc"?>
 
 <toc label="Neoclipse User Guide" topic="html/toc.html">
-   <topic href="html/introduction.html" label="Introduction">
+   <topic href="http://wiki.neo4j.org/content/Neoclipse" label="Introduction">
    </topic>
    <topic label="Getting started">
       <anchor id="gettingstarted"/>
