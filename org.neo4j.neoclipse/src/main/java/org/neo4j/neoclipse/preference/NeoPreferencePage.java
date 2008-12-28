@@ -28,7 +28,7 @@ public class NeoPreferencePage extends AbstractPreferencePage
     private static final String NEO_DATABASE_LOCATION_ERROR = "The database location is invalid.";
     // node label properties
     private static final String NODE_LABEL_PROPERTIES_LABEL = "Node label properties:";
-    private static final String PROPTERTY_NAMES_NOTE = "comma-separated list of property names; will be evaluated from left to right, and the first non-empty value is used";
+    private static final String PROPTERTY_NAMES_NOTE = "comma-separated list of property keys; will be evaluated from left to right, and the first non-empty value is used";
     // relationship label properties
     private static final String RELATIONSHIP_LABEL_PROPERTIES_LABEL = "Relationship label properties:";
     // icon locations
@@ -37,7 +37,7 @@ public class NeoPreferencePage extends AbstractPreferencePage
     private static final String ICON_LOCATION_NOTE = "the icon filenames should correspond to the settings for node icon filename properties";
     // node icon filename properties
     private static final String NODE_ICON_FILENAME_PROPERTIES_LABEL = "Node icon filename properties:";
-    private static final String ICON_PROPERTY_NAMES_NOTE = "comma-separated list (see node labels), file extensions are added automatically to the property values found";
+    private static final String ICON_PROPERTY_NAMES_NOTE = "comma-separated list (see node labels); file extensions are added automatically to the property values found";
 
     /**
      * Initializes the several input fields.
