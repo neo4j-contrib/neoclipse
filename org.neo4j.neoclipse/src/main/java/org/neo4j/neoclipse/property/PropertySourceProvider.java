@@ -11,7 +11,7 @@
  * OF ANY KIND, either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-package org.neo4j.neoclipse.view;
+package org.neo4j.neoclipse.property;
 
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.eclipse.ui.views.properties.IPropertySourceProvider;
@@ -22,17 +22,17 @@ import org.neo4j.api.core.Relationship;
  * Resolves the properties for Neo nodes and relationships.
  * @author Peter H&auml;nsgen
  */
-public class NeoGraphPropertySourceProvider implements IPropertySourceProvider
+public class PropertySourceProvider implements IPropertySourceProvider
 {
     public IPropertySource getPropertySource( Object source )
     {
         if ( source instanceof Node )
         {
-            return new NeoNodePropertySource( (Node) source );
+            return new NodePropertySource( (Node) source );
         }
         else if ( source instanceof Relationship )
         {
-            return new NeoRelationshipPropertySource( (Relationship) source );
+            return new RelationshipPropertySource( (Relationship) source );
         }
         else
         {

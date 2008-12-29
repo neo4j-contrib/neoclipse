@@ -11,20 +11,20 @@
  * OF ANY KIND, either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-package org.neo4j.neoclipse.view;
+package org.neo4j.neoclipse.property;
 
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
-import org.neo4j.neoclipse.view.NeoPropertyTransform.PropertyHandler;
+import org.neo4j.neoclipse.property.PropertyTransform.PropertyHandler;
 
 /**
  * Describes a single property of a Neo node or relationship.
  * @author Peter H&auml;nsgen
  * @author Anders Nawroth
  */
-public class NeoPropertyDescriptor implements IPropertyDescriptor
+public class PropertyDescriptor implements IPropertyDescriptor
 {
     /**
      * The key for identifying the value of the property.
@@ -41,7 +41,7 @@ public class NeoPropertyDescriptor implements IPropertyDescriptor
     /**
      * If we allow edit on this cell or not.
      */
-    private NeoPropertyEditor editorType = NeoPropertyEditor.NONE;
+    private PropertyEditor editorType = PropertyEditor.NONE;
     /**
      * Class of property content.
      */
@@ -62,14 +62,14 @@ public class NeoPropertyDescriptor implements IPropertyDescriptor
      * @param allowEdit
      *            choose if this cell should be possible to edit
      */
-    public NeoPropertyDescriptor( Object key, String name, String category,
+    public PropertyDescriptor( Object key, String name, String category,
         Class<?> cls )
     {
         this.key = key;
         this.name = name;
         this.category = category;
         this.cls = cls;
-        PropertyHandler propertyHandler = NeoPropertyTransform.handlerMap
+        PropertyHandler propertyHandler = PropertyTransform.handlerMap
             .get( cls );
         if ( propertyHandler != null )
         {
@@ -89,7 +89,7 @@ public class NeoPropertyDescriptor implements IPropertyDescriptor
      * @param allowEdit
      *            choose if this cell should be possible to edit
      */
-    public NeoPropertyDescriptor( Object key, String name, String category )
+    public PropertyDescriptor( Object key, String name, String category )
     {
         this.key = key;
         this.name = name;

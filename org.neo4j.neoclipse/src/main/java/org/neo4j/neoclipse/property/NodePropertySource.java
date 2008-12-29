@@ -11,50 +11,47 @@
  * OF ANY KIND, either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-package org.neo4j.neoclipse.view;
+package org.neo4j.neoclipse.property;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
-import org.neo4j.api.core.Relationship;
+import org.neo4j.api.core.Node;
 
 /**
- * Resolves the properties for a Neo relationship.
+ * Resolves the properties for a Neo node.
  * @author Peter H&auml;nsgen
  */
-public class NeoRelationshipPropertySource extends NeoPropertySource
+public class NodePropertySource extends PropertySource
 {
-    private static final String RELATIONSHIP_CATEGORY = "Relationship";
-    private static final String RELATIONSHIP_ID = "Id";
-    private static final String RELATIONSHIP_TYPE = "Type";
+    private static final String NODE_CATEGORY = "Node";
+    private static final String NODE_ID = "Id";
 
-    public NeoRelationshipPropertySource( Relationship rs )
+    /**
+     * The constructor.
+     */
+    public NodePropertySource( Node node )
     {
-        super( rs );
+        super( node );
     }
 
     @Override
     protected List<IPropertyDescriptor> getHeadPropertyDescriptors()
     {
         List<IPropertyDescriptor> descs = new ArrayList<IPropertyDescriptor>();
-        descs.add( new NeoPropertyDescriptor( RELATIONSHIP_ID, RELATIONSHIP_ID,
-            RELATIONSHIP_CATEGORY ) );
-        descs.add( new NeoPropertyDescriptor( RELATIONSHIP_TYPE,
-            RELATIONSHIP_TYPE, RELATIONSHIP_CATEGORY ) );
+        // standard properties for nodes
+        descs
+            .add( new PropertyDescriptor( NODE_ID, NODE_ID, NODE_CATEGORY ) );
         return descs;
     }
 
     @Override
     protected Object getValue( Object id )
     {
-        if ( id == RELATIONSHIP_ID )
+        if ( id == NODE_ID )
         {
-            return String.valueOf( ((Relationship) container).getId() );
-        }
-        else if ( id == RELATIONSHIP_TYPE )
-        {
-            return String.valueOf( ((Relationship) container).getType().name() );
+            return String.valueOf( ((Node) container).getId() );
         }
         else
         {
@@ -65,11 +62,7 @@ public class NeoRelationshipPropertySource extends NeoPropertySource
     @Override
     protected boolean isSet( Object id )
     {
-        if ( id == RELATIONSHIP_ID )
-        {
-            return true;
-        }
-        else if ( id == RELATIONSHIP_TYPE )
+        if ( id == NODE_ID )
         {
             return true;
         }

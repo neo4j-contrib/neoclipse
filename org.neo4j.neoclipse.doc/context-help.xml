@@ -2,9 +2,9 @@
 <contexts>
    <context id="NeoGraphViewPart" title="Neo4j Graph view">
       <description>The Neo4j Graph view visualizes the nodes available in a Neo4j node space.</description>
-      <topic href="html/tasks/NewGraphViewPart.html" label="Using Neo4j Graph view"/>
+      <topic href="html/tasks/graphview.html" label="Using Neo4j Graph view"/>
       <topic href="html/tasks/PropertySheetPage.html" label="Using Neo4j Properties view"/>
-      <topic href="html/concepts/NewGraphViewPart.html" label="About Neo4j Graph view"/>
+      <topic href="html/concepts/graph-database.html" label="Graph database concepts"/>
    </context>
    <context id="property_sheet_page_help_context" title="Properties view">
       <description>The Neo4j properties view is used to read and alter properties of nodes and relationships.</description>

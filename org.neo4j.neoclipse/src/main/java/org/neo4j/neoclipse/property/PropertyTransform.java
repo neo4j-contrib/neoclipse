@@ -11,7 +11,7 @@
  * OF ANY KIND, either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-package org.neo4j.neoclipse.view;
+package org.neo4j.neoclipse.property;
 
 import java.io.IOException;
 import java.io.StreamTokenizer;
@@ -27,7 +27,7 @@ import java.util.Map;
  * @author Anders Nawroth
  */
 @SuppressWarnings( "serial" )
-public class NeoPropertyTransform
+public class PropertyTransform
 {
     /**
      * Transform between editor representation and property value.
@@ -55,7 +55,7 @@ public class NeoPropertyTransform
          * Editor type for this property type.
          * @return editor type
          */
-        NeoPropertyEditor getEditorType();
+        PropertyEditor getEditorType();
     }
 
     /**
@@ -146,9 +146,9 @@ public class NeoPropertyTransform
                     return (String) o;
                 }
 
-                public NeoPropertyEditor getEditorType()
+                public PropertyEditor getEditorType()
                 {
-                    return NeoPropertyEditor.TEXT;
+                    return PropertyEditor.TEXT;
                 }
             } );
             put( String[].class, new PropertyHandler()
@@ -176,9 +176,9 @@ public class NeoPropertyTransform
                     return Arrays.toString( res );
                 }
 
-                public NeoPropertyEditor getEditorType()
+                public PropertyEditor getEditorType()
                 {
-                    return NeoPropertyEditor.TEXT;
+                    return PropertyEditor.TEXT;
                 }
             } );
             put( Integer.class, new PropertyHandler()
@@ -193,9 +193,9 @@ public class NeoPropertyTransform
                     return ((Integer) o).toString();
                 }
 
-                public NeoPropertyEditor getEditorType()
+                public PropertyEditor getEditorType()
                 {
-                    return NeoPropertyEditor.TEXT;
+                    return PropertyEditor.TEXT;
                 }
             } );
             put( int[].class, new PropertyHandler()
@@ -216,9 +216,9 @@ public class NeoPropertyTransform
                     return Arrays.toString( (int[]) o );
                 }
 
-                public NeoPropertyEditor getEditorType()
+                public PropertyEditor getEditorType()
                 {
-                    return NeoPropertyEditor.TEXT;
+                    return PropertyEditor.TEXT;
                 }
             } );
             put( Double.class, new PropertyHandler()
@@ -233,9 +233,9 @@ public class NeoPropertyTransform
                     return ((Double) o).toString();
                 }
 
-                public NeoPropertyEditor getEditorType()
+                public PropertyEditor getEditorType()
                 {
-                    return NeoPropertyEditor.TEXT;
+                    return PropertyEditor.TEXT;
                 }
             } );
             put( double[].class, new PropertyHandler()
@@ -256,9 +256,9 @@ public class NeoPropertyTransform
                     return Arrays.toString( (double[]) o );
                 }
 
-                public NeoPropertyEditor getEditorType()
+                public PropertyEditor getEditorType()
                 {
-                    return NeoPropertyEditor.TEXT;
+                    return PropertyEditor.TEXT;
                 }
             } );
             put( Float.class, new PropertyHandler()
@@ -273,9 +273,9 @@ public class NeoPropertyTransform
                     return ((Float) o).toString();
                 }
 
-                public NeoPropertyEditor getEditorType()
+                public PropertyEditor getEditorType()
                 {
-                    return NeoPropertyEditor.TEXT;
+                    return PropertyEditor.TEXT;
                 }
             } );
             put( float[].class, new PropertyHandler()
@@ -296,9 +296,9 @@ public class NeoPropertyTransform
                     return Arrays.toString( (float[]) o );
                 }
 
-                public NeoPropertyEditor getEditorType()
+                public PropertyEditor getEditorType()
                 {
-                    return NeoPropertyEditor.TEXT;
+                    return PropertyEditor.TEXT;
                 }
             } );
             put( Boolean.class, new PropertyHandler()
@@ -315,9 +315,9 @@ public class NeoPropertyTransform
                     return o;
                 }
 
-                public NeoPropertyEditor getEditorType()
+                public PropertyEditor getEditorType()
                 {
-                    return NeoPropertyEditor.BOOLEAN;
+                    return PropertyEditor.BOOLEAN;
                 }
             } );
             put( boolean[].class, new PropertyHandler()
@@ -338,9 +338,9 @@ public class NeoPropertyTransform
                     return Arrays.toString( (boolean[]) o );
                 }
 
-                public NeoPropertyEditor getEditorType()
+                public PropertyEditor getEditorType()
                 {
-                    return NeoPropertyEditor.TEXT;
+                    return PropertyEditor.TEXT;
                 }
             } );
             put( Byte.class, new PropertyHandler()
@@ -355,9 +355,9 @@ public class NeoPropertyTransform
                     return ((Byte) o).toString();
                 }
 
-                public NeoPropertyEditor getEditorType()
+                public PropertyEditor getEditorType()
                 {
-                    return NeoPropertyEditor.TEXT;
+                    return PropertyEditor.TEXT;
                 }
             } );
             put( byte[].class, new PropertyHandler()
@@ -378,9 +378,9 @@ public class NeoPropertyTransform
                     return Arrays.toString( (byte[]) o );
                 }
 
-                public NeoPropertyEditor getEditorType()
+                public PropertyEditor getEditorType()
                 {
-                    return NeoPropertyEditor.TEXT;
+                    return PropertyEditor.TEXT;
                 }
             } );
             put( Short.class, new PropertyHandler()
@@ -395,9 +395,9 @@ public class NeoPropertyTransform
                     return ((Short) o).toString();
                 }
 
-                public NeoPropertyEditor getEditorType()
+                public PropertyEditor getEditorType()
                 {
-                    return NeoPropertyEditor.TEXT;
+                    return PropertyEditor.TEXT;
                 }
             } );
             put( short[].class, new PropertyHandler()
@@ -418,9 +418,9 @@ public class NeoPropertyTransform
                     return Arrays.toString( (short[]) o );
                 }
 
-                public NeoPropertyEditor getEditorType()
+                public PropertyEditor getEditorType()
                 {
-                    return NeoPropertyEditor.TEXT;
+                    return PropertyEditor.TEXT;
                 }
             } );
             put( Long.class, new PropertyHandler()
@@ -435,9 +435,9 @@ public class NeoPropertyTransform
                     return ((Long) o).toString();
                 }
 
-                public NeoPropertyEditor getEditorType()
+                public PropertyEditor getEditorType()
                 {
-                    return NeoPropertyEditor.TEXT;
+                    return PropertyEditor.TEXT;
                 }
             } );
             put( long[].class, new PropertyHandler()
@@ -458,9 +458,9 @@ public class NeoPropertyTransform
                     return Arrays.toString( (long[]) o );
                 }
 
-                public NeoPropertyEditor getEditorType()
+                public PropertyEditor getEditorType()
                 {
-                    return NeoPropertyEditor.TEXT;
+                    return PropertyEditor.TEXT;
                 }
             } );
             put( Character.class, new PropertyHandler()
@@ -480,9 +480,9 @@ public class NeoPropertyTransform
                     return ((Character) o).toString();
                 }
 
-                public NeoPropertyEditor getEditorType()
+                public PropertyEditor getEditorType()
                 {
-                    return NeoPropertyEditor.TEXT;
+                    return PropertyEditor.TEXT;
                 }
             } );
             put( char[].class, new PropertyHandler()
@@ -503,9 +503,9 @@ public class NeoPropertyTransform
                     return Arrays.toString( (char[]) o );
                 }
 
-                public NeoPropertyEditor getEditorType()
+                public PropertyEditor getEditorType()
                 {
-                    return NeoPropertyEditor.TEXT;
+                    return PropertyEditor.TEXT;
                 }
             } );
         }

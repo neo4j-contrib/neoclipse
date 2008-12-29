@@ -65,6 +65,7 @@ import org.neo4j.neoclipse.neo.NeoServiceEvent;
 import org.neo4j.neoclipse.neo.NeoServiceEventListener;
 import org.neo4j.neoclipse.neo.NeoServiceManager;
 import org.neo4j.neoclipse.neo.NeoServiceStatus;
+import org.neo4j.neoclipse.property.PropertySourceProvider;
 
 /**
  * This class is a view that shows the contents of a Neo database as a graph of
@@ -387,7 +388,7 @@ public class NeoGraphViewPart extends ViewPart implements
         {
             propertySheetPage = new PropertySheetPage();
             propertySheetPage
-                .setPropertySourceProvider( new NeoGraphPropertySourceProvider() );
+                .setPropertySourceProvider( new PropertySourceProvider() );
         }
         return propertySheetPage;
     }

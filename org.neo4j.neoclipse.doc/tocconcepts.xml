@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?NLS TYPE="org.eclipse.help.toc"?>
 
-<toc label="Concepts" link_to="toc.xml#concepts"> 
-	<topic label="What is Neo"  href="html/concepts/whatisneo.html"> 
-		<topic label="Sub Topic" href="html/concepts/subtopic.html" /> 
-	</topic>
-	<topic label="The netbase concept">
-		<topic label="Sub Topic 2" href="html/concepts/subtopic2.html" /> 
-	</topic>
- 	<topic label="What is NeoClipse" href="html/concepts/whatisneoclipse.html">
- 	</topic> 
+<toc label="Concepts" link_to="toc.xml#concepts">
+ 	<topic label="What is Neoclipse" href="html/concepts/whatisneoclipse.html">
+ 	</topic>
+	<topic href="html/concepts/graph-database.html" label="Graph database concepts">
+	</topic> 
+	<topic label="What is Neo4j"  href="html/concepts/whatisneo.html"> 
+	</topic> 
 </toc>

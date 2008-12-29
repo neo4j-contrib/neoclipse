@@ -11,7 +11,7 @@
  * OF ANY KIND, either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-package org.neo4j.neoclipse.view;
+package org.neo4j.neoclipse.property;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,14 +21,14 @@ import org.eclipse.ui.views.properties.IPropertySource;
 import org.neo4j.api.core.PropertyContainer;
 import org.neo4j.api.core.Transaction;
 import org.neo4j.neoclipse.Activator;
-import org.neo4j.neoclipse.view.NeoPropertyTransform.PropertyHandler;
+import org.neo4j.neoclipse.property.PropertyTransform.PropertyHandler;
 
 /**
  * Common property handling for nodes and relationships.
  * @author Peter H&auml;nsgen
  * @author Anders Nawroth
  */
-public class NeoPropertySource implements IPropertySource
+public class PropertySource implements IPropertySource
 {
     protected static final String PROPERTIES_CATEGORY = "Properties";
     /**
@@ -39,7 +39,7 @@ public class NeoPropertySource implements IPropertySource
     /**
      * The constructor.
      */
-    public NeoPropertySource( PropertyContainer container )
+    public PropertySource( PropertyContainer container )
     {
         this.container = container;
     }
@@ -64,7 +64,7 @@ public class NeoPropertySource implements IPropertySource
             {
                 Object value = container.getProperty( (String) key );
                 Class<?> c = value.getClass();
-                descs.add( new NeoPropertyDescriptor( key, key,
+                descs.add( new PropertyDescriptor( key, key,
                     PROPERTIES_CATEGORY, c ) );
             }
             return descs.toArray( new IPropertyDescriptor[descs.size()] );
@@ -105,7 +105,7 @@ public class NeoPropertySource implements IPropertySource
     protected Object getValue( Object id )
     {
         Object value = container.getProperty( (String) id );
-        PropertyHandler propertyHandler = NeoPropertyTransform.handlerMap
+        PropertyHandler propertyHandler = PropertyTransform.handlerMap
             .get( value.getClass() );
         if ( propertyHandler != null )
         {
@@ -163,7 +163,7 @@ public class NeoPropertySource implements IPropertySource
             {
                 // try to keep the same type as the previous value
                 Class<?> c = container.getProperty( (String) id ).getClass();
-                PropertyHandler propertyHandler = NeoPropertyTransform.handlerMap
+                PropertyHandler propertyHandler = PropertyTransform.handlerMap
                     .get( c );
                 if ( propertyHandler != null )
                 {

@@ -11,7 +11,7 @@
  * OF ANY KIND, either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-package org.neo4j.neoclipse.view;
+package org.neo4j.neoclipse.property;
 
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CheckboxCellEditor;
@@ -22,7 +22,7 @@ import org.eclipse.swt.widgets.Composite;
  * Editors used for property values.
  * @author anders
  */
-public enum NeoPropertyEditor
+public enum PropertyEditor
 {
     NONE
     {
