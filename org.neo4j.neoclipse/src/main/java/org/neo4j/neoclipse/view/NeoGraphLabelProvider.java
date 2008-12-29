@@ -32,11 +32,11 @@ import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.action.ShowNodeColorsAction;
 import org.neo4j.neoclipse.action.ShowNodeIconsAction;
 import org.neo4j.neoclipse.action.ShowNodeIdsAction;
-import org.neo4j.neoclipse.action.ShowNodeNamesAction;
+import org.neo4j.neoclipse.action.ShowNodeLabelAction;
 import org.neo4j.neoclipse.action.ShowRelationshipColorsAction;
 import org.neo4j.neoclipse.action.ShowRelationshipDirectionsAction;
 import org.neo4j.neoclipse.action.ShowRelationshipIdsAction;
-import org.neo4j.neoclipse.action.ShowRelationshipNamesAction;
+import org.neo4j.neoclipse.action.ShowRelationshipLabelAction;
 import org.neo4j.neoclipse.action.ShowRelationshipTypesAction;
 import org.neo4j.neoclipse.decorate.SimpleGraphDecorator;
 import org.neo4j.neoclipse.decorate.SimpleGraphDecorator.Settings;
@@ -58,7 +58,7 @@ public class NeoGraphLabelProvider extends LabelProvider implements
     /**
      * Keep track of relationship names display on/off.
      */
-    private boolean showRelationshipNames = ShowRelationshipNamesAction.DEFAULT_STATE;
+    private boolean showRelationshipNames = ShowRelationshipLabelAction.DEFAULT_STATE;
     /**
      * Keep track of relationship id's display on/off.
      */
@@ -78,7 +78,7 @@ public class NeoGraphLabelProvider extends LabelProvider implements
     /**
      * Keep track of node names display on/off.
      */
-    private boolean showNodeNames = ShowNodeNamesAction.DEFAULT_STATE;
+    private boolean showNodeNames = ShowNodeLabelAction.DEFAULT_STATE;
     /**
      * Keep track of node icons display on/off.
      */

@@ -20,7 +20,7 @@ import org.neo4j.neoclipse.view.NeoGraphViewPart;
  * This action handles the relationship name setting.
  * @author Anders Nawroth
  */
-public class ShowRelationshipNamesAction extends Action
+public class ShowRelationshipLabelAction extends Action
 {
     /**
      * Default state for this view menu alternative.
@@ -34,10 +34,11 @@ public class ShowRelationshipNamesAction extends Action
     /**
      * The constructor.
      */
-    public ShowRelationshipNamesAction( NeoGraphViewPart view )
+    public ShowRelationshipLabelAction( NeoGraphViewPart view )
     {
-        super( "Relationship names", Action.AS_CHECK_BOX );
+        super( "Relationship labels", Action.AS_CHECK_BOX );
         this.view = view;
+        setChecked( DEFAULT_STATE );
     }
 
     /**

@@ -25,6 +25,7 @@ import org.neo4j.neoclipse.view.NeoGraphViewPart;
  */
 public class ShowSpringLayoutAction extends Action
 {
+    private static final String SPRING_LAYOUT = "Spring Layout";
     /**
      * The view.
      */
@@ -35,10 +36,9 @@ public class ShowSpringLayoutAction extends Action
      */
     public ShowSpringLayoutAction( NeoGraphViewPart view )
     {
-        super( "Spring Layout", Action.AS_RADIO_BUTTON );
+        super( SPRING_LAYOUT, Action.AS_RADIO_BUTTON );
         this.view = view;
-        setText( "Spring Layout" );
-        setToolTipText( "Spring Layout" );
+        setToolTipText( SPRING_LAYOUT );
         setImageDescriptor( NeoIcons.getDescriptor( NeoIcons.SPRING ) );
         setChecked( true );
     }

@@ -23,6 +23,7 @@ import org.neo4j.neoclipse.view.NeoGraphViewPart;
  */
 public class GoBackAction extends Action
 {
+    private static final String GO_BACK = "Go Back";
     /**
      * The view.
      */
@@ -33,10 +34,9 @@ public class GoBackAction extends Action
      */
     public GoBackAction( NeoGraphViewPart view )
     {
-        super( "Go Back", Action.AS_PUSH_BUTTON );
+        super( GO_BACK, Action.AS_PUSH_BUTTON );
         this.view = view;
-        setText( "Go Back" );
-        setToolTipText( "Go Back" );
+        setToolTipText( GO_BACK );
         setImageDescriptor( NeoIcons.getDescriptor( NeoIcons.BACK_ENABLED ) );
         setDisabledImageDescriptor( NeoIcons
             .getDescriptor( NeoIcons.BACK_DISABLED ) );

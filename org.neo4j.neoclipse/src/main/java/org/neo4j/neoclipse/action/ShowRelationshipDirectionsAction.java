@@ -38,6 +38,7 @@ public class ShowRelationshipDirectionsAction extends Action
     {
         super( "Relationship directions", Action.AS_CHECK_BOX );
         this.view = view;
+        setChecked( DEFAULT_STATE );
     }
 
     /**

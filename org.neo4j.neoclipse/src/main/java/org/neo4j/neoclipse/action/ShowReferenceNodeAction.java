@@ -23,6 +23,7 @@ import org.neo4j.neoclipse.view.NeoGraphViewPart;
  */
 public class ShowReferenceNodeAction extends Action
 {
+    private static final String SHOW_REFERENCE_NODE = "Show Reference Node";
     /**
      * The view.
      */
@@ -33,10 +34,9 @@ public class ShowReferenceNodeAction extends Action
      */
     public ShowReferenceNodeAction( NeoGraphViewPart view )
     {
-        super( "Show Reference Node", Action.AS_PUSH_BUTTON );
+        super( SHOW_REFERENCE_NODE, Action.AS_PUSH_BUTTON );
         this.view = view;
-        setText( "Show Reference Node" );
-        setToolTipText( "Show Reference Node" );
+        setToolTipText( SHOW_REFERENCE_NODE );
         setImageDescriptor( NeoIcons.getDescriptor( NeoIcons.HOME ) );
     }
 

@@ -24,6 +24,7 @@ import org.neo4j.neoclipse.view.NeoGraphViewPart;
  */
 public class RefreshAction extends Action
 {
+    private static final String REFRESH = "Refresh";
     /**
      * The view.
      */
@@ -34,10 +35,9 @@ public class RefreshAction extends Action
      */
     public RefreshAction( NeoGraphViewPart view )
     {
-        super( "Refresh", Action.AS_PUSH_BUTTON );
+        super( REFRESH, Action.AS_PUSH_BUTTON );
         this.view = view;
-        setText( "Refresh" );
-        setToolTipText( "Refresh" );
+        setToolTipText( REFRESH );
         setImageDescriptor( NeoIcons.getDescriptor( NeoIcons.REFRESH ) );
     }
 

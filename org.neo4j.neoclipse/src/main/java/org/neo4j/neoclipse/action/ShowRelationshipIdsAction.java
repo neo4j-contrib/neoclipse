@@ -38,6 +38,7 @@ public class ShowRelationshipIdsAction extends Action
     {
         super( "Relationship id", Action.AS_CHECK_BOX );
         this.view = view;
+        setChecked( DEFAULT_STATE );
     }
 
     /**

@@ -38,6 +38,7 @@ public class ShowNodeIconsAction extends Action
     {
         super( "Node icons", Action.AS_CHECK_BOX );
         this.view = view;
+        setChecked( DEFAULT_STATE );
     }
 
     /**

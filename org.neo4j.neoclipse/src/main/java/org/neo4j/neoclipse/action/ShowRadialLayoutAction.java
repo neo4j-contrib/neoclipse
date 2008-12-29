@@ -25,6 +25,7 @@ import org.neo4j.neoclipse.view.NeoGraphViewPart;
  */
 public class ShowRadialLayoutAction extends Action
 {
+    private static final String RADIAL_LAYOUT = "Radial Layout";
     /**
      * The view.
      */
@@ -35,10 +36,9 @@ public class ShowRadialLayoutAction extends Action
      */
     public ShowRadialLayoutAction( NeoGraphViewPart view )
     {
-        super( "Radial Layout", Action.AS_RADIO_BUTTON );
+        super( RADIAL_LAYOUT, Action.AS_RADIO_BUTTON );
         this.view = view;
-        setText( "Radial Layout" );
-        setToolTipText( "Radial Layout" );
+        setToolTipText( RADIAL_LAYOUT );
         setImageDescriptor( NeoIcons.getDescriptor( NeoIcons.RADIAL ) );
         setChecked( false );
     }

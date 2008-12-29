@@ -24,6 +24,7 @@ import org.neo4j.neoclipse.view.NeoGraphViewPart;
  */
 public class ShowHorizontalTreeLayoutAction extends Action
 {
+    private static final String HORIZONTAL_TREE_LAYOUT = "Horizontal Tree Layout";
     /**
      * The view.
      */
@@ -34,10 +35,9 @@ public class ShowHorizontalTreeLayoutAction extends Action
      */
     public ShowHorizontalTreeLayoutAction( NeoGraphViewPart view )
     {
-        super( "Horizontal Tree Layout", Action.AS_RADIO_BUTTON );
+        super( HORIZONTAL_TREE_LAYOUT, Action.AS_RADIO_BUTTON );
         this.view = view;
-        setText( "Horizontal Tree Layout" );
-        setToolTipText( "Horizontal Tree Layout" );
+        setToolTipText( HORIZONTAL_TREE_LAYOUT );
         setChecked( false );
     }
 

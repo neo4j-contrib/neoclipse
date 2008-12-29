@@ -23,6 +23,7 @@ import org.neo4j.neoclipse.view.NeoGraphViewPart;
  */
 public class GoForwardAction extends Action
 {
+    private static final String GO_FORWARD = "Go Forward";
     /**
      * The view.
      */
@@ -33,10 +34,9 @@ public class GoForwardAction extends Action
      */
     public GoForwardAction( NeoGraphViewPart view )
     {
-        super( "Go Forward", Action.AS_PUSH_BUTTON );
+        super( GO_FORWARD, Action.AS_PUSH_BUTTON );
         this.view = view;
-        setText( "Go Forward" );
-        setToolTipText( "Go Forward" );
+        setToolTipText( GO_FORWARD );
         setImageDescriptor( NeoIcons.getDescriptor( NeoIcons.FORWARD_ENABLED ) );
         setDisabledImageDescriptor( NeoIcons
             .getDescriptor( NeoIcons.FORWARD_DISABLED ) );

@@ -24,6 +24,7 @@ import org.neo4j.neoclipse.view.NeoGraphViewPart;
  */
 public class ShowHorizontalShiftLayoutAction extends Action
 {
+    private static final String HORIZONTAL_SHIFT_LAYOUT = "Horizontal Shift Layout";
     /**
      * The view.
      */
@@ -34,10 +35,9 @@ public class ShowHorizontalShiftLayoutAction extends Action
      */
     public ShowHorizontalShiftLayoutAction( NeoGraphViewPart view )
     {
-        super( "Horizontal Shift Layout", Action.AS_RADIO_BUTTON );
+        super( HORIZONTAL_SHIFT_LAYOUT, Action.AS_RADIO_BUTTON );
         this.view = view;
-        setText( "Horizontal Shift Layout" );
-        setToolTipText( "Horizontal Shift Layout" );
+        setToolTipText( HORIZONTAL_SHIFT_LAYOUT );
         setChecked( false );
     }
 

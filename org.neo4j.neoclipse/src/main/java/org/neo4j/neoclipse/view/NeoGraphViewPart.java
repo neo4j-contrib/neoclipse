@@ -49,13 +49,13 @@ import org.neo4j.neoclipse.action.ShowHorizontalTreeLayoutAction;
 import org.neo4j.neoclipse.action.ShowNodeColorsAction;
 import org.neo4j.neoclipse.action.ShowNodeIconsAction;
 import org.neo4j.neoclipse.action.ShowNodeIdsAction;
-import org.neo4j.neoclipse.action.ShowNodeNamesAction;
+import org.neo4j.neoclipse.action.ShowNodeLabelAction;
 import org.neo4j.neoclipse.action.ShowRadialLayoutAction;
 import org.neo4j.neoclipse.action.ShowReferenceNodeAction;
 import org.neo4j.neoclipse.action.ShowRelationshipColorsAction;
 import org.neo4j.neoclipse.action.ShowRelationshipDirectionsAction;
 import org.neo4j.neoclipse.action.ShowRelationshipIdsAction;
-import org.neo4j.neoclipse.action.ShowRelationshipNamesAction;
+import org.neo4j.neoclipse.action.ShowRelationshipLabelAction;
 import org.neo4j.neoclipse.action.ShowRelationshipTypesAction;
 import org.neo4j.neoclipse.action.ShowSpringLayoutAction;
 import org.neo4j.neoclipse.action.ShowTreeLayoutAction;
@@ -196,68 +196,35 @@ public class NeoGraphViewPart extends ViewPart implements
             GroupMarker labelsGroup = new GroupMarker( labelsGroupName );
             mm.add( labelsGroup );
             // relationship types actions
-            ShowRelationshipTypesAction showRelationshipTypesAction = new ShowRelationshipTypesAction(
-                this );
-            showRelationshipTypesAction.setText( "Relationship types" );
-            showRelationshipTypesAction
-                .setChecked( ShowRelationshipTypesAction.DEFAULT_STATE );
-            mm.appendToGroup( labelsGroupName, showRelationshipTypesAction );
+            mm.appendToGroup( labelsGroupName, new ShowRelationshipTypesAction(
+                this ) );
             // relationship types actions
-            ShowRelationshipNamesAction showRelationshipNamesAction = new ShowRelationshipNamesAction(
-                this );
-            showRelationshipNamesAction.setText( "Relationship names" );
-            showRelationshipNamesAction
-                .setChecked( ShowRelationshipNamesAction.DEFAULT_STATE );
-            mm.appendToGroup( labelsGroupName, showRelationshipNamesAction );
+            mm.appendToGroup( labelsGroupName, new ShowRelationshipLabelAction(
+                this ) );
             // relationship id's actions
-            ShowRelationshipIdsAction showRelationshipIdsAction = new ShowRelationshipIdsAction(
-                this );
-            showRelationshipIdsAction.setText( "Relationship id" );
-            showRelationshipIdsAction
-                .setChecked( ShowRelationshipIdsAction.DEFAULT_STATE );
-            mm.appendToGroup( labelsGroupName, showRelationshipIdsAction );
+            mm.appendToGroup( labelsGroupName, new ShowRelationshipIdsAction(
+                this ) );
             // relationship types actions
-            ShowRelationshipColorsAction showRelationshipColorsAction = new ShowRelationshipColorsAction(
-                this );
-            showRelationshipColorsAction.setText( "Relationship colors" );
-            showRelationshipColorsAction
-                .setChecked( ShowRelationshipColorsAction.DEFAULT_STATE );
-            mm.appendToGroup( labelsGroupName, showRelationshipColorsAction );
+            mm.appendToGroup( labelsGroupName, new ShowRelationshipColorsAction(
+                this ) );
             // relationship directions actions
-            ShowRelationshipDirectionsAction showRelationshipDirectionAction = new ShowRelationshipDirectionsAction(
-                this );
-            showRelationshipDirectionAction.setText( "Relationship directions" );
-            showRelationshipDirectionAction
-                .setChecked( ShowRelationshipDirectionsAction.DEFAULT_STATE );
-            mm.appendToGroup( labelsGroupName, showRelationshipDirectionAction );
+            mm.appendToGroup( labelsGroupName, new ShowRelationshipDirectionsAction(
+                this ) );
             // separator
             {
                 mm.add( new Separator() );
             }
             // names actions
-            ShowNodeNamesAction showNodeNamesAction = new ShowNodeNamesAction(
-                this );
-            showNodeNamesAction.setText( "Node names" );
-            showNodeNamesAction.setChecked( ShowNodeNamesAction.DEFAULT_STATE );
-            mm.appendToGroup( labelsGroupName, showNodeNamesAction );
+            mm.appendToGroup( labelsGroupName, new ShowNodeLabelAction(
+                this ) );
             // relationship id's actions
-            ShowNodeIdsAction showNodeIdsAction = new ShowNodeIdsAction( this );
-            showNodeIdsAction.setText( "Node id" );
-            showNodeIdsAction.setChecked( ShowNodeIdsAction.DEFAULT_STATE );
-            mm.appendToGroup( labelsGroupName, showNodeIdsAction );
+            mm.appendToGroup( labelsGroupName, new ShowNodeIdsAction( this ) );
             // node colors actions
-            ShowNodeColorsAction showNodeColorsAction = new ShowNodeColorsAction(
-                this );
-            showNodeColorsAction.setText( "Node colors" );
-            showNodeColorsAction
-                .setChecked( ShowNodeColorsAction.DEFAULT_STATE );
-            mm.appendToGroup( labelsGroupName, showNodeColorsAction );
+            mm.appendToGroup( labelsGroupName, new ShowNodeColorsAction(
+                this ) );
             // node icons actions
-            ShowNodeIconsAction showNodeIconsAction = new ShowNodeIconsAction(
-                this );
-            showNodeIconsAction.setText( "Node icons" );
-            showNodeIconsAction.setChecked( ShowNodeIconsAction.DEFAULT_STATE );
-            mm.appendToGroup( labelsGroupName, showNodeIconsAction );
+            mm.appendToGroup( labelsGroupName, new ShowNodeIconsAction(
+                this ) );
         }
     }
 

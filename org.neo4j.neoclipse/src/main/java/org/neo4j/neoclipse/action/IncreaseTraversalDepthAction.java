@@ -23,6 +23,7 @@ import org.neo4j.neoclipse.view.NeoGraphViewPart;
  */
 public class IncreaseTraversalDepthAction extends Action
 {
+    private static final String INCREASE_TRAVERSAL_DEPTH = "Increase Traversal Depth";
     /**
      * The view.
      */
@@ -33,10 +34,9 @@ public class IncreaseTraversalDepthAction extends Action
      */
     public IncreaseTraversalDepthAction( NeoGraphViewPart view )
     {
-        super( "Increase Traversal Depth", Action.AS_PUSH_BUTTON );
+        super( INCREASE_TRAVERSAL_DEPTH, Action.AS_PUSH_BUTTON );
         this.view = view;
-        setText( "Increase Traversal Depth" );
-        setToolTipText( "Increase Traversal Depth" );
+        setToolTipText( INCREASE_TRAVERSAL_DEPTH );
         setImageDescriptor( NeoIcons.getDescriptor( NeoIcons.PLUS_ENABLED ) );
         setDisabledImageDescriptor( NeoIcons
             .getDescriptor( NeoIcons.PLUS_DISABLED ) );

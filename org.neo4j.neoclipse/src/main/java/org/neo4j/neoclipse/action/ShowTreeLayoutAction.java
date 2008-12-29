@@ -25,6 +25,7 @@ import org.neo4j.neoclipse.view.NeoGraphViewPart;
  */
 public class ShowTreeLayoutAction extends Action
 {
+    private static final String TREE_LAYOUT = "Tree Layout";
     /**
      * The view.
      */
@@ -35,10 +36,9 @@ public class ShowTreeLayoutAction extends Action
      */
     public ShowTreeLayoutAction( NeoGraphViewPart view )
     {
-        super( "Tree Layout", Action.AS_RADIO_BUTTON );
+        super( TREE_LAYOUT, Action.AS_RADIO_BUTTON );
         this.view = view;
-        setText( "Tree Layout" );
-        setToolTipText( "Tree Layout" );
+        setToolTipText( TREE_LAYOUT );
         setImageDescriptor( NeoIcons.getDescriptor( NeoIcons.TREE ) );
         setChecked( false );
     }

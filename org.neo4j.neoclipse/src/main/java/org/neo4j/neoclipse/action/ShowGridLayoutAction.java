@@ -25,6 +25,7 @@ import org.neo4j.neoclipse.view.NeoGraphViewPart;
  */
 public class ShowGridLayoutAction extends Action
 {
+    private static final String GRID_LAYOUT = "Grid Layout";
     /**
      * The view.
      */
@@ -35,10 +36,9 @@ public class ShowGridLayoutAction extends Action
      */
     public ShowGridLayoutAction( NeoGraphViewPart view )
     {
-        super( "Grid Layout", Action.AS_RADIO_BUTTON );
+        super( GRID_LAYOUT, Action.AS_RADIO_BUTTON );
         this.view = view;
-        setText( "Grid Layout" );
-        setToolTipText( "Grid Layout" );
+        setToolTipText( GRID_LAYOUT );
         setImageDescriptor( NeoIcons.getDescriptor( NeoIcons.GRID ) );
         setChecked( false );
     }

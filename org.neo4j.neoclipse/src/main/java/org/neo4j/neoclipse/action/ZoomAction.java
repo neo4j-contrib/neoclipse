@@ -27,6 +27,7 @@ import org.neo4j.neoclipse.view.NeoGraphViewPart;
  */
 public class ZoomAction extends Action implements IMenuCreator
 {
+    private static final String ZOOM = "Zoom";
     /**
      * The view.
      */
@@ -41,11 +42,10 @@ public class ZoomAction extends Action implements IMenuCreator
      */
     public ZoomAction( NeoGraphViewPart view )
     {
-        super( "ZoomAction", Action.AS_DROP_DOWN_MENU );
+        super( ZOOM, Action.AS_DROP_DOWN_MENU );
         this.view = view;
         setMenuCreator( this );
-        setText( "Zoom" );
-        setToolTipText( "Zoom" );
+        setToolTipText( ZOOM );
         setImageDescriptor( NeoIcons.getDescriptor( NeoIcons.ZOOM ) );
     }
 

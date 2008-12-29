@@ -38,6 +38,7 @@ public class ShowNodeColorsAction extends Action
     {
         super( "Node colors", Action.AS_CHECK_BOX );
         this.view = view;
+        setChecked( DEFAULT_STATE );
     }
 
     /**

@@ -38,6 +38,7 @@ public class ShowRelationshipTypesAction extends Action
     {
         super( "Relationship types", Action.AS_CHECK_BOX );
         this.view = view;
+        setChecked( DEFAULT_STATE );
     }
 
     /**

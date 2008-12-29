@@ -20,7 +20,7 @@ import org.neo4j.neoclipse.view.NeoGraphViewPart;
  * This action handles the node names setting.
  * @author Anders Nawroth
  */
-public class ShowNodeNamesAction extends Action
+public class ShowNodeLabelAction extends Action
 {
     /**
      * Default state for this view menu alternative.
@@ -34,10 +34,11 @@ public class ShowNodeNamesAction extends Action
     /**
      * The constructor.
      */
-    public ShowNodeNamesAction( NeoGraphViewPart view )
+    public ShowNodeLabelAction( NeoGraphViewPart view )
     {
-        super( "Node names", Action.AS_CHECK_BOX );
+        super( "Node labels", Action.AS_CHECK_BOX );
         this.view = view;
+        setChecked( DEFAULT_STATE );
     }
 
     /**

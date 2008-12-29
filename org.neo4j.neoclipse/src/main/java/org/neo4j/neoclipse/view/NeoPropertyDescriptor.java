@@ -46,7 +46,7 @@ public class NeoPropertyDescriptor implements IPropertyDescriptor
      * Class of property content.
      */
     private Class<?> cls = null;
-    /** 
+    /**
      * A constant, empty array, to be used instead of a null array.
      */
     private static final String[] EMPTY_ARRAY = new String[0];
@@ -108,10 +108,12 @@ public class NeoPropertyDescriptor implements IPropertyDescriptor
 
     public String getDescription()
     {
-        return "The property '"
-            + key
-            + "' is of type "
-            + cls.getSimpleName();
+        if ( cls != null )
+        {
+            return "The property '" + key + "' is of type "
+                + cls.getSimpleName();
+        }
+        return "";
     }
 
     public String getDisplayName()
