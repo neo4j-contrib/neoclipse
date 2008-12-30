@@ -48,15 +48,9 @@ public class NeoPropertySheetPage extends PropertySheetPage
     }
 
     @Override
-    protected void setSorter( PropertySheetSorter sorter )
-    {
-        super.setSorter( new NeoPropertySheetSorter() );
-    }
-
-    @Override
     public void createControl( Composite parent )
     {
         super.createControl( parent );
-        setSorter( null );
+        setSorter( new NeoPropertySheetSorter() );
     }
 }
