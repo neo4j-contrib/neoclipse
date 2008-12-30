@@ -65,6 +65,7 @@ import org.neo4j.neoclipse.neo.NeoServiceEvent;
 import org.neo4j.neoclipse.neo.NeoServiceEventListener;
 import org.neo4j.neoclipse.neo.NeoServiceManager;
 import org.neo4j.neoclipse.neo.NeoServiceStatus;
+import org.neo4j.neoclipse.property.NeoPropertySheetPage;
 import org.neo4j.neoclipse.property.PropertySourceProvider;
 
 /**
@@ -206,26 +207,25 @@ public class NeoGraphViewPart extends ViewPart implements
             mm.appendToGroup( labelsGroupName, new ShowRelationshipIdsAction(
                 this ) );
             // relationship types actions
-            mm.appendToGroup( labelsGroupName, new ShowRelationshipColorsAction(
-                this ) );
+            mm.appendToGroup( labelsGroupName,
+                new ShowRelationshipColorsAction( this ) );
             // relationship directions actions
-            mm.appendToGroup( labelsGroupName, new ShowRelationshipDirectionsAction(
-                this ) );
+            mm.appendToGroup( labelsGroupName,
+                new ShowRelationshipDirectionsAction( this ) );
             // separator
             {
                 mm.add( new Separator() );
             }
             // names actions
-            mm.appendToGroup( labelsGroupName, new ShowNodeLabelAction(
-                this ) );
+            mm.appendToGroup( labelsGroupName, new ShowNodeLabelAction( this ) );
             // relationship id's actions
             mm.appendToGroup( labelsGroupName, new ShowNodeIdsAction( this ) );
             // node colors actions
-            mm.appendToGroup( labelsGroupName, new ShowNodeColorsAction(
-                this ) );
+            mm
+                .appendToGroup( labelsGroupName,
+                    new ShowNodeColorsAction( this ) );
             // node icons actions
-            mm.appendToGroup( labelsGroupName, new ShowNodeIconsAction(
-                this ) );
+            mm.appendToGroup( labelsGroupName, new ShowNodeIconsAction( this ) );
         }
     }
 
@@ -386,7 +386,7 @@ public class NeoGraphViewPart extends ViewPart implements
     {
         if ( propertySheetPage == null )
         {
-            propertySheetPage = new PropertySheetPage();
+            propertySheetPage = new NeoPropertySheetPage();
             propertySheetPage
                 .setPropertySourceProvider( new PropertySourceProvider() );
         }
