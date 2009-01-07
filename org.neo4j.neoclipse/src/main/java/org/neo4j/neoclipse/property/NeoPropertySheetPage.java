@@ -18,19 +18,19 @@ import org.eclipse.ui.views.properties.PropertySheetPage;
 import org.eclipse.ui.views.properties.PropertySheetSorter;
 
 /**
- * This class is a workaround to sort the property
- * categories in the way we want.
- * 
+ * This class is a workaround to sort the property categories in the way we
+ * want.
  * @author Anders Nawroth
  */
 public class NeoPropertySheetPage extends PropertySheetPage
 {
-    private class NeoPropertySheetSorter extends PropertySheetSorter
+    private static class NeoPropertySheetSorter extends PropertySheetSorter
     {
         private static final String RELATIONSHIP = "Relationship";
 
         @Override
-        public int compareCategories( String categoryA, String categoryB )
+        public int compareCategories( final String categoryA,
+            final String categoryB )
         {
             if ( RELATIONSHIP.equals( categoryA )
                 || RELATIONSHIP.equals( categoryB ) )
@@ -48,7 +48,7 @@ public class NeoPropertySheetPage extends PropertySheetPage
     }
 
     @Override
-    public void createControl( Composite parent )
+    public void createControl( final Composite parent )
     {
         super.createControl( parent );
         setSorter( new NeoPropertySheetSorter() );

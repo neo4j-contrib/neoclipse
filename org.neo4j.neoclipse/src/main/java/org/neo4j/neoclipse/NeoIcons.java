@@ -23,7 +23,7 @@ import org.eclipse.ui.PlatformUI;
  * This class manages neo icons.
  * @author Peter H&auml;nsgen
  */
-public class NeoIcons
+public final class NeoIcons
 {
     /*
      * Some constants representing icons.
@@ -54,6 +54,14 @@ public class NeoIcons
      * Shared Eclipse UI icons.
      */
     protected static ISharedImages sharedImages;
+
+    /**
+     * Prevents instantiation.
+     */
+    private NeoIcons()
+    {
+        // no instances
+    }
 
     /**
      * Initializes the neo images.

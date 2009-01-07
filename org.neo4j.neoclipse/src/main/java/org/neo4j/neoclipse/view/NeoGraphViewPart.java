@@ -78,6 +78,10 @@ public class NeoGraphViewPart extends ViewPart implements
     IZoomableWorkbenchPart, IDoubleClickListener
 {
     /**
+     * Max number of guesses to find a better starting point.
+     */
+    private static final int MAX_ID_GUESSES = 1000;
+    /**
      * The Eclipse view ID.
      */
     public static final String ID = "org.neo4j.neoclipse.view.NeoGraphViewPart";
@@ -480,7 +484,7 @@ public class NeoGraphViewPart extends ViewPart implements
                 {
                     // so, find a more friendly node if possible!
                     Node betterNode;
-                    for ( long id = 0; id < 1000; id++ )
+                    for ( long id = 0; id < MAX_ID_GUESSES; id++ )
                     {
                         try
                         {

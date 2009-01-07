@@ -139,7 +139,7 @@ public class NeoServiceManager
                     {
                     }
 
-                    public void run() throws Exception
+                    public void run() throws RuntimeException
                     {
                         l.serviceChanged( e );
                     }

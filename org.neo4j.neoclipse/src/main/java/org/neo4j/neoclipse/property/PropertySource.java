@@ -105,8 +105,8 @@ public class PropertySource implements IPropertySource
     protected Object getValue( Object id )
     {
         Object value = container.getProperty( (String) id );
-        PropertyHandler propertyHandler = PropertyTransform.handlerMap
-            .get( value.getClass() );
+        PropertyHandler propertyHandler = PropertyTransform
+            .getPropertyHandler( value.getClass() );
         if ( propertyHandler != null )
         {
             return propertyHandler.render( value );
@@ -163,8 +163,8 @@ public class PropertySource implements IPropertySource
             {
                 // try to keep the same type as the previous value
                 Class<?> c = container.getProperty( (String) id ).getClass();
-                PropertyHandler propertyHandler = PropertyTransform.handlerMap
-                    .get( c );
+                PropertyHandler propertyHandler = PropertyTransform
+                    .getPropertyHandler( c );
                 if ( propertyHandler != null )
                 {
                     try

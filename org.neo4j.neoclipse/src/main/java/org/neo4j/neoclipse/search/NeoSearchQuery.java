@@ -57,16 +57,16 @@ public class NeoSearchQuery implements ISearchQuery
     /**
      * The search expression.
      */
-    private NeoSearchExpression expression;
+    private final NeoSearchExpression expression;
 
     /**
      * The found matches.
      */
-    private NeoSearchResult result;
+    private final NeoSearchResult result;
 
     private NeoService neoService;
 
-    private NeoGraphViewPart gv;
+    private final NeoGraphViewPart gv;
 
     /**
      * The constructor.
@@ -267,7 +267,7 @@ public class NeoSearchQuery implements ISearchQuery
 
         private static class MergeIterator implements Iterator<Node>
         {
-            private Node node;
+            private final Node node;
             private Node nextNode;
             private Iterator<Node> travIter;
             private boolean usedNode = false;

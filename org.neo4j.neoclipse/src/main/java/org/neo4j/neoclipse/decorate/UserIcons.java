@@ -34,9 +34,9 @@ public class UserIcons
     private static final String FILE_SEPARATOR = System
         .getProperty( "file.separator" );
     /**
-     * Image file extensions to look for.
+     * Image file EXTENSIONS to look for.
      */
-    public static final String[] extensions = new String[] { "png", "PNG",
+    private static final String[] EXTENSIONS = new String[] { "png", "PNG",
         "gif", "GIF", "ico", "ICO", "bmp", "BMP", "jpg", "JPG", "jpeg", "JPEG",
         "tif", "TIF", "tiff", "TIFF" };
     /**
@@ -100,7 +100,7 @@ public class UserIcons
             {
                 continue;
             }
-            for ( String imgExt : extensions )
+            for ( String imgExt : EXTENSIONS )
             {
                 if ( fileName.equals( name + "." + imgExt ) )
                 {

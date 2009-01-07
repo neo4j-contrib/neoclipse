@@ -37,7 +37,7 @@ public class NeoPreferencePage extends AbstractPreferencePage
     private static final String ICON_LOCATION_NOTE = "the icon filenames should correspond to the settings for node icon filename properties";
     // node icon filename properties
     private static final String NODE_ICON_FILENAME_PROPERTIES_LABEL = "Node icon filename properties:";
-    private static final String ICON_PROPERTY_NAMES_NOTE = "comma-separated list (see node labels); file extensions are added automatically to the property values found";
+    private static final String ICON_PROPERTY_NAMES_NOTE = "comma-separated list (see node labels); file EXTENSIONS are added automatically to the property values found";
 
     /**
      * Initializes the several input fields.
@@ -51,18 +51,21 @@ public class NeoPreferencePage extends AbstractPreferencePage
         locationField.setEmptyStringAllowed( false );
         locationField.setErrorMessage( NEO_DATABASE_LOCATION_ERROR );
         addField( locationField );
+        
         // node label properties
         StringFieldEditor propertyNameField = new StringFieldEditor(
             NeoPreferences.NODE_PROPERTY_NAMES, NODE_LABEL_PROPERTIES_LABEL,
             getFieldEditorParent() );
         propertyNameField.setEmptyStringAllowed( true );
         addField( propertyNameField, PROPTERTY_NAMES_NOTE );
+        
         // node label properties
         StringFieldEditor relPropertyNameField = new StringFieldEditor(
             NeoPreferences.RELATIONSHIP_PROPERTY_NAMES, RELATIONSHIP_LABEL_PROPERTIES_LABEL,
             getFieldEditorParent() );
         relPropertyNameField.setEmptyStringAllowed( true );
         addField( relPropertyNameField, PROPTERTY_NAMES_NOTE );
+        
         // icon locations
         DirectoryFieldEditor iconLocationField = new DirectoryFieldEditor(
             NeoPreferences.NODE_ICON_LOCATION, NODE_ICONS_LOCATION_LABEL,
@@ -70,6 +73,7 @@ public class NeoPreferencePage extends AbstractPreferencePage
         iconLocationField.setEmptyStringAllowed( true );
         iconLocationField.setErrorMessage( NODE_ICONS_LOCATION_ERROR );
         addField( iconLocationField, ICON_LOCATION_NOTE );
+        
         // node icon filename properties
         StringFieldEditor iconPropertyNameField = new StringFieldEditor(
             NeoPreferences.NODE_ICON_PROPERTY_NAMES,

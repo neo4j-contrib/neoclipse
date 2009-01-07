@@ -19,9 +19,14 @@ package org.neo4j.neoclipse.view;
  * some kind).
  * @author Anders Nawroth
  */
-public class NeoGraphLabelProviderWrapper
+public final class NeoGraphLabelProviderWrapper
 {
     private static NeoGraphLabelProvider labelProvider = null;
+
+    private NeoGraphLabelProviderWrapper()
+    {
+        // singleton
+    }
 
     public static NeoGraphLabelProvider getInstance()
     {

@@ -69,8 +69,8 @@ public class PropertyDescriptor implements IPropertyDescriptor
         this.name = name;
         this.category = category;
         this.cls = cls;
-        PropertyHandler propertyHandler = PropertyTransform.handlerMap
-            .get( cls );
+        PropertyHandler propertyHandler = PropertyTransform
+            .getPropertyHandler( cls );
         if ( propertyHandler != null )
         {
             editorType = propertyHandler.getEditorType();

@@ -18,8 +18,7 @@ import org.eclipse.search.ui.SearchResultEvent;
 
 /**
  * The event for changes in the search result of Neo searches.
- * 
- * @author	Peter H&auml;nsgen
+ * @author Peter H&auml;nsgen
  */
 public class NeoSearchResultEvent extends SearchResultEvent
 {

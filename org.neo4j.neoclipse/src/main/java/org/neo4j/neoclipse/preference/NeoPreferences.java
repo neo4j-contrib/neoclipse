@@ -17,8 +17,16 @@ package org.neo4j.neoclipse.preference;
  * Defines the preferences of the neo plugin.
  * @author Peter H&auml;nsgen
  */
-public interface NeoPreferences
+public final class NeoPreferences
 {
+    /**
+     * Preventing instantiation.
+     */
+    private NeoPreferences()
+    {
+        // preventing instantiation
+    }
+
     /**
      * The location of the neo database in the file system.
      */

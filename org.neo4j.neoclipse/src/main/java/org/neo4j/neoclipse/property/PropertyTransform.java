@@ -26,8 +26,7 @@ import java.util.Map;
  * Transform between property values and representations for editors.
  * @author Anders Nawroth
  */
-@SuppressWarnings( "serial" )
-public class PropertyTransform
+public final class PropertyTransform
 {
     /**
      * Transform between editor representation and property value.
@@ -56,6 +55,14 @@ public class PropertyTransform
          * @return editor type
          */
         PropertyEditor getEditorType();
+    }
+
+    /**
+     * Prevent instantiation.
+     */
+    private PropertyTransform()
+    {
+        // no instances
     }
 
     /**
@@ -127,12 +134,24 @@ public class PropertyTransform
     }
 
     /**
+     * Get a PropertyHandler for a specific type.
+     * @param cls type to handle
+     * @return handler for type
+     */
+    public static PropertyHandler getPropertyHandler( Class<?> cls )
+    {
+        return HANDLERS.get( cls );
+    }
+
+    /**
      * A Map from property type classes to property handlers. Use get() on the
-     * map to retrieve the correct property handler with parse(), render() nd
+     * map to retrieve the correct property handler with parse(), render() and
      * getEditorType() methods.
      */
-    public static final Map<Class<?>,PropertyHandler> handlerMap = new HashMap<Class<?>,PropertyHandler>()
+    private static final Map<Class<?>,PropertyHandler> HANDLERS = new HashMap<Class<?>,PropertyHandler>()
     {
+        private static final long serialVersionUID = 1L;
+
         {
             put( String.class, new PropertyHandler()
             {

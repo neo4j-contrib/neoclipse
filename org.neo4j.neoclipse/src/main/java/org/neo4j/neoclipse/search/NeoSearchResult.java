@@ -28,8 +28,7 @@ import org.neo4j.neoclipse.NeoIcons;
 
 /**
  * This class represents the result of a Neo search.
- * 
- * @author	Peter H&auml;nsgen
+ * @author Peter H&auml;nsgen
  */
 public class NeoSearchResult implements ISearchResult
 {
@@ -37,28 +36,29 @@ public class NeoSearchResult implements ISearchResult
      * The query to which this result belongs.
      */
     private NeoSearchQuery query;
-    
+
     /**
      * The found matches.
      */
     private Iterable<Node> matches;
-    
+
     /**
      * The observers.
      */
     private List<ISearchResultListener> listeners;
-    
+
     /**
      * The constructor.
      */
-    public NeoSearchResult(NeoSearchQuery query)
+    public NeoSearchResult( NeoSearchQuery query )
     {
         this.query = query;
-        
-        // we have to initialize an empty list, as the result will already be shown before
+
+        // we have to initialize an empty list, as the result will already be
+        // shown before
         // the search is actually started
         this.matches = Collections.emptyList();
-        
+
         listeners = new ArrayList<ISearchResultListener>();
     }
 
@@ -67,30 +67,30 @@ public class NeoSearchResult implements ISearchResult
      */
     public Iterable<Node> getMatches()
     {
-        return matches;        
+        return matches;
     }
 
     /**
      * Sets the matches. The registered listeners will be notified.
      */
-    public void setMatches(Iterable<Node> matches)
+    public void setMatches( Iterable<Node> matches )
     {
         this.matches = matches;
-        
+
         fireSearchResultEvent();
     }
-    
+
     /**
      * Returns a neo image descriptor.
      */
     public ImageDescriptor getImageDescriptor()
     {
-        return NeoIcons.getDescriptor(NeoIcons.NEO);
+        return NeoIcons.getDescriptor( NeoIcons.NEO );
     }
 
     /**
-     * Returns a label for the search result, which will be shown
-     * in the search history. 
+     * Returns a label for the search result, which will be shown in the search
+     * history.
      */
     public String getLabel()
     {
@@ -116,46 +116,47 @@ public class NeoSearchResult implements ISearchResult
     /**
      * Adds a listener.
      */
-    public void addListener(ISearchResultListener l)
+    public void addListener( ISearchResultListener l )
     {
-        if (!listeners.contains(l))
+        if ( !listeners.contains( l ) )
         {
-            listeners.add(l);
+            listeners.add( l );
         }
     }
 
     /**
      * Removes a listener.
      */
-    public void removeListener(ISearchResultListener l)
+    public void removeListener( ISearchResultListener l )
     {
-        listeners.remove(l);
+        listeners.remove( l );
     }
-    
+
     /**
      * Notifies the registered listeners about changes in the search result.
      */
     protected void fireSearchResultEvent()
     {
-        final NeoSearchResultEvent e = new NeoSearchResultEvent(this);
-        
-        for (int i = 0; i < listeners.size(); i++)
-        {
-            final ISearchResultListener l = listeners.get(i);
+        final NeoSearchResultEvent e = new NeoSearchResultEvent( this );
 
-            ISafeRunnable job = new ISafeRunnable() {
-                public void handleException(Throwable exception)
+        for ( int i = 0; i < listeners.size(); i++ )
+        {
+            final ISearchResultListener l = listeners.get( i );
+
+            ISafeRunnable job = new ISafeRunnable()
+            {
+                public void handleException( Throwable exception )
                 {
                     // already being logged in SafeRunner#run()
                 }
 
                 public void run() throws Exception
                 {
-                    l.searchResultChanged(e);
+                    l.searchResultChanged( e );
                 }
             };
 
-            SafeRunner.run(job);
+            SafeRunner.run( job );
         }
     }
 }

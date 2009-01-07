@@ -25,5 +25,5 @@ public interface NeoServiceEventListener extends EventListener
     /**
      * Called when the service has changed.
      */
-    public void serviceChanged( NeoServiceEvent event );
+    void serviceChanged( NeoServiceEvent event );
 }

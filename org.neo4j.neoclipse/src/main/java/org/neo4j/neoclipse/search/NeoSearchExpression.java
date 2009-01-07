@@ -16,9 +16,9 @@ package org.neo4j.neoclipse.search;
 import java.util.regex.Pattern;
 
 /**
- * This class is a Neo search expression that is based on Java regular expressions.
- * 
- * @author	Peter H&auml;nsgen
+ * This class is a Neo search expression that is based on Java regular
+ * expressions.
+ * @author Peter H&auml;nsgen
  */
 public class NeoSearchExpression
 {
@@ -26,12 +26,12 @@ public class NeoSearchExpression
      * The compiled regular expression.
      */
     private Pattern pattern;
-    private static final Pattern idPattern = Pattern.compile( "\\d+" );
+    private static final Pattern ID_PATTERN = Pattern.compile( "\\d+" );
 
     /**
      * The constructor.
      */
-    public NeoSearchExpression(Pattern p)
+    public NeoSearchExpression( Pattern p )
     {
         this.pattern = p;
     }
@@ -39,11 +39,11 @@ public class NeoSearchExpression
     /**
      * Returns true, if the given value represents a match.
      */
-    public boolean matches(Object value)
+    public boolean matches( Object value )
     {
-        String v = String.valueOf(value);
-        
-        return pattern.matcher(v).matches();
+        String v = String.valueOf( value );
+
+        return pattern.matcher( v ).matches();
     }
 
     /**
@@ -53,13 +53,13 @@ public class NeoSearchExpression
     {
         return pattern.pattern();
     }
-    
+
     /**
      * Test if the pattern could be a full node id.
      * @return true if pattern could be a full id number
      */
     public boolean isPossibleId()
     {
-        return idPattern.matcher( pattern.pattern() ).matches();
+        return ID_PATTERN.matcher( pattern.pattern() ).matches();
     }
 }

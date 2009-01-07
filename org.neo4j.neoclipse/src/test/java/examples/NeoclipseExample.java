@@ -41,9 +41,9 @@ public abstract class NeoclipseExample
     private static final String TARGET_DIR = "target";
     private static final String NEOSTORE_SUBDIR = "neo";
     private static final String ICON_SUBDIR = "icons";
-    private static String STORE_LOCATION_DIR = TARGET_DIR + FILE_SEP
+    private static final String STORE_LOCATION_DIR = TARGET_DIR + FILE_SEP
         + NEOSTORE_SUBDIR;
-    private static String ICON_LOCATION_DIR = TARGET_DIR + FILE_SEP
+    private static final String ICON_LOCATION_DIR = TARGET_DIR + FILE_SEP
         + ICON_SUBDIR;
     private static final String EXAMPLES_DIR = "src" + FILE_SEP + "test"
         + FILE_SEP + "java" + FILE_SEP + "examples";

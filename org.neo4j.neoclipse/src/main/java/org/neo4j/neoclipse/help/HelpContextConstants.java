@@ -19,5 +19,13 @@ package org.neo4j.neoclipse.help;
  */
 public final class HelpContextConstants
 {
+    /**
+     * Preventing instantiation.
+     */
+    private HelpContextConstants()
+    {
+        // no instances
+    }
+
     public static final String NEO_GRAPH_VIEW_PART = "org.neo4j.neoclipse.doc.NeoGraphViewPart";
 }
