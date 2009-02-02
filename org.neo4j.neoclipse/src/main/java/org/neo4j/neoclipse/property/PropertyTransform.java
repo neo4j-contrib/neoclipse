@@ -31,7 +31,7 @@ public final class PropertyTransform
     /**
      * Transform between editor representation and property value.
      */
-    protected interface PropertyHandler
+    public interface PropertyHandler
     {
         /**
          * Transform from editor representation to property value.

@@ -26,6 +26,7 @@ import org.neo4j.api.core.PropertyContainer;
 import org.neo4j.api.core.Relationship;
 import org.neo4j.api.core.RelationshipType;
 import org.neo4j.neoclipse.NeoIcons;
+import org.neo4j.neoclipse.property.PropertyTransform;
 
 public class SimpleGraphDecorator
 {
@@ -286,7 +287,7 @@ public class SimpleGraphDecorator
             .getNodePropertyNames() );
         if ( propertyValue != null )
         {
-            return propertyValue;
+            return (String) propertyValue;
         }
         return getNodeText( node );
     }
@@ -294,18 +295,27 @@ public class SimpleGraphDecorator
     private String readProperties( final PropertyContainer primitive,
         final List<String> propertyNames )
     {
-        String propertyValue = null;
         for ( String propertyName : propertyNames )
         {
-            String tmpPropVal = (String) primitive.getProperty( propertyName,
-                "" );
-            if ( tmpPropVal != "" ) // no empty strings
+            Object propertyValue = primitive.getProperty( propertyName, "" );
+            if ( propertyValue instanceof String )
             {
-                propertyValue = tmpPropVal;
-                break;
+                if ( "".equals( propertyValue ) )
+                {
+                    // no empty strings here, thanks
+                    continue;
+                }
+                return (String) propertyValue;
+            }
+            else
+            {
+                // get a proper String from other types
+                return (String) PropertyTransform.getPropertyHandler(
+                    propertyValue.getClass() ).render( propertyValue );
+
             }
         }
-        return propertyValue;
+        return null;
     }
 
     public String getRelationshipTypeText( final Relationship rel )
