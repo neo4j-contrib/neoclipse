@@ -13,9 +13,15 @@
  */
 package org.neo4j.neoclipse.property;
 
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.ui.views.properties.PropertySheetEntry;
 import org.eclipse.ui.views.properties.PropertySheetPage;
 import org.eclipse.ui.views.properties.PropertySheetSorter;
+import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**
  * This class is a workaround to sort the property categories in the way we
@@ -42,15 +48,77 @@ public class NeoPropertySheetPage extends PropertySheetPage
         }
     }
 
-    public NeoPropertySheetPage()
+    private ISelection selection;
+    private NeoGraphViewPart neoView;
+    private Menu menu;
+    private Composite parent;
+
+    public NeoPropertySheetPage( NeoGraphViewPart neoGraphViewPart )
     {
         super();
+        this.neoView = neoGraphViewPart;
+    }
+
+    public NeoGraphViewPart getNeoGraphViewPart()
+    {
+        return neoView;
+    }
+
+    public ISelection getSelection()
+    {
+        return selection;
     }
 
     @Override
     public void createControl( final Composite parent )
     {
         super.createControl( parent );
+        this.parent = parent;
         setSorter( new NeoPropertySheetSorter() );
+        createMenu( parent );
+        getControl().setMenu( menu );
+    }
+
+    /**
+     * @param parent
+     */
+    private void createMenu( final Composite parent )
+    {
+        MenuManager menuMgr = new MenuManager( "#PopupMenu" );
+        menuMgr.add( new PropertyCopyAction( this ) );
+        menuMgr.add( new PropertyDeleteAction( parent, this ) );
+        menu = menuMgr.createContextMenu( getControl() );
+    }
+
+    @Override
+    public void handleEntrySelection( ISelection selection )
+    {
+        super.handleEntrySelection( selection );
+        this.selection = selection;
+        if ( selection instanceof IStructuredSelection )
+        {
+            IStructuredSelection ss = (IStructuredSelection) selection;
+            if ( ss.size() > 1 )
+            {
+                getControl().setMenu( null );
+                return;
+            }
+            Object firstElement = ss.getFirstElement();
+            if ( firstElement == null )
+            {
+                getControl().setMenu( null );
+                return;
+            }
+            if ( firstElement instanceof PropertySheetEntry )
+            {
+                PropertySheetEntry entry = (PropertySheetEntry) firstElement;
+                if ( entry.getEditor( parent ) == null )
+                {
+                    getControl().setMenu( null );
+                    return;
+                }
+            }
+        }
+        getControl().setMenu( menu );
     }
 }

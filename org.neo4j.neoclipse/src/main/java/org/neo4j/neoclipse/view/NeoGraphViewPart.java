@@ -390,7 +390,7 @@ public class NeoGraphViewPart extends ViewPart implements
     {
         if ( propertySheetPage == null )
         {
-            propertySheetPage = new NeoPropertySheetPage();
+            propertySheetPage = new NeoPropertySheetPage( this );
             propertySheetPage
                 .setPropertySourceProvider( new PropertySourceProvider() );
         }

@@ -46,6 +46,8 @@ public final class NeoIcons
     public static final String NEO = "small";
     public static final String NEO_ROOT = "root";
     public static final String HELP = "help";
+    public static final String DELETE = "delete";
+    public static final String COPY = "copy";
     /**
      * The image registry.
      */
@@ -111,6 +113,11 @@ public final class NeoIcons
             Activator.PLUGIN_ID, "icons/enabled/spring.gif" ) );
         reg.put( NeoIcons.TREE, Activator.imageDescriptorFromPlugin(
             Activator.PLUGIN_ID, "icons/enabled/tree.gif" ) );
+        // edit actions
+        reg.put( NeoIcons.DELETE, sharedImages
+            .getImage( ISharedImages.IMG_TOOL_DELETE ) );
+        reg.put( NeoIcons.COPY, sharedImages
+            .getImage( ISharedImages.IMG_TOOL_COPY ) );
     }
 
     /**
