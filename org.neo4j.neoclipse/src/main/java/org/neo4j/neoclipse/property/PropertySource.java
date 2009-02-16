@@ -179,7 +179,7 @@ public class PropertySource implements IPropertySource
                     catch ( Exception e )
                     {
                         // TODO: handle exception
-                        e.printStackTrace();
+                        //e.printStackTrace();
                     }
                 }
             }
