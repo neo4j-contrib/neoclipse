@@ -11,21 +11,19 @@
  * OF ANY KIND, either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-package org.neo4j.neoclipse.action;
+package org.neo4j.neoclipse.action.browse;
 
 import org.eclipse.jface.action.Action;
+import org.neo4j.neoclipse.NeoIcons;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**
- * This action handles the relationship name setting.
- * @author Anders Nawroth
+ * This action focuses the graph viewer on the neo reference node.
+ * @author Peter H&auml;nsgen
  */
-public class ShowRelationshipLabelAction extends Action
+public class ShowReferenceNodeAction extends Action
 {
-    /**
-     * Default state for this view menu alternative.
-     */
-    public static final boolean DEFAULT_STATE = true;
+    private static final String SHOW_REFERENCE_NODE = "Show Reference Node";
     /**
      * The view.
      */
@@ -34,11 +32,12 @@ public class ShowRelationshipLabelAction extends Action
     /**
      * The constructor.
      */
-    public ShowRelationshipLabelAction( NeoGraphViewPart view )
+    public ShowReferenceNodeAction( NeoGraphViewPart view )
     {
-        super( "Relationship labels", Action.AS_CHECK_BOX );
+        super( SHOW_REFERENCE_NODE, Action.AS_PUSH_BUTTON );
         this.view = view;
-        setChecked( DEFAULT_STATE );
+        setToolTipText( SHOW_REFERENCE_NODE );
+        setImageDescriptor( NeoIcons.getDescriptor( NeoIcons.HOME ) );
     }
 
     /**
@@ -46,7 +45,6 @@ public class ShowRelationshipLabelAction extends Action
      */
     public void run()
     {
-        view.getLabelProvider().setShowRelationshipNames( isChecked() );
-        view.refreshPreserveLayout();
+        view.showReferenceNode();
     }
 }

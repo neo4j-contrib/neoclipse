@@ -11,21 +11,20 @@
  * OF ANY KIND, either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-package org.neo4j.neoclipse.action;
+package org.neo4j.neoclipse.action.browse;
 
 import org.eclipse.jface.action.Action;
-import org.eclipse.zest.layouts.LayoutStyles;
-import org.eclipse.zest.layouts.algorithms.TreeLayoutAlgorithm;
 import org.neo4j.neoclipse.NeoIcons;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**
- * This action switches the neo graph view to tree layout.
+ * This action refreshes the graph view, e.g. it sets the current node again as
+ * input source.
  * @author Peter H&auml;nsgen
  */
-public class ShowTreeLayoutAction extends Action
+public class RefreshAction extends Action
 {
-    private static final String TREE_LAYOUT = "Tree Layout";
+    private static final String REFRESH = "Refresh";
     /**
      * The view.
      */
@@ -34,13 +33,12 @@ public class ShowTreeLayoutAction extends Action
     /**
      * The constructor.
      */
-    public ShowTreeLayoutAction( NeoGraphViewPart view )
+    public RefreshAction( NeoGraphViewPart view )
     {
-        super( TREE_LAYOUT, Action.AS_RADIO_BUTTON );
+        super( REFRESH, Action.AS_PUSH_BUTTON );
         this.view = view;
-        setToolTipText( TREE_LAYOUT );
-        setImageDescriptor( NeoIcons.getDescriptor( NeoIcons.TREE ) );
-        setChecked( false );
+        setToolTipText( REFRESH );
+        setImageDescriptor( NeoIcons.getDescriptor( NeoIcons.REFRESH ) );
     }
 
     /**
@@ -48,12 +46,6 @@ public class ShowTreeLayoutAction extends Action
      */
     public void run()
     {
-        if ( isChecked() )
-        {
-            view.getViewer()
-                .setLayoutAlgorithm(
-                    new TreeLayoutAlgorithm(
-                        LayoutStyles.NO_LAYOUT_NODE_RESIZING ), true );
-        }
+        view.refresh();
     }
 }

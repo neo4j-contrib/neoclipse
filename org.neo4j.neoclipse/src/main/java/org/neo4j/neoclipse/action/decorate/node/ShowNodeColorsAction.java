@@ -11,16 +11,16 @@
  * OF ANY KIND, either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-package org.neo4j.neoclipse.action;
+package org.neo4j.neoclipse.action.decorate.node;
 
 import org.eclipse.jface.action.Action;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**
- * This action handles the node icons setting.
+ * This action handles the node colors setting.
  * @author Anders Nawroth
  */
-public class ShowNodeIconsAction extends Action
+public class ShowNodeColorsAction extends Action
 {
     /**
      * Default state for this view menu alternative.
@@ -34,9 +34,9 @@ public class ShowNodeIconsAction extends Action
     /**
      * The constructor.
      */
-    public ShowNodeIconsAction( NeoGraphViewPart view )
+    public ShowNodeColorsAction( NeoGraphViewPart view )
     {
-        super( "Node icons", Action.AS_CHECK_BOX );
+        super( "Node colors", Action.AS_CHECK_BOX );
         this.view = view;
         setChecked( DEFAULT_STATE );
     }
@@ -46,7 +46,7 @@ public class ShowNodeIconsAction extends Action
      */
     public void run()
     {
-        view.getLabelProvider().setShowNodeIcons( isChecked() );
+        view.getLabelProvider().setShowNodeColors( isChecked() );
         view.refreshPreserveLayout();
     }
 }

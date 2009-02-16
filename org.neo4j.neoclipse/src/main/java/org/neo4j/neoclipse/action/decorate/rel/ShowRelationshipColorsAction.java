@@ -11,20 +11,21 @@
  * OF ANY KIND, either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-package org.neo4j.neoclipse.action;
+package org.neo4j.neoclipse.action.decorate.rel;
 
 import org.eclipse.jface.action.Action;
-import org.eclipse.zest.layouts.LayoutStyles;
-import org.eclipse.zest.layouts.algorithms.HorizontalShift;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**
- * This action sets the layout of the graph viewer to horizontal shift layout.
+ * This action handles the relationship colors setting.
  * @author Anders Nawroth
  */
-public class ShowHorizontalShiftLayoutAction extends Action
+public class ShowRelationshipColorsAction extends Action
 {
-    private static final String HORIZONTAL_SHIFT_LAYOUT = "Horizontal Shift Layout";
+    /**
+     * Default state for this view menu alternative.
+     */
+    public static final boolean DEFAULT_STATE = true;
     /**
      * The view.
      */
@@ -33,12 +34,11 @@ public class ShowHorizontalShiftLayoutAction extends Action
     /**
      * The constructor.
      */
-    public ShowHorizontalShiftLayoutAction( NeoGraphViewPart view )
+    public ShowRelationshipColorsAction( NeoGraphViewPart view )
     {
-        super( HORIZONTAL_SHIFT_LAYOUT, Action.AS_RADIO_BUTTON );
+        super( "Relationship colors", Action.AS_CHECK_BOX );
         this.view = view;
-        setToolTipText( HORIZONTAL_SHIFT_LAYOUT );
-        setChecked( false );
+        setChecked( DEFAULT_STATE );
     }
 
     /**
@@ -46,11 +46,7 @@ public class ShowHorizontalShiftLayoutAction extends Action
      */
     public void run()
     {
-        if ( isChecked() )
-        {
-            view.getViewer().setLayoutAlgorithm(
-                new HorizontalShift( LayoutStyles.NO_LAYOUT_NODE_RESIZING ),
-                true );
-        }
+        view.getLabelProvider().setShowRelationshipColors( isChecked() );
+        view.refreshPreserveLayout();
     }
 }

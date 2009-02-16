@@ -11,21 +11,21 @@
  * OF ANY KIND, either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-package org.neo4j.neoclipse.action;
+package org.neo4j.neoclipse.action.layout;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.zest.layouts.LayoutStyles;
-import org.eclipse.zest.layouts.algorithms.SpringLayoutAlgorithm;
+import org.eclipse.zest.layouts.algorithms.TreeLayoutAlgorithm;
 import org.neo4j.neoclipse.NeoIcons;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**
- * This action sets the layout of the graph viewer to spring layout.
+ * This action switches the neo graph view to tree layout.
  * @author Peter H&auml;nsgen
  */
-public class ShowSpringLayoutAction extends Action
+public class ShowTreeLayoutAction extends Action
 {
-    private static final String SPRING_LAYOUT = "Spring Layout";
+    private static final String TREE_LAYOUT = "Tree Layout";
     /**
      * The view.
      */
@@ -34,13 +34,13 @@ public class ShowSpringLayoutAction extends Action
     /**
      * The constructor.
      */
-    public ShowSpringLayoutAction( NeoGraphViewPart view )
+    public ShowTreeLayoutAction( NeoGraphViewPart view )
     {
-        super( SPRING_LAYOUT, Action.AS_RADIO_BUTTON );
+        super( TREE_LAYOUT, Action.AS_RADIO_BUTTON );
         this.view = view;
-        setToolTipText( SPRING_LAYOUT );
-        setImageDescriptor( NeoIcons.getDescriptor( NeoIcons.SPRING ) );
-        setChecked( true );
+        setToolTipText( TREE_LAYOUT );
+        setImageDescriptor( NeoIcons.getDescriptor( NeoIcons.TREE ) );
+        setChecked( false );
     }
 
     /**
@@ -52,7 +52,7 @@ public class ShowSpringLayoutAction extends Action
         {
             view.getViewer()
                 .setLayoutAlgorithm(
-                    new SpringLayoutAlgorithm(
+                    new TreeLayoutAlgorithm(
                         LayoutStyles.NO_LAYOUT_NODE_RESIZING ), true );
         }
     }

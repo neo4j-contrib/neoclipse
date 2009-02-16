@@ -11,21 +11,20 @@
  * OF ANY KIND, either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-package org.neo4j.neoclipse.action;
+package org.neo4j.neoclipse.action.layout;
 
 import org.eclipse.jface.action.Action;
+import org.eclipse.zest.layouts.LayoutStyles;
+import org.eclipse.zest.layouts.algorithms.HorizontalShift;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**
- * This action handles the node colors setting.
+ * This action sets the layout of the graph viewer to horizontal shift layout.
  * @author Anders Nawroth
  */
-public class ShowNodeColorsAction extends Action
+public class ShowHorizontalShiftLayoutAction extends Action
 {
-    /**
-     * Default state for this view menu alternative.
-     */
-    public static final boolean DEFAULT_STATE = true;
+    private static final String HORIZONTAL_SHIFT_LAYOUT = "Horizontal Shift Layout";
     /**
      * The view.
      */
@@ -34,11 +33,12 @@ public class ShowNodeColorsAction extends Action
     /**
      * The constructor.
      */
-    public ShowNodeColorsAction( NeoGraphViewPart view )
+    public ShowHorizontalShiftLayoutAction( NeoGraphViewPart view )
     {
-        super( "Node colors", Action.AS_CHECK_BOX );
+        super( HORIZONTAL_SHIFT_LAYOUT, Action.AS_RADIO_BUTTON );
         this.view = view;
-        setChecked( DEFAULT_STATE );
+        setToolTipText( HORIZONTAL_SHIFT_LAYOUT );
+        setChecked( false );
     }
 
     /**
@@ -46,7 +46,11 @@ public class ShowNodeColorsAction extends Action
      */
     public void run()
     {
-        view.getLabelProvider().setShowNodeColors( isChecked() );
-        view.refreshPreserveLayout();
+        if ( isChecked() )
+        {
+            view.getViewer().setLayoutAlgorithm(
+                new HorizontalShift( LayoutStyles.NO_LAYOUT_NODE_RESIZING ),
+                true );
+        }
     }
 }

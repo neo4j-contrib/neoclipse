@@ -11,16 +11,16 @@
  * OF ANY KIND, either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-package org.neo4j.neoclipse.action;
+package org.neo4j.neoclipse.action.decorate.node;
 
 import org.eclipse.jface.action.Action;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**
- * This action handles the relationship id setting.
+ * This action handles the node names setting.
  * @author Anders Nawroth
  */
-public class ShowRelationshipIdsAction extends Action
+public class ShowNodeLabelAction extends Action
 {
     /**
      * Default state for this view menu alternative.
@@ -34,9 +34,9 @@ public class ShowRelationshipIdsAction extends Action
     /**
      * The constructor.
      */
-    public ShowRelationshipIdsAction( NeoGraphViewPart view )
+    public ShowNodeLabelAction( NeoGraphViewPart view )
     {
-        super( "Relationship id", Action.AS_CHECK_BOX );
+        super( "Node labels", Action.AS_CHECK_BOX );
         this.view = view;
         setChecked( DEFAULT_STATE );
     }
@@ -46,7 +46,7 @@ public class ShowRelationshipIdsAction extends Action
      */
     public void run()
     {
-        view.getLabelProvider().setShowRelationshipIds( isChecked() );
+        view.getLabelProvider().setShowNodeNames( isChecked() );
         view.refreshPreserveLayout();
     }
 }

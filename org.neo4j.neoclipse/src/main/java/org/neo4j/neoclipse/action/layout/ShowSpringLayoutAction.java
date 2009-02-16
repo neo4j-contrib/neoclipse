@@ -11,21 +11,21 @@
  * OF ANY KIND, either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-package org.neo4j.neoclipse.action;
+package org.neo4j.neoclipse.action.layout;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.zest.layouts.LayoutStyles;
-import org.eclipse.zest.layouts.algorithms.GridLayoutAlgorithm;
+import org.eclipse.zest.layouts.algorithms.SpringLayoutAlgorithm;
 import org.neo4j.neoclipse.NeoIcons;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**
- * This action switches the graph view to grid layout.
+ * This action sets the layout of the graph viewer to spring layout.
  * @author Peter H&auml;nsgen
  */
-public class ShowGridLayoutAction extends Action
+public class ShowSpringLayoutAction extends Action
 {
-    private static final String GRID_LAYOUT = "Grid Layout";
+    private static final String SPRING_LAYOUT = "Spring Layout";
     /**
      * The view.
      */
@@ -34,13 +34,13 @@ public class ShowGridLayoutAction extends Action
     /**
      * The constructor.
      */
-    public ShowGridLayoutAction( NeoGraphViewPart view )
+    public ShowSpringLayoutAction( NeoGraphViewPart view )
     {
-        super( GRID_LAYOUT, Action.AS_RADIO_BUTTON );
+        super( SPRING_LAYOUT, Action.AS_RADIO_BUTTON );
         this.view = view;
-        setToolTipText( GRID_LAYOUT );
-        setImageDescriptor( NeoIcons.getDescriptor( NeoIcons.GRID ) );
-        setChecked( false );
+        setToolTipText( SPRING_LAYOUT );
+        setImageDescriptor( NeoIcons.getDescriptor( NeoIcons.SPRING ) );
+        setChecked( true );
     }
 
     /**
@@ -52,7 +52,7 @@ public class ShowGridLayoutAction extends Action
         {
             view.getViewer()
                 .setLayoutAlgorithm(
-                    new GridLayoutAlgorithm(
+                    new SpringLayoutAlgorithm(
                         LayoutStyles.NO_LAYOUT_NODE_RESIZING ), true );
         }
     }

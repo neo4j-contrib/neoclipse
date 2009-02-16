@@ -11,7 +11,7 @@
  * OF ANY KIND, either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-package org.neo4j.neoclipse.action;
+package org.neo4j.neoclipse.action.layout;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.zest.layouts.LayoutStyles;

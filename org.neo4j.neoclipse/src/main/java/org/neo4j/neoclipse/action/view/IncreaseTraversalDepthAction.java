@@ -11,19 +11,19 @@
  * OF ANY KIND, either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-package org.neo4j.neoclipse.action;
+package org.neo4j.neoclipse.action.view;
 
 import org.eclipse.jface.action.Action;
 import org.neo4j.neoclipse.NeoIcons;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**
- * This action moves backward in the browsing history.
- * @author Anders Nawroth
+ * Increases the traversal depth of the neo graph view.
+ * @author Peter H&auml;nsgen
  */
-public class GoBackAction extends Action
+public class IncreaseTraversalDepthAction extends Action
 {
-    private static final String GO_BACK = "Go Back";
+    private static final String INCREASE_TRAVERSAL_DEPTH = "Increase Traversal Depth";
     /**
      * The view.
      */
@@ -32,15 +32,14 @@ public class GoBackAction extends Action
     /**
      * The constructor.
      */
-    public GoBackAction( NeoGraphViewPart view )
+    public IncreaseTraversalDepthAction( NeoGraphViewPart view )
     {
-        super( GO_BACK, Action.AS_PUSH_BUTTON );
+        super( INCREASE_TRAVERSAL_DEPTH, Action.AS_PUSH_BUTTON );
         this.view = view;
-        setToolTipText( GO_BACK );
-        setImageDescriptor( NeoIcons.getDescriptor( NeoIcons.BACK_ENABLED ) );
+        setToolTipText( INCREASE_TRAVERSAL_DEPTH );
+        setImageDescriptor( NeoIcons.getDescriptor( NeoIcons.PLUS_ENABLED ) );
         setDisabledImageDescriptor( NeoIcons
-            .getDescriptor( NeoIcons.BACK_DISABLED ) );
-        setEnabled( false );
+            .getDescriptor( NeoIcons.PLUS_DISABLED ) );
     }
 
     /**
@@ -48,6 +47,6 @@ public class GoBackAction extends Action
      */
     public void run()
     {
-        view.goBack();
+        view.incTraversalDepth();
     }
 }

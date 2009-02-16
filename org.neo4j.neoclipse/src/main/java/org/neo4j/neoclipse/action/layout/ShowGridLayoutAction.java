@@ -11,19 +11,21 @@
  * OF ANY KIND, either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-package org.neo4j.neoclipse.action;
+package org.neo4j.neoclipse.action.layout;
 
 import org.eclipse.jface.action.Action;
+import org.eclipse.zest.layouts.LayoutStyles;
+import org.eclipse.zest.layouts.algorithms.GridLayoutAlgorithm;
 import org.neo4j.neoclipse.NeoIcons;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**
- * Increases the traversal depth of the neo graph view.
+ * This action switches the graph view to grid layout.
  * @author Peter H&auml;nsgen
  */
-public class IncreaseTraversalDepthAction extends Action
+public class ShowGridLayoutAction extends Action
 {
-    private static final String INCREASE_TRAVERSAL_DEPTH = "Increase Traversal Depth";
+    private static final String GRID_LAYOUT = "Grid Layout";
     /**
      * The view.
      */
@@ -32,14 +34,13 @@ public class IncreaseTraversalDepthAction extends Action
     /**
      * The constructor.
      */
-    public IncreaseTraversalDepthAction( NeoGraphViewPart view )
+    public ShowGridLayoutAction( NeoGraphViewPart view )
     {
-        super( INCREASE_TRAVERSAL_DEPTH, Action.AS_PUSH_BUTTON );
+        super( GRID_LAYOUT, Action.AS_RADIO_BUTTON );
         this.view = view;
-        setToolTipText( INCREASE_TRAVERSAL_DEPTH );
-        setImageDescriptor( NeoIcons.getDescriptor( NeoIcons.PLUS_ENABLED ) );
-        setDisabledImageDescriptor( NeoIcons
-            .getDescriptor( NeoIcons.PLUS_DISABLED ) );
+        setToolTipText( GRID_LAYOUT );
+        setImageDescriptor( NeoIcons.getDescriptor( NeoIcons.GRID ) );
+        setChecked( false );
     }
 
     /**
@@ -47,6 +48,12 @@ public class IncreaseTraversalDepthAction extends Action
      */
     public void run()
     {
-        view.incTraversalDepth();
+        if ( isChecked() )
+        {
+            view.getViewer()
+                .setLayoutAlgorithm(
+                    new GridLayoutAlgorithm(
+                        LayoutStyles.NO_LAYOUT_NODE_RESIZING ), true );
+        }
     }
 }

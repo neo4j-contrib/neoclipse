@@ -11,19 +11,21 @@
  * OF ANY KIND, either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-package org.neo4j.neoclipse.action;
+package org.neo4j.neoclipse.action.decorate.rel;
 
 import org.eclipse.jface.action.Action;
-import org.neo4j.neoclipse.NeoIcons;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**
- * Decreases the traversal depth of the neo graph view.
- * @author Peter H&auml;nsgen
+ * This action handles the relationship name setting.
+ * @author Anders Nawroth
  */
-public class DecreaseTraversalDepthAction extends Action
+public class ShowRelationshipLabelAction extends Action
 {
-    private static final String DECREASE_TRAVERSAL_DEPTH = "Decrease Traversal Depth";
+    /**
+     * Default state for this view menu alternative.
+     */
+    public static final boolean DEFAULT_STATE = true;
     /**
      * The view.
      */
@@ -32,14 +34,11 @@ public class DecreaseTraversalDepthAction extends Action
     /**
      * The constructor.
      */
-    public DecreaseTraversalDepthAction( NeoGraphViewPart view )
+    public ShowRelationshipLabelAction( NeoGraphViewPart view )
     {
-        super( DECREASE_TRAVERSAL_DEPTH, Action.AS_PUSH_BUTTON );
+        super( "Relationship labels", Action.AS_CHECK_BOX );
         this.view = view;
-        setToolTipText( DECREASE_TRAVERSAL_DEPTH );
-        setImageDescriptor( NeoIcons.getDescriptor( NeoIcons.MINUS_ENABLED ) );
-        setDisabledImageDescriptor( NeoIcons
-            .getDescriptor( NeoIcons.MINUS_DISABLED ) );
+        setChecked( DEFAULT_STATE );
     }
 
     /**
@@ -47,6 +46,7 @@ public class DecreaseTraversalDepthAction extends Action
      */
     public void run()
     {
-        view.decTraversalDepth();
+        view.getLabelProvider().setShowRelationshipNames( isChecked() );
+        view.refreshPreserveLayout();
     }
 }

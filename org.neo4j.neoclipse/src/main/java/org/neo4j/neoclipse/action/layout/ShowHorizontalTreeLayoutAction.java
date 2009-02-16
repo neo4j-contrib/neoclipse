@@ -11,21 +11,20 @@
  * OF ANY KIND, either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-package org.neo4j.neoclipse.action;
+package org.neo4j.neoclipse.action.layout;
 
 import org.eclipse.jface.action.Action;
+import org.eclipse.zest.layouts.LayoutStyles;
+import org.eclipse.zest.layouts.algorithms.HorizontalTreeLayoutAlgorithm;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**
- * This action handles the node names setting.
+ * This action sets the layout of the graph viewer to horizontal tree layout.
  * @author Anders Nawroth
  */
-public class ShowNodeLabelAction extends Action
+public class ShowHorizontalTreeLayoutAction extends Action
 {
-    /**
-     * Default state for this view menu alternative.
-     */
-    public static final boolean DEFAULT_STATE = true;
+    private static final String HORIZONTAL_TREE_LAYOUT = "Horizontal Tree Layout";
     /**
      * The view.
      */
@@ -34,11 +33,12 @@ public class ShowNodeLabelAction extends Action
     /**
      * The constructor.
      */
-    public ShowNodeLabelAction( NeoGraphViewPart view )
+    public ShowHorizontalTreeLayoutAction( NeoGraphViewPart view )
     {
-        super( "Node labels", Action.AS_CHECK_BOX );
+        super( HORIZONTAL_TREE_LAYOUT, Action.AS_RADIO_BUTTON );
         this.view = view;
-        setChecked( DEFAULT_STATE );
+        setToolTipText( HORIZONTAL_TREE_LAYOUT );
+        setChecked( false );
     }
 
     /**
@@ -46,7 +46,11 @@ public class ShowNodeLabelAction extends Action
      */
     public void run()
     {
-        view.getLabelProvider().setShowNodeNames( isChecked() );
-        view.refreshPreserveLayout();
+        if ( isChecked() )
+        {
+            view.getViewer().setLayoutAlgorithm(
+                new HorizontalTreeLayoutAlgorithm(
+                    LayoutStyles.NO_LAYOUT_NODE_RESIZING ), true );
+        }
     }
 }

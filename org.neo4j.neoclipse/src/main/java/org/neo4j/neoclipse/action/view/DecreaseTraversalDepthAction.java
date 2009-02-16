@@ -11,19 +11,19 @@
  * OF ANY KIND, either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-package org.neo4j.neoclipse.action;
+package org.neo4j.neoclipse.action.view;
 
 import org.eclipse.jface.action.Action;
 import org.neo4j.neoclipse.NeoIcons;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**
- * This action focuses the graph viewer on the neo reference node.
+ * Decreases the traversal depth of the neo graph view.
  * @author Peter H&auml;nsgen
  */
-public class ShowReferenceNodeAction extends Action
+public class DecreaseTraversalDepthAction extends Action
 {
-    private static final String SHOW_REFERENCE_NODE = "Show Reference Node";
+    private static final String DECREASE_TRAVERSAL_DEPTH = "Decrease Traversal Depth";
     /**
      * The view.
      */
@@ -32,12 +32,14 @@ public class ShowReferenceNodeAction extends Action
     /**
      * The constructor.
      */
-    public ShowReferenceNodeAction( NeoGraphViewPart view )
+    public DecreaseTraversalDepthAction( NeoGraphViewPart view )
     {
-        super( SHOW_REFERENCE_NODE, Action.AS_PUSH_BUTTON );
+        super( DECREASE_TRAVERSAL_DEPTH, Action.AS_PUSH_BUTTON );
         this.view = view;
-        setToolTipText( SHOW_REFERENCE_NODE );
-        setImageDescriptor( NeoIcons.getDescriptor( NeoIcons.HOME ) );
+        setToolTipText( DECREASE_TRAVERSAL_DEPTH );
+        setImageDescriptor( NeoIcons.getDescriptor( NeoIcons.MINUS_ENABLED ) );
+        setDisabledImageDescriptor( NeoIcons
+            .getDescriptor( NeoIcons.MINUS_DISABLED ) );
     }
 
     /**
@@ -45,6 +47,6 @@ public class ShowReferenceNodeAction extends Action
      */
     public void run()
     {
-        view.showReferenceNode();
+        view.decTraversalDepth();
     }
 }

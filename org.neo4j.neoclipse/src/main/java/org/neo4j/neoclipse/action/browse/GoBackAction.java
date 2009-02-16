@@ -11,20 +11,19 @@
  * OF ANY KIND, either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-package org.neo4j.neoclipse.action;
+package org.neo4j.neoclipse.action.browse;
 
 import org.eclipse.jface.action.Action;
 import org.neo4j.neoclipse.NeoIcons;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**
- * This action refreshes the graph view, e.g. it sets the current node again as
- * input source.
- * @author Peter H&auml;nsgen
+ * This action moves backward in the browsing history.
+ * @author Anders Nawroth
  */
-public class RefreshAction extends Action
+public class GoBackAction extends Action
 {
-    private static final String REFRESH = "Refresh";
+    private static final String GO_BACK = "Go Back";
     /**
      * The view.
      */
@@ -33,12 +32,15 @@ public class RefreshAction extends Action
     /**
      * The constructor.
      */
-    public RefreshAction( NeoGraphViewPart view )
+    public GoBackAction( NeoGraphViewPart view )
     {
-        super( REFRESH, Action.AS_PUSH_BUTTON );
+        super( GO_BACK, Action.AS_PUSH_BUTTON );
         this.view = view;
-        setToolTipText( REFRESH );
-        setImageDescriptor( NeoIcons.getDescriptor( NeoIcons.REFRESH ) );
+        setToolTipText( GO_BACK );
+        setImageDescriptor( NeoIcons.getDescriptor( NeoIcons.BACK_ENABLED ) );
+        setDisabledImageDescriptor( NeoIcons
+            .getDescriptor( NeoIcons.BACK_DISABLED ) );
+        setEnabled( false );
     }
 
     /**
@@ -46,6 +48,6 @@ public class RefreshAction extends Action
      */
     public void run()
     {
-        view.refresh();
+        view.goBack();
     }
 }

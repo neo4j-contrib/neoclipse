@@ -13,24 +13,21 @@
  */
 package org.neo4j.neoclipse.property.action;
 
-import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.views.properties.IPropertySheetEntry;
-import org.neo4j.api.core.NeoService;
 import org.neo4j.api.core.PropertyContainer;
-import org.neo4j.neoclipse.Activator;
-import org.neo4j.neoclipse.neo.NeoServiceManager;
+import org.neo4j.neoclipse.action.context.BaseContextAction;
 import org.neo4j.neoclipse.property.NeoPropertySheetPage;
 
 /**
  * Base class for actions on properties.
  * @author Anders Nawroth
  */
-abstract public class PropertyAction extends Action
+abstract public class PropertyAction extends BaseContextAction
 {
     protected static final int OK = 0;
     protected final Composite parent;
@@ -73,7 +70,7 @@ abstract public class PropertyAction extends Action
 
     /**
      * Get the PropertyContainer of the current property sheet. Returns
-     * <code>null</code> on failure, after showing apropriate error messages.
+     * <code>null</code> on failure, after showing appropriate error messages.
      * @return selected property container
      */
     protected PropertyContainer getPropertyContainer()
@@ -99,7 +96,7 @@ abstract public class PropertyAction extends Action
 
     /**
      * Get the current selected editable property sheet entry, if available.
-     * Returns <code>null</code> on failure, after showing apropriate error
+     * Returns <code>null</code> on failure, after showing appropriate error
      * messages.
      * @return selected property sheet entry
      */
@@ -132,23 +129,5 @@ abstract public class PropertyAction extends Action
             return null;
         }
         return entry;
-    }
-
-    /**
-     * Get the current NeoService. Returns <code>null</code> on failure, after
-     * showing apropriate error messages.
-     * @return current neo service
-     */
-    protected NeoService getNeoService()
-    {
-        NeoServiceManager sm = Activator.getDefault().getNeoServiceManager();
-        NeoService ns = sm.getNeoService();
-        if ( ns == null )
-        {
-            MessageDialog.openError( null, "Error",
-                "The Neo service is not available." );
-            return null;
-        }
-        return ns;
     }
 }

@@ -16,12 +16,18 @@ package org.neo4j.neoclipse.view;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.part.ViewPart;
@@ -35,31 +41,33 @@ import org.eclipse.zest.layouts.algorithms.SpringLayoutAlgorithm;
 import org.neo4j.api.core.NeoService;
 import org.neo4j.api.core.Node;
 import org.neo4j.api.core.NotFoundException;
+import org.neo4j.api.core.PropertyContainer;
 import org.neo4j.api.core.Transaction;
 import org.neo4j.neoclipse.Activator;
-import org.neo4j.neoclipse.action.DecreaseTraversalDepthAction;
-import org.neo4j.neoclipse.action.GoBackAction;
-import org.neo4j.neoclipse.action.GoForwardAction;
-import org.neo4j.neoclipse.action.IncreaseTraversalDepthAction;
 import org.neo4j.neoclipse.action.PrintGraphAction;
-import org.neo4j.neoclipse.action.RefreshAction;
-import org.neo4j.neoclipse.action.ShowGridLayoutAction;
-import org.neo4j.neoclipse.action.ShowHorizontalShiftLayoutAction;
-import org.neo4j.neoclipse.action.ShowHorizontalTreeLayoutAction;
-import org.neo4j.neoclipse.action.ShowNodeColorsAction;
-import org.neo4j.neoclipse.action.ShowNodeIconsAction;
-import org.neo4j.neoclipse.action.ShowNodeIdsAction;
-import org.neo4j.neoclipse.action.ShowNodeLabelAction;
-import org.neo4j.neoclipse.action.ShowRadialLayoutAction;
-import org.neo4j.neoclipse.action.ShowReferenceNodeAction;
-import org.neo4j.neoclipse.action.ShowRelationshipColorsAction;
-import org.neo4j.neoclipse.action.ShowRelationshipDirectionsAction;
-import org.neo4j.neoclipse.action.ShowRelationshipIdsAction;
-import org.neo4j.neoclipse.action.ShowRelationshipLabelAction;
-import org.neo4j.neoclipse.action.ShowRelationshipTypesAction;
-import org.neo4j.neoclipse.action.ShowSpringLayoutAction;
-import org.neo4j.neoclipse.action.ShowTreeLayoutAction;
-import org.neo4j.neoclipse.action.ZoomAction;
+import org.neo4j.neoclipse.action.browse.GoBackAction;
+import org.neo4j.neoclipse.action.browse.GoForwardAction;
+import org.neo4j.neoclipse.action.browse.RefreshAction;
+import org.neo4j.neoclipse.action.browse.ShowReferenceNodeAction;
+import org.neo4j.neoclipse.action.context.DeleteAction;
+import org.neo4j.neoclipse.action.decorate.node.ShowNodeColorsAction;
+import org.neo4j.neoclipse.action.decorate.node.ShowNodeIconsAction;
+import org.neo4j.neoclipse.action.decorate.node.ShowNodeIdsAction;
+import org.neo4j.neoclipse.action.decorate.node.ShowNodeLabelAction;
+import org.neo4j.neoclipse.action.decorate.rel.ShowRelationshipColorsAction;
+import org.neo4j.neoclipse.action.decorate.rel.ShowRelationshipDirectionsAction;
+import org.neo4j.neoclipse.action.decorate.rel.ShowRelationshipIdsAction;
+import org.neo4j.neoclipse.action.decorate.rel.ShowRelationshipLabelAction;
+import org.neo4j.neoclipse.action.decorate.rel.ShowRelationshipTypesAction;
+import org.neo4j.neoclipse.action.layout.ShowGridLayoutAction;
+import org.neo4j.neoclipse.action.layout.ShowHorizontalShiftLayoutAction;
+import org.neo4j.neoclipse.action.layout.ShowHorizontalTreeLayoutAction;
+import org.neo4j.neoclipse.action.layout.ShowRadialLayoutAction;
+import org.neo4j.neoclipse.action.layout.ShowSpringLayoutAction;
+import org.neo4j.neoclipse.action.layout.ShowTreeLayoutAction;
+import org.neo4j.neoclipse.action.view.DecreaseTraversalDepthAction;
+import org.neo4j.neoclipse.action.view.IncreaseTraversalDepthAction;
+import org.neo4j.neoclipse.action.view.ZoomAction;
 import org.neo4j.neoclipse.help.HelpContextConstants;
 import org.neo4j.neoclipse.neo.NeoServiceEvent;
 import org.neo4j.neoclipse.neo.NeoServiceEventListener;
@@ -75,7 +83,7 @@ import org.neo4j.neoclipse.property.PropertySourceProvider;
  * @author Anders Nawroth
  */
 public class NeoGraphViewPart extends ViewPart implements
-    IZoomableWorkbenchPart, IDoubleClickListener
+    IZoomableWorkbenchPart, IDoubleClickListener, ISelectionChangedListener
 {
     /**
      * Max number of guesses to find a better starting point.
@@ -113,6 +121,7 @@ public class NeoGraphViewPart extends ViewPart implements
      * The depth how deep we should traverse into the network.
      */
     private int traversalDepth = 1;
+    private DeleteAction deleteAction;
 
     /**
      * Creates the view.
@@ -124,6 +133,7 @@ public class NeoGraphViewPart extends ViewPart implements
         viewer.setLabelProvider( NeoGraphLabelProviderWrapper.getInstance() );
         viewer.addDoubleClickListener( new NeoGraphDoubleClickListener() );
         viewer.addDoubleClickListener( this );
+        viewer.addSelectionChangedListener( this );
         viewer.setLayoutAlgorithm( new SpringLayoutAlgorithm(
             LayoutStyles.NO_LAYOUT_NODE_RESIZING ) );
         makeContributions();
@@ -133,6 +143,30 @@ public class NeoGraphViewPart extends ViewPart implements
         showSomeNode();
         PlatformUI.getWorkbench().getHelpSystem().setHelp( viewer.getControl(),
             HelpContextConstants.NEO_GRAPH_VIEW_PART );
+        createMenu();
+    }
+
+    /**
+     * Create a context menu.
+     */
+    private void createMenu()
+    {
+        MenuManager menuMgr = new MenuManager();
+        deleteAction = new DeleteAction( this );
+        menuMgr.add( deleteAction );
+        Menu menu = menuMgr.createContextMenu( viewer.getControl() );
+        viewer.getControl().setMenu( menu );
+    }
+
+    /**
+     * Set context menu to the correct state.
+     */
+    private void setRestrictedEnabled( boolean enabled )
+    {
+        if ( deleteAction != null )
+        {
+            deleteAction.setEnabled( enabled );
+        }
     }
 
     /**
@@ -783,5 +817,26 @@ public class NeoGraphViewPart extends ViewPart implements
                 }
             }
         }
+    }
+
+    /**
+     * Handles selection, making the context menu look right.
+     */
+    public void selectionChanged( SelectionChangedEvent event )
+    {
+        ISelection selected = event.getSelection();
+        if ( !(selected instanceof IStructuredSelection) )
+        {
+            setRestrictedEnabled( false );
+            return;
+        }
+        IStructuredSelection parSs = (IStructuredSelection) selected;
+        Object parFirstElement = parSs.getFirstElement();
+        if ( parFirstElement instanceof PropertyContainer )
+        {
+            setRestrictedEnabled( true );
+            return;
+        }
+        setRestrictedEnabled( false );
     }
 }
