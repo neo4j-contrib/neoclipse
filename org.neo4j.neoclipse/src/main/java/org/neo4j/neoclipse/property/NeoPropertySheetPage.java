@@ -25,6 +25,7 @@ import org.neo4j.neoclipse.NeoIcons;
 import org.neo4j.neoclipse.property.action.CopyAction;
 import org.neo4j.neoclipse.property.action.DeleteAction;
 import org.neo4j.neoclipse.property.action.NewAction;
+import org.neo4j.neoclipse.property.action.RenameAction;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**
@@ -54,10 +55,11 @@ public class NeoPropertySheetPage extends PropertySheetPage
 
     private ISelection selection;
     private NeoGraphViewPart neoView;
-    private Menu standardMenu;
+    private Menu menu;
     private Composite parent;
     private DeleteAction deleteAction;
     private CopyAction copyAction;
+    private RenameAction renameAction;
 
     public NeoPropertySheetPage( NeoGraphViewPart neoGraphViewPart )
     {
@@ -65,11 +67,19 @@ public class NeoPropertySheetPage extends PropertySheetPage
         this.neoView = neoGraphViewPart;
     }
 
+    /**
+     * Get the Neo graph view for this proeprty sheet.
+     * @return
+     */
     public NeoGraphViewPart getNeoGraphViewPart()
     {
         return neoView;
     }
 
+    /**
+     * Get the current selection.
+     * @return current selection
+     */
     public ISelection getSelection()
     {
         return selection;
@@ -82,78 +92,95 @@ public class NeoPropertySheetPage extends PropertySheetPage
         this.parent = parent;
         setSorter( new NeoPropertySheetSorter() );
         createMenu( parent );
-        getControl().setMenu( standardMenu );
+        getControl().setMenu( menu );
     }
 
     /**
+     * Create the contect menu for this property sheet.
      * @param parent
      */
     private void createMenu( final Composite parent )
     {
         MenuManager menuManager = createMainMenu( parent );
-        standardMenu = menuManager.createContextMenu( getControl() );
-        MenuManager addMenuManager = createNewSubmenu();
+        menu = menuManager.createContextMenu( getControl() );
+        MenuManager addMenuManager = createNewSubmenu( parent );
         addMenuManager.setParent( menuManager );
         menuManager.add( addMenuManager );
-        MenuManager addArrayMenuManager = createNewArraySubmenu();
+        MenuManager addArrayMenuManager = createNewArraySubmenu( parent );
         addArrayMenuManager.setParent( menuManager );
         menuManager.add( addArrayMenuManager );
     }
 
     /**
-     * @param parent
-     * @return
+     * Create the main structure of the menu.
      */
     private MenuManager createMainMenu( final Composite parent )
     {
-        // TODO add rename action
         MenuManager menuMgr = new MenuManager();
-        copyAction = new CopyAction( this );
+        copyAction = new CopyAction( parent, this );
         menuMgr.add( copyAction );
         deleteAction = new DeleteAction( parent, this );
         menuMgr.add( deleteAction );
+        renameAction = new RenameAction( parent, this );
+        menuMgr.add( renameAction );
         return menuMgr;
     }
 
-    private void setRestrictedEnabled( Boolean enabled )
+    /**
+     * Enable/disable actions that operate on an existing property.
+     * @param enabled
+     */
+    private void setRestrictedEnabled( final Boolean enabled )
     {
-        if ( deleteAction == null || copyAction == null )
+        if ( deleteAction != null )
         {
-            return;
+            deleteAction.setEnabled( enabled );
         }
-        deleteAction.setEnabled( enabled );
-        copyAction.setEnabled( enabled );
+        if ( copyAction != null )
+        {
+            copyAction.setEnabled( enabled );
+        }
+        if ( renameAction != null )
+        {
+            renameAction.setEnabled( enabled );
+        }
     }
 
-    private MenuManager createNewSubmenu()
+    /**
+     * Create submenu for adding new properties.
+     */
+    private MenuManager createNewSubmenu( final Composite parent )
     {
         MenuManager addMenuMgr = new MenuManager( "New", NeoIcons
             .getDescriptor( NeoIcons.NEW ), "propertiesAddSubmenu" );
-        addMenuMgr.add( new NewAction( this, "" ) );
-        addMenuMgr.add( new NewAction( this, (char) 0 ) );
-        addMenuMgr.add( new NewAction( this, 0L ) );
-        addMenuMgr.add( new NewAction( this, 0 ) );
-        addMenuMgr.add( new NewAction( this, (short) 0 ) );
-        addMenuMgr.add( new NewAction( this, (byte) 0 ) );
-        addMenuMgr.add( new NewAction( this, 0d ) );
-        addMenuMgr.add( new NewAction( this, 0f ) );
-        addMenuMgr.add( new NewAction( this, false ) );
+        addMenuMgr.add( new NewAction( parent, this, "" ) );
+        addMenuMgr.add( new NewAction( parent, this, (char) 0 ) );
+        addMenuMgr.add( new NewAction( parent, this, 0L ) );
+        addMenuMgr.add( new NewAction( parent, this, 0 ) );
+        addMenuMgr.add( new NewAction( parent, this, (short) 0 ) );
+        addMenuMgr.add( new NewAction( parent, this, (byte) 0 ) );
+        addMenuMgr.add( new NewAction( parent, this, 0d ) );
+        addMenuMgr.add( new NewAction( parent, this, 0f ) );
+        addMenuMgr.add( new NewAction( parent, this, false ) );
         return addMenuMgr;
     }
 
-    private MenuManager createNewArraySubmenu()
+    /**
+     * Create submenu for adding new properties of array type.
+     */
+    private MenuManager createNewArraySubmenu( final Composite parent )
     {
         MenuManager addMenuMgr = new MenuManager( "New[]", NeoIcons
             .getDescriptor( NeoIcons.NEW ), "propertiesArrayAddSubmenu" );
-        addMenuMgr.add( new NewAction( this, new String[0] ) );
-        addMenuMgr.add( new NewAction( this, new char[0] ) );
-        addMenuMgr.add( new NewAction( this, new long[0] ) );
-        addMenuMgr.add( new NewAction( this, new int[0] ) );
-        addMenuMgr.add( new NewAction( this, new short[0] ) );
-        addMenuMgr.add( new NewAction( this, new byte[0] ) );
-        addMenuMgr.add( new NewAction( this, new double[0] ) );
-        addMenuMgr.add( new NewAction( this, new float[0] ) );
-        addMenuMgr.add( new NewAction( this, new boolean[0] ) );
+        addMenuMgr.add( new NewAction( parent, this, new String[0] ) );
+        addMenuMgr.add( new NewAction( parent, this, new char[0] ) );
+        addMenuMgr.add( new NewAction( parent, this, new long[0] ) );
+        addMenuMgr.add( new NewAction( parent, this, new int[0] ) );
+        addMenuMgr.add( new NewAction( parent, this, new short[0] ) );
+        addMenuMgr.add( new NewAction( parent, this, new byte[0] ) );
+        addMenuMgr.add( new NewAction( parent, this, new double[0] ) );
+        addMenuMgr.add( new NewAction( parent, this, new float[0] ) );
+        addMenuMgr.add( new NewAction( parent, this, new boolean[0] ) );
         return addMenuMgr;
     }
 

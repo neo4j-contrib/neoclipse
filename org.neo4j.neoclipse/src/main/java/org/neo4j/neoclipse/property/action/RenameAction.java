@@ -13,6 +13,7 @@
  */
 package org.neo4j.neoclipse.property.action;
 
+import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Composite;
 import org.neo4j.api.core.NeoService;
@@ -21,16 +22,12 @@ import org.neo4j.api.core.Transaction;
 import org.neo4j.neoclipse.NeoIcons;
 import org.neo4j.neoclipse.property.NeoPropertySheetPage;
 
-/**
- * Action to delete a property from a PropertyContainer.
- * @author Anders Nawroth
- */
-public class DeleteAction extends PropertyAction
+public class RenameAction extends PropertyAction
 {
-    public DeleteAction( final Composite parent,
+    public RenameAction( final Composite parent,
         final NeoPropertySheetPage propertySheet )
     {
-        super( "Remove", NeoIcons.getDescriptor( NeoIcons.DELETE ), parent,
+        super( "Rename", NeoIcons.getDescriptor( NeoIcons.RENAME ), parent,
             propertySheet );
     }
 
@@ -42,22 +39,30 @@ public class DeleteAction extends PropertyAction
         {
             return;
         }
-        Transaction tx = ns.beginTx();
-        try
+        InputDialog input = new InputDialog( null, "New key entry",
+            "Please enter the new key for the property \"" + key + "\"", null,
+            null );
+        if ( input.open() == OK && input.getReturnCode() == OK )
         {
-            container.removeProperty( key );
-            tx.success();
+            Transaction tx = ns.beginTx();
+            try
+            {
+                container.setProperty( input.getValue(), container
+                    .getProperty( key ) );
+                container.removeProperty( key );
+                tx.success();
+            }
+            catch ( Exception e )
+            {
+                MessageDialog.openError( null, "Error",
+                    "Error in Neo service: " + e.getMessage() );
+            }
+            finally
+            {
+                tx.finish();
+            }
+            propertySheet.refresh();
+            propertySheet.getNeoGraphViewPart().refreshPreserveLayout();
         }
-        catch ( Exception e )
-        {
-            MessageDialog.openError( null, "Error", "Error in Neo service: "
-                + e.getMessage() );
-        }
-        finally
-        {
-            tx.finish();
-        }
-        propertySheet.refresh();
-        propertySheet.getNeoGraphViewPart().refreshPreserveLayout();
     }
 }

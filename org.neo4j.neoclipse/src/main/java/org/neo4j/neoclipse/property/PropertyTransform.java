@@ -22,6 +22,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.jface.viewers.ICellEditorValidator;
+import org.eclipse.swt.widgets.Composite;
+
 /**
  * Transform between property values and representations for editors.
  * @author Anders Nawroth
@@ -31,7 +35,7 @@ public final class PropertyTransform
     /**
      * Transform between editor representation and property value.
      */
-    public interface PropertyHandler
+    public static abstract class PropertyHandler
     {
         /**
          * Transform from editor representation to property value.
@@ -40,7 +44,7 @@ public final class PropertyTransform
          * @return property value or null
          * @throws IOException
          */
-        Object parse( Object o ) throws IOException;
+        public abstract Object parse( Object o ) throws IOException;
 
         /**
          * Transform from property value to editor representation.
@@ -48,13 +52,49 @@ public final class PropertyTransform
          *            property value
          * @return editor representation of the value
          */
-        Object render( Object o );
+        public abstract Object render( Object o );
 
         /**
-         * Editor type for this property type.
+         * Get type wrapped in this editor.
+         * @return the type
+         */
+        protected abstract Class<?> getType();
+
+        /**
+         * Editor for this property type.
+         * @return editor
+         */
+        public CellEditor getEditor( final Composite parent )
+        {
+            CellEditor editor = PropertyEditor.TEXT.getEditor( parent );
+            editor.setValidator( new ICellEditorValidator()
+            {
+                public String isValid( Object value )
+                {
+                    try
+                    {
+                        parse( value );
+                    }
+                    catch ( Exception e )
+                    {
+                        return "Could not parse the input as type "
+                            + getType().getSimpleName() + ".";
+                    }
+                    return null;
+                }
+            } );
+            return editor;
+        }
+
+        /**
+         * Gets editor type for this property type. Override if another editor
+         * than TEXT should be used.
          * @return editor type
          */
-        PropertyEditor getEditorType();
+        protected PropertyEditor getEditorType()
+        {
+            return PropertyEditor.TEXT;
+        }
     }
 
     /**
@@ -135,7 +175,8 @@ public final class PropertyTransform
 
     /**
      * Get a PropertyHandler for a specific type.
-     * @param cls type to handle
+     * @param cls
+     *            type to handle
      * @return handler for type
      */
     public static PropertyHandler getPropertyHandler( Class<?> cls )
@@ -165,9 +206,9 @@ public final class PropertyTransform
                     return (String) o;
                 }
 
-                public PropertyEditor getEditorType()
+                protected Class<?> getType()
                 {
-                    return PropertyEditor.TEXT;
+                    return String.class;
                 }
             } );
             put( String[].class, new PropertyHandler()
@@ -195,9 +236,9 @@ public final class PropertyTransform
                     return Arrays.toString( res );
                 }
 
-                public PropertyEditor getEditorType()
+                protected Class<?> getType()
                 {
-                    return PropertyEditor.TEXT;
+                    return String[].class;
                 }
             } );
             put( Integer.class, new PropertyHandler()
@@ -212,9 +253,9 @@ public final class PropertyTransform
                     return ((Integer) o).toString();
                 }
 
-                public PropertyEditor getEditorType()
+                protected Class<?> getType()
                 {
-                    return PropertyEditor.TEXT;
+                    return Integer.class;
                 }
             } );
             put( int[].class, new PropertyHandler()
@@ -235,9 +276,9 @@ public final class PropertyTransform
                     return Arrays.toString( (int[]) o );
                 }
 
-                public PropertyEditor getEditorType()
+                protected Class<?> getType()
                 {
-                    return PropertyEditor.TEXT;
+                    return int[].class;
                 }
             } );
             put( Double.class, new PropertyHandler()
@@ -252,9 +293,9 @@ public final class PropertyTransform
                     return ((Double) o).toString();
                 }
 
-                public PropertyEditor getEditorType()
+                protected Class<?> getType()
                 {
-                    return PropertyEditor.TEXT;
+                    return Double.class;
                 }
             } );
             put( double[].class, new PropertyHandler()
@@ -275,9 +316,9 @@ public final class PropertyTransform
                     return Arrays.toString( (double[]) o );
                 }
 
-                public PropertyEditor getEditorType()
+                protected Class<?> getType()
                 {
-                    return PropertyEditor.TEXT;
+                    return double.class;
                 }
             } );
             put( Float.class, new PropertyHandler()
@@ -292,9 +333,9 @@ public final class PropertyTransform
                     return ((Float) o).toString();
                 }
 
-                public PropertyEditor getEditorType()
+                protected Class<?> getType()
                 {
-                    return PropertyEditor.TEXT;
+                    return Float.class;
                 }
             } );
             put( float[].class, new PropertyHandler()
@@ -315,9 +356,9 @@ public final class PropertyTransform
                     return Arrays.toString( (float[]) o );
                 }
 
-                public PropertyEditor getEditorType()
+                protected Class<?> getType()
                 {
-                    return PropertyEditor.TEXT;
+                    return float[].class;
                 }
             } );
             put( Boolean.class, new PropertyHandler()
@@ -326,17 +367,17 @@ public final class PropertyTransform
                 // so we just pass things through here
                 public Object parse( Object o )
                 {
-                    return o;
+                    return Boolean.parseBoolean( (String) o );
                 }
 
                 public Object render( Object o )
                 {
-                    return o;
+                    return ((Boolean) o).toString();
                 }
 
-                public PropertyEditor getEditorType()
+                protected Class<?> getType()
                 {
-                    return PropertyEditor.BOOLEAN;
+                    return Boolean.class;
                 }
             } );
             put( boolean[].class, new PropertyHandler()
@@ -357,9 +398,9 @@ public final class PropertyTransform
                     return Arrays.toString( (boolean[]) o );
                 }
 
-                public PropertyEditor getEditorType()
+                protected Class<?> getType()
                 {
-                    return PropertyEditor.TEXT;
+                    return boolean[].class;
                 }
             } );
             put( Byte.class, new PropertyHandler()
@@ -374,9 +415,9 @@ public final class PropertyTransform
                     return ((Byte) o).toString();
                 }
 
-                public PropertyEditor getEditorType()
+                protected Class<?> getType()
                 {
-                    return PropertyEditor.TEXT;
+                    return Byte.class;
                 }
             } );
             put( byte[].class, new PropertyHandler()
@@ -397,9 +438,9 @@ public final class PropertyTransform
                     return Arrays.toString( (byte[]) o );
                 }
 
-                public PropertyEditor getEditorType()
+                protected Class<?> getType()
                 {
-                    return PropertyEditor.TEXT;
+                    return byte[].class;
                 }
             } );
             put( Short.class, new PropertyHandler()
@@ -414,9 +455,9 @@ public final class PropertyTransform
                     return ((Short) o).toString();
                 }
 
-                public PropertyEditor getEditorType()
+                protected Class<?> getType()
                 {
-                    return PropertyEditor.TEXT;
+                    return Short.class;
                 }
             } );
             put( short[].class, new PropertyHandler()
@@ -437,9 +478,9 @@ public final class PropertyTransform
                     return Arrays.toString( (short[]) o );
                 }
 
-                public PropertyEditor getEditorType()
+                protected Class<?> getType()
                 {
-                    return PropertyEditor.TEXT;
+                    return short[].class;
                 }
             } );
             put( Long.class, new PropertyHandler()
@@ -454,9 +495,9 @@ public final class PropertyTransform
                     return ((Long) o).toString();
                 }
 
-                public PropertyEditor getEditorType()
+                protected Class<?> getType()
                 {
-                    return PropertyEditor.TEXT;
+                    return Long.class;
                 }
             } );
             put( long[].class, new PropertyHandler()
@@ -477,9 +518,9 @@ public final class PropertyTransform
                     return Arrays.toString( (long[]) o );
                 }
 
-                public PropertyEditor getEditorType()
+                protected Class<?> getType()
                 {
-                    return PropertyEditor.TEXT;
+                    return long[].class;
                 }
             } );
             put( Character.class, new PropertyHandler()
@@ -499,9 +540,9 @@ public final class PropertyTransform
                     return ((Character) o).toString();
                 }
 
-                public PropertyEditor getEditorType()
+                protected Class<?> getType()
                 {
-                    return PropertyEditor.TEXT;
+                    return Character.class;
                 }
             } );
             put( char[].class, new PropertyHandler()
@@ -522,9 +563,9 @@ public final class PropertyTransform
                     return Arrays.toString( (char[]) o );
                 }
 
-                public PropertyEditor getEditorType()
+                protected Class<?> getType()
                 {
-                    return PropertyEditor.TEXT;
+                    return char[].class;
                 }
             } );
         }

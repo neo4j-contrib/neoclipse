@@ -13,10 +13,8 @@
  */
 package org.neo4j.neoclipse.property.action;
 
-import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.InputDialog;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.swt.widgets.Composite;
 import org.neo4j.api.core.NeoService;
 import org.neo4j.api.core.PropertyContainer;
 import org.neo4j.api.core.Transaction;
@@ -25,35 +23,31 @@ import org.neo4j.neoclipse.NeoIcons;
 import org.neo4j.neoclipse.neo.NeoServiceManager;
 import org.neo4j.neoclipse.property.NeoPropertySheetPage;
 
-public class NewAction extends Action
+/**
+ * Action to add a new property to a PropertyContainer.
+ * @author Anders Nawroth
+ */
+public class NewAction extends PropertyAction
 {
-    private static final int OK = 0;
-    private NeoPropertySheetPage propertySheet;
     private Object value;
 
-    public NewAction( final NeoPropertySheetPage propertySheet,
-        Object defaultValue )
+    public NewAction( final Composite parent,
+        final NeoPropertySheetPage propertySheet, final Object defaultValue )
     {
         super( defaultValue.getClass().getSimpleName(), NeoIcons
-            .getDescriptor( NeoIcons.NEW ) );
-        this.propertySheet = propertySheet;
+            .getDescriptor( NeoIcons.NEW ), parent, propertySheet );
         this.value = defaultValue;
     }
 
     @Override
     public void run()
     {
-        ISelection parSel = propertySheet.getNeoGraphViewPart().getViewer()
-            .getSelection();
-        if ( parSel instanceof IStructuredSelection )
+        PropertyContainer propertyContainer = getPropertyContainer();
+        if ( propertyContainer == null )
         {
-            IStructuredSelection parSs = (IStructuredSelection) parSel;
-            Object parFirstElement = parSs.getFirstElement();
-            if ( parFirstElement instanceof PropertyContainer )
-            {
-                addProperty( (PropertyContainer) parFirstElement );
-            }
+            return;
         }
+        addProperty( propertyContainer );
     }
 
     /**
@@ -73,9 +67,8 @@ public class NewAction extends Action
                 Transaction tx = ns.beginTx();
                 try
                 {
-                    // add property here
-                    tx.success();
                     container.setProperty( input.getValue(), value );
+                    tx.success();
                     propertySheet.refresh();
                     propertySheet.getNeoGraphViewPart().refreshPreserveLayout();
                 }

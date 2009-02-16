@@ -16,6 +16,7 @@ package org.neo4j.neoclipse.property;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.neo4j.api.core.PropertyContainer;
@@ -156,42 +157,71 @@ public class PropertySource implements IPropertySource
      */
     public void setPropertyValue( Object id, Object value )
     {
-        Transaction tx = Activator.getDefault().beginNeoTx();
-        try
+        if ( container.hasProperty( (String) id ) )
         {
-            if ( container.hasProperty( (String) id ) )
+            // try to keep the same type as the previous value
+            Class<?> c = container.getProperty( (String) id ).getClass();
+            PropertyHandler propertyHandler = PropertyTransform
+                .getPropertyHandler( c );
+            if ( propertyHandler == null )
             {
-                // try to keep the same type as the previous value
-                Class<?> c = container.getProperty( (String) id ).getClass();
-                PropertyHandler propertyHandler = PropertyTransform
-                    .getPropertyHandler( c );
-                if ( propertyHandler != null )
-                {
-                    try
-                    {
-                        Object o = propertyHandler.parse( value );
-                        if ( o != null )
-                        {
-                            container.setProperty( (String) id, o );
-                            tx.success();
-                        }
-                    }
-                    catch ( Exception e )
-                    {
-                        // TODO: handle exception
-                        //e.printStackTrace();
-                    }
-                }
+                MessageDialog.openError( null, "Error",
+                    "No property handler was found for type "
+                        + c.getSimpleName() + "." );
+                return;
             }
-            else
+            Object o = null;
+            try
+            {
+                o = propertyHandler.parse( value );
+            }
+            catch ( Exception e )
+            {
+                MessageDialog.openError( null, "Error",
+                    "Could not parse the input as type " + c.getSimpleName()
+                        + "." );
+                return;
+            }
+            if ( o == null )
+            {
+                MessageDialog.openError( null, "Error",
+                    "Input parsing resulted in null value." );
+                return;
+            }
+            Transaction tx = Activator.getDefault().beginNeoTx();
+            try
+            {
+                container.setProperty( (String) id, o );
+                tx.success();
+            }
+            catch ( Exception e )
+            {
+                MessageDialog.openError( null, "Error",
+                    "Error in Neo service: " + e.getMessage() );
+            }
+            finally
+            {
+                tx.finish();
+            }
+        }
+        else
+        {
+            // simply set the value
+            Transaction tx = Activator.getDefault().beginNeoTx();
+            try
             {
                 container.setProperty( (String) id, value );
                 tx.success();
             }
-        }
-        finally
-        {
-            tx.finish();
+            catch ( Exception e )
+            {
+                MessageDialog.openError( null, "Error",
+                    "Error in Neo service: " + e.getMessage() );
+            }
+            finally
+            {
+                tx.finish();
+            }
         }
     }
 }

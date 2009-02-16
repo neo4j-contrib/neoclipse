@@ -14,13 +14,12 @@
 package org.neo4j.neoclipse.property;
 
 import org.eclipse.jface.viewers.CellEditor;
-import org.eclipse.jface.viewers.CheckboxCellEditor;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.widgets.Composite;
 
 /**
  * Editors used for property values.
- * @author anders
+ * @author Anders Nawroth
  */
 public enum PropertyEditor
 {
@@ -36,13 +35,6 @@ public enum PropertyEditor
         CellEditor getEditor( Composite parent )
         {
             return new TextCellEditor( parent );
-        }
-    },
-    BOOLEAN
-    {
-        CellEditor getEditor( Composite parent )
-        {
-            return new CheckboxCellEditor( parent );
         }
     };
     /**

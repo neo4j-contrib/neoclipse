@@ -39,13 +39,10 @@ public class PropertyDescriptor implements IPropertyDescriptor
      */
     private String category;
     /**
-     * If we allow edit on this cell or not.
-     */
-    private PropertyEditor editorType = PropertyEditor.NONE;
-    /**
      * Class of property content.
      */
     private Class<?> cls = null;
+    private PropertyHandler propertyHandler;
     /**
      * A constant, empty array, to be used instead of a null array.
      */
@@ -69,12 +66,7 @@ public class PropertyDescriptor implements IPropertyDescriptor
         this.name = name;
         this.category = category;
         this.cls = cls;
-        PropertyHandler propertyHandler = PropertyTransform
-            .getPropertyHandler( cls );
-        if ( propertyHandler != null )
-        {
-            editorType = propertyHandler.getEditorType();
-        }
+        this.propertyHandler = PropertyTransform.getPropertyHandler( cls );
     }
 
     /**
@@ -98,7 +90,11 @@ public class PropertyDescriptor implements IPropertyDescriptor
 
     public CellEditor createPropertyEditor( Composite parent )
     {
-        return editorType.getEditor( parent );
+        if ( propertyHandler != null )
+        {
+            return propertyHandler.getEditor( parent );
+        }
+        return null;
     }
 
     public String getCategory()

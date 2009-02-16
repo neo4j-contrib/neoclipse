@@ -13,28 +13,32 @@
  */
 package org.neo4j.neoclipse.property.action;
 
-import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWTError;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.views.properties.IPropertySheetEntry;
 import org.neo4j.neoclipse.NeoIcons;
 import org.neo4j.neoclipse.property.NeoPropertySheetPage;
 
-public class CopyAction extends Action
+/**
+ * Action to copy the text representation of a property value.
+ * @author Anders Nawroth
+ */
+public class CopyAction extends PropertyAction
 {
-    private NeoPropertySheetPage propertySheet;
     private Clipboard clipboard;
     private Shell shell;
 
-    public CopyAction( final NeoPropertySheetPage propertySheet )
+    public CopyAction( final Composite parent,
+        final NeoPropertySheetPage propertySheet )
     {
-        super( "Copy", NeoIcons.getDescriptor( NeoIcons.COPY ) );
-        this.propertySheet = propertySheet;
+        super( "Copy", NeoIcons.getDescriptor( NeoIcons.COPY ), parent,
+            propertySheet );
         shell = propertySheet.getControl().getShell();
         clipboard = new Clipboard( shell.getDisplay() );
     }
@@ -42,14 +46,11 @@ public class CopyAction extends Action
     @Override
     public void run()
     {
-        IStructuredSelection selection = (IStructuredSelection) propertySheet
-            .getSelection();
-        if ( selection.isEmpty() )
+        IPropertySheetEntry entry = getPropertySheetEntry();
+        if ( entry == null )
         {
             return;
         }
-        IPropertySheetEntry entry = (IPropertySheetEntry) selection
-            .getFirstElement();
         try
         {
             Object[] data = new Object[] { entry.getValueAsString() };
@@ -60,7 +61,7 @@ public class CopyAction extends Action
         catch ( SWTError e )
         {
             MessageDialog.openError( shell, "Error",
-                "Could not copy to clipboard" );
+                "Could not copy the value to the clipboard." );
         }
     }
 
