@@ -25,6 +25,7 @@ import org.neo4j.neoclipse.NeoIcons;
 import org.neo4j.neoclipse.property.action.CopyAction;
 import org.neo4j.neoclipse.property.action.DeleteAction;
 import org.neo4j.neoclipse.property.action.NewAction;
+import org.neo4j.neoclipse.property.action.PasteAction;
 import org.neo4j.neoclipse.property.action.RenameAction;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
@@ -60,6 +61,7 @@ public class NeoPropertySheetPage extends PropertySheetPage
     private DeleteAction deleteAction;
     private CopyAction copyAction;
     private RenameAction renameAction;
+    private PasteAction pasteAction;
 
     public NeoPropertySheetPage( NeoGraphViewPart neoGraphViewPart )
     {
@@ -119,6 +121,8 @@ public class NeoPropertySheetPage extends PropertySheetPage
         MenuManager menuMgr = new MenuManager();
         copyAction = new CopyAction( parent, this );
         menuMgr.add( copyAction );
+        pasteAction = new PasteAction( parent, this );
+        menuMgr.add( pasteAction );
         deleteAction = new DeleteAction( parent, this );
         menuMgr.add( deleteAction );
         renameAction = new RenameAction( parent, this );

@@ -69,13 +69,13 @@ public class NewAction extends PropertyAction
                 {
                     container.setProperty( input.getValue(), value );
                     tx.success();
-                    propertySheet.refresh();
-                    propertySheet.getNeoGraphViewPart().refreshPreserveLayout();
                 }
                 finally
                 {
                     tx.finish();
                 }
+                propertySheet.refresh();
+                propertySheet.getNeoGraphViewPart().refreshPreserveLayout();
             }
         }
     }

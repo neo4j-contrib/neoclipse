@@ -16,6 +16,7 @@ package org.neo4j.neoclipse.property.action;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.views.properties.IPropertySheetEntry;
 import org.neo4j.api.core.NeoService;
 import org.neo4j.api.core.PropertyContainer;
 import org.neo4j.api.core.Transaction;
@@ -32,8 +33,10 @@ public class RenameAction extends PropertyAction
     }
 
     @Override
-    protected void performOperation( PropertyContainer container, String key )
+    protected void performOperation( PropertyContainer container,
+        IPropertySheetEntry entry )
     {
+        String key = entry.getDisplayName();
         NeoService ns = getNeoService();
         if ( ns == null )
         {

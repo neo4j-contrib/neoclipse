@@ -54,7 +54,7 @@ abstract public class PropertyAction extends BaseContextAction
         {
             return;
         }
-        performOperation( propertyContainer, entry.getDisplayName() );
+        performOperation( propertyContainer, entry );
     }
 
     /**
@@ -63,7 +63,8 @@ abstract public class PropertyAction extends BaseContextAction
      * @param container
      * @param key
      */
-    protected void performOperation( PropertyContainer container, String key )
+    protected void performOperation( PropertyContainer container,
+        IPropertySheetEntry entry )
     {
         throw new UnsupportedOperationException();
     }

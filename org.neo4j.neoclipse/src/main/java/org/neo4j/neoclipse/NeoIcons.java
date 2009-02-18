@@ -50,6 +50,7 @@ public final class NeoIcons
     public static final String COPY = "copy";
     public static final String NEW = "new";
     public static final String RENAME = "rename";
+    public static final String PASTE = "paste";
     /**
      * The image registry.
      */
@@ -124,6 +125,8 @@ public final class NeoIcons
             .getImage( ISharedImages.IMG_TOOL_NEW_WIZARD ) );
         reg.put( NeoIcons.RENAME, sharedImages
             .getImage( ISharedImages.IMG_TOOL_REDO ) );
+        reg.put( NeoIcons.PASTE, sharedImages
+            .getImage( ISharedImages.IMG_TOOL_PASTE ) );
     }
 
     /**

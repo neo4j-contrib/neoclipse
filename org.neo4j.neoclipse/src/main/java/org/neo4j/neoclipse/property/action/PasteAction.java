@@ -14,14 +14,10 @@
 package org.neo4j.neoclipse.property.action;
 
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.swt.SWTError;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.TextTransfer;
-import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.views.properties.IPropertySheetEntry;
 import org.neo4j.api.core.NeoService;
 import org.neo4j.api.core.PropertyContainer;
 import org.neo4j.api.core.Transaction;
@@ -31,25 +27,39 @@ import org.neo4j.neoclipse.neo.NeoServiceManager;
 import org.neo4j.neoclipse.property.NeoPropertySheetPage;
 
 /**
- * Action to copy the text representation of a property value.
+ * Action to add a new property to a PropertyContainer.
  * @author Anders Nawroth
  */
-public class CopyAction extends PropertyAction
+public class PasteAction extends PropertyAction
 {
-    private final Shell shell;
-    private static final Transfer[] TRANSFER_TYPES = new Transfer[] { TextTransfer
-        .getInstance() };
+    private Shell shell;
+    private static final TextTransfer TRANSFER_TYPE = TextTransfer
+        .getInstance();
 
-    public CopyAction( final Composite parent,
+    public PasteAction( final Composite parent,
         final NeoPropertySheetPage propertySheet )
     {
-        super( "Copy", NeoIcons.getDescriptor( NeoIcons.COPY ), parent,
+        super( "Paste", NeoIcons.getDescriptor( NeoIcons.PASTE ), parent,
             propertySheet );
         shell = propertySheet.getControl().getShell();
     }
 
-    protected void performOperation( PropertyContainer container,
-        IPropertySheetEntry entry )
+    @Override
+    public void run()
+    {
+        PropertyContainer propertyContainer = getPropertyContainer();
+        if ( propertyContainer == null )
+        {
+            return;
+        }
+        performOperation( propertyContainer );
+    }
+
+    /**
+     * @param entry
+     * @param parFirstElement
+     */
+    protected void performOperation( PropertyContainer container )
     {
         NeoServiceManager sm = Activator.getDefault().getNeoServiceManager();
         NeoService ns = sm.getNeoService();
@@ -57,41 +67,35 @@ public class CopyAction extends PropertyAction
         {
             return;
         }
+        Clipboard clipboard = new Clipboard( shell.getDisplay() );
+        Object data = clipboard.getContents( TRANSFER_TYPE );
+        clipboard.dispose();
+        if ( !(data instanceof String) )
+        {
+            MessageDialog.openError( shell, "Error",
+                "Could not paste content from the clipboard." );
+            return;
+        }
+        // parse the string
+        ClipboardUtil cu = new ClipboardUtil( (String) data );
+        if ( cu.getValue() == null )
+        {
+            MessageDialog
+                .openError( shell, "Error",
+                    "The clipboard content doesn't seem to be a neo4j property value." );
+            return;
+        }
         Transaction tx = ns.beginTx();
-        Object value = null;
-        final String key = entry.getDisplayName();
         try
         {
-            value = container.getProperty( key, null );
+            container.setProperty( cu.getKey(), cu.getValue() );
             tx.success();
         }
         finally
         {
             tx.finish();
         }
-        if ( value == null )
-        {
-            MessageDialog.openError( shell, "Error",
-                "Problem reading the value to copy." );
-            return;
-        }
-        ClipboardUtil cu = new ClipboardUtil( value.getClass(), key, value );
-        Object[] data = new Object[] { cu.getRepresentation() };
-        try
-        {
-            Clipboard clipboard = new Clipboard( shell.getDisplay() );
-            clipboard.setContents( data, TRANSFER_TYPES );
-            clipboard.dispose();
-        }
-        catch ( SWTError e )
-        {
-            MessageDialog.openError( shell, "Error",
-                "Could not copy the value to the clipboard." );
-        }
-    }
-
-    public void selectionChanged( IStructuredSelection sel )
-    {
-        setEnabled( !sel.isEmpty() );
+        propertySheet.refresh();
+        propertySheet.getNeoGraphViewPart().refreshPreserveLayout();
     }
 }
