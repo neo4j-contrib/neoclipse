@@ -1,7 +1,7 @@
 package org.neo4j.neoclipse.reltype;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
@@ -16,7 +16,7 @@ public class RelationshipTypesProvider implements IContentProvider,
     IStructuredContentProvider
 {
 
-    private List<RelationshipType> relDirList = new ArrayList<RelationshipType>();
+    private Set<RelationshipType> relDirList = new HashSet<RelationshipType>();
 
     @SuppressWarnings( "deprecation" )
     public RelationshipTypesProvider()
@@ -47,6 +47,6 @@ public class RelationshipTypesProvider implements IContentProvider,
 
     public void inputChanged( Viewer viewer, Object oldInput, Object newInput )
     {
+        System.out.println("input change");
     }
-
 }

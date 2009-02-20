@@ -18,6 +18,8 @@ import java.util.Arrays;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.jface.viewers.IColorProvider;
 import org.eclipse.jface.viewers.ILabelProvider;
+import org.eclipse.jface.viewers.ITableColorProvider;
+import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
@@ -27,6 +29,7 @@ import org.neo4j.api.core.Direction;
 import org.neo4j.api.core.NeoService;
 import org.neo4j.api.core.Node;
 import org.neo4j.api.core.Relationship;
+import org.neo4j.api.core.RelationshipType;
 import org.neo4j.api.core.Transaction;
 import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.action.decorate.node.ShowNodeColorsAction;
@@ -49,7 +52,8 @@ import org.neo4j.neoclipse.preference.NeoPreferences;
  * @author Anders Nawroth
  */
 public class NeoGraphLabelProvider extends LabelProvider implements
-    IConnectionStyleProvider, IColorProvider, ILabelProvider
+    IConnectionStyleProvider, IColorProvider, ILabelProvider,
+    ITableLabelProvider, ITableColorProvider
 {
     /**
      * Keep track of relationship types display on/off.
@@ -418,5 +422,35 @@ public class NeoGraphLabelProvider extends LabelProvider implements
             return graphDecorator.getNodeForegroundColor( (Node) element );
         }
         return null;
+    }
+
+    public Image getColumnImage( Object element, int arg1 )
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public String getColumnText( Object element, int arg1 )
+    {
+        if (element instanceof RelationshipType)
+        {
+            return ((RelationshipType)element).name();
+        }
+        return "[unknown]";
+    }
+
+    public Color getBackground( Object element, int arg1 )
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public Color getForeground( Object element, int arg1 )
+    {
+        if ( !showRelationshipColors || !(element instanceof RelationshipType) )
+        {
+            return graphDecorator.getRelationshipColor();
+        }
+        return graphDecorator.getRelationshipColor( (RelationshipType) element );
     }
 }

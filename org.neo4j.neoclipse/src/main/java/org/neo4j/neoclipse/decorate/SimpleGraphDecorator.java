@@ -269,6 +269,11 @@ public class SimpleGraphDecorator
         return colorMapper.getColor( rel.getType(), RELATIONSHIP );
     }
 
+    public Color getRelationshipColor( final RelationshipType relType )
+    {
+        return colorMapper.getColor( relType, RELATIONSHIP );
+    }
+
     public String getNodeText( final Node node )
     {
         if ( settings.getReferenceNode().equals( node ) )

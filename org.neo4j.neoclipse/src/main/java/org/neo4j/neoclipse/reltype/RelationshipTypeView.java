@@ -11,16 +11,11 @@ import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.ITableColorProvider;
-import org.eclipse.jface.viewers.ITableLabelProvider;
-import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IActionBars;
@@ -32,6 +27,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.neo4j.api.core.Relationship;
 import org.neo4j.api.core.RelationshipType;
+import org.neo4j.neoclipse.view.NeoGraphLabelProviderWrapper;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**
@@ -59,36 +55,6 @@ public class RelationshipTypeView extends ViewPart implements
     private Action doubleClickAction;
     private RelationshipType currentSelection;
 
-    class ViewLabelProvider extends LabelProvider implements
-        ITableLabelProvider, ITableColorProvider
-    {
-        public String getColumnText( Object obj, int index )
-        {
-            return getText( obj );
-        }
-
-        public Image getColumnImage( Object obj, int index )
-        {
-            return getImage( obj );
-        }
-
-        public Image getImage( Object obj )
-        {
-            return PlatformUI.getWorkbench().getSharedImages().getImage(
-                ISharedImages.IMG_OBJ_ELEMENT );
-        }
-
-        public Color getBackground( Object element, int columnIndex )
-        {
-            return null;
-        }
-
-        public Color getForeground( Object element, int columnIndex )
-        {
-            return null;
-        }
-    }
-
     class NameSorter extends ViewerSorter
     {
 
@@ -111,7 +77,7 @@ public class RelationshipTypeView extends ViewPart implements
     public RelationshipTypeView()
     {
     }
-    
+
     /**
      * This is a callback that will allow us to create the viewer and initialize
      * it.
@@ -120,7 +86,7 @@ public class RelationshipTypeView extends ViewPart implements
     {
         viewer = new TableViewer( parent, SWT.MULTI | SWT.V_SCROLL );
         viewer.setContentProvider( new RelationshipTypesProvider() );
-        viewer.setLabelProvider( new ViewLabelProvider() );
+        viewer.setLabelProvider( NeoGraphLabelProviderWrapper.getInstance() );
         viewer.setSorter( new NameSorter() );
         viewer.setInput( getViewSite() );
 
