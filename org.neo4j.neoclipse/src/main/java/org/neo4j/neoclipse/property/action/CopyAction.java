@@ -82,6 +82,7 @@ public class CopyAction extends PropertyAction
             Clipboard clipboard = new Clipboard( shell.getDisplay() );
             clipboard.setContents( data, TRANSFER_TYPES );
             clipboard.dispose();
+            propertySheet.enablePaste();
         }
         catch ( SWTError e )
         {

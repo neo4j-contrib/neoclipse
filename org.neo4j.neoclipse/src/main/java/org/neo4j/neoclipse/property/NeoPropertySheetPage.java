@@ -122,12 +122,21 @@ public class NeoPropertySheetPage extends PropertySheetPage
         copyAction = new CopyAction( parent, this );
         menuMgr.add( copyAction );
         pasteAction = new PasteAction( parent, this );
+        pasteAction.setEnabled( false );
         menuMgr.add( pasteAction );
         deleteAction = new DeleteAction( parent, this );
         menuMgr.add( deleteAction );
         renameAction = new RenameAction( parent, this );
         menuMgr.add( renameAction );
         return menuMgr;
+    }
+
+    /**
+     * Enable paste action.
+     */
+    public void enablePaste()
+    {
+        pasteAction.setEnabled( true );
     }
 
     /**

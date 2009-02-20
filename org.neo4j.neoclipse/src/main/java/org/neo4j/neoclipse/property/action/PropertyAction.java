@@ -59,7 +59,7 @@ abstract public class PropertyAction extends BaseContextAction
 
     /**
      * Perform an operation that requires only the property container and the
-     * property key. Is called by the default <code>run()</code> implementation.
+     * property entry. Is called by the default <code>run()</code> implementation.
      * @param container
      * @param key
      */

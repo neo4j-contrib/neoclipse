@@ -23,36 +23,27 @@ import org.neo4j.neoclipse.NeoIcons;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**
- * Action to delete a node or relationship.
+ * Action to create a node.
  * @author Anders Nawroth
  */
-public class DeleteAction extends ContextAction
+public class CreateNodeAction extends ContextAction
 {
-    public DeleteAction( NeoGraphViewPart neoGraphViewPart )
+    public CreateNodeAction( NeoGraphViewPart neoGraphViewPart )
     {
-        super( "Delete", NeoIcons.getDescriptor( NeoIcons.DELETE ),
+        super( "Create Node", NeoIcons.getDescriptor( NeoIcons.DELETE ),
             neoGraphViewPart );
         setEnabled( false );
     }
 
     @Override
+    public void run()
+    {
+        performOperation( getPropertyContainer() );
+    }
+
+    @Override
     protected void performOperation( PropertyContainer container )
     {
-        String question = "Are you sure you want to delete the selected ";
-        if ( container instanceof Node )
-        {
-            question += "node?";
-        }
-        else if ( container instanceof Relationship )
-        {
-            question += "relationship?";
-        }
-        boolean confirmation = MessageDialog.openQuestion( null,
-            "Confirm delete", question );
-        if ( !confirmation )
-        {
-            return;
-        }
         NeoService ns = getNeoService();
         if ( ns == null )
         {
@@ -63,33 +54,23 @@ public class DeleteAction extends ContextAction
         {
             if ( container instanceof Node )
             {
+                // create a relation to this node
                 Node node = (Node) container;
-                if ( ns.getReferenceNode().equals( node ) )
-                {
-                    question = "Are you really sure you want to delete the REFERENCE NODE?";
-                    confirmation = MessageDialog.openQuestion( null,
-                        "Confirm delete", question );
-                    if ( !confirmation )
-                    {
-                        return;
-                    }
-                }
-                for ( Relationship rel : node.getRelationships() )
-                {
-                    rel.delete();
-                }
-                node.delete();
             }
             else if ( container instanceof Relationship )
             {
-                ((Relationship) container).delete();
+                // a relation!
+            }
+            else
+            {
+                // nothing selected
             }
             tx.success();
         }
         catch ( Exception e )
         {
-            MessageDialog.openError( null, "Error", "Error when deleting: "
-                + e.getMessage() );
+            MessageDialog.openError( null, "Error",
+                "Error when creating node: " + e.getMessage() );
         }
         finally
         {

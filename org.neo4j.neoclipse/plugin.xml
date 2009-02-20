@@ -15,6 +15,13 @@
             id="org.neo4j.neoclipse.view.NeoGraphViewPart"
             name="Neo4j Graph">
       </view>
+      <view
+            category="org.neo4j.neoclipse.NeoCategory"
+            class="org.neo4j.neoclipse.view.RelationshipTypeView"
+            icon="icons/obj16/neo-16.png"
+            id="org.neo4j.neoclipse.view.RelationshipTypeView"
+            name="Relationship Types">
+      </view>
    </extension>
    <extension
          point="org.eclipse.core.runtime.preferences">
@@ -25,7 +32,7 @@
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
-            category="Neo4j"
+            category="org.neo4j.neoclipse.NeoCategory"
             class="org.neo4j.neoclipse.preference.NeoPreferencePage"
             id="org.neo4j.neoclipse.preference.NeoPreferencePage"
             name="Neo4j">
@@ -107,6 +114,12 @@
              label="Neo4j Search Result"
              searchResultClass="org.neo4j.neoclipse.search.NeoSearchResult">
        </viewPage>
+    </extension>
+    <extension
+          point="org.eclipse.help.contexts">
+       <contexts
+             file="contexts.xml">
+       </contexts>
     </extension>
  
 </plugin>

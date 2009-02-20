@@ -33,6 +33,28 @@ abstract public class ContextAction extends BaseContextAction
         this.graphView = neoGraphViewPart;
     }
 
+    @Override
+    public void run()
+    {
+        PropertyContainer propertyContainer = getPropertyContainer();
+        if ( propertyContainer == null )
+        {
+            return;
+        }
+        performOperation( propertyContainer );
+    }
+
+    /**
+     * Perform an operation that requires only the property container. Is called
+     * by the default <code>run()</code> implementation.
+     * @param container
+     * @param key
+     */
+    protected void performOperation( PropertyContainer container )
+    {
+        throw new UnsupportedOperationException();
+    }
+
     /**
      * Get the PropertyContainer of the current graph view. Returns
      * <code>null</code> on failure, after showing appropriate error messages.
