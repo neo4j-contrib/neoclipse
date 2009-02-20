@@ -24,15 +24,23 @@ import org.neo4j.api.core.Relationship;
  */
 public class PropertySourceProvider implements IPropertySourceProvider
 {
+    private NeoPropertySheetPage propertySheet;
+
+    public PropertySourceProvider( NeoPropertySheetPage neoPropertySheetPage )
+    {
+        propertySheet = neoPropertySheetPage;
+    }
+
     public IPropertySource getPropertySource( Object source )
     {
         if ( source instanceof Node )
         {
-            return new NodePropertySource( (Node) source );
+            return new NodePropertySource( (Node) source, propertySheet );
         }
         else if ( source instanceof Relationship )
         {
-            return new RelationshipPropertySource( (Relationship) source );
+            return new RelationshipPropertySource( (Relationship) source,
+                propertySheet );
         }
         else
         {

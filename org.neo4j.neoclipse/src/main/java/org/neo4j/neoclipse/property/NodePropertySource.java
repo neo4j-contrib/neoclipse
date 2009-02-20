@@ -30,10 +30,11 @@ public class NodePropertySource extends PropertySource
 
     /**
      * The constructor.
+     * @param propertySheet
      */
-    public NodePropertySource( Node node )
+    public NodePropertySource( Node node, NeoPropertySheetPage propertySheet )
     {
-        super( node );
+        super( node, propertySheet );
     }
 
     @Override
@@ -41,8 +42,7 @@ public class NodePropertySource extends PropertySource
     {
         List<IPropertyDescriptor> descs = new ArrayList<IPropertyDescriptor>();
         // standard properties for nodes
-        descs
-            .add( new PropertyDescriptor( NODE_ID, NODE_ID, NODE_CATEGORY ) );
+        descs.add( new PropertyDescriptor( NODE_ID, NODE_ID, NODE_CATEGORY ) );
         return descs;
     }
 

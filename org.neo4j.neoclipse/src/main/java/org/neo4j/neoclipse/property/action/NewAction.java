@@ -64,18 +64,20 @@ public class NewAction extends PropertyAction
                 "Please enter the key of the new property", null, null );
             if ( input.open() == OK && input.getReturnCode() == OK )
             {
+                String key = null;
                 Transaction tx = ns.beginTx();
                 try
                 {
-                    container.setProperty( input.getValue(), value );
+                    key = input.getValue();
+                    container.setProperty( key, value );
                     tx.success();
                 }
                 finally
                 {
                     tx.finish();
                 }
+                propertySheet.fireChangeEvent( container, key );
                 propertySheet.refresh();
-                propertySheet.getNeoGraphViewPart().refreshPreserveLayout();
             }
         }
     }

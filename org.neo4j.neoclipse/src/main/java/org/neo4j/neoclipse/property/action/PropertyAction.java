@@ -59,7 +59,8 @@ abstract public class PropertyAction extends BaseContextAction
 
     /**
      * Perform an operation that requires only the property container and the
-     * property entry. Is called by the default <code>run()</code> implementation.
+     * property entry. Is called by the default <code>run()</code>
+     * implementation.
      * @param container
      * @param key
      */
@@ -76,23 +77,14 @@ abstract public class PropertyAction extends BaseContextAction
      */
     protected PropertyContainer getPropertyContainer()
     {
-        ISelection parSel = propertySheet.getNeoGraphViewPart().getViewer()
-            .getSelection();
-        if ( !(parSel instanceof IStructuredSelection) )
+        PropertyContainer container = propertySheet.getPropertyContainer();
+        if ( container == null )
         {
             MessageDialog.openError( null, "Error",
-                "Error in parent view selection type." );
+                "Selected item is not a Node or Relationship." );
             return null;
         }
-        IStructuredSelection parSs = (IStructuredSelection) parSel;
-        Object parFirstElement = parSs.getFirstElement();
-        if ( !(parFirstElement instanceof PropertyContainer) )
-        {
-            MessageDialog.openError( null, "Error",
-                "Parent item is not a Node or Relationship." );
-            return null;
-        }
-        return (PropertyContainer) parFirstElement;
+        return (PropertyContainer) container;
     }
 
     /**

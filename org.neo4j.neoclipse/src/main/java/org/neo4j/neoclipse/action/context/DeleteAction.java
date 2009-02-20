@@ -38,7 +38,7 @@ public class DeleteAction extends ContextAction
     @Override
     protected void performOperation( PropertyContainer container )
     {
-        String question = "Are you sure you want to delete the selected ";
+        String question = "Are you sure you want to remove the selected ";
         if ( container instanceof Node )
         {
             question += "node?";

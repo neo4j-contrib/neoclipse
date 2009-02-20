@@ -47,11 +47,12 @@ public class RenameAction extends PropertyAction
             null );
         if ( input.open() == OK && input.getReturnCode() == OK )
         {
+            String newKey = null;
             Transaction tx = ns.beginTx();
             try
             {
-                container.setProperty( input.getValue(), container
-                    .getProperty( key ) );
+                newKey = input.getValue();
+                container.setProperty( newKey, container.getProperty( key ) );
                 container.removeProperty( key );
                 tx.success();
             }
@@ -64,8 +65,8 @@ public class RenameAction extends PropertyAction
             {
                 tx.finish();
             }
+            propertySheet.fireChangeEvent( container, newKey );
             propertySheet.refresh();
-            propertySheet.getNeoGraphViewPart().refreshPreserveLayout();
         }
     }
 }

@@ -1,4 +1,4 @@
-package org.neo4j.neoclipse.view;
+package org.neo4j.neoclipse.reltype;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
@@ -14,6 +14,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITableColorProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
@@ -23,11 +24,15 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbenchActionConstants;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
+import org.neo4j.api.core.Relationship;
 import org.neo4j.api.core.RelationshipType;
+import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**
  * This sample class demonstrates how to plug-in a new workbench view. The view
@@ -44,12 +49,15 @@ import org.neo4j.api.core.RelationshipType;
  * <p>
  */
 
-public class RelationshipTypeView extends ViewPart
+public class RelationshipTypeView extends ViewPart implements
+    ISelectionListener
 {
+    public final static String ID = "org.neo4j.neoclipse.reltype.RelationshipTypeView";
     private TableViewer viewer;
     private Action action1;
     private Action action2;
     private Action doubleClickAction;
+    private RelationshipType currentSelection;
 
     class ViewLabelProvider extends LabelProvider implements
         ITableLabelProvider, ITableColorProvider
@@ -103,7 +111,7 @@ public class RelationshipTypeView extends ViewPart
     public RelationshipTypeView()
     {
     }
-
+    
     /**
      * This is a callback that will allow us to create the viewer and initialize
      * it.
@@ -123,6 +131,8 @@ public class RelationshipTypeView extends ViewPart
         hookContextMenu();
         hookDoubleClickAction();
         contributeToActionBars();
+        getSite().getPage().addSelectionListener( NeoGraphViewPart.ID, this );
+        getSite().getPage().addSelectionListener( ID, this );
     }
 
     private void hookContextMenu()
@@ -229,5 +239,35 @@ public class RelationshipTypeView extends ViewPart
     public void setFocus()
     {
         viewer.getControl().setFocus();
+    }
+
+    /**
+     * Keep track of the graph view selections.
+     */
+    public void selectionChanged( IWorkbenchPart part, ISelection selection )
+    {
+        if ( !(selection instanceof IStructuredSelection) )
+        {
+            return;
+        }
+        IStructuredSelection parSs = (IStructuredSelection) selection;
+        Object firstElement = parSs.getFirstElement();
+        if ( part instanceof NeoGraphViewPart )
+        {
+            if ( !(firstElement instanceof Relationship) )
+            {
+                return;
+            }
+            currentSelection = ((Relationship) firstElement).getType();
+            viewer.setSelection( new StructuredSelection( currentSelection ) );
+        }
+        else if ( this.equals( part ) )
+        {
+            if ( !(firstElement instanceof RelationshipType) )
+            {
+                return;
+            }
+            currentSelection = (RelationshipType) firstElement;
+        }
     }
 }

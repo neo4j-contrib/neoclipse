@@ -13,6 +13,8 @@
  */
 package org.neo4j.neoclipse.view;
 
+import org.eclipse.draw2d.ChangeEvent;
+import org.eclipse.draw2d.ChangeListener;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
@@ -21,18 +23,17 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.ui.ISelectionListener;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.views.properties.IPropertySheetPage;
-import org.eclipse.ui.views.properties.PropertySheetPage;
 import org.eclipse.zest.core.viewers.AbstractZoomableViewer;
 import org.eclipse.zest.core.viewers.GraphViewer;
 import org.eclipse.zest.core.viewers.IZoomableWorkbenchPart;
@@ -74,7 +75,7 @@ import org.neo4j.neoclipse.neo.NeoServiceEventListener;
 import org.neo4j.neoclipse.neo.NeoServiceManager;
 import org.neo4j.neoclipse.neo.NeoServiceStatus;
 import org.neo4j.neoclipse.property.NeoPropertySheetPage;
-import org.neo4j.neoclipse.property.PropertySourceProvider;
+import org.neo4j.neoclipse.reltype.RelationshipTypeView;
 
 /**
  * This class is a view that shows the contents of a Neo database as a graph of
@@ -83,20 +84,21 @@ import org.neo4j.neoclipse.property.PropertySourceProvider;
  * @author Anders Nawroth
  */
 public class NeoGraphViewPart extends ViewPart implements
-    IZoomableWorkbenchPart, IDoubleClickListener, ISelectionChangedListener
+    IZoomableWorkbenchPart, IDoubleClickListener, ISelectionListener,
+    ChangeListener
 {
-    /**
-     * Max number of guesses to find a better starting point.
-     */
-    private static final int MAX_ID_GUESSES = 1000;
     /**
      * The Eclipse view ID.
      */
     public static final String ID = "org.neo4j.neoclipse.view.NeoGraphViewPart";
     /**
+     * Max number of guesses to find a better starting point.
+     */
+    private static final int MAX_ID_GUESSES = 1000;
+    /**
      * The property sheet page.
      */
-    protected PropertySheetPage propertySheetPage;
+    protected NeoPropertySheetPage propertySheetPage;
     /**
      * The graph.
      */
@@ -133,9 +135,11 @@ public class NeoGraphViewPart extends ViewPart implements
         viewer.setLabelProvider( NeoGraphLabelProviderWrapper.getInstance() );
         viewer.addDoubleClickListener( new NeoGraphDoubleClickListener() );
         viewer.addDoubleClickListener( this );
-        viewer.addSelectionChangedListener( this );
         viewer.setLayoutAlgorithm( new SpringLayoutAlgorithm(
             LayoutStyles.NO_LAYOUT_NODE_RESIZING ) );
+        getSite().getPage().addSelectionListener( ID, this );
+        getSite().getPage()
+            .addSelectionListener( RelationshipTypeView.ID, this );
         makeContributions();
         NeoServiceManager sm = Activator.getDefault().getNeoServiceManager();
         sm.addServiceEventListener( new NeoGraphServiceEventListener() );
@@ -424,9 +428,8 @@ public class NeoGraphViewPart extends ViewPart implements
     {
         if ( propertySheetPage == null )
         {
-            propertySheetPage = new NeoPropertySheetPage( this );
-            propertySheetPage
-                .setPropertySourceProvider( new PropertySourceProvider() );
+            propertySheetPage = new NeoPropertySheetPage();
+            propertySheetPage.addChangeListener( this );
         }
         return propertySheetPage;
     }
@@ -822,21 +825,28 @@ public class NeoGraphViewPart extends ViewPart implements
     /**
      * Handles selection, making the context menu look right.
      */
-    public void selectionChanged( SelectionChangedEvent event )
+    public void selectionChanged( IWorkbenchPart part, ISelection selection )
     {
-        ISelection selected = event.getSelection();
-        if ( !(selected instanceof IStructuredSelection) )
+        if ( this.equals( part ) )
         {
+            if ( !(selection instanceof IStructuredSelection) )
+            {
+                setRestrictedEnabled( false );
+                return;
+            }
+            IStructuredSelection parSs = (IStructuredSelection) selection;
+            Object parFirstElement = parSs.getFirstElement();
+            if ( parFirstElement instanceof PropertyContainer )
+            {
+                setRestrictedEnabled( true );
+                return;
+            }
             setRestrictedEnabled( false );
-            return;
         }
-        IStructuredSelection parSs = (IStructuredSelection) selected;
-        Object parFirstElement = parSs.getFirstElement();
-        if ( parFirstElement instanceof PropertyContainer )
-        {
-            setRestrictedEnabled( true );
-            return;
-        }
-        setRestrictedEnabled( false );
+    }
+
+    public void handleStateChanged( ChangeEvent event )
+    {
+        viewer.refresh( event.getSource() );
     }
 }

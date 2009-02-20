@@ -95,7 +95,7 @@ public class PasteAction extends PropertyAction
         {
             tx.finish();
         }
+        propertySheet.fireChangeEvent( container, cu.getKey() );
         propertySheet.refresh();
-        propertySheet.getNeoGraphViewPart().refreshPreserveLayout();
     }
 }

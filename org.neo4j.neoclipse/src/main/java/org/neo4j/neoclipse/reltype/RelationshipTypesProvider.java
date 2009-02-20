@@ -1,4 +1,4 @@
-package org.neo4j.neoclipse.view;
+package org.neo4j.neoclipse.reltype;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +16,7 @@ public class RelationshipTypesProvider implements IContentProvider,
     IStructuredContentProvider
 {
 
-    private List<RelationshipType> relDirList;
+    private List<RelationshipType> relDirList = new ArrayList<RelationshipType>();
 
     @SuppressWarnings( "deprecation" )
     public RelationshipTypesProvider()
@@ -28,7 +28,6 @@ public class RelationshipTypesProvider implements IContentProvider,
             // todo
             return;
         }
-        relDirList = new ArrayList<RelationshipType>();
         for ( RelationshipType relType : ((EmbeddedNeo) ns)
             .getRelationshipTypes() )
         {

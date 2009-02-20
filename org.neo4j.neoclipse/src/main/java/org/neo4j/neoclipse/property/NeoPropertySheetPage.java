@@ -13,14 +13,23 @@
  */
 package org.neo4j.neoclipse.property;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import org.eclipse.draw2d.ChangeEvent;
+import org.eclipse.draw2d.ChangeListener;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.ui.ISelectionListener;
+import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.views.properties.IPropertySourceProvider;
 import org.eclipse.ui.views.properties.PropertySheetEntry;
 import org.eclipse.ui.views.properties.PropertySheetPage;
 import org.eclipse.ui.views.properties.PropertySheetSorter;
+import org.neo4j.api.core.PropertyContainer;
 import org.neo4j.neoclipse.NeoIcons;
 import org.neo4j.neoclipse.property.action.CopyAction;
 import org.neo4j.neoclipse.property.action.DeleteAction;
@@ -34,7 +43,8 @@ import org.neo4j.neoclipse.view.NeoGraphViewPart;
  * want.
  * @author Anders Nawroth
  */
-public class NeoPropertySheetPage extends PropertySheetPage
+public class NeoPropertySheetPage extends PropertySheetPage implements
+    ISelectionListener
 {
     private static class NeoPropertySheetSorter extends PropertySheetSorter
     {
@@ -54,28 +64,43 @@ public class NeoPropertySheetPage extends PropertySheetPage
         }
     }
 
+    /**
+     * The Eclipse view ID.
+     */
+    public static final String ID = "org.neo4j.neoclipse.view.NeoGraphViewPart";
     private ISelection selection;
-    private NeoGraphViewPart neoView;
     private Menu menu;
     private Composite parent;
     private DeleteAction deleteAction;
     private CopyAction copyAction;
     private RenameAction renameAction;
     private PasteAction pasteAction;
+    private PropertyContainer containerSelection;
+    private Set<ChangeListener> listeners = new HashSet<ChangeListener>();
 
-    public NeoPropertySheetPage( NeoGraphViewPart neoGraphViewPart )
+    public NeoPropertySheetPage()
     {
         super();
-        this.neoView = neoGraphViewPart;
+        setPropertySourceProvider( new PropertySourceProvider( this ) );
     }
 
-    /**
-     * Get the Neo graph view for this proeprty sheet.
-     * @return
-     */
-    public NeoGraphViewPart getNeoGraphViewPart()
+    public void addChangeListener( ChangeListener listener )
     {
-        return neoView;
+        listeners.add( listener );
+    }
+
+    public void fireChangeEvent( Object element, String key )
+    {
+        ChangeEvent ce = new ChangeEvent( element, key );
+        for ( ChangeListener listener : listeners )
+        {
+            listener.handleStateChanged( ce );
+        }
+    }
+
+    public PropertyContainer getPropertyContainer()
+    {
+        return containerSelection;
     }
 
     /**
@@ -95,6 +120,7 @@ public class NeoPropertySheetPage extends PropertySheetPage
         setSorter( new NeoPropertySheetSorter() );
         createMenu( parent );
         getControl().setMenu( menu );
+        getSite().getPage().addSelectionListener( NeoGraphViewPart.ID, this );
     }
 
     /**
@@ -227,5 +253,33 @@ public class NeoPropertySheetPage extends PropertySheetPage
             }
         }
         setRestrictedEnabled( true );
+    }
+
+    @Override
+    public void selectionChanged( IWorkbenchPart part, ISelection selection )
+    {
+        super.selectionChanged( part, selection );
+        if ( part instanceof NeoGraphViewPart )
+        {
+            if ( !(selection instanceof IStructuredSelection) )
+            {
+                containerSelection = null;
+                return;
+            }
+            IStructuredSelection parSs = (IStructuredSelection) selection;
+            Object parFirstElement = parSs.getFirstElement();
+            if ( !(parFirstElement instanceof PropertyContainer) )
+            {
+                containerSelection = null;
+                return;
+            }
+            containerSelection = (PropertyContainer) parFirstElement;
+        }
+    }
+
+    @Override
+    public void setPropertySourceProvider( IPropertySourceProvider newProvider )
+    {
+        super.setPropertySourceProvider( newProvider );
     }
 }

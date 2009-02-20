@@ -45,6 +45,13 @@ public class DeleteAction extends PropertyAction
         {
             return;
         }
+        boolean confirmation = MessageDialog.openQuestion( null,
+            "Confirm delete",
+            "Are you sure you want to delete the selected property?" );
+        if ( !confirmation )
+        {
+            return;
+        }
         Transaction tx = ns.beginTx();
         try
         {
@@ -60,7 +67,7 @@ public class DeleteAction extends PropertyAction
         {
             tx.finish();
         }
+        propertySheet.fireChangeEvent( container, key );
         propertySheet.refresh();
-        propertySheet.getNeoGraphViewPart().refreshPreserveLayout();
     }
 }

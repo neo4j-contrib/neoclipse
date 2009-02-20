@@ -29,9 +29,10 @@ public class RelationshipPropertySource extends PropertySource
     private static final String RELATIONSHIP_ID = "Id";
     private static final String RELATIONSHIP_TYPE = "Type";
 
-    public RelationshipPropertySource( Relationship rs )
+    public RelationshipPropertySource( Relationship rs,
+        NeoPropertySheetPage propertySheet )
     {
-        super( rs );
+        super( rs, propertySheet );
     }
 
     @Override

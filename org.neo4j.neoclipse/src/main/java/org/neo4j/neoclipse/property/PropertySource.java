@@ -36,13 +36,17 @@ public class PropertySource implements IPropertySource
      * The container of the properties (either Relationship or Node).
      */
     protected PropertyContainer container;
+    protected NeoPropertySheetPage propertySheet;
 
     /**
      * The constructor.
+     * @param propertySheet
      */
-    public PropertySource( PropertyContainer container )
+    public PropertySource( PropertyContainer container,
+        NeoPropertySheetPage propertySheet )
     {
         this.container = container;
+        this.propertySheet = propertySheet;
     }
 
     public Object getEditableValue()
@@ -223,5 +227,6 @@ public class PropertySource implements IPropertySource
                 tx.finish();
             }
         }
+        propertySheet.fireChangeEvent( container, (String) id );
     }
 }
