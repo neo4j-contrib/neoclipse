@@ -84,8 +84,7 @@ import org.neo4j.neoclipse.reltype.RelationshipTypeView;
  * @author Anders Nawroth
  */
 public class NeoGraphViewPart extends ViewPart implements
-    IZoomableWorkbenchPart, IDoubleClickListener, ISelectionListener,
-    ChangeListener
+    IZoomableWorkbenchPart, ISelectionListener, ChangeListener
 {
     /**
      * The Eclipse view ID.
@@ -131,10 +130,10 @@ public class NeoGraphViewPart extends ViewPart implements
     public void createPartControl( Composite parent )
     {
         viewer = new GraphViewer( parent, SWT.NONE );
+        viewer.setUseHashlookup( true );
         viewer.setContentProvider( new NeoGraphContentProvider( this ) );
         viewer.setLabelProvider( NeoGraphLabelProviderWrapper.getInstance() );
         viewer.addDoubleClickListener( new NeoGraphDoubleClickListener() );
-        viewer.addDoubleClickListener( this );
         viewer.setLayoutAlgorithm( new SpringLayoutAlgorithm(
             LayoutStyles.NO_LAYOUT_NODE_RESIZING ) );
         getSite().getPage().addSelectionListener( ID, this );
@@ -369,11 +368,6 @@ public class NeoGraphViewPart extends ViewPart implements
 
             tm.add( new Separator() );
         }
-    }
-
-    public void doubleClick( DoubleClickEvent arg0 )
-    {
-        refreshStatusBar();
     }
 
     /**
@@ -813,6 +807,7 @@ public class NeoGraphViewPart extends ViewPart implements
                             "Double click event comes from wrong view." );
                     }
                     setInput( node );
+                    refreshStatusBar();
                 }
                 finally
                 {
@@ -847,6 +842,6 @@ public class NeoGraphViewPart extends ViewPart implements
 
     public void handleStateChanged( ChangeEvent event )
     {
-        viewer.refresh( event.getSource() );
+        viewer.refresh( event.getSource(), true );
     }
 }

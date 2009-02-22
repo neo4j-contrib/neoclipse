@@ -15,11 +15,18 @@ package org.neo4j.neoclipse.decorate;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
 
+/**
+ * Map some type to colors.
+ * @author Anders Nawroth
+ *
+ * @param <T> type to map
+ */
 public class SimpleColorMapper<T>
 {
     private static class Colors
@@ -103,5 +110,10 @@ public class SimpleColorMapper<T>
     public boolean colorExists( final T type )
     {
         return colorMap.containsKey( type );
+    }
+
+    public Set<T> getKeys()
+    {
+        return colorMap.keySet();
     }
 }

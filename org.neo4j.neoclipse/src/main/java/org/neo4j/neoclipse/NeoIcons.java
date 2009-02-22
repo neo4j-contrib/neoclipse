@@ -51,6 +51,9 @@ public final class NeoIcons
     public static final String NEW = "new";
     public static final String RENAME = "rename";
     public static final String PASTE = "paste";
+    public static final String INCOMING = "incoming";
+    public static final String OUTGOING = "outgoing";
+    public static final String CLEAR = "clear";
     /**
      * The image registry.
      */
@@ -127,6 +130,13 @@ public final class NeoIcons
             .getImage( ISharedImages.IMG_TOOL_REDO ) );
         reg.put( NeoIcons.PASTE, sharedImages
             .getImage( ISharedImages.IMG_TOOL_PASTE ) );
+        // relationship types actions
+        reg.put( NeoIcons.CLEAR, sharedImages
+            .getImage( ISharedImages.IMG_TOOL_UNDO ) );
+        reg.put( NeoIcons.INCOMING, sharedImages
+            .getImage( ISharedImages.IMG_TOOL_BACK ) );
+        reg.put( NeoIcons.OUTGOING, sharedImages
+            .getImage( ISharedImages.IMG_TOOL_FORWARD ) );
     }
 
     /**

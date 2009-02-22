@@ -1,4 +1,22 @@
+/*
+ * Licensed to "Neo Technology," Network Engine for Objects in Lund AB
+ * (http://neotechnology.com) under one or more contributor license agreements.
+ * See the NOTICE file distributed with this work for additional information
+ * regarding copyright ownership. Neo Technology licenses this file to you under
+ * the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License
+ * at (http://www.apache.org/licenses/LICENSE-2.0). Unless required by
+ * applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS
+ * OF ANY KIND, either express or implied. See the License for the specific
+ * language governing permissions and limitations under the License.
+ */
 package org.neo4j.neoclipse.reltype;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
@@ -6,7 +24,7 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
-import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
@@ -20,44 +38,39 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.ISelectionListener;
-import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
+import org.eclipse.zest.core.viewers.GraphViewer;
+import org.neo4j.api.core.Direction;
+import org.neo4j.api.core.Node;
 import org.neo4j.api.core.Relationship;
 import org.neo4j.api.core.RelationshipType;
+import org.neo4j.neoclipse.NeoIcons;
+import org.neo4j.neoclipse.view.NeoGraphLabelProvider;
 import org.neo4j.neoclipse.view.NeoGraphLabelProviderWrapper;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
-
-/**
- * This sample class demonstrates how to plug-in a new workbench view. The view
- * shows data obtained from the model. The sample creates a dummy model on the
- * fly, but a real implementation would connect to the model available either in
- * this or another plug-in (e.g. the workspace). The view is connected to the
- * model using a content provider.
- * <p>
- * The view uses a label provider to define how model objects should be
- * presented in the view. Each view can present the same model objects using
- * different labels and icons, if needed. Alternatively, a single label provider
- * can be shared between views in order to ensure that objects of the same type
- * are presented in the same way everywhere.
- * <p>
- */
 
 public class RelationshipTypeView extends ViewPart implements
     ISelectionListener
 {
     public final static String ID = "org.neo4j.neoclipse.reltype.RelationshipTypeView";
+    protected static final int OK = 0;
     private TableViewer viewer;
-    private Action action1;
-    private Action action2;
+    private Action markIncomingAction;
+    private Action markOutgoingAction;
+    private Action clearMarkedAction;
     private Action doubleClickAction;
-    private RelationshipType currentSelection;
+    private RelationshipTypesProvider provider;
+    private NeoGraphViewPart graphView = null;
+    private NeoGraphLabelProvider graphLabelProvider = NeoGraphLabelProviderWrapper
+        .getInstance();
+    private Action newAction;
 
     class NameSorter extends ViewerSorter
     {
-
         @Override
         public int compare( Viewer viewer, Object e1, Object e2 )
         {
@@ -85,7 +98,8 @@ public class RelationshipTypeView extends ViewPart implements
     public void createPartControl( Composite parent )
     {
         viewer = new TableViewer( parent, SWT.MULTI | SWT.V_SCROLL );
-        viewer.setContentProvider( new RelationshipTypesProvider() );
+        provider = new RelationshipTypesProvider();
+        viewer.setContentProvider( provider );
         viewer.setLabelProvider( NeoGraphLabelProviderWrapper.getInstance() );
         viewer.setSorter( new NameSorter() );
         viewer.setInput( getViewSite() );
@@ -98,6 +112,14 @@ public class RelationshipTypeView extends ViewPart implements
         hookDoubleClickAction();
         contributeToActionBars();
         getSite().getPage().addSelectionListener( NeoGraphViewPart.ID, this );
+        for ( IViewReference view : getSite().getPage().getViewReferences() )
+        {
+            if ( NeoGraphViewPart.ID.equals( view.getId() ) )
+            {
+                graphView = (NeoGraphViewPart) view.getView( false );
+            }
+        }
+        getSite().setSelectionProvider( viewer );
         getSite().getPage().addSelectionListener( ID, this );
     }
 
@@ -120,66 +142,186 @@ public class RelationshipTypeView extends ViewPart implements
     private void contributeToActionBars()
     {
         IActionBars bars = getViewSite().getActionBars();
-        fillLocalPullDown( bars.getMenuManager() );
+        // fillLocalPullDown( bars.getMenuManager() );
         fillLocalToolBar( bars.getToolBarManager() );
     }
 
-    private void fillLocalPullDown( IMenuManager manager )
-    {
-        manager.add( action1 );
-        manager.add( new Separator() );
-        manager.add( action2 );
-    }
+    // private void fillLocalPullDown( IMenuManager manager )
+    // {
+    // manager.add( markIncomingAction );
+    // manager.add( markOutgoingAction );
+    // manager.add( clearMarkedAction );
+    // }
 
     private void fillContextMenu( IMenuManager manager )
     {
-        manager.add( action1 );
-        manager.add( action2 );
+        manager.add( markIncomingAction );
+        manager.add( markOutgoingAction );
         // Other plug-ins can contribute there actions here
         manager.add( new Separator( IWorkbenchActionConstants.MB_ADDITIONS ) );
     }
 
     private void fillLocalToolBar( IToolBarManager manager )
     {
-        manager.add( action1 );
-        manager.add( action2 );
+        manager.add( markIncomingAction );
+        manager.add( markOutgoingAction );
+        manager.add( clearMarkedAction );
+        manager.add( newAction );
     }
 
     private void makeActions()
     {
-        action1 = new Action()
+        markIncomingAction = new Action( "Mark incoming" )
         {
             public void run()
             {
-                showMessage( "Action 1 executed" );
+                RelationshipType relType = getCurrentRelType();
+                if ( relType == null )
+                {
+                    return;
+                }
+                highlightNodes( relType, Direction.INCOMING );
+                clearMarkedAction.setEnabled( true );
             }
         };
-        action1.setText( "Action 1" );
-        action1.setToolTipText( "Action 1 tooltip" );
-        action1.setImageDescriptor( PlatformUI.getWorkbench().getSharedImages()
-            .getImageDescriptor( ISharedImages.IMG_OBJS_INFO_TSK ) );
+        markIncomingAction
+            .setToolTipText( "Mark nodes with incoming relationship of this type." );
+        markIncomingAction.setImageDescriptor( NeoIcons
+            .getDescriptor( NeoIcons.INCOMING ) );
+        markIncomingAction.setEnabled( false );
 
-        action2 = new Action()
+        markOutgoingAction = new Action( "Mark outgoing" )
         {
             public void run()
             {
-                showMessage( "Action 2 executed" );
+                RelationshipType relType = getCurrentRelType();
+                if ( relType == null )
+                {
+                    return;
+                }
+                highlightNodes( relType, Direction.OUTGOING );
+                clearMarkedAction.setEnabled( true );
             }
         };
-        action2.setText( "Action 2" );
-        action2.setToolTipText( "Action 2 tooltip" );
-        action2.setImageDescriptor( PlatformUI.getWorkbench().getSharedImages()
-            .getImageDescriptor( ISharedImages.IMG_OBJS_INFO_TSK ) );
-        doubleClickAction = new Action()
+        markOutgoingAction
+            .setToolTipText( "Mark nodes with outgoing relationship of this type." );
+        markOutgoingAction.setImageDescriptor( NeoIcons
+            .getDescriptor( NeoIcons.OUTGOING ) );
+        markOutgoingAction.setEnabled( false );
+
+        clearMarkedAction = new Action( "Clear marked elements" )
         {
             public void run()
             {
-                ISelection selection = viewer.getSelection();
-                Object obj = ((IStructuredSelection) selection)
-                    .getFirstElement();
-                showMessage( "Double-click detected on " + obj.toString() );
+                graphLabelProvider.clearMarkedNodes();
+                graphLabelProvider.clearMarkedRels();
+                graphView.getViewer().refresh( true );
+                setEnabled( false );
             }
         };
+        clearMarkedAction.setImageDescriptor( NeoIcons
+            .getDescriptor( NeoIcons.CLEAR ) );
+        clearMarkedAction.setEnabled( false );
+
+        newAction = new Action( "Create new" )
+        {
+            public void run()
+            {
+                InputDialog input = new InputDialog( null,
+                    "New relationship type entry",
+                    "Please enter the name for the new relationships type",
+                    null, null );
+                if ( input.open() == OK && input.getReturnCode() == OK )
+                {
+                    RelationshipType relType = createRelationshipType( input
+                        .getValue() );
+                    provider.addFakeType( relType );
+                    viewer.refresh();
+                }
+            }
+        };
+        newAction.setToolTipText( "Create new relationship type." );
+        newAction.setImageDescriptor( NeoIcons.getDescriptor( NeoIcons.NEW ) );
+
+        doubleClickAction = new Action( "Mark relationships" )
+        {
+            public void run()
+            {
+                RelationshipType relType = getCurrentRelType();
+                if ( relType == null )
+                {
+                    return;
+                }
+                highlightRelationshipType( relType );
+                setEnableRestrictedActions( true );
+                clearMarkedAction.setEnabled( true );
+            }
+        };
+    }
+
+    private void setEnableRestrictedActions( boolean enabled )
+    {
+        markIncomingAction.setEnabled( enabled );
+        markOutgoingAction.setEnabled( enabled );
+    }
+
+    private RelationshipType getCurrentRelType()
+    {
+        ISelection selection = viewer.getSelection();
+        Object obj = ((IStructuredSelection) selection).getFirstElement();
+        if ( obj instanceof RelationshipType )
+        {
+            return (RelationshipType) obj;
+        }
+        return null;
+    }
+
+    private void highlightRelationshipType( RelationshipType relType )
+    {
+        if ( graphView == null )
+        {
+            return;
+        }
+        List<Relationship> rels = new ArrayList<Relationship>();
+        GraphViewer gViewer = graphView.getViewer();
+        for ( Object o : gViewer.getConnectionElements() )
+        {
+            if ( o instanceof Relationship )
+            {
+                Relationship rel = (Relationship) o;
+                if ( rel.getType().equals( relType ) )
+                {
+                    rels.add( rel );
+                }
+            }
+        }
+        // gViewer.setSelection( new StructuredSelection( rels ), true );
+        graphLabelProvider.addMarkedRels( rels );
+        gViewer.refresh( true );
+    }
+
+    private void highlightNodes( RelationshipType relType, Direction direction )
+    {
+        if ( graphView == null )
+        {
+            return;
+        }
+        GraphViewer gViewer = graphView.getViewer();
+        Set<Node> nodes = new HashSet<Node>();
+        for ( Object o : gViewer.getNodeElements() )
+        {
+            if ( o instanceof Node )
+            {
+                Node node = (Node) o;
+                if ( node.hasRelationship( relType, direction ) )
+                {
+                    nodes.add( node );
+                }
+            }
+        }
+        // gViewer.setSelection( new StructuredSelection( nodes ), true );
+        graphLabelProvider.addMarkedNodes( nodes );
+        gViewer.refresh( true );
     }
 
     private void hookDoubleClickAction()
@@ -193,10 +335,15 @@ public class RelationshipTypeView extends ViewPart implements
         } );
     }
 
-    private void showMessage( String message )
+    private RelationshipType createRelationshipType( final String name )
     {
-        MessageDialog.openInformation( viewer.getControl().getShell(),
-            "Relationship Types", message );
+        return new RelationshipType()
+        {
+            public String name()
+            {
+                return name;
+            }
+        };
     }
 
     /**
@@ -220,20 +367,26 @@ public class RelationshipTypeView extends ViewPart implements
         Object firstElement = parSs.getFirstElement();
         if ( part instanceof NeoGraphViewPart )
         {
-            if ( !(firstElement instanceof Relationship) )
+            graphView = (NeoGraphViewPart) part;
+            if ( firstElement instanceof Relationship )
             {
-                return;
+                RelationshipType currentSelection = ((Relationship) firstElement)
+                    .getType();
+                viewer
+                    .setSelection( new StructuredSelection( currentSelection ) );
+                setEnableRestrictedActions( true );
             }
-            currentSelection = ((Relationship) firstElement).getType();
-            viewer.setSelection( new StructuredSelection( currentSelection ) );
         }
         else if ( this.equals( part ) )
         {
-            if ( !(firstElement instanceof RelationshipType) )
+            if ( selection.isEmpty() )
             {
-                return;
+                setEnableRestrictedActions( false );
             }
-            currentSelection = (RelationshipType) firstElement;
+            else
+            {
+                setEnableRestrictedActions( true );
+            }
         }
     }
 }

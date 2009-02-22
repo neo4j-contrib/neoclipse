@@ -54,7 +54,7 @@ public class NeoPerspectiveFactory implements IPerspectiveFactory
         props.addView( IPageLayout.ID_PROP_SHEET );
         // relationship types view
         IFolderLayout types = layout.createFolder( "typesArea",
-            IPageLayout.RIGHT, 0.7f, PROPERTIES_AREA );
+            IPageLayout.RIGHT, 0.65f, PROPERTIES_AREA );
         types.addView( RelationshipTypeView.ID );
         // view shortcuts
         layout.addShowViewShortcut( NeoGraphViewPart.ID );

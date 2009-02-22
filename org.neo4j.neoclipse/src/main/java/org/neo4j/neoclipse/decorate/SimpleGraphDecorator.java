@@ -15,6 +15,7 @@ package org.neo4j.neoclipse.decorate;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
@@ -33,6 +34,9 @@ public class SimpleGraphDecorator
     private static final int RELATIONSHIP = 0;
     private static final int NODE_INCOMING = 1;
     private static final int NODE_OUTGOING = 2;
+    private static final int RELATIONSHIP_MARKED = 3;
+    private static final int NODE_INCOMING_MARKED = 4;
+    private static final int NODE_OUTGOING_MARKED = 5;
 
     /**
      * The icon for nodes.
@@ -196,14 +200,20 @@ public class SimpleGraphDecorator
             throw new IllegalArgumentException( "Empty directions list given." );
         }
         this.settings = settings;
-        final float[] saturations = new float[3];
-        final float[] brightnesses = new float[3];
+        final float[] saturations = new float[6];
+        final float[] brightnesses = new float[6];
         saturations[RELATIONSHIP] = 0.8f;
         brightnesses[RELATIONSHIP] = 0.7f;
         saturations[NODE_INCOMING] = 0.17f;
         brightnesses[NODE_INCOMING] = 1.0f;
         saturations[NODE_OUTGOING] = 0.08f;
         brightnesses[NODE_OUTGOING] = 0.95f;
+        saturations[RELATIONSHIP_MARKED] = 0.8f;
+        brightnesses[RELATIONSHIP_MARKED] = 0.5f;
+        saturations[NODE_INCOMING_MARKED] = 0.3f;
+        brightnesses[NODE_INCOMING_MARKED] = 0.7f;
+        saturations[NODE_OUTGOING_MARKED] = 0.2f;
+        brightnesses[NODE_OUTGOING_MARKED] = 0.6f;
         colorMapper = new SimpleColorMapper<RelationshipType>( saturations,
             brightnesses );
         userIcons = new UserIcons( settings.getNodeIconLocation() );
@@ -215,6 +225,17 @@ public class SimpleGraphDecorator
     }
 
     public Color getNodeColor( final Node node )
+    {
+        return getNodeColor( node, false );
+    }
+
+    /**
+     * @param node
+     * @param marked
+     *            TODO
+     * @return
+     */
+    private Color getNodeColor( final Node node, boolean marked )
     {
         Relationship randomRel = null;
         Direction randomDir = null;
@@ -234,28 +255,50 @@ public class SimpleGraphDecorator
                 }
                 else
                 {
-                    return getColorFromDirection( type, direction );
+                    return getColorFromDirection( type, direction, marked );
                 }
             }
         }
         if ( randomRel != null )
         {
-            return getColorFromDirection( randomRel.getType(), randomDir );
+            return getColorFromDirection( randomRel.getType(), randomDir,
+                marked );
         }
         return getNodeColor();
     }
 
     private Color getColorFromDirection( final RelationshipType type,
-        final Direction direction )
+        final Direction direction, boolean marked )
     {
         switch ( direction )
         {
             case INCOMING:
-                return colorMapper.getColor( type, NODE_INCOMING );
+                if ( marked )
+                {
+                    return colorMapper.getColor( type, NODE_INCOMING_MARKED );
+                }
+                else
+                {
+                    return colorMapper.getColor( type, NODE_INCOMING );
+                }
             case OUTGOING:
-                return colorMapper.getColor( type, NODE_OUTGOING );
+                if ( marked )
+                {
+                    return colorMapper.getColor( type, NODE_OUTGOING_MARKED );
+                }
+                else
+                {
+                    return colorMapper.getColor( type, NODE_OUTGOING );
+                }
             default:
-                return colorMapper.getColor( type, RELATIONSHIP );
+                if ( marked )
+                {
+                    return colorMapper.getColor( type, RELATIONSHIP_MARKED );
+                }
+                else
+                {
+                    return colorMapper.getColor( type, RELATIONSHIP );
+                }
         }
     }
 
@@ -336,6 +379,7 @@ public class SimpleGraphDecorator
     public Image getNodeImage( final Node node )
     {
         Image img;
+
         if ( settings.getReferenceNode().equals( node ) )
         {
             img = rootImage;
@@ -387,5 +431,36 @@ public class SimpleGraphDecorator
     public Color getNodeForegroundColor( Node node )
     {
         return NODE_FOREGROUND_COLOR;
+    }
+
+    public Set<RelationshipType> getRelationshipTypes()
+    {
+
+        return colorMapper.getKeys();
+    }
+
+    public Color getMarkedRelationshipColor( Relationship rel )
+    {
+        return colorMapper.getColor( rel.getType(), RELATIONSHIP_MARKED );
+    }
+
+    public int getMarkedRelationshipStyle( Object rel )
+    {
+        return 0;
+    }
+
+    public Color getMarkedNodeColor( Node element )
+    {
+        return getNodeColor( element, true );
+    }
+
+    public int getMarkedLineWidth()
+    {
+        return 2;
+    }
+
+    public int getLineWidth()
+    {
+        return -1;
     }
 }

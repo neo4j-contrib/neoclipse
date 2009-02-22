@@ -14,6 +14,9 @@
 package org.neo4j.neoclipse.view;
 
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.jface.viewers.IColorProvider;
@@ -99,6 +102,14 @@ public class NeoGraphLabelProvider extends LabelProvider implements
      * Settings for {@link SimpleGraphDecorator}
      */
     private Settings settings = new Settings();
+    /**
+     * Marked relationships.
+     */
+    private Set<Relationship> markedRels = new HashSet<Relationship>();
+    /**
+     * Marked nodes.
+     */
+    private Set<Node> markedNodes = new HashSet<Node>();
 
     public NeoGraphLabelProvider()
     {
@@ -126,6 +137,42 @@ public class NeoGraphLabelProvider extends LabelProvider implements
             Direction.OUTGOING ) );
         // refresh relationship colors
         refreshGraphDecorator();
+    }
+
+    /**
+     * Mark relationships.
+     * @param rels
+     *            relationships to mark
+     */
+    public void addMarkedRels( Collection<Relationship> rels )
+    {
+        markedRels.addAll( rels );
+    }
+
+    /**
+     * Clear marked relationships.
+     */
+    public void clearMarkedRels()
+    {
+        markedRels.clear();
+    }
+
+    /**
+     * Mark nodes.
+     * @param nodes
+     *            nodes to mark
+     */
+    public void addMarkedNodes( Collection<Node> nodes )
+    {
+        markedNodes.addAll( nodes );
+    }
+
+    /**
+     * Clear marked nodes.
+     */
+    public void clearMarkedNodes()
+    {
+        markedNodes.clear();
     }
 
     /**
@@ -371,22 +418,32 @@ public class NeoGraphLabelProvider extends LabelProvider implements
         showNodeColors = state;
     }
 
-    public Color getColor( Object rel )
+    public Color getColor( Object o )
     {
-        if ( !showRelationshipColors || !(rel instanceof Relationship) )
+        Relationship rel = (Relationship) o;
+        if ( !showRelationshipColors || !(o instanceof Relationship) )
         {
             return graphDecorator.getRelationshipColor();
         }
-        return graphDecorator.getRelationshipColor( (Relationship) rel );
+        if ( markedRels.contains( rel ) )
+        {
+            return graphDecorator.getMarkedRelationshipColor( rel );
+        }
+        return graphDecorator.getRelationshipColor( rel );
     }
 
     public int getConnectionStyle( Object rel )
     {
+        int style = 0;
         if ( showArrows )
         {
-            return ZestStyles.CONNECTIONS_DIRECTED;
+            style |= ZestStyles.CONNECTIONS_DIRECTED;
         }
-        return 0;
+        if ( rel instanceof Relationship && markedRels.contains( rel ) )
+        {
+            style |= graphDecorator.getMarkedRelationshipStyle( rel );
+        }
+        return style;
     }
 
     public Color getHighlightColor( Object rel )
@@ -397,7 +454,14 @@ public class NeoGraphLabelProvider extends LabelProvider implements
 
     public int getLineWidth( Object rel )
     {
-        return -1;
+        if (rel instanceof Relationship && markedRels.contains( rel ))
+        {
+            return graphDecorator.getMarkedLineWidth();
+        }
+        else
+        {
+            return graphDecorator.getLineWidth();
+        }
     }
 
     public IFigure getTooltip( Object entity )
@@ -410,6 +474,10 @@ public class NeoGraphLabelProvider extends LabelProvider implements
     {
         if ( element instanceof Node && showNodeColors )
         {
+            if ( markedNodes.contains( element ) )
+            {
+                return graphDecorator.getMarkedNodeColor( (Node) element );
+            }
             return graphDecorator.getNodeColor( (Node) element );
         }
         return null;
@@ -432,9 +500,9 @@ public class NeoGraphLabelProvider extends LabelProvider implements
 
     public String getColumnText( Object element, int arg1 )
     {
-        if (element instanceof RelationshipType)
+        if ( element instanceof RelationshipType )
         {
-            return ((RelationshipType)element).name();
+            return ((RelationshipType) element).name();
         }
         return "[unknown]";
     }
@@ -452,5 +520,10 @@ public class NeoGraphLabelProvider extends LabelProvider implements
             return graphDecorator.getRelationshipColor();
         }
         return graphDecorator.getRelationshipColor( (RelationshipType) element );
+    }
+
+    public Set<RelationshipType> getRelationshipTypes()
+    {
+        return graphDecorator.getRelationshipTypes();
     }
 }
