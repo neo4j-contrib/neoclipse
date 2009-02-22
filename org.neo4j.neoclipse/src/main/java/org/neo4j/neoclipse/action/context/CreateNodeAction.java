@@ -30,8 +30,7 @@ public class CreateNodeAction extends ContextAction
 {
     public CreateNodeAction( NeoGraphViewPart neoGraphViewPart )
     {
-        super( "Create Node", NeoIcons.getDescriptor( NeoIcons.DELETE ),
-            neoGraphViewPart );
+        super( "Create Node", NeoIcons.DELETE.getDescriptor(), neoGraphViewPart );
         setEnabled( false );
     }
 

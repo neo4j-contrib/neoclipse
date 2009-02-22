@@ -39,8 +39,7 @@ public class PasteAction extends PropertyAction
     public PasteAction( final Composite parent,
         final NeoPropertySheetPage propertySheet )
     {
-        super( "Paste", NeoIcons.getDescriptor( NeoIcons.PASTE ), parent,
-            propertySheet );
+        super( "Paste", NeoIcons.PASTE.getDescriptor(), parent, propertySheet );
         shell = propertySheet.getControl().getShell();
     }
 

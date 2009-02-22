@@ -31,8 +31,7 @@ public class DeleteAction extends PropertyAction
     public DeleteAction( final Composite parent,
         final NeoPropertySheetPage propertySheet )
     {
-        super( "Remove", NeoIcons.getDescriptor( NeoIcons.DELETE ), parent,
-            propertySheet );
+        super( "Remove", NeoIcons.DELETE.getDescriptor(), parent, propertySheet );
     }
 
     @Override

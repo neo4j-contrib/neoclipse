@@ -37,9 +37,8 @@ public class GoBackAction extends Action
         super( GO_BACK, Action.AS_PUSH_BUTTON );
         this.view = view;
         setToolTipText( GO_BACK );
-        setImageDescriptor( NeoIcons.getDescriptor( NeoIcons.BACK_ENABLED ) );
-        setDisabledImageDescriptor( NeoIcons
-            .getDescriptor( NeoIcons.BACK_DISABLED ) );
+        setImageDescriptor( NeoIcons.BACK_ENABLED.getDescriptor() );
+        setDisabledImageDescriptor( NeoIcons.BACK_DISABLED.getDescriptor() );
         setEnabled( false );
     }
 

@@ -37,7 +37,7 @@ public class ShowReferenceNodeAction extends Action
         super( SHOW_REFERENCE_NODE, Action.AS_PUSH_BUTTON );
         this.view = view;
         setToolTipText( SHOW_REFERENCE_NODE );
-        setImageDescriptor( NeoIcons.getDescriptor( NeoIcons.HOME ) );
+        setImageDescriptor( NeoIcons.HOME.getDescriptor() );
     }
 
     /**

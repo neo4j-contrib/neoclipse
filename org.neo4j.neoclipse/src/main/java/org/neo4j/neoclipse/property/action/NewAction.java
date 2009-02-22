@@ -34,8 +34,8 @@ public class NewAction extends PropertyAction
     public NewAction( final Composite parent,
         final NeoPropertySheetPage propertySheet, final Object defaultValue )
     {
-        super( defaultValue.getClass().getSimpleName(), NeoIcons
-            .getDescriptor( NeoIcons.NEW ), parent, propertySheet );
+        super( defaultValue.getClass().getSimpleName(), NeoIcons.NEW
+            .getDescriptor(), parent, propertySheet );
         this.value = defaultValue;
     }
 

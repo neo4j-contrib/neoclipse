@@ -30,8 +30,7 @@ public class DeleteAction extends ContextAction
 {
     public DeleteAction( NeoGraphViewPart neoGraphViewPart )
     {
-        super( "Delete", NeoIcons.getDescriptor( NeoIcons.DELETE ),
-            neoGraphViewPart );
+        super( "Delete", NeoIcons.DELETE.getDescriptor(), neoGraphViewPart );
         setEnabled( false );
     }
 

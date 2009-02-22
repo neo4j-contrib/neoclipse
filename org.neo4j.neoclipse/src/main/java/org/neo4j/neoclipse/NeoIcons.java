@@ -20,146 +20,108 @@ import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 
 /**
- * This class manages neo icons.
+ * This enum manages neo icons.
  * @author Peter H&auml;nsgen
+ * @author Anders Nawroth
  */
-public final class NeoIcons
+public enum NeoIcons
 {
-    /*
-     * Some constants representing icons.
-     */
-    public static final String HOME = "home";
-    public static final String BACK_ENABLED = "back_enabled";
-    public static final String BACK_DISABLED = "back_disabled";
-    public static final String FORWARD_ENABLED = "forward_enabled";
-    public static final String FORWARD_DISABLED = "forward_disabled";
-    public static final String REFRESH = "refresh";
-    public static final String ZOOM = "zoom";
-    public static final String PLUS_ENABLED = "plus_enabled";
-    public static final String PLUS_DISABLED = "plus_disabled";
-    public static final String MINUS_ENABLED = "minus_enabled";
-    public static final String MINUS_DISABLED = "minus_disabled";
-    public static final String GRID = "grid";
-    public static final String RADIAL = "radial";
-    public static final String SPRING = "spring";
-    public static final String TREE = "tree";
-    public static final String NEO = "small";
-    public static final String NEO_ROOT = "root";
-    public static final String HELP = "help";
-    public static final String DELETE = "delete";
-    public static final String COPY = "copy";
-    public static final String NEW = "new";
-    public static final String RENAME = "rename";
-    public static final String PASTE = "paste";
-    public static final String INCOMING = "incoming";
-    public static final String OUTGOING = "outgoing";
-    public static final String CLEAR = "clear";
-    /**
-     * The image registry.
-     */
-    protected static ImageRegistry reg;
-    /**
-     * Shared Eclipse UI icons.
-     */
-    protected static ISharedImages sharedImages;
+    NEO( "small", path( "obj16/neo-16.png" ) ),
+    NEO_ROOT( "root", path( "enabled/home.gif" ) ),
+    HELP( "help", shared( ISharedImages.IMG_LCL_LINKTO_HELP ) ),
+    // navigation
+    HOME( "home", path( "enabled/home.gif" ) ),
+    BACK_ENABLED( "back_enabled", shared( ISharedImages.IMG_TOOL_BACK ) ),
+    BACK_DISABLED( "back_disabled",
+        shared( ISharedImages.IMG_TOOL_BACK_DISABLED ) ),
+    FORWARD_ENABLED( "forward_enabled", shared( ISharedImages.IMG_TOOL_FORWARD ) ),
+    FORWARD_DISABLED( "forward_disabled",
+        shared( ISharedImages.IMG_TOOL_FORWARD_DISABLED ) ), REFRESH(
+        "refresh", path( "enabled/refresh.gif" ) ), ZOOM( "zoom",
+        path( "enabled/zoom.gif" ) ),
+    // traversal depth
+    PLUS_ENABLED( "plus_enabled", path( "enabled/plus.gif" ) ), PLUS_DISABLED(
+        "plus_disabled", path( "disabled/plus.gif" ) ), MINUS_ENABLED(
+        "minus_enabled", path( "enabled/minus.gif" ) ), MINUS_DISABLED(
+        "minus_disabled", path( "disabled/minus.gif" ) ),
+    // layouts
+    GRID( "grid", path( "enabled/grid.gif" ) ), RADIAL( "radial",
+        path( "enabled/radial.gif" ) ), SPRING( "spring",
+        path( "enabled/spring.gif" ) ),
+    TREE( "tree", path( "enabled/tree.gif" ) ),
+    // edit actions
+    DELETE( "delete", shared( ISharedImages.IMG_TOOL_DELETE ) ), COPY( "copy",
+        shared( ISharedImages.IMG_TOOL_COPY ) ), NEW( "new",
+        shared( ISharedImages.IMG_TOOL_NEW_WIZARD ) ), RENAME( "rename",
+        shared( ISharedImages.IMG_TOOL_REDO ) ), PASTE( "paste",
+        shared( ISharedImages.IMG_TOOL_PASTE ) ),
+    // relationship types actions
+    INCOMING( "incoming", shared( ISharedImages.IMG_TOOL_BACK ) ), OUTGOING(
+        "outgoing", shared( ISharedImages.IMG_TOOL_FORWARD ) ), CLEAR( "clear",
+        shared( ISharedImages.IMG_TOOL_UNDO ) );
 
-    /**
-     * Prevents instantiation.
-     */
-    private NeoIcons()
+    private static final String ICON_LOCATION = "icons/";
+    private static ImageRegistry reg = null;
+    private static ISharedImages sharedImages = null;
+
+    private final String key;
+
+    private NeoIcons( final String key, final ImageDescriptor imgDes )
     {
-        // no instances
+        this.key = key;
+        getRegistry().put( key, imgDes );
     }
 
-    /**
-     * Initializes the neo images.
-     */
-    public static void init( Activator activator )
+    private NeoIcons( final String key, final Image image )
     {
-        reg = activator.getImageRegistry();
-        sharedImages = PlatformUI.getWorkbench().getSharedImages();
-        reg.put( NeoIcons.NEO, Activator.imageDescriptorFromPlugin(
-            Activator.PLUGIN_ID, "icons/obj16/neo-16.png" ) );
-        reg.put( NeoIcons.NEO_ROOT, Activator.imageDescriptorFromPlugin(
-            Activator.PLUGIN_ID, "icons/enabled/home.gif" ) );
-        // help icon
-        reg.put( NeoIcons.HELP, sharedImages
-            .getImage( ISharedImages.IMG_LCL_LINKTO_HELP ) );
-        // navigation
-        reg.put( NeoIcons.HOME, Activator.imageDescriptorFromPlugin(
-            Activator.PLUGIN_ID, "icons/enabled/home.gif" ) );
-        reg.put( NeoIcons.BACK_ENABLED, sharedImages
-            .getImage( ISharedImages.IMG_TOOL_BACK ) );
-        reg.put( NeoIcons.BACK_DISABLED, sharedImages
-            .getImage( ISharedImages.IMG_TOOL_BACK_DISABLED ) );
-        reg.put( NeoIcons.FORWARD_ENABLED, sharedImages
-            .getImage( ISharedImages.IMG_TOOL_FORWARD ) );
-        reg.put( NeoIcons.FORWARD_DISABLED, sharedImages
-            .getImage( ISharedImages.IMG_TOOL_FORWARD_DISABLED ) );
-        // misc
-        reg.put( NeoIcons.REFRESH, Activator.imageDescriptorFromPlugin(
-            Activator.PLUGIN_ID, "icons/enabled/refresh.gif" ) );
-        reg.put( NeoIcons.ZOOM, Activator.imageDescriptorFromPlugin(
-            Activator.PLUGIN_ID, "icons/enabled/zoom.gif" ) );
-        // traversal depth
-        reg.put( NeoIcons.PLUS_ENABLED, Activator.imageDescriptorFromPlugin(
-            Activator.PLUGIN_ID, "icons/enabled/plus.gif" ) );
-        reg.put( NeoIcons.PLUS_DISABLED, Activator.imageDescriptorFromPlugin(
-            Activator.PLUGIN_ID, "icons/disabled/plus.gif" ) );
-        reg.put( NeoIcons.MINUS_ENABLED, Activator.imageDescriptorFromPlugin(
-            Activator.PLUGIN_ID, "icons/enabled/minus.gif" ) );
-        reg.put( NeoIcons.MINUS_DISABLED, Activator.imageDescriptorFromPlugin(
-            Activator.PLUGIN_ID, "icons/disabled/minus.gif" ) );
-        // layouts
-        reg.put( NeoIcons.GRID, Activator.imageDescriptorFromPlugin(
-            Activator.PLUGIN_ID, "icons/enabled/grid.gif" ) );
-        reg.put( NeoIcons.RADIAL, Activator.imageDescriptorFromPlugin(
-            Activator.PLUGIN_ID, "icons/enabled/radial.gif" ) );
-        reg.put( NeoIcons.SPRING, Activator.imageDescriptorFromPlugin(
-            Activator.PLUGIN_ID, "icons/enabled/spring.gif" ) );
-        reg.put( NeoIcons.TREE, Activator.imageDescriptorFromPlugin(
-            Activator.PLUGIN_ID, "icons/enabled/tree.gif" ) );
-        // edit actions
-        reg.put( NeoIcons.DELETE, sharedImages
-            .getImage( ISharedImages.IMG_TOOL_DELETE ) );
-        reg.put( NeoIcons.COPY, sharedImages
-            .getImage( ISharedImages.IMG_TOOL_COPY ) );
-        reg.put( NeoIcons.NEW, sharedImages
-            .getImage( ISharedImages.IMG_TOOL_NEW_WIZARD ) );
-        reg.put( NeoIcons.RENAME, sharedImages
-            .getImage( ISharedImages.IMG_TOOL_REDO ) );
-        reg.put( NeoIcons.PASTE, sharedImages
-            .getImage( ISharedImages.IMG_TOOL_PASTE ) );
-        // relationship types actions
-        reg.put( NeoIcons.CLEAR, sharedImages
-            .getImage( ISharedImages.IMG_TOOL_UNDO ) );
-        reg.put( NeoIcons.INCOMING, sharedImages
-            .getImage( ISharedImages.IMG_TOOL_BACK ) );
-        reg.put( NeoIcons.OUTGOING, sharedImages
-            .getImage( ISharedImages.IMG_TOOL_FORWARD ) );
+        this.key = key;
+        getRegistry().put( key, image );
     }
 
-    /**
-     * Looks up the image for the given name.
-     */
-    public static Image getImage( String name )
+    private ImageRegistry getRegistry()
     {
         if ( reg == null )
         {
-            init( Activator.getDefault() );
+            reg = Activator.getDefault().getImageRegistry();
         }
-        return reg.get( name );
+        return reg;
+    }
+
+    private static Image shared( final String name )
+    {
+        return getShared().getImage( name );
+    }
+
+    private static ISharedImages getShared()
+    {
+        if ( sharedImages == null )
+        {
+            sharedImages = PlatformUI.getWorkbench().getSharedImages();
+        }
+        return sharedImages;
+    }
+
+    private static ImageDescriptor path( final String path )
+    {
+        return Activator.imageDescriptorFromPlugin( Activator.PLUGIN_ID,
+            ICON_LOCATION + path );
     }
 
     /**
-     * Looks up the image descriptor for the given name.
+     * Get image descriptor of icon.
+     * @return icon image descriptor
      */
-    public static ImageDescriptor getDescriptor( String name )
+    public ImageDescriptor getDescriptor()
     {
-        if ( reg == null )
-        {
-            init( Activator.getDefault() );
-        }
-        return reg.getDescriptor( name );
+        return getRegistry().getDescriptor( key );
+    }
+
+    /**
+     * Get icon image.
+     * @return icon image
+     */
+    public Image getImage()
+    {
+        return getRegistry().get( key );
     }
 }

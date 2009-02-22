@@ -39,7 +39,7 @@ public class ShowGridLayoutAction extends Action
         super( GRID_LAYOUT, Action.AS_RADIO_BUTTON );
         this.view = view;
         setToolTipText( GRID_LAYOUT );
-        setImageDescriptor( NeoIcons.getDescriptor( NeoIcons.GRID ) );
+        setImageDescriptor( NeoIcons.GRID.getDescriptor() );
         setChecked( false );
     }
 

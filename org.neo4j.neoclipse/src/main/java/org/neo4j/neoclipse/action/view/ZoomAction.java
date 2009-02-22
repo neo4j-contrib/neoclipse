@@ -46,7 +46,7 @@ public class ZoomAction extends Action implements IMenuCreator
         this.view = view;
         setMenuCreator( this );
         setToolTipText( ZOOM );
-        setImageDescriptor( NeoIcons.getDescriptor( NeoIcons.ZOOM ) );
+        setImageDescriptor( NeoIcons.ZOOM.getDescriptor() );
     }
 
     /**

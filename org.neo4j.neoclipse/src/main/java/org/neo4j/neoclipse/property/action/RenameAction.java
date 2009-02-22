@@ -28,8 +28,7 @@ public class RenameAction extends PropertyAction
     public RenameAction( final Composite parent,
         final NeoPropertySheetPage propertySheet )
     {
-        super( "Rename", NeoIcons.getDescriptor( NeoIcons.RENAME ), parent,
-            propertySheet );
+        super( "Rename", NeoIcons.RENAME.getDescriptor(), parent, propertySheet );
     }
 
     @Override

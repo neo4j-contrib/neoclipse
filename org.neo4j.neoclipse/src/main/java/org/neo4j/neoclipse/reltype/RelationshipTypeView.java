@@ -186,8 +186,8 @@ public class RelationshipTypeView extends ViewPart implements
         };
         markIncomingAction
             .setToolTipText( "Mark nodes with incoming relationship of this type." );
-        markIncomingAction.setImageDescriptor( NeoIcons
-            .getDescriptor( NeoIcons.INCOMING ) );
+        markIncomingAction.setImageDescriptor( NeoIcons.INCOMING
+            .getDescriptor() );
         markIncomingAction.setEnabled( false );
 
         markOutgoingAction = new Action( "Mark outgoing" )
@@ -205,8 +205,8 @@ public class RelationshipTypeView extends ViewPart implements
         };
         markOutgoingAction
             .setToolTipText( "Mark nodes with outgoing relationship of this type." );
-        markOutgoingAction.setImageDescriptor( NeoIcons
-            .getDescriptor( NeoIcons.OUTGOING ) );
+        markOutgoingAction.setImageDescriptor( NeoIcons.OUTGOING
+            .getDescriptor() );
         markOutgoingAction.setEnabled( false );
 
         clearMarkedAction = new Action( "Clear marked elements" )
@@ -219,8 +219,7 @@ public class RelationshipTypeView extends ViewPart implements
                 setEnabled( false );
             }
         };
-        clearMarkedAction.setImageDescriptor( NeoIcons
-            .getDescriptor( NeoIcons.CLEAR ) );
+        clearMarkedAction.setImageDescriptor( NeoIcons.CLEAR.getDescriptor() );
         clearMarkedAction.setEnabled( false );
 
         newAction = new Action( "Create new" )
@@ -241,7 +240,7 @@ public class RelationshipTypeView extends ViewPart implements
             }
         };
         newAction.setToolTipText( "Create new relationship type." );
-        newAction.setImageDescriptor( NeoIcons.getDescriptor( NeoIcons.NEW ) );
+        newAction.setImageDescriptor( NeoIcons.NEW.getDescriptor() );
 
         doubleClickAction = new Action( "Mark relationships" )
         {

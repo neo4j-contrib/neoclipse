@@ -39,7 +39,7 @@ public class ShowRadialLayoutAction extends Action
         super( RADIAL_LAYOUT, Action.AS_RADIO_BUTTON );
         this.view = view;
         setToolTipText( RADIAL_LAYOUT );
-        setImageDescriptor( NeoIcons.getDescriptor( NeoIcons.RADIAL ) );
+        setImageDescriptor( NeoIcons.RADIAL.getDescriptor() );
         setChecked( false );
     }
 

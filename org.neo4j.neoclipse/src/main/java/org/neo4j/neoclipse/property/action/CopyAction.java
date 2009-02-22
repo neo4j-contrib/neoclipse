@@ -43,8 +43,7 @@ public class CopyAction extends PropertyAction
     public CopyAction( final Composite parent,
         final NeoPropertySheetPage propertySheet )
     {
-        super( "Copy", NeoIcons.getDescriptor( NeoIcons.COPY ), parent,
-            propertySheet );
+        super( "Copy", NeoIcons.COPY.getDescriptor(), parent, propertySheet );
         shell = propertySheet.getControl().getShell();
     }
 

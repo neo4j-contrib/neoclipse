@@ -39,7 +39,7 @@ public class ShowSpringLayoutAction extends Action
         super( SPRING_LAYOUT, Action.AS_RADIO_BUTTON );
         this.view = view;
         setToolTipText( SPRING_LAYOUT );
-        setImageDescriptor( NeoIcons.getDescriptor( NeoIcons.SPRING ) );
+        setImageDescriptor( NeoIcons.SPRING.getDescriptor() );
         setChecked( true );
     }
 

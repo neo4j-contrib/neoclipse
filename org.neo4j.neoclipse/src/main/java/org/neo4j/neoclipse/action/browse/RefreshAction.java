@@ -38,7 +38,7 @@ public class RefreshAction extends Action
         super( REFRESH, Action.AS_PUSH_BUTTON );
         this.view = view;
         setToolTipText( REFRESH );
-        setImageDescriptor( NeoIcons.getDescriptor( NeoIcons.REFRESH ) );
+        setImageDescriptor( NeoIcons.REFRESH.getDescriptor() );
     }
 
     /**

@@ -37,9 +37,8 @@ public class GoForwardAction extends Action
         super( GO_FORWARD, Action.AS_PUSH_BUTTON );
         this.view = view;
         setToolTipText( GO_FORWARD );
-        setImageDescriptor( NeoIcons.getDescriptor( NeoIcons.FORWARD_ENABLED ) );
-        setDisabledImageDescriptor( NeoIcons
-            .getDescriptor( NeoIcons.FORWARD_DISABLED ) );
+        setImageDescriptor( NeoIcons.FORWARD_ENABLED.getDescriptor() );
+        setDisabledImageDescriptor( NeoIcons.FORWARD_DISABLED.getDescriptor() );
         setEnabled( false );
     }
 

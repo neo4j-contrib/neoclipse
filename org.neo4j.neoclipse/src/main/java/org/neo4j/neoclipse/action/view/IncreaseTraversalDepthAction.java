@@ -37,9 +37,8 @@ public class IncreaseTraversalDepthAction extends Action
         super( INCREASE_TRAVERSAL_DEPTH, Action.AS_PUSH_BUTTON );
         this.view = view;
         setToolTipText( INCREASE_TRAVERSAL_DEPTH );
-        setImageDescriptor( NeoIcons.getDescriptor( NeoIcons.PLUS_ENABLED ) );
-        setDisabledImageDescriptor( NeoIcons
-            .getDescriptor( NeoIcons.PLUS_DISABLED ) );
+        setImageDescriptor( NeoIcons.PLUS_ENABLED.getDescriptor() );
+        setDisabledImageDescriptor( NeoIcons.PLUS_DISABLED.getDescriptor() );
     }
 
     /**

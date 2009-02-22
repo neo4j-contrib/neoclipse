@@ -39,7 +39,7 @@ public class ShowTreeLayoutAction extends Action
         super( TREE_LAYOUT, Action.AS_RADIO_BUTTON );
         this.view = view;
         setToolTipText( TREE_LAYOUT );
-        setImageDescriptor( NeoIcons.getDescriptor( NeoIcons.TREE ) );
+        setImageDescriptor( NeoIcons.TREE.getDescriptor() );
         setChecked( false );
     }
 
