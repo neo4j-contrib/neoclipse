@@ -14,6 +14,7 @@
 package org.neo4j.neoclipse.reltype;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -73,9 +74,8 @@ public class RelationshipTypeView extends ViewPart implements
         .getInstance();
     private Action newAction;
     private Action addRelationship;
-    private Object[] nodePair = new Object[0];
     private Action addOutgoingNode;
-    private Node currentSelectedNode;
+    private List<Node> currentSelectedNodes = Collections.emptyList();
     private Action addIncomingNode;
 
     class NameSorter extends ViewerSorter
@@ -260,8 +260,8 @@ public class RelationshipTypeView extends ViewPart implements
             public void run()
             {
                 RelationshipType relType = getAddRelPreconditions();
-                Node source = (Node) nodePair[0];
-                Node dest = (Node) nodePair[1];
+                Node source = currentSelectedNodes.get( 0 );
+                Node dest = currentSelectedNodes.get( 1 );
                 createRelationship( source, dest, relType );
             }
         };
@@ -272,7 +272,7 @@ public class RelationshipTypeView extends ViewPart implements
             public void run()
             {
                 RelationshipType relType = getCurrentRelType();
-                createRelationship( currentSelectedNode, null, relType );
+                createRelationship( currentSelectedNodes, null, relType );
             }
         };
         addOutgoingNode.setImageDescriptor( NeoIcons.OUTGOING.getDescriptor() );
@@ -282,7 +282,7 @@ public class RelationshipTypeView extends ViewPart implements
             public void run()
             {
                 RelationshipType relType = getCurrentRelType();
-                createRelationship( null, currentSelectedNode, relType );
+                createRelationship( null, currentSelectedNodes, relType );
             }
         };
         addIncomingNode.setImageDescriptor( NeoIcons.INCOMING.getDescriptor() );
@@ -305,17 +305,35 @@ public class RelationshipTypeView extends ViewPart implements
             .getDescriptor() );
     }
 
+    private void createRelationship( Node source, Node dest,
+        RelationshipType relType )
+    {
+        List<Node> sourceNodes = null;
+        if ( source != null )
+        {
+            sourceNodes = new ArrayList<Node>();
+            sourceNodes.add( source );
+        }
+        List<Node> destNodes = null;
+        if ( dest != null )
+        {
+            destNodes = new ArrayList<Node>();
+            destNodes.add( dest );
+        }
+        createRelationship( sourceNodes, destNodes, relType );
+    }
+
     /**
      * Create relationship between two nodes. One node can be created, but not
      * both
-     * @param source
+     * @param sourceNodes
      *            source, is created if <code>null</code> is given
-     * @param dest
+     * @param destNodes
      *            destination, is created if <code>null</code> is given
      * @param relType
      */
-    private void createRelationship( Node source, Node dest,
-        RelationshipType relType )
+    private void createRelationship( List<Node> sourceNodes,
+        List<Node> destNodes, RelationshipType relType )
     {
         if ( relType == null )
         {
@@ -327,15 +345,23 @@ public class RelationshipTypeView extends ViewPart implements
         Transaction tx = ns.beginTx();
         try
         {
-            if ( dest == null )
+            if ( destNodes == null )
             {
-                dest = ns.createNode();
+                destNodes = new ArrayList<Node>();
+                destNodes.add( ns.createNode() );
             }
-            else if ( source == null )
+            else if ( sourceNodes == null )
             {
-                source = ns.createNode();
+                sourceNodes = new ArrayList<Node>();
+                sourceNodes.add( ns.createNode() );
             }
-            source.createRelationshipTo( dest, relType );
+            for ( Node source : sourceNodes )
+            {
+                for ( Node dest : destNodes )
+                {
+                    source.createRelationshipTo( dest, relType );
+                }
+            }
             tx.success();
         }
         catch ( Exception e )
@@ -351,12 +377,7 @@ public class RelationshipTypeView extends ViewPart implements
 
     private RelationshipType getAddRelPreconditions()
     {
-        if ( nodePair == null || nodePair.length != 2 )
-        {
-            // TODO err msg
-            return null;
-        }
-        if ( !(nodePair[0] instanceof Node && nodePair[1] instanceof Node) )
+        if ( currentSelectedNodes.isEmpty() || currentSelectedNodes.size() != 2 )
         {
             // TODO err msg
             return null;
@@ -487,6 +508,7 @@ public class RelationshipTypeView extends ViewPart implements
             graphView = (NeoGraphViewPart) part;
             setEnableAddRelationship( false );
             setEnableAddNode( false );
+            currentSelectedNodes = Collections.emptyList();
             if ( firstElement instanceof Relationship )
             {
                 RelationshipType currentSelection = ((Relationship) firstElement)
@@ -497,17 +519,26 @@ public class RelationshipTypeView extends ViewPart implements
             }
             else if ( firstElement instanceof Node )
             {
-                if ( parSs.size() == 1 )
+                boolean onlyNodes = true;
+                List<Node> nodes = new ArrayList<Node>();
+                for ( Object o : parSs.toList() )
                 {
-                    currentSelectedNode = (Node) firstElement;
-                    setEnableAddNode( true );
-                }
-                else if ( parSs.size() == 2 )
-                {
-                    Object secondElement = parSs.toArray()[1];
-                    if ( secondElement instanceof Node )
+                    if ( o instanceof Node )
                     {
-                        nodePair = parSs.toArray();
+                        nodes.add( (Node) o );
+                    }
+                    else
+                    {
+                        onlyNodes = false;
+                        break;
+                    }
+                }
+                if ( onlyNodes )
+                {
+                    currentSelectedNodes = nodes;
+                    setEnableAddNode( true );
+                    if ( currentSelectedNodes.size() == 2 )
+                    {
                         setEnableAddRelationship( true );
                     }
                 }
