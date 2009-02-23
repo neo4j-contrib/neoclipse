@@ -66,7 +66,7 @@ public class RelationshipTypeView extends ViewPart implements
     private Action markIncomingAction;
     private Action markOutgoingAction;
     private Action clearMarkedAction;
-    private Action doubleClickAction;
+    private Action markRelationshipAction;
     private RelationshipTypesProvider provider;
     private NeoGraphViewPart graphView = null;
     private NeoGraphLabelProvider graphLabelProvider = NeoGraphLabelProviderWrapper
@@ -165,7 +165,7 @@ public class RelationshipTypeView extends ViewPart implements
     {
         manager.add( markOutgoingAction );
         manager.add( markIncomingAction );
-        manager.add( doubleClickAction );
+        manager.add( markRelationshipAction );
         manager.add( addRelationship );
         manager.add( addOutgoingNode );
         manager.add( addIncomingNode );
@@ -183,7 +183,7 @@ public class RelationshipTypeView extends ViewPart implements
 
     private void makeActions()
     {
-        markIncomingAction = new Action( "Mark incoming nodes" )
+        markIncomingAction = new Action( "Mark destination nodes" )
         {
             public void run()
             {
@@ -197,12 +197,12 @@ public class RelationshipTypeView extends ViewPart implements
             }
         };
         markIncomingAction
-            .setToolTipText( "Mark nodes with incoming relationship of this type." );
-        markIncomingAction.setImageDescriptor( NeoIcons.INCOMING
+            .setToolTipText( "Mark destination nodes for relationships of this type." );
+        markIncomingAction.setImageDescriptor( NeoIcons.HIGHLIGHT_INCOMING
             .getDescriptor() );
         markIncomingAction.setEnabled( false );
 
-        markOutgoingAction = new Action( "Mark outgoing nodes" )
+        markOutgoingAction = new Action( "Mark source nodes" )
         {
             public void run()
             {
@@ -216,8 +216,8 @@ public class RelationshipTypeView extends ViewPart implements
             }
         };
         markOutgoingAction
-            .setToolTipText( "Mark nodes with outgoing relationship of this type." );
-        markOutgoingAction.setImageDescriptor( NeoIcons.OUTGOING
+            .setToolTipText( "Mark source nodes for relationships of this type." );
+        markOutgoingAction.setImageDescriptor( NeoIcons.HIGHLIGHT_OUTGOING
             .getDescriptor() );
         markOutgoingAction.setEnabled( false );
 
@@ -231,7 +231,10 @@ public class RelationshipTypeView extends ViewPart implements
                 setEnabled( false );
             }
         };
-        clearMarkedAction.setImageDescriptor( NeoIcons.CLEAR.getDescriptor() );
+        clearMarkedAction.setImageDescriptor( NeoIcons.CLEAR_ENABLED
+            .getDescriptor() );
+        clearMarkedAction.setDisabledImageDescriptor( NeoIcons.CLEAR_DISABLED
+            .getDescriptor() );
         clearMarkedAction.setEnabled( false );
 
         newAction = new Action( "Create new" )
@@ -264,9 +267,9 @@ public class RelationshipTypeView extends ViewPart implements
                 createRelationship( source, dest, relType );
             }
         };
-        addRelationship.setImageDescriptor( NeoIcons.NEW.getDescriptor() );
+        addRelationship.setImageDescriptor( NeoIcons.ADD.getDescriptor() );
 
-        addOutgoingNode = new Action( "Add node (outgoing)" )
+        addOutgoingNode = new Action( "Add node as destination" )
         {
             public void run()
             {
@@ -274,9 +277,12 @@ public class RelationshipTypeView extends ViewPart implements
                 createRelationship( currentSelectedNodes, null, relType );
             }
         };
-        addOutgoingNode.setImageDescriptor( NeoIcons.OUTGOING.getDescriptor() );
+        addOutgoingNode.setImageDescriptor( NeoIcons.ADD_OUTGOING
+            .getDescriptor() );
+        addOutgoingNode.setToolTipText( "Add a node with a relationship; "
+            + "the new node is the destination of the relationship(s)." );
 
-        addIncomingNode = new Action( "Add node (incoming)" )
+        addIncomingNode = new Action( "Add node as source" )
         {
             public void run()
             {
@@ -284,9 +290,12 @@ public class RelationshipTypeView extends ViewPart implements
                 createRelationship( null, currentSelectedNodes, relType );
             }
         };
-        addIncomingNode.setImageDescriptor( NeoIcons.INCOMING.getDescriptor() );
+        addIncomingNode.setImageDescriptor( NeoIcons.ADD_INCOMING
+            .getDescriptor() );
+        addIncomingNode.setToolTipText( "Add a node with a relationship; "
+            + "the new node is the source of the relationship(s)." );
 
-        doubleClickAction = new Action( "Mark relationships" )
+        markRelationshipAction = new Action( "Mark relationships" )
         {
             public void run()
             {
@@ -300,7 +309,7 @@ public class RelationshipTypeView extends ViewPart implements
                 clearMarkedAction.setEnabled( true );
             }
         };
-        doubleClickAction.setImageDescriptor( NeoIcons.RELATIONSHIP
+        markRelationshipAction.setImageDescriptor( NeoIcons.HIGHLIGHT
             .getDescriptor() );
     }
 
@@ -339,7 +348,7 @@ public class RelationshipTypeView extends ViewPart implements
             return;
         }
         NeoService ns = Activator.getDefault().getNeoServiceSafely();
-        if (ns == null)
+        if ( ns == null )
         {
             return;
         }
@@ -467,7 +476,7 @@ public class RelationshipTypeView extends ViewPart implements
         {
             public void doubleClick( DoubleClickEvent event )
             {
-                doubleClickAction.run();
+                markRelationshipAction.run();
             }
         } );
     }

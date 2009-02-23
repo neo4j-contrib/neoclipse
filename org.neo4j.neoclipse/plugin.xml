@@ -18,7 +18,7 @@
       <view
             category="org.neo4j.neoclipse.NeoCategory"
             class="org.neo4j.neoclipse.reltype.RelationshipTypeView"
-            icon="icons/obj16/neo-16.png"
+            icon="icons/obj16/types.gif"
             id="org.neo4j.neoclipse.reltype.RelationshipTypeView"
             name="Relationship Types">
       </view>

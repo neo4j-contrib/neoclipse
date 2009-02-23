@@ -37,13 +37,13 @@ public enum NeoIcons
     FORWARD_ENABLED( "forward_enabled", shared( ISharedImages.IMG_TOOL_FORWARD ) ),
     FORWARD_DISABLED( "forward_disabled",
         shared( ISharedImages.IMG_TOOL_FORWARD_DISABLED ) ), REFRESH(
-        "refresh", path( "enabled/refresh.gif" ) ), ZOOM( "zoom",
-        path( "enabled/zoom.gif" ) ),
+        "refresh", path( "enabled/refresh.gif" ) ),
+    ZOOM( "zoom", path( "enabled/zoom.gif" ) ),
     // traversal depth
     PLUS_ENABLED( "plus_enabled", path( "enabled/plus.gif" ) ), PLUS_DISABLED(
         "plus_disabled", path( "disabled/plus.gif" ) ), MINUS_ENABLED(
-        "minus_enabled", path( "enabled/minus.gif" ) ), MINUS_DISABLED(
-        "minus_disabled", path( "disabled/minus.gif" ) ),
+        "minus_enabled", path( "enabled/minus.gif" ) ),
+    MINUS_DISABLED( "minus_disabled", path( "disabled/minus.gif" ) ),
     // layouts
     GRID( "grid", path( "enabled/grid.gif" ) ), RADIAL( "radial",
         path( "enabled/radial.gif" ) ), SPRING( "spring",
@@ -53,13 +53,20 @@ public enum NeoIcons
     DELETE( "delete", shared( ISharedImages.IMG_TOOL_DELETE ) ), COPY( "copy",
         shared( ISharedImages.IMG_TOOL_COPY ) ), NEW( "new",
         shared( ISharedImages.IMG_TOOL_NEW_WIZARD ) ), RENAME( "rename",
-        shared( ISharedImages.IMG_TOOL_REDO ) ), PASTE( "paste",
+        path( "obj16/change.gif" ) ), PASTE( "paste",
         shared( ISharedImages.IMG_TOOL_PASTE ) ),
     // relationship types actions
-    INCOMING( "incoming", shared( ISharedImages.IMG_TOOL_BACK ) ), OUTGOING(
-        "outgoing", shared( ISharedImages.IMG_TOOL_FORWARD ) ), CLEAR( "clear",
-        shared( ISharedImages.IMG_TOOL_UNDO ) ), RELATIONSHIP( "relationship",
-        shared( ISharedImages.IMG_TOOL_UP ) );
+    ADD( "add", path( "obj16/add.gif" ) ), ADD_INCOMING( "add_incoming",
+        path( "obj16/add_incoming.gif" ) ), ADD_OUTGOING( "add_outgoing",
+        path( "obj16/add_outgoing.gif" ) ), HIGHLIGHT( "highlight",
+        path( "obj16/highlight.gif" ) ), HIGHLIGHT_INCOMING(
+        "highlight_incoming", path( "obj16/highlight_incoming.gif" ) ),
+    HIGHLIGHT_OUTGOING( "highlight_outgoing",
+        path( "obj16/highlight_outgoing.gif" ) ), INCOMING( "incoming",
+        shared( ISharedImages.IMG_TOOL_BACK ) ), OUTGOING( "outgoing",
+        shared( ISharedImages.IMG_TOOL_FORWARD ) ), CLEAR_ENABLED(
+        "clear_enabled", path( "enabled/clear.gif" ) ), CLEAR_DISABLED(
+        "clear_disabled", path( "disabled/clear.gif" ) );
 
     private static final String ICON_LOCATION = "icons/";
     private static ImageRegistry reg = null;
