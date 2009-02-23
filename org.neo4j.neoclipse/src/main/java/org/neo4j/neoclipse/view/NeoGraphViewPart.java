@@ -183,8 +183,7 @@ public class NeoGraphViewPart extends ViewPart implements
         {
             return (Node) node;
         }
-        NeoServiceManager sm = Activator.getDefault().getNeoServiceManager();
-        NeoService ns = sm.getNeoService();
+        NeoService ns = Activator.getDefault().getNeoServiceSafely();
         if ( ns != null )
         {
             return ns.getReferenceNode();
@@ -479,8 +478,7 @@ public class NeoGraphViewPart extends ViewPart implements
      */
     public void showReferenceNode()
     {
-        NeoServiceManager sm = Activator.getDefault().getNeoServiceManager();
-        NeoService ns = sm.getNeoService();
+        NeoService ns = Activator.getDefault().getNeoServiceSafely();
         if ( ns != null )
         {
             Transaction txn = ns.beginTx();
@@ -503,8 +501,7 @@ public class NeoGraphViewPart extends ViewPart implements
      */
     public void showSomeNode()
     {
-        NeoServiceManager sm = Activator.getDefault().getNeoServiceManager();
-        NeoService ns = sm.getNeoService();
+        NeoService ns = Activator.getDefault().getNeoServiceSafely();
         if ( ns != null )
         {
             Transaction txn = ns.beginTx();
@@ -550,8 +547,7 @@ public class NeoGraphViewPart extends ViewPart implements
      */
     public void showNode( long nodeId )
     {
-        NeoServiceManager sm = Activator.getDefault().getNeoServiceManager();
-        NeoService ns = sm.getNeoService();
+        NeoService ns = Activator.getDefault().getNeoServiceSafely();
         if ( ns != null )
         {
             Transaction txn = ns.beginTx();
@@ -572,8 +568,7 @@ public class NeoGraphViewPart extends ViewPart implements
      */
     public void showNode( Node node )
     {
-        NeoServiceManager sm = Activator.getDefault().getNeoServiceManager();
-        NeoService ns = sm.getNeoService();
+        NeoService ns = Activator.getDefault().getNeoServiceSafely();
         if ( ns != null )
         {
             Transaction txn = ns.beginTx();
@@ -601,8 +596,7 @@ public class NeoGraphViewPart extends ViewPart implements
      */
     public void incTraversalDepth()
     {
-        NeoServiceManager sm = Activator.getDefault().getNeoServiceManager();
-        NeoService ns = sm.getNeoService();
+        NeoService ns = Activator.getDefault().getNeoServiceSafely();
         if ( ns != null )
         {
             Transaction txn = ns.beginTx();
@@ -630,9 +624,7 @@ public class NeoGraphViewPart extends ViewPart implements
     {
         if ( traversalDepth > 0 )
         {
-            NeoServiceManager sm = Activator.getDefault()
-                .getNeoServiceManager();
-            NeoService ns = sm.getNeoService();
+            NeoService ns = Activator.getDefault().getNeoServiceSafely();
             if ( ns != null )
             {
                 Transaction txn = ns.beginTx();
@@ -659,8 +651,7 @@ public class NeoGraphViewPart extends ViewPart implements
      */
     public void refresh()
     {
-        NeoServiceManager sm = Activator.getDefault().getNeoServiceManager();
-        NeoService ns = sm.getNeoService();
+        NeoService ns = Activator.getDefault().getNeoServiceSafely();
         if ( ns != null )
         {
             Transaction txn = ns.beginTx();
@@ -681,8 +672,7 @@ public class NeoGraphViewPart extends ViewPart implements
      */
     public void refreshPreserveLayout()
     {
-        NeoServiceManager sm = Activator.getDefault().getNeoServiceManager();
-        NeoService ns = sm.getNeoService();
+        NeoService ns = Activator.getDefault().getNeoServiceSafely();
         if ( ns != null )
         {
             Transaction tn = ns.beginTx();
@@ -795,10 +785,11 @@ public class NeoGraphViewPart extends ViewPart implements
             if ( (s != null) && (s instanceof Node) )
             {
                 Node node = (Node) s;
-                NeoServiceManager sm = Activator.getDefault()
-                    .getNeoServiceManager();
-                NeoService ns = sm.getNeoService();
-                Transaction txn = ns.beginTx();
+                Transaction txn = Activator.getDefault().beginNeoTxSafely();
+                if ( txn == null )
+                {
+                    return;
+                }
                 try
                 {
                     if ( viewer != event.getViewer() )

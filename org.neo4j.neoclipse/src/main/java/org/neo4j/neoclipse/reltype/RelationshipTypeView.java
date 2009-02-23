@@ -53,7 +53,6 @@ import org.neo4j.api.core.RelationshipType;
 import org.neo4j.api.core.Transaction;
 import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.NeoIcons;
-import org.neo4j.neoclipse.neo.NeoServiceManager;
 import org.neo4j.neoclipse.view.NeoGraphLabelProvider;
 import org.neo4j.neoclipse.view.NeoGraphLabelProviderWrapper;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
@@ -339,9 +338,11 @@ public class RelationshipTypeView extends ViewPart implements
         {
             return;
         }
-        NeoServiceManager serviceManager = Activator.getDefault()
-            .getNeoServiceManager();
-        NeoService ns = serviceManager.getNeoService();
+        NeoService ns = Activator.getDefault().getNeoServiceSafely();
+        if (ns == null)
+        {
+            return;
+        }
         Transaction tx = ns.beginTx();
         try
         {
@@ -427,13 +428,12 @@ public class RelationshipTypeView extends ViewPart implements
             if ( o instanceof Relationship )
             {
                 Relationship rel = (Relationship) o;
-                if ( rel.getType().equals( relType ) )
+                if ( rel.isType( relType ) )
                 {
                     rels.add( rel );
                 }
             }
         }
-        // gViewer.setSelection( new StructuredSelection( rels ), true );
         graphLabelProvider.addMarkedRels( rels );
         gViewer.refresh( true );
     }
@@ -457,7 +457,6 @@ public class RelationshipTypeView extends ViewPart implements
                 }
             }
         }
-        // gViewer.setSelection( new StructuredSelection( nodes ), true );
         graphLabelProvider.addMarkedNodes( nodes );
         gViewer.refresh( true );
     }

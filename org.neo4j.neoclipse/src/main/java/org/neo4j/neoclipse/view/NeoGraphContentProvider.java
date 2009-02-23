@@ -20,6 +20,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.zest.core.viewers.IGraphEntityRelationshipContentProvider;
 import org.neo4j.api.core.Direction;
 import org.neo4j.api.core.EmbeddedNeo;
+import org.neo4j.api.core.NeoService;
 import org.neo4j.api.core.Node;
 import org.neo4j.api.core.Relationship;
 import org.neo4j.api.core.RelationshipType;
@@ -81,8 +82,14 @@ public class NeoGraphContentProvider implements
     {
         Node node = (Node) inputElement;
         List<Object> relDirList = new ArrayList<Object>();
-        for ( RelationshipType relType : ((EmbeddedNeo) Activator.getDefault()
-            .getNeoServiceManager().getNeoService()).getRelationshipTypes() )
+        final NeoService neoService = Activator.getDefault()
+            .getNeoServiceSafely();
+        if ( neoService == null )
+        {
+            return new Node[] { node };
+        }
+        for ( RelationshipType relType : ((EmbeddedNeo) neoService)
+            .getRelationshipTypes() )
         {
             relDirList.add( relType );
             relDirList.add( Direction.BOTH );

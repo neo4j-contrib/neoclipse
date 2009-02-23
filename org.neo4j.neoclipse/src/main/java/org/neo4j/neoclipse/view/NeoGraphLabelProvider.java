@@ -46,7 +46,6 @@ import org.neo4j.neoclipse.action.decorate.rel.ShowRelationshipLabelAction;
 import org.neo4j.neoclipse.action.decorate.rel.ShowRelationshipTypesAction;
 import org.neo4j.neoclipse.decorate.SimpleGraphDecorator;
 import org.neo4j.neoclipse.decorate.SimpleGraphDecorator.Settings;
-import org.neo4j.neoclipse.neo.NeoServiceManager;
 import org.neo4j.neoclipse.preference.NeoPreferences;
 
 /**
@@ -119,8 +118,7 @@ public class NeoGraphLabelProvider extends LabelProvider implements
         refreshRelPropertyNames();
         refreshNodeIconPropertyNames();
         // get reference node
-        NeoServiceManager sm = Activator.getDefault().getNeoServiceManager();
-        NeoService ns = sm.getNeoService();
+        NeoService ns = Activator.getDefault().getNeoServiceSafely();
         if ( ns != null )
         {
             Transaction txn = ns.beginTx();
@@ -454,7 +452,7 @@ public class NeoGraphLabelProvider extends LabelProvider implements
 
     public int getLineWidth( Object rel )
     {
-        if (rel instanceof Relationship && markedRels.contains( rel ))
+        if ( rel instanceof Relationship && markedRels.contains( rel ) )
         {
             return graphDecorator.getMarkedLineWidth();
         }

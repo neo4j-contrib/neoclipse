@@ -15,7 +15,9 @@ package org.neo4j.neoclipse;
 
 import org.eclipse.core.runtime.Preferences.IPropertyChangeListener;
 import org.eclipse.core.runtime.Preferences.PropertyChangeEvent;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.neo4j.api.core.NeoService;
 import org.neo4j.api.core.Transaction;
 import org.neo4j.neoclipse.neo.NeoServiceManager;
 import org.neo4j.neoclipse.preference.NeoPreferences;
@@ -129,5 +131,51 @@ public class Activator extends AbstractUIPlugin
     public Transaction beginNeoTx()
     {
         return getNeoServiceManager().getNeoService().beginTx();
+    }
+
+    /**
+     * Get the current NeoService. Returns <code>null</code> on failure, after
+     * showing appropriate error messages.
+     * @return current neo service
+     */
+    public NeoService getNeoServiceSafely()
+    {
+        NeoServiceManager sm = Activator.getDefault().getNeoServiceManager();
+        if ( sm == null )
+        {
+            MessageDialog.openError( null, "Error",
+                "The Neo service manager is not available." );
+            return null;
+        }
+        NeoService ns = sm.getNeoService();
+        if ( ns == null )
+        {
+            MessageDialog.openError( null, "Error",
+                "The Neo service is not available." );
+            return null;
+        }
+        return ns;
+    }
+
+    /**
+     * Start a new neo4j transaction. Returns <code>null</code> on failure,
+     * after showing appropriate error messages.
+     * @return the transaction
+     */
+    public Transaction beginNeoTxSafely()
+    {
+        NeoService ns = getNeoServiceSafely();
+        if (ns == null)
+        {
+            return null;
+        }
+        final Transaction tx = ns.beginTx();
+        if ( tx == null )
+        {
+            MessageDialog.openError( null, "Error",
+                "Could not start a Neo transaction." );
+            return null;
+        }
+        return tx;
     }
 }

@@ -49,7 +49,8 @@ public class BrowserHistory
 
         /**
          * Create a state.
-         * @param node the starting point of this state
+         * @param node
+         *            the starting point of this state
          */
         public BrowserState( Node node )
         {
@@ -72,7 +73,7 @@ public class BrowserHistory
         public Node getNode()
         {
             NeoService neoService = Activator.getDefault()
-                .getNeoServiceManager().getNeoService();
+                .getNeoServiceSafely();
             if ( neoService != null )
             {
                 try
@@ -138,7 +139,8 @@ public class BrowserHistory
 
     /**
      * Get node in list from position.
-     * @param pos position in state list
+     * @param pos
+     *            position in state list
      * @return node at the position or null
      */
     private Node getNode( int pos )
@@ -166,7 +168,8 @@ public class BrowserHistory
 
     /**
      * Add a new state.
-     * @param node starting point of state
+     * @param node
+     *            starting point of state
      */
     public void add( Node node )
     {

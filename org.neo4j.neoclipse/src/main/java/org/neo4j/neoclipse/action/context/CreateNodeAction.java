@@ -19,6 +19,7 @@ import org.neo4j.api.core.Node;
 import org.neo4j.api.core.PropertyContainer;
 import org.neo4j.api.core.Relationship;
 import org.neo4j.api.core.Transaction;
+import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.NeoIcons;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
@@ -43,7 +44,7 @@ public class CreateNodeAction extends ContextAction
     @Override
     protected void performOperation( PropertyContainer container )
     {
-        NeoService ns = getNeoService();
+        NeoService ns = Activator.getDefault().getNeoServiceSafely();
         if ( ns == null )
         {
             return;

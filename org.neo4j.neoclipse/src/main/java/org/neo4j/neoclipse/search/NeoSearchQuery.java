@@ -48,8 +48,8 @@ import org.neo4j.neoclipse.view.NeoGraphViewPart;
 public class NeoSearchQuery implements ISearchQuery
 {
     /**
-     * Dummy list to return an empty iterable&lt;Node&gt;
-     * when search can't find anything.
+     * Dummy list to return an empty iterable&lt;Node&gt; when search can't find
+     * anything.
      */
     private static final List<Node> EMPTY_NODE_LIST = Arrays
         .asList( new Node[0] );
@@ -128,8 +128,7 @@ public class NeoSearchQuery implements ISearchQuery
     public IStatus run( IProgressMonitor monitor )
         throws OperationCanceledException
     {
-        neoService = Activator.getDefault().getNeoServiceManager()
-            .getNeoService();
+        neoService = Activator.getDefault().getNeoServiceSafely();
         if ( neoService == null )
         {
             return new Status( IStatus.ERROR, Activator.PLUGIN_ID,

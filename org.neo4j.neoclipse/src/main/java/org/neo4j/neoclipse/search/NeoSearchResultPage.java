@@ -150,8 +150,7 @@ public class NeoSearchResultPage extends Page implements ISearchResultPage
      */
     protected void setInput( ISearchResult result )
     {
-        NeoService service = Activator.getDefault().getNeoServiceManager()
-            .getNeoService();
+        NeoService service = Activator.getDefault().getNeoServiceSafely();
         if ( service != null )
         {
             Transaction txn = service.beginTx();

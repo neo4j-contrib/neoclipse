@@ -20,6 +20,7 @@ import org.eclipse.ui.views.properties.IPropertySheetEntry;
 import org.neo4j.api.core.NeoService;
 import org.neo4j.api.core.PropertyContainer;
 import org.neo4j.api.core.Transaction;
+import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.NeoIcons;
 import org.neo4j.neoclipse.property.NeoPropertySheetPage;
 
@@ -36,7 +37,7 @@ public class RenameAction extends PropertyAction
         IPropertySheetEntry entry )
     {
         String key = entry.getDisplayName();
-        NeoService ns = getNeoService();
+        NeoService ns = Activator.getDefault().getNeoServiceSafely();
         if ( ns == null )
         {
             return;

@@ -23,7 +23,6 @@ import org.neo4j.api.core.PropertyContainer;
 import org.neo4j.api.core.Transaction;
 import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.NeoIcons;
-import org.neo4j.neoclipse.neo.NeoServiceManager;
 import org.neo4j.neoclipse.property.NeoPropertySheetPage;
 
 /**
@@ -60,8 +59,7 @@ public class PasteAction extends PropertyAction
      */
     protected void performOperation( PropertyContainer container )
     {
-        NeoServiceManager sm = Activator.getDefault().getNeoServiceManager();
-        NeoService ns = sm.getNeoService();
+        NeoService ns = Activator.getDefault().getNeoServiceSafely();
         if ( ns == null )
         {
             return;

@@ -14,11 +14,7 @@
 package org.neo4j.neoclipse.action.context;
 
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.neo4j.api.core.NeoService;
-import org.neo4j.neoclipse.Activator;
-import org.neo4j.neoclipse.neo.NeoServiceManager;
 
 /**
  * Base class for actions on context menus.
@@ -29,23 +25,5 @@ abstract public class BaseContextAction extends Action
     public BaseContextAction( final String name, final ImageDescriptor image )
     {
         super( name, image );
-    }
-
-    /**
-     * Get the current NeoService. Returns <code>null</code> on failure, after
-     * showing appropriate error messages.
-     * @return current neo service
-     */
-    public NeoService getNeoService()
-    {
-        NeoServiceManager sm = Activator.getDefault().getNeoServiceManager();
-        NeoService ns = sm.getNeoService();
-        if ( ns == null )
-        {
-            MessageDialog.openError( null, "Error",
-                "The Neo service is not available." );
-            return null;
-        }
-        return ns;
     }
 }

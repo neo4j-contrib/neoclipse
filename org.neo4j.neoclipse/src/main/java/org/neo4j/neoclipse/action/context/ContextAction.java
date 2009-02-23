@@ -18,8 +18,6 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.neo4j.api.core.PropertyContainer;
-import org.neo4j.api.core.Transaction;
-import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 abstract public class ContextAction extends BaseContextAction
@@ -78,30 +76,5 @@ abstract public class ContextAction extends BaseContextAction
             return null;
         }
         return (PropertyContainer) parFirstElement;
-    }
-
-    /**
-     * Get a new transaction from the current NeoService. Returns
-     * <code>null</code> on failure, after showing appropriate error messages.
-     * @return current neo service
-     */
-    protected Transaction getNeoTx()
-    {
-        Transaction tx = null;
-        try
-        {
-            tx = Activator.getDefault().beginNeoTx();
-        }
-        catch ( Exception e )
-        {
-            tx = null;
-        }
-        if ( tx == null )
-        {
-            MessageDialog.openError( null, "Error",
-                "The Neo service is not available." );
-            return null;
-        }
-        return tx;
     }
 }

@@ -23,7 +23,6 @@ import org.neo4j.api.core.EmbeddedNeo;
 import org.neo4j.api.core.NeoService;
 import org.neo4j.api.core.RelationshipType;
 import org.neo4j.neoclipse.Activator;
-import org.neo4j.neoclipse.neo.NeoServiceManager;
 import org.neo4j.neoclipse.view.NeoGraphLabelProviderWrapper;
 
 public class RelationshipTypesProvider implements IContentProvider,
@@ -42,9 +41,7 @@ public class RelationshipTypesProvider implements IContentProvider,
         if ( viewAll )
         {
             Set<RelationshipType> relDirList = new HashSet<RelationshipType>();
-            NeoServiceManager sm = Activator.getDefault()
-                .getNeoServiceManager();
-            NeoService ns = sm.getNeoService();
+            NeoService ns = Activator.getDefault().getNeoServiceSafely();
             if ( ns == null )
             {
                 // todo
