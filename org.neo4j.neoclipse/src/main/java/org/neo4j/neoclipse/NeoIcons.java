@@ -58,7 +58,8 @@ public enum NeoIcons
     // relationship types actions
     INCOMING( "incoming", shared( ISharedImages.IMG_TOOL_BACK ) ), OUTGOING(
         "outgoing", shared( ISharedImages.IMG_TOOL_FORWARD ) ), CLEAR( "clear",
-        shared( ISharedImages.IMG_TOOL_UNDO ) );
+        shared( ISharedImages.IMG_TOOL_UNDO ) ), RELATIONSHIP( "relationship",
+        shared( ISharedImages.IMG_TOOL_UP ) );
 
     private static final String ICON_LOCATION = "icons/";
     private static ImageRegistry reg = null;

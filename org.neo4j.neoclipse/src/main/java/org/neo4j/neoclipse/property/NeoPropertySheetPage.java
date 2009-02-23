@@ -124,7 +124,7 @@ public class NeoPropertySheetPage extends PropertySheetPage implements
     }
 
     /**
-     * Create the contect menu for this property sheet.
+     * Create the context menu for this property sheet.
      * @param parent
      */
     private void createMenu( final Composite parent )
@@ -169,7 +169,7 @@ public class NeoPropertySheetPage extends PropertySheetPage implements
      * Enable/disable actions that operate on an existing property.
      * @param enabled
      */
-    private void setRestrictedEnabled( final Boolean enabled )
+    private void setRestrictedEnabled( final boolean enabled )
     {
         if ( deleteAction != null )
         {

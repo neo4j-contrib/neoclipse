@@ -45,10 +45,14 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.zest.core.viewers.GraphViewer;
 import org.neo4j.api.core.Direction;
+import org.neo4j.api.core.NeoService;
 import org.neo4j.api.core.Node;
 import org.neo4j.api.core.Relationship;
 import org.neo4j.api.core.RelationshipType;
+import org.neo4j.api.core.Transaction;
+import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.NeoIcons;
+import org.neo4j.neoclipse.neo.NeoServiceManager;
 import org.neo4j.neoclipse.view.NeoGraphLabelProvider;
 import org.neo4j.neoclipse.view.NeoGraphLabelProviderWrapper;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
@@ -68,6 +72,11 @@ public class RelationshipTypeView extends ViewPart implements
     private NeoGraphLabelProvider graphLabelProvider = NeoGraphLabelProviderWrapper
         .getInstance();
     private Action newAction;
+    private Action addRelationship;
+    private Object[] nodePair = new Object[0];
+    private Action addOutgoingNode;
+    private Node currentSelectedNode;
+    private Action addIncomingNode;
 
     class NameSorter extends ViewerSorter
     {
@@ -155,8 +164,12 @@ public class RelationshipTypeView extends ViewPart implements
 
     private void fillContextMenu( IMenuManager manager )
     {
-        manager.add( markIncomingAction );
         manager.add( markOutgoingAction );
+        manager.add( markIncomingAction );
+        manager.add( doubleClickAction );
+        manager.add( addRelationship );
+        manager.add( addOutgoingNode );
+        manager.add( addIncomingNode );
         // Other plug-ins can contribute there actions here
         manager.add( new Separator( IWorkbenchActionConstants.MB_ADDITIONS ) );
     }
@@ -171,7 +184,7 @@ public class RelationshipTypeView extends ViewPart implements
 
     private void makeActions()
     {
-        markIncomingAction = new Action( "Mark incoming" )
+        markIncomingAction = new Action( "Mark incoming nodes" )
         {
             public void run()
             {
@@ -190,7 +203,7 @@ public class RelationshipTypeView extends ViewPart implements
             .getDescriptor() );
         markIncomingAction.setEnabled( false );
 
-        markOutgoingAction = new Action( "Mark outgoing" )
+        markOutgoingAction = new Action( "Mark outgoing nodes" )
         {
             public void run()
             {
@@ -242,6 +255,38 @@ public class RelationshipTypeView extends ViewPart implements
         newAction.setToolTipText( "Create new relationship type." );
         newAction.setImageDescriptor( NeoIcons.NEW.getDescriptor() );
 
+        addRelationship = new Action( "Add relationship" )
+        {
+            public void run()
+            {
+                RelationshipType relType = getAddRelPreconditions();
+                Node source = (Node) nodePair[0];
+                Node dest = (Node) nodePair[1];
+                createRelationship( source, dest, relType );
+            }
+        };
+        addRelationship.setImageDescriptor( NeoIcons.NEW.getDescriptor() );
+
+        addOutgoingNode = new Action( "Add node (outgoing)" )
+        {
+            public void run()
+            {
+                RelationshipType relType = getCurrentRelType();
+                createRelationship( currentSelectedNode, null, relType );
+            }
+        };
+        addOutgoingNode.setImageDescriptor( NeoIcons.OUTGOING.getDescriptor() );
+
+        addIncomingNode = new Action( "Add node (incoming)" )
+        {
+            public void run()
+            {
+                RelationshipType relType = getCurrentRelType();
+                createRelationship( null, currentSelectedNode, relType );
+            }
+        };
+        addIncomingNode.setImageDescriptor( NeoIcons.INCOMING.getDescriptor() );
+
         doubleClickAction = new Action( "Mark relationships" )
         {
             public void run()
@@ -256,12 +301,85 @@ public class RelationshipTypeView extends ViewPart implements
                 clearMarkedAction.setEnabled( true );
             }
         };
+        doubleClickAction.setImageDescriptor( NeoIcons.RELATIONSHIP
+            .getDescriptor() );
+    }
+
+    /**
+     * Create relationship between two nodes. One node can be created, but not
+     * both
+     * @param source
+     *            source, is created if <code>null</code> is given
+     * @param dest
+     *            destination, is created if <code>null</code> is given
+     * @param relType
+     */
+    private void createRelationship( Node source, Node dest,
+        RelationshipType relType )
+    {
+        if ( relType == null )
+        {
+            return;
+        }
+        NeoServiceManager serviceManager = Activator.getDefault()
+            .getNeoServiceManager();
+        NeoService ns = serviceManager.getNeoService();
+        Transaction tx = ns.beginTx();
+        try
+        {
+            if ( dest == null )
+            {
+                dest = ns.createNode();
+            }
+            else if ( source == null )
+            {
+                source = ns.createNode();
+            }
+            source.createRelationshipTo( dest, relType );
+            tx.success();
+        }
+        catch ( Exception e )
+        {
+            e.printStackTrace();
+        }
+        finally
+        {
+            tx.finish();
+        }
+        graphView.refreshPreserveLayout();
+    }
+
+    private RelationshipType getAddRelPreconditions()
+    {
+        if ( nodePair == null || nodePair.length != 2 )
+        {
+            // TODO err msg
+            return null;
+        }
+        if ( !(nodePair[0] instanceof Node && nodePair[1] instanceof Node) )
+        {
+            // TODO err msg
+            return null;
+        }
+        RelationshipType relType = getCurrentRelType();
+        return relType;
     }
 
     private void setEnableRestrictedActions( boolean enabled )
     {
         markIncomingAction.setEnabled( enabled );
         markOutgoingAction.setEnabled( enabled );
+    }
+
+    private void setEnableAddRelationship( boolean enabled )
+    {
+        addRelationship.setEnabled( enabled );
+    }
+
+    private void setEnableAddNode( boolean enabled )
+    {
+        addOutgoingNode.setEnabled( enabled );
+        addIncomingNode.setEnabled( enabled );
     }
 
     private RelationshipType getCurrentRelType()
@@ -367,6 +485,8 @@ public class RelationshipTypeView extends ViewPart implements
         if ( part instanceof NeoGraphViewPart )
         {
             graphView = (NeoGraphViewPart) part;
+            setEnableAddRelationship( false );
+            setEnableAddNode( false );
             if ( firstElement instanceof Relationship )
             {
                 RelationshipType currentSelection = ((Relationship) firstElement)
@@ -374,6 +494,23 @@ public class RelationshipTypeView extends ViewPart implements
                 viewer
                     .setSelection( new StructuredSelection( currentSelection ) );
                 setEnableRestrictedActions( true );
+            }
+            else if ( firstElement instanceof Node )
+            {
+                if ( parSs.size() == 1 )
+                {
+                    currentSelectedNode = (Node) firstElement;
+                    setEnableAddNode( true );
+                }
+                else if ( parSs.size() == 2 )
+                {
+                    Object secondElement = parSs.toArray()[1];
+                    if ( secondElement instanceof Node )
+                    {
+                        nodePair = parSs.toArray();
+                        setEnableAddRelationship( true );
+                    }
+                }
             }
         }
         else if ( this.equals( part ) )

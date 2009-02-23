@@ -25,7 +25,7 @@ public class ShowRelationshipTypesAction extends Action
     /**
      * Default state for this view menu alternative.
      */
-    public static final boolean DEFAULT_STATE = true;
+    public static final boolean DEFAULT_STATE = false;
     /**
      * The view.
      */
