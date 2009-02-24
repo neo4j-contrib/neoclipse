@@ -61,6 +61,24 @@ public class RelationshipTypeView extends ViewPart implements
     ISelectionListener
 {
     public final static String ID = "org.neo4j.neoclipse.reltype.RelationshipTypeView";
+    private static final String MARK_RELATIONSHIPS_TOOL_TIP = "Mark all relationships of this type.";
+    private static final String NEW_RELTYPE_DIALOG_TEXT = "Please enter the name of the new relationships type";
+    private static final String NEW_RELTYPE_DIALOG_TITLE = "New relationship type entry";
+    private static final String MARK_RELATIONSHIPS_LABEL = "Mark relationships";
+    private static final String ADD_NODE_START_TOOL_TIP = "Add a node with a relationship; "
+        + "the new node is the start node of the relationship(s).";
+    private static final String ADD_NODE_START_LABEL = "Add node as start node";
+    private static final String ADD_NODE_END_TOOL_TIP = "Add a node with a relationship; "
+        + "the new node is the end node of the relationship(s).";
+    private static final String ADD_NODE_END_LABEL = "Add node as end node";
+    private static final String ADD_RELATIONSHIP_LABEL = "Add relationship";
+    private static final String CREATE_NEW_TOOL_TIP = "Create new relationship type.";
+    private static final String CREATE_NEW_LABEL = "Create new type";
+    private static final String CLEAR_HIGHLIGHT = "Remove highlighting";
+    private static final String MARK_START_NODES_TOOLTIP = "Mark start nodes for relationships of this type.";
+    private static final String MARK_START_NODES_LABEL = "Mark start nodes";
+    private static final String MARK_END_NODES_TOOLTIP = "Mark end nodes for relationships of this type.";
+    private static final String MARK_END_NODES_LABEL = "Mark end nodes";
     protected static final int OK = 0;
     private TableViewer viewer;
     private Action markIncomingAction;
@@ -183,7 +201,7 @@ public class RelationshipTypeView extends ViewPart implements
 
     private void makeActions()
     {
-        markIncomingAction = new Action( "Mark destination nodes" )
+        markIncomingAction = new Action( MARK_END_NODES_LABEL )
         {
             public void run()
             {
@@ -196,13 +214,12 @@ public class RelationshipTypeView extends ViewPart implements
                 clearMarkedAction.setEnabled( true );
             }
         };
-        markIncomingAction
-            .setToolTipText( "Mark destination nodes for relationships of this type." );
+        markIncomingAction.setToolTipText( MARK_END_NODES_TOOLTIP );
         markIncomingAction.setImageDescriptor( NeoIcons.HIGHLIGHT_INCOMING
             .getDescriptor() );
         markIncomingAction.setEnabled( false );
 
-        markOutgoingAction = new Action( "Mark source nodes" )
+        markOutgoingAction = new Action( MARK_START_NODES_LABEL )
         {
             public void run()
             {
@@ -215,13 +232,12 @@ public class RelationshipTypeView extends ViewPart implements
                 clearMarkedAction.setEnabled( true );
             }
         };
-        markOutgoingAction
-            .setToolTipText( "Mark source nodes for relationships of this type." );
+        markOutgoingAction.setToolTipText( MARK_START_NODES_TOOLTIP );
         markOutgoingAction.setImageDescriptor( NeoIcons.HIGHLIGHT_OUTGOING
             .getDescriptor() );
         markOutgoingAction.setEnabled( false );
 
-        clearMarkedAction = new Action( "Clear marked elements" )
+        clearMarkedAction = new Action( CLEAR_HIGHLIGHT )
         {
             public void run()
             {
@@ -237,14 +253,13 @@ public class RelationshipTypeView extends ViewPart implements
             .getDescriptor() );
         clearMarkedAction.setEnabled( false );
 
-        newAction = new Action( "Create new" )
+        newAction = new Action( CREATE_NEW_LABEL )
         {
             public void run()
             {
                 InputDialog input = new InputDialog( null,
-                    "New relationship type entry",
-                    "Please enter the name for the new relationships type",
-                    null, null );
+                    NEW_RELTYPE_DIALOG_TITLE, NEW_RELTYPE_DIALOG_TEXT, null,
+                    null );
                 if ( input.open() == OK && input.getReturnCode() == OK )
                 {
                     RelationshipType relType = createRelationshipType( input
@@ -254,10 +269,10 @@ public class RelationshipTypeView extends ViewPart implements
                 }
             }
         };
-        newAction.setToolTipText( "Create new relationship type." );
+        newAction.setToolTipText( CREATE_NEW_TOOL_TIP );
         newAction.setImageDescriptor( NeoIcons.NEW.getDescriptor() );
 
-        addRelationship = new Action( "Add relationship" )
+        addRelationship = new Action( ADD_RELATIONSHIP_LABEL )
         {
             public void run()
             {
@@ -269,7 +284,7 @@ public class RelationshipTypeView extends ViewPart implements
         };
         addRelationship.setImageDescriptor( NeoIcons.ADD.getDescriptor() );
 
-        addOutgoingNode = new Action( "Add node as destination" )
+        addOutgoingNode = new Action( ADD_NODE_END_LABEL )
         {
             public void run()
             {
@@ -279,10 +294,9 @@ public class RelationshipTypeView extends ViewPart implements
         };
         addOutgoingNode.setImageDescriptor( NeoIcons.ADD_OUTGOING
             .getDescriptor() );
-        addOutgoingNode.setToolTipText( "Add a node with a relationship; "
-            + "the new node is the destination of the relationship(s)." );
+        addOutgoingNode.setToolTipText( ADD_NODE_END_TOOL_TIP );
 
-        addIncomingNode = new Action( "Add node as source" )
+        addIncomingNode = new Action( ADD_NODE_START_LABEL )
         {
             public void run()
             {
@@ -292,10 +306,9 @@ public class RelationshipTypeView extends ViewPart implements
         };
         addIncomingNode.setImageDescriptor( NeoIcons.ADD_INCOMING
             .getDescriptor() );
-        addIncomingNode.setToolTipText( "Add a node with a relationship; "
-            + "the new node is the source of the relationship(s)." );
+        addIncomingNode.setToolTipText( ADD_NODE_START_TOOL_TIP );
 
-        markRelationshipAction = new Action( "Mark relationships" )
+        markRelationshipAction = new Action( MARK_RELATIONSHIPS_LABEL )
         {
             public void run()
             {
@@ -311,6 +324,7 @@ public class RelationshipTypeView extends ViewPart implements
         };
         markRelationshipAction.setImageDescriptor( NeoIcons.HIGHLIGHT
             .getDescriptor() );
+        markRelationshipAction.setToolTipText( MARK_RELATIONSHIPS_TOOL_TIP );
     }
 
     private void createRelationship( Node source, Node dest,
