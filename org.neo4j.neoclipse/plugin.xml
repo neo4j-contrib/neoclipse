@@ -121,5 +121,14 @@
              file="contexts.xml">
        </contexts>
     </extension>
+    <extension
+          point="org.eclipse.ui.perspectiveExtensions">
+       <perspectiveExtension
+             targetID="org.eclipse.ui.resourcePerspective">
+          <perspectiveShortcut
+                id="org.neo4j.neoclipse.NeoPerspective">
+          </perspectiveShortcut>
+       </perspectiveExtension>
+    </extension>
  
 </plugin>
