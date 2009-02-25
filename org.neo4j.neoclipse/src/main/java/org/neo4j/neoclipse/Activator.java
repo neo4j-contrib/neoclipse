@@ -16,6 +16,8 @@ package org.neo4j.neoclipse;
 import org.eclipse.core.runtime.Preferences.IPropertyChangeListener;
 import org.eclipse.core.runtime.Preferences.PropertyChangeEvent;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.preference.PreferenceDialog;
+import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.neo4j.api.core.NeoService;
 import org.neo4j.api.core.Transaction;
@@ -49,7 +51,6 @@ public class Activator extends AbstractUIPlugin
     {
         super.start( context );
         PLUGIN = this;
-        // System.out.println( "testing" );
         neoManager = new NeoServiceManager();
         PLUGIN.getPluginPreferences().addPropertyChangeListener(
             new IPropertyChangeListener()
@@ -125,15 +126,6 @@ public class Activator extends AbstractUIPlugin
     }
 
     /**
-     * Start a new neo4j transaction.
-     * @return the transaction
-     */
-    public Transaction beginNeoTx()
-    {
-        return getNeoServiceManager().getNeoService().beginTx();
-    }
-
-    /**
      * Get the current NeoService. Returns <code>null</code> on failure, after
      * showing appropriate error messages.
      * @return current neo service
@@ -150,9 +142,22 @@ public class Activator extends AbstractUIPlugin
         NeoService ns = sm.getNeoService();
         if ( ns == null )
         {
-            MessageDialog.openError( null, "Error",
-                "The Neo service is not available." );
-            return null;
+            // Shell shell =
+            // PLUGIN.getWorkbench().getActiveWorkbenchWindow().getShell();
+            PreferenceDialog pref = PreferencesUtil.createPreferenceDialogOn(
+                null, "org.neo4j.neoclipse.preference.NeoPreferencePage", null,
+                null );
+            if ( pref != null )
+            {
+                pref.open();
+                ns = sm.getNeoService();
+                if ( ns == null )
+                {
+                    MessageDialog.openError( null, "Error",
+                        "The Neo service is not available." );
+                    return null;
+                }
+            }
         }
         return ns;
     }
@@ -165,7 +170,7 @@ public class Activator extends AbstractUIPlugin
     public Transaction beginNeoTxSafely()
     {
         NeoService ns = getNeoServiceSafely();
-        if (ns == null)
+        if ( ns == null )
         {
             return null;
         }

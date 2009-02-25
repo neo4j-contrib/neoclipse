@@ -31,6 +31,10 @@
    </extension>
    <extension
          point="org.eclipse.ui.preferencePages">
+      <category
+            id="org.neo4j.neoclipse.NeoCategory"
+            name="Neo4j">
+      </category>
       <page
             category="org.neo4j.neoclipse.NeoCategory"
             class="org.neo4j.neoclipse.preference.NeoPreferencePage"

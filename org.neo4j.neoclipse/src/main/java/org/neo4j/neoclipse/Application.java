@@ -19,12 +19,12 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.application.WorkbenchAdvisor;
+import org.neo4j.neoclipse.perspective.NeoPerspectiveFactory;
 
 public class Application extends WorkbenchAdvisor implements IApplication
 {
     public Object start( IApplicationContext context ) throws Exception
     {
-//        System.out.println( "Hello world!" );
         Display display = PlatformUI.createDisplay();
         int returnCode = PlatformUI.createAndRunWorkbench( display, this );
         if ( returnCode == PlatformUI.RETURN_RESTART )
@@ -45,7 +45,7 @@ public class Application extends WorkbenchAdvisor implements IApplication
     @Override
     public String getInitialWindowPerspectiveId()
     {
-        return "org.neo4j.neoclipse.NeoPerspective";
+        return NeoPerspectiveFactory.ID;
     }
 
     public void preWindowOpen( IWorkbenchWindowConfigurer wwc )

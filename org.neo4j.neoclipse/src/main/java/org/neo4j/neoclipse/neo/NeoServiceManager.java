@@ -54,21 +54,22 @@ public class NeoServiceManager
             // determine the neo directory from the preferences
             String location = Activator.getDefault().getPreferenceStore()
                 .getString( NeoPreferences.DATABASE_LOCATION );
-            if ( (location != null) && (location.trim().length() > 0) )
+            if ( (location == null) || (location.trim().length() == 0) )
             {
-                // seems to be a valid directory
-                try
-                {
-                    neo = new EmbeddedNeo( location );
-                }
-                catch ( Exception e )
-                {
-                    e.printStackTrace(); // TODO real solution on exceptions
-                    System.exit( 1 );
-                }
-                // notify listeners
-                fireServiceChangedEvent( NeoServiceStatus.STARTED );
+                return;
             }
+            // seems to be a valid directory
+            try
+            {
+                neo = new EmbeddedNeo( location );
+            }
+            catch ( Exception e )
+            {
+                e.printStackTrace(); // TODO real solution on exceptions
+                System.exit( 1 );
+            }
+            // notify listeners
+            fireServiceChangedEvent( NeoServiceStatus.STARTED );
         }
     }
 

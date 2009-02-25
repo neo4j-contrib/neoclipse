@@ -59,7 +59,7 @@ public class PropertySource implements IPropertySource
      */
     public IPropertyDescriptor[] getPropertyDescriptors()
     {
-        Transaction tx = Activator.getDefault().beginNeoTx();
+        Transaction tx = Activator.getDefault().beginNeoTxSafely();
         try
         {
             List<IPropertyDescriptor> descs = new ArrayList<IPropertyDescriptor>();
@@ -90,7 +90,7 @@ public class PropertySource implements IPropertySource
      */
     public Object getPropertyValue( Object id )
     {
-        Transaction tx = Activator.getDefault().beginNeoTx();
+        Transaction tx = Activator.getDefault().beginNeoTxSafely();
         try
         {
             return getValue( id );
@@ -127,7 +127,7 @@ public class PropertySource implements IPropertySource
      */
     public boolean isPropertySet( Object id )
     {
-        Transaction tx = Activator.getDefault().beginNeoTx();
+        Transaction tx = Activator.getDefault().beginNeoTxSafely();
         try
         {
             return isSet( id );
@@ -192,7 +192,7 @@ public class PropertySource implements IPropertySource
                     "Input parsing resulted in null value." );
                 return;
             }
-            Transaction tx = Activator.getDefault().beginNeoTx();
+            Transaction tx = Activator.getDefault().beginNeoTxSafely();
             try
             {
                 container.setProperty( (String) id, o );
@@ -211,7 +211,7 @@ public class PropertySource implements IPropertySource
         else
         {
             // simply set the value
-            Transaction tx = Activator.getDefault().beginNeoTx();
+            Transaction tx = Activator.getDefault().beginNeoTxSafely();
             try
             {
                 container.setProperty( (String) id, value );
