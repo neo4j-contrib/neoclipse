@@ -31,6 +31,7 @@ Import-Package: org.eclipse.core.commands.common,
  org.eclipse.ui,
  org.eclipse.ui.actions,
  org.eclipse.ui.application,
+ org.eclipse.ui.contentassist,
  org.eclipse.ui.fieldassist,
  org.eclipse.ui.help,
  org.eclipse.ui.part,
@@ -44,4 +45,5 @@ Import-Package: org.eclipse.core.commands.common,
  org.osgi.framework;version="1.4.0"
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.resources,
- org.eclipse.core.runtime
+ org.eclipse.core.runtime,
+ org.eclipse.help

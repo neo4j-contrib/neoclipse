@@ -13,14 +13,14 @@
             class="org.neo4j.neoclipse.view.NeoGraphViewPart"
             icon="icons/obj16/neo-16.png"
             id="org.neo4j.neoclipse.view.NeoGraphViewPart"
-            name="Neo4j Graph">
+            name="Database graph">
       </view>
       <view
             category="org.neo4j.neoclipse.NeoCategory"
             class="org.neo4j.neoclipse.reltype.RelationshipTypeView"
             icon="icons/obj16/types.gif"
             id="org.neo4j.neoclipse.reltype.RelationshipTypeView"
-            name="Relationship Types">
+            name="Relationship types">
       </view>
    </extension>
    <extension
@@ -128,5 +128,4 @@
           </perspectiveShortcut>
        </perspectiveExtension>
     </extension>
- 
 </plugin>

@@ -53,6 +53,7 @@ import org.neo4j.api.core.RelationshipType;
 import org.neo4j.api.core.Transaction;
 import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.NeoIcons;
+import org.neo4j.neoclipse.help.HelpContextConstants;
 import org.neo4j.neoclipse.view.NeoGraphLabelProvider;
 import org.neo4j.neoclipse.view.NeoGraphLabelProviderWrapper;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
@@ -131,7 +132,7 @@ public class RelationshipTypeView extends ViewPart implements
         viewer.setInput( getViewSite() );
 
         PlatformUI.getWorkbench().getHelpSystem().setHelp( viewer.getControl(),
-            ID );
+            HelpContextConstants.NEO_RELATIONSHIP_TYPE_VIEW );
         makeActions();
         hookContextMenu();
         hookDoubleClickAction();

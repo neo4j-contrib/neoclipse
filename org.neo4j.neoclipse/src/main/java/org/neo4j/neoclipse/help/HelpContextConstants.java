@@ -28,4 +28,6 @@ public final class HelpContextConstants
     }
 
     public static final String NEO_GRAPH_VIEW_PART = "org.neo4j.neoclipse.doc.NeoGraphViewPart";
+    public static final String NEO_PROPERTY_SHEET_PAGE = "org.neo4j.neoclipse.doc.NeoPropertySheetPage";
+    public static final String NEO_RELATIONSHIP_TYPE_VIEW = "org.neo4j.neoclipse.doc.NeoRelationshipTypeView";
 }

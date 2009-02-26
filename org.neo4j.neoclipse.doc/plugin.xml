@@ -24,8 +24,7 @@
    <extension
          point="org.eclipse.help.contexts">
       <contexts
-            file="context-help.xml"
-            plugin="org.neo4j.neoclipse">
+            file="context-help.xml">
       </contexts>
    </extension>
 

@@ -32,6 +32,7 @@ import org.eclipse.ui.views.properties.PropertySheetPage;
 import org.eclipse.ui.views.properties.PropertySheetSorter;
 import org.neo4j.api.core.PropertyContainer;
 import org.neo4j.neoclipse.NeoIcons;
+import org.neo4j.neoclipse.help.HelpContextConstants;
 import org.neo4j.neoclipse.property.action.CopyAction;
 import org.neo4j.neoclipse.property.action.DeleteAction;
 import org.neo4j.neoclipse.property.action.NewAction;
@@ -122,7 +123,7 @@ public class NeoPropertySheetPage extends PropertySheetPage implements
         createMenu( parent );
         getControl().setMenu( menu );
         getSite().getPage().addSelectionListener( NeoGraphViewPart.ID, this );
-        PlatformUI.getWorkbench().getHelpSystem().setHelp( parent, ID );
+        PlatformUI.getWorkbench().getHelpSystem().setHelp( parent, HelpContextConstants.NEO_PROPERTY_SHEET_PAGE );
     }
 
     /**
