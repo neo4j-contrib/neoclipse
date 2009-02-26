@@ -13,7 +13,9 @@
  */
 package org.neo4j.neoclipse.reltype;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.jface.viewers.IContentProvider;
@@ -29,7 +31,7 @@ public class RelationshipTypesProvider implements IContentProvider,
     IStructuredContentProvider
 {
     private boolean viewAll = true;
-    private Set<RelationshipType> fakeTypes = new HashSet<RelationshipType>();
+    private Map<String,RelationshipType> fakeTypes = new HashMap<String,RelationshipType>();
 
     public RelationshipTypesProvider()
     {
@@ -51,22 +53,26 @@ public class RelationshipTypesProvider implements IContentProvider,
                 .getRelationshipTypes() )
             {
                 relDirList.add( relType );
+                if ( fakeTypes.containsKey( relType.name() ) )
+                {
+                    fakeTypes.remove( relType.name() );
+                }
             }
-            relDirList.addAll( fakeTypes );
+            relDirList.addAll( fakeTypes.values() );
             return relDirList.toArray();
         }
         else
         {
             Set<RelationshipType> relationshipTypes = NeoGraphLabelProviderWrapper
                 .getInstance().getRelationshipTypes();
-            relationshipTypes.addAll( fakeTypes );
+            relationshipTypes.addAll( fakeTypes.values() );
             return relationshipTypes.toArray();
         }
     }
 
     public void addFakeType( RelationshipType relType )
     {
-        fakeTypes.add( relType );
+        fakeTypes.put( relType.name(), relType );
     }
 
     public void dispose()
