@@ -53,6 +53,6 @@ public class Application extends WorkbenchAdvisor implements IApplication
         wwc.setShowMenuBar( false );
         wwc.setShowFastViewBars( false );
         wwc.setShowStatusLine( true );
-        wwc.setShowCoolBar( false );
+        wwc.setShowCoolBar( true );
     }
 }

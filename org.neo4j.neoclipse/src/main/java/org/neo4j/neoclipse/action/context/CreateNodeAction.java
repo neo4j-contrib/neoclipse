@@ -55,7 +55,7 @@ public class CreateNodeAction extends ContextAction
             if ( container instanceof Node )
             {
                 // create a relation to this node
-                Node node = (Node) container;
+//                Node node = (Node) container;
             }
             else if ( container instanceof Relationship )
             {
