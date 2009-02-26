@@ -130,9 +130,8 @@ public class RelationshipTypeView extends ViewPart implements
         viewer.setSorter( new NameSorter() );
         viewer.setInput( getViewSite() );
 
-        // Create the help context id for the viewer's control
         PlatformUI.getWorkbench().getHelpSystem().setHelp( viewer.getControl(),
-            "org.neo4j.neoclipse.reltypesviewer" );
+            ID );
         makeActions();
         hookContextMenu();
         hookDoubleClickAction();

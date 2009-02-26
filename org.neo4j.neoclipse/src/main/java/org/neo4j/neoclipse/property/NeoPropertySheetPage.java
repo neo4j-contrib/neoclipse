@@ -25,6 +25,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.IPropertySourceProvider;
 import org.eclipse.ui.views.properties.PropertySheetEntry;
 import org.eclipse.ui.views.properties.PropertySheetPage;
@@ -67,7 +68,7 @@ public class NeoPropertySheetPage extends PropertySheetPage implements
     /**
      * The Eclipse view ID.
      */
-    public static final String ID = "org.neo4j.neoclipse.view.NeoGraphViewPart";
+    public static final String ID = "org.neo4j.neoclipse.property.NeoPropertySheetPage";
     private ISelection selection;
     private Menu menu;
     private Composite parent;
@@ -121,6 +122,7 @@ public class NeoPropertySheetPage extends PropertySheetPage implements
         createMenu( parent );
         getControl().setMenu( menu );
         getSite().getPage().addSelectionListener( NeoGraphViewPart.ID, this );
+        PlatformUI.getWorkbench().getHelpSystem().setHelp( parent, ID );
     }
 
     /**

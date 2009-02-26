@@ -120,12 +120,6 @@
        </viewPage>
     </extension>
     <extension
-          point="org.eclipse.help.contexts">
-       <contexts
-             file="contexts.xml">
-       </contexts>
-    </extension>
-    <extension
           point="org.eclipse.ui.perspectiveExtensions">
        <perspectiveExtension
              targetID="org.eclipse.ui.resourcePerspective">

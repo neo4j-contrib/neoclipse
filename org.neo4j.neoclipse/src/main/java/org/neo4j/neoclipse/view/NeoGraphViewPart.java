@@ -69,7 +69,6 @@ import org.neo4j.neoclipse.action.layout.ShowTreeLayoutAction;
 import org.neo4j.neoclipse.action.view.DecreaseTraversalDepthAction;
 import org.neo4j.neoclipse.action.view.IncreaseTraversalDepthAction;
 import org.neo4j.neoclipse.action.view.ZoomAction;
-import org.neo4j.neoclipse.help.HelpContextConstants;
 import org.neo4j.neoclipse.neo.NeoServiceEvent;
 import org.neo4j.neoclipse.neo.NeoServiceEventListener;
 import org.neo4j.neoclipse.neo.NeoServiceManager;
@@ -145,7 +144,7 @@ public class NeoGraphViewPart extends ViewPart implements
         getSite().setSelectionProvider( viewer );
         showSomeNode();
         PlatformUI.getWorkbench().getHelpSystem().setHelp( viewer.getControl(),
-            HelpContextConstants.NEO_GRAPH_VIEW_PART );
+            ID );
         createMenu();
     }
 
