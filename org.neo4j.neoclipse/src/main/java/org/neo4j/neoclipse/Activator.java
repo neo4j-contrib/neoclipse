@@ -142,18 +142,22 @@ public class Activator extends AbstractUIPlugin
         NeoService ns = sm.getNeoService();
         if ( ns == null )
         {
-            // Shell shell =
-            // PLUGIN.getWorkbench().getActiveWorkbenchWindow().getShell();
+            MessageDialog
+                .openInformation(
+                    null,
+                    "Database location problem",
+                    "Please make sure that the database location is correctly set. " +
+                    "To create an empty database, point the location to an empty directory." );
             PreferenceDialog pref = PreferencesUtil.createPreferenceDialogOn(
-                null, "org.neo4j.neoclipse.preference.NeoPreferencePage", null,
-                null );
+                null, "org.neo4j.neoclipse.preference.NeoPreferencePage",
+                new String[] {}, null );
             if ( pref != null )
             {
                 pref.open();
                 ns = sm.getNeoService();
                 if ( ns == null )
                 {
-                    MessageDialog.openError( null, "Error",
+                    MessageDialog.openError( null, "Error message",
                         "The Neo service is not available." );
                     return null;
                 }
@@ -177,7 +181,7 @@ public class Activator extends AbstractUIPlugin
         final Transaction tx = ns.beginTx();
         if ( tx == null )
         {
-            MessageDialog.openError( null, "Error",
+            MessageDialog.openError( null, "Error message",
                 "Could not start a Neo transaction." );
             return null;
         }
