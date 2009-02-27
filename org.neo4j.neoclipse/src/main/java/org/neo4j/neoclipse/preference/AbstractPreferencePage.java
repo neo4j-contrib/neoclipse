@@ -59,7 +59,7 @@ public abstract class AbstractPreferencePage extends FieldEditorPreferencePage
         spacer.setLayoutData( spacerData );
     }
 
-    public void addNote( String title, String message )
+    public void addNote( final String title, final String message )
     {
         Composite note = createNoteComposite( getFieldEditorParent().getFont(),
             getFieldEditorParent(), title, message );
@@ -69,7 +69,7 @@ public abstract class AbstractPreferencePage extends FieldEditorPreferencePage
     }
 
     @Override
-    protected void addField( FieldEditor editor )
+    protected void addField( final FieldEditor editor )
     {
         super.addField( editor );
         addSeparator();

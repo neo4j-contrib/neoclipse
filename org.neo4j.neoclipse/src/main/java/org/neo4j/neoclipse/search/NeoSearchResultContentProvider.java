@@ -26,19 +26,21 @@ import org.neo4j.api.core.Node;
  */
 public class NeoSearchResultContentProvider implements ITreeContentProvider
 {
-    private List<Node> list = new ArrayList<Node>();
+    private final List<Node> list = new ArrayList<Node>();
 
     /**
      * Called when the input has changed, does nothing.
      */
-    public void inputChanged( Viewer viewer, Object oldInput, Object newInput )
+    public void inputChanged( final Viewer viewer, final Object oldInput,
+        final Object newInput )
     {
+        // does nothing
     }
 
     /**
      * Expects the results of a neo search.
      */
-    public Object[] getElements( Object inputElement )
+    public Object[] getElements( final Object inputElement )
     {
         NeoSearchResult result = (NeoSearchResult) inputElement;
         Iterable<Node> matches = result.getMatches();
@@ -62,7 +64,7 @@ public class NeoSearchResultContentProvider implements ITreeContentProvider
     /**
      * Returns an empty array, as there is no hierarchical structure.
      */
-    public Object[] getChildren( Object parentElement )
+    public Object[] getChildren( final Object parentElement )
     {
         return new Object[0];
     }
@@ -85,5 +87,6 @@ public class NeoSearchResultContentProvider implements ITreeContentProvider
 
     public void dispose()
     {
+        // nothing here
     }
 }

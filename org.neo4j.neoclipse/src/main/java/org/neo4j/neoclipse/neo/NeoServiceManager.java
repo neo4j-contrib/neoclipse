@@ -65,8 +65,7 @@ public class NeoServiceManager
             }
             catch ( Exception e )
             {
-                e.printStackTrace(); // TODO real solution on exceptions
-                System.exit( 1 );
+                throw new RuntimeException( e );
             }
             // notify listeners
             fireServiceChangedEvent( NeoServiceStatus.STARTED );
@@ -109,7 +108,7 @@ public class NeoServiceManager
     /**
      * Registers a service listener.
      */
-    public void addServiceEventListener( NeoServiceEventListener listener )
+    public void addServiceEventListener( final NeoServiceEventListener listener )
     {
         listeners.add( listener );
     }
@@ -117,7 +116,8 @@ public class NeoServiceManager
     /**
      * Unregisters a service listener.
      */
-    public void removeServiceEventListener( NeoServiceEventListener listener )
+    public void removeServiceEventListener(
+        final NeoServiceEventListener listener )
     {
         listeners.remove( listener );
     }
@@ -125,7 +125,7 @@ public class NeoServiceManager
     /**
      * Notifies all registered listeners about the new service status.
      */
-    protected void fireServiceChangedEvent( NeoServiceStatus status )
+    protected void fireServiceChangedEvent( final NeoServiceStatus status )
     {
         Object[] changeListeners = listeners.getListeners();
         if ( changeListeners.length > 0 )
@@ -138,6 +138,7 @@ public class NeoServiceManager
                 {
                     public void handleException( Throwable exception )
                     {
+                        // do nothing
                     }
 
                     public void run() throws RuntimeException

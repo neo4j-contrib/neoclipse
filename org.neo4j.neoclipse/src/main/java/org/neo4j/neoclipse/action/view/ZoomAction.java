@@ -31,7 +31,7 @@ public class ZoomAction extends Action implements IMenuCreator
     /**
      * The view.
      */
-    private NeoGraphViewPart view;
+    private final NeoGraphViewPart view;
     /**
      * The zoom menu.
      */
@@ -40,7 +40,7 @@ public class ZoomAction extends Action implements IMenuCreator
     /**
      * The constructor.
      */
-    public ZoomAction( NeoGraphViewPart view )
+    public ZoomAction( final NeoGraphViewPart view )
     {
         super( ZOOM, Action.AS_DROP_DOWN_MENU );
         this.view = view;
@@ -61,7 +61,7 @@ public class ZoomAction extends Action implements IMenuCreator
     /**
      * Returns a menu with the default zoom levels.
      */
-    public Menu getMenu( Control parent )
+    public Menu getMenu( final Control parent )
     {
         if ( menu == null )
         {
@@ -75,7 +75,7 @@ public class ZoomAction extends Action implements IMenuCreator
     /**
      * Returns a menu with the default zoom levels.
      */
-    public Menu getMenu( Menu parent )
+    public Menu getMenu( final Menu parent )
     {
         if ( menu == null )
         {

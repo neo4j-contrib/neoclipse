@@ -20,9 +20,9 @@ import org.eclipse.jface.resource.ImageDescriptor;
  * Base class for actions on context menus.
  * @author Anders Nawroth
  */
-abstract public class BaseContextAction extends Action
+abstract public class AbstractBaseContextAction extends Action
 {
-    public BaseContextAction( final String name, final ImageDescriptor image )
+    public AbstractBaseContextAction( final String name, final ImageDescriptor image )
     {
         super( name, image );
     }

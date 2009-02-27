@@ -52,7 +52,7 @@ public class NeoSearchPage extends DialogPage implements ISearchPage
     /**
      * Initializes the content of the search page.
      */
-    public void createControl( Composite parent )
+    public void createControl( final Composite parent )
     {
         initializeDialogUnits( parent );
 
@@ -71,7 +71,7 @@ public class NeoSearchPage extends DialogPage implements ISearchPage
         // do some validation
         expressionField.addModifyListener( new ModifyListener()
         {
-            public void modifyText( ModifyEvent e )
+            public void modifyText( final ModifyEvent event )
             {
                 try
                 {
@@ -95,7 +95,7 @@ public class NeoSearchPage extends DialogPage implements ISearchPage
     /**
      * Sets the owning search dialog.
      */
-    public void setContainer( ISearchPageContainer container )
+    public void setContainer( final ISearchPageContainer container )
     {
         this.container = container;
     }

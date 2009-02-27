@@ -55,7 +55,7 @@ public class NeoSearchResultPage extends Page implements ISearchResultPage
     /**
      * Creates the control
      */
-    public void createControl( Composite parent )
+    public void createControl( final Composite parent )
     {
         viewer = new TreeViewer( parent, SWT.NONE );
         viewer.setContentProvider( new NeoSearchResultContentProvider() );
@@ -96,7 +96,7 @@ public class NeoSearchResultPage extends Page implements ISearchResultPage
     /**
      * Sets the id.
      */
-    public void setID( String id )
+    public void setID( final String id )
     {
         this.id = id;
     }
@@ -121,7 +121,7 @@ public class NeoSearchResultPage extends Page implements ISearchResultPage
     /**
      * Sets the search result for a Neo search.
      */
-    public void setInput( ISearchResult result, Object uiState )
+    public void setInput( final ISearchResult result, final Object uiState )
     {
         setInput( result );
 
@@ -148,7 +148,7 @@ public class NeoSearchResultPage extends Page implements ISearchResultPage
     /**
      * Sets the input of the viewer.
      */
-    protected void setInput( ISearchResult result )
+    protected void setInput( final ISearchResult result )
     {
         NeoService service = Activator.getDefault().getNeoServiceSafely();
         if ( service != null )
@@ -172,6 +172,7 @@ public class NeoSearchResultPage extends Page implements ISearchResultPage
      */
     public void setViewPart( ISearchResultViewPart part )
     {
+        // does nothing
     }
 
     /**
@@ -187,6 +188,7 @@ public class NeoSearchResultPage extends Page implements ISearchResultPage
      */
     public void restoreState( IMemento memento )
     {
+        // not supported
     }
 
     /**
@@ -194,6 +196,7 @@ public class NeoSearchResultPage extends Page implements ISearchResultPage
      */
     public void saveState( IMemento memento )
     {
+        // not supported
     }
 
     /**

@@ -54,17 +54,17 @@ public class UserIcons
     /**
      * The images.
      */
-    private Map<String,Image> images = new HashMap<String,Image>();
+    private final Map<String,Image> images = new HashMap<String,Image>();
     /**
      * Save the names of non-existing images.
      */
-    private Set<String> misses = new HashSet<String>();
+    private final Set<String> misses = new HashSet<String>();
 
     /**
      * @param nodeIconLocation
      *            where to look for icons
      */
-    public UserIcons( String nodeIconLocation )
+    public UserIcons( final String nodeIconLocation )
     {
         this.iconLocation = nodeIconLocation;
     }
@@ -72,8 +72,10 @@ public class UserIcons
     /**
      * Looks up the user image for the given name.
      */
-    public Image getImage( String name )
+    public Image getImage( final String name )
     {
+        // TODO reduce complexity here?
+        // CC = 11, NPath complx = 252
         if ( name == null )
         {
             return null; // don't care for now

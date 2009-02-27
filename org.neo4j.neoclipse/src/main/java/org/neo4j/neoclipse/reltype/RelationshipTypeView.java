@@ -96,7 +96,7 @@ public class RelationshipTypeView extends ViewPart implements
     private List<Node> currentSelectedNodes = Collections.emptyList();
     private Action addIncomingNode;
 
-    class NameSorter extends ViewerSorter
+    static class NameSorter extends ViewerSorter
     {
         @Override
         public int compare( Viewer viewer, Object e1, Object e2 )

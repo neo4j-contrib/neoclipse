@@ -66,17 +66,18 @@ public class NeoSearchQuery implements ISearchQuery
 
     private NeoService neoService;
 
-    private final NeoGraphViewPart gv;
+    private final NeoGraphViewPart graphView;
 
     /**
      * The constructor.
-     * @param gv
+     * @param graphView
      *            the current graph view
      */
-    public NeoSearchQuery( NeoSearchExpression expression, NeoGraphViewPart gv )
+    public NeoSearchQuery( final NeoSearchExpression expression,
+        final NeoGraphViewPart graphView )
     {
         this.expression = expression;
-        this.gv = gv;
+        this.graphView = graphView;
 
         // initialize an empty result
         result = new NeoSearchResult( this );
@@ -125,7 +126,7 @@ public class NeoSearchQuery implements ISearchQuery
     /**
      * Executes the search.
      */
-    public IStatus run( IProgressMonitor monitor )
+    public IStatus run( final IProgressMonitor monitor )
         throws OperationCanceledException
     {
         neoService = Activator.getDefault().getNeoServiceSafely();
@@ -142,9 +143,9 @@ public class NeoSearchQuery implements ISearchQuery
             // TODO here we should do some real search using Neo's index service
             // for now simply navigate along the graph
             Node start = null;
-            if ( gv != null )
+            if ( graphView != null )
             {
-                start = gv.getCurrentNode();
+                start = graphView.getCurrentNode();
             }
             else
             {
@@ -183,7 +184,7 @@ public class NeoSearchQuery implements ISearchQuery
     {
         // monitor.beginTask( "Neo4j search operation started.",
         // IProgressMonitor.UNKNOWN );
-        List<Object> relDirList = new ArrayList<Object>();
+        final List<Object> relDirList = new ArrayList<Object>();
         for ( RelationshipType relType : ((EmbeddedNeo) neoService)
             .getRelationshipTypes() )
         {
@@ -200,7 +201,8 @@ public class NeoSearchQuery implements ISearchQuery
         Traverser trav = node.traverse( Order.DEPTH_FIRST,
             StopEvaluator.END_OF_GRAPH, new ReturnableEvaluator()
             {
-                public boolean isReturnableNode( TraversalPosition currentPos )
+                public boolean isReturnableNode(
+                    final TraversalPosition currentPos )
                 {
                     // monitor.worked( 1 );
                     Node currentNode = currentPos.currentNode();
@@ -257,7 +259,7 @@ public class NeoSearchQuery implements ISearchQuery
      */
     private static class IterableMerger implements Iterable<Node>
     {
-        private MergeIterator iter;
+        private final MergeIterator iter;
 
         public IterableMerger( final Node node, final Iterable<Node> traverser )
         {
@@ -268,7 +270,7 @@ public class NeoSearchQuery implements ISearchQuery
         {
             private final Node node;
             private Node nextNode;
-            private Iterator<Node> travIter;
+            private final Iterator<Node> travIter;
             private boolean usedNode = false;
 
             public MergeIterator( final Node node,
@@ -339,8 +341,8 @@ public class NeoSearchQuery implements ISearchQuery
     /**
      * Finds all nodes matching the search criteria.
      */
-    protected Iterable<Node> getMatchingNodesByRecursion( Node node,
-        IProgressMonitor monitor )
+    protected Iterable<Node> getMatchingNodesByRecursion( final Node node,
+        final IProgressMonitor monitor )
     {
         // TODO the Neo traverser API is not sufficient as it does not allow to
         // find ALL connected
@@ -376,8 +378,8 @@ public class NeoSearchQuery implements ISearchQuery
      * Checks if a node matches the search criteria and visits all connected
      * nodes.
      */
-    protected void checkNode( Node node, Set<Node> visitedNodes,
-        List<Node> matches, IProgressMonitor monitor )
+    protected void checkNode( final Node node, final Set<Node> visitedNodes,
+        final List<Node> matches, final IProgressMonitor monitor )
     {
         if ( monitor.isCanceled() )
         {

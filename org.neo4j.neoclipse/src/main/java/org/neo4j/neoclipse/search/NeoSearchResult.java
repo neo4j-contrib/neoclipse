@@ -35,7 +35,7 @@ public class NeoSearchResult implements ISearchResult
     /**
      * The query to which this result belongs.
      */
-    private NeoSearchQuery query;
+    private final NeoSearchQuery query;
 
     /**
      * The found matches.
@@ -45,12 +45,12 @@ public class NeoSearchResult implements ISearchResult
     /**
      * The observers.
      */
-    private List<ISearchResultListener> listeners;
+    private final List<ISearchResultListener> listeners;
 
     /**
      * The constructor.
      */
-    public NeoSearchResult( NeoSearchQuery query )
+    public NeoSearchResult( final NeoSearchQuery query )
     {
         this.query = query;
 
@@ -73,7 +73,7 @@ public class NeoSearchResult implements ISearchResult
     /**
      * Sets the matches. The registered listeners will be notified.
      */
-    public void setMatches( Iterable<Node> matches )
+    public void setMatches( final Iterable<Node> matches )
     {
         this.matches = matches;
 
@@ -116,20 +116,20 @@ public class NeoSearchResult implements ISearchResult
     /**
      * Adds a listener.
      */
-    public void addListener( ISearchResultListener l )
+    public void addListener( final ISearchResultListener listener )
     {
-        if ( !listeners.contains( l ) )
+        if ( !listeners.contains( listener ) )
         {
-            listeners.add( l );
+            listeners.add( listener );
         }
     }
 
     /**
      * Removes a listener.
      */
-    public void removeListener( ISearchResultListener l )
+    public void removeListener( final ISearchResultListener listener )
     {
-        listeners.remove( l );
+        listeners.remove( listener );
     }
 
     /**

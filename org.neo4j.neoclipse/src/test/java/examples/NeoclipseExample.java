@@ -15,7 +15,9 @@ package examples;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.nio.channels.FileChannel;
 
 import org.junit.After;
@@ -116,42 +118,61 @@ public abstract class NeoclipseExample
 
     private static void copyDir( String source, String dest )
     {
-        try
+        File destination = new File( dest );
+        if ( !destination.exists() )
         {
-            File destination = new File( dest );
-            if ( !destination.exists() )
+            if ( !destination.mkdir() )
             {
-                if ( !destination.mkdir() )
-                {
-                    System.out
-                        .println( "Couldn't create destination directory: "
-                            + destination );
-                }
+                System.out.println( "Couldn't create destination directory: "
+                    + destination );
             }
-            File directory = new File( source );
-            if ( !directory.exists() || !directory.isDirectory() )
+        }
+        File directory = new File( source );
+        if ( !directory.exists() || !directory.isDirectory() )
+        {
+            return;
+        }
+        String[] contents = directory.list();
+        for ( int i = 0; i < contents.length; i++ )
+        {
+            File file = new File( source + FILE_SEP + contents[i] );
+            if ( !file.isFile() || !file.canRead() )
             {
+                continue;
+            }
+            FileChannel in;
+            try
+            {
+                in = new FileInputStream( file ).getChannel();
+            }
+            catch ( FileNotFoundException e )
+            {
+                System.err.println( "File not found: " + file );
                 return;
             }
-            String[] contents = directory.list();
-            for ( int i = 0; i < contents.length; i++ )
+            FileChannel out = null;
+            try
             {
-                File file = new File( source + FILE_SEP + contents[i] );
-                if ( !file.isFile() || !file.canRead() )
-                {
-                    continue;
-                }
-                FileChannel in = new FileInputStream( file ).getChannel();
-                FileChannel out = new FileOutputStream( dest + FILE_SEP
-                    + contents[i] ).getChannel();
+                out = new FileOutputStream( dest + FILE_SEP + contents[i] )
+                    .getChannel();
+            }
+            catch ( FileNotFoundException e )
+            {
+                System.err.println( "File not found: " + dest + FILE_SEP
+                    + contents[i] );
+                return;
+            }
+            try
+            {
                 in.transferTo( 0, in.size(), out );
                 in.close();
                 out.close();
             }
-        }
-        catch ( Exception e )
-        {
-            // don't care
+            catch ( IOException e )
+            {
+                e.printStackTrace();
+                return;
+            }
         }
     }
 }

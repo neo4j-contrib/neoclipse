@@ -39,7 +39,7 @@ public class NeoPerspectiveFactory implements IPerspectiveFactory
     /**
      * Creates the perspective.
      */
-    public void createInitialLayout( IPageLayout layout )
+    public void createInitialLayout( final IPageLayout layout )
     {
         String editorArea = layout.getEditorArea();
         // do not show an editor (for now), take full space for views only

@@ -20,12 +20,12 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.neo4j.api.core.PropertyContainer;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
-abstract public class ContextAction extends BaseContextAction
+abstract public class AbstractContextAction extends AbstractBaseContextAction
 {
     protected NeoGraphViewPart graphView;
 
-    public ContextAction( String name, ImageDescriptor image,
-        NeoGraphViewPart neoGraphViewPart )
+    public AbstractContextAction( final String name, final ImageDescriptor image,
+        final NeoGraphViewPart neoGraphViewPart )
     {
         super( name, image );
         this.graphView = neoGraphViewPart;
@@ -48,7 +48,7 @@ abstract public class ContextAction extends BaseContextAction
      * @param container
      * @param key
      */
-    protected void performOperation( PropertyContainer container )
+    protected void performOperation( final PropertyContainer container )
     {
         throw new UnsupportedOperationException();
     }

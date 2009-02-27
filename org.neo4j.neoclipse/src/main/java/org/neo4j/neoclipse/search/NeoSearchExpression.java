@@ -25,21 +25,21 @@ public class NeoSearchExpression
     /**
      * The compiled regular expression.
      */
-    private Pattern pattern;
+    private final Pattern pattern;
     private static final Pattern ID_PATTERN = Pattern.compile( "\\d+" );
 
     /**
      * The constructor.
      */
-    public NeoSearchExpression( Pattern p )
+    public NeoSearchExpression( final Pattern pattern )
     {
-        this.pattern = p;
+        this.pattern = pattern;
     }
 
     /**
      * Returns true, if the given value represents a match.
      */
-    public boolean matches( Object value )
+    public boolean matches( final Object value )
     {
         String v = String.valueOf( value );
 

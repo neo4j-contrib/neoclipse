@@ -27,9 +27,9 @@ import org.neo4j.neoclipse.view.NeoGraphViewPart;
  * Action to create a node.
  * @author Anders Nawroth
  */
-public class CreateNodeAction extends ContextAction
+public class CreateNodeAction extends AbstractContextAction
 {
-    public CreateNodeAction( NeoGraphViewPart neoGraphViewPart )
+    public CreateNodeAction( final NeoGraphViewPart neoGraphViewPart )
     {
         super( "Create Node", NeoIcons.DELETE.getDescriptor(), neoGraphViewPart );
         setEnabled( false );
@@ -42,7 +42,7 @@ public class CreateNodeAction extends ContextAction
     }
 
     @Override
-    protected void performOperation( PropertyContainer container )
+    protected void performOperation( final PropertyContainer container )
     {
         NeoService ns = Activator.getDefault().getNeoServiceSafely();
         if ( ns == null )
@@ -55,7 +55,7 @@ public class CreateNodeAction extends ContextAction
             if ( container instanceof Node )
             {
                 // create a relation to this node
-//                Node node = (Node) container;
+                // Node node = (Node) container;
             }
             else if ( container instanceof Relationship )
             {

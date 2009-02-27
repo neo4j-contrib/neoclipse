@@ -27,7 +27,7 @@ import org.neo4j.neoclipse.view.NeoGraphViewPart;
  * Action to delete a node or relationship.
  * @author Anders Nawroth
  */
-public class DeleteAction extends ContextAction
+public class DeleteAction extends AbstractContextAction
 {
     public DeleteAction( NeoGraphViewPart neoGraphViewPart )
     {

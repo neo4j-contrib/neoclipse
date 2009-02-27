@@ -27,8 +27,8 @@ public class NeoSearchResultEvent extends SearchResultEvent
     /**
      * The constructor.
      */
-    protected NeoSearchResultEvent(ISearchResult searchResult)
+    protected NeoSearchResultEvent( final ISearchResult searchResult )
     {
-        super(searchResult);
+        super( searchResult );
     }
 }

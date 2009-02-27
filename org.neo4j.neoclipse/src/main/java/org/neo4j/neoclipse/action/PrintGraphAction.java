@@ -32,7 +32,7 @@ public class PrintGraphAction extends WorkbenchPartAction
     /**
      * The constructor.
      */
-    public PrintGraphAction( NeoGraphViewPart view )
+    public PrintGraphAction( final NeoGraphViewPart view )
     {
         super( view );
     }

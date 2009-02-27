@@ -41,15 +41,15 @@ public class SimpleGraphDecorator
     /**
      * The icon for nodes.
      */
-    private Image nodeImage = NeoIcons.NEO.getImage();
+    private static final Image nodeImage = NeoIcons.NEO.getImage();
     /**
      * The icon for the root node.
      */
-    private Image rootImage = NeoIcons.NEO_ROOT.getImage();
+    private static final Image rootImage = NeoIcons.NEO_ROOT.getImage();
     /**
      * User icons for nodes.
      */
-    private UserIcons userIcons;
+    private final UserIcons userIcons;
     /**
      * Default relationship "color" (gray).
      */
@@ -73,11 +73,11 @@ public class SimpleGraphDecorator
     /**
      * Map colors to relationship types.
      */
-    private SimpleColorMapper<RelationshipType> colorMapper;
+    private final SimpleColorMapper<RelationshipType> colorMapper;
     /**
      * Settings for this decorator.
      */
-    private Settings settings;
+    private final Settings settings;
 
     public static class Settings
     {
@@ -111,7 +111,7 @@ public class SimpleGraphDecorator
             return directions;
         }
 
-        public void setDirections( List<Direction> directions )
+        public void setDirections( final List<Direction> directions )
         {
             this.directions = directions;
         }
@@ -121,7 +121,7 @@ public class SimpleGraphDecorator
             return referenceNode;
         }
 
-        public void setReferenceNode( Node referenceNode )
+        public void setReferenceNode( final Node referenceNode )
         {
             this.referenceNode = referenceNode;
         }
@@ -131,7 +131,7 @@ public class SimpleGraphDecorator
             return nodeIconLocation;
         }
 
-        public void setNodeIconLocation( String nodeIconLocation )
+        public void setNodeIconLocation( final String nodeIconLocation )
         {
             this.nodeIconLocation = nodeIconLocation;
         }
@@ -141,7 +141,7 @@ public class SimpleGraphDecorator
             return nodePropertyNames;
         }
 
-        public void setNodePropertyNames( String nodePropertyNames )
+        public void setNodePropertyNames( final String nodePropertyNames )
         {
             this.nodePropertyNames = listFromString( nodePropertyNames );
         }
@@ -151,7 +151,7 @@ public class SimpleGraphDecorator
             return relPropertyNames;
         }
 
-        public void setRelPropertyNames( String relPropertyNames )
+        public void setRelPropertyNames( final String relPropertyNames )
         {
             this.relPropertyNames = listFromString( relPropertyNames );
         }
@@ -175,7 +175,7 @@ public class SimpleGraphDecorator
          */
         private List<String> listFromString( String names )
         {
-            List<String> list = new ArrayList<String>();
+            final List<String> list = new ArrayList<String>();
             for ( String name : names.split( "," ) )
             {
                 name = name.trim();
@@ -398,7 +398,7 @@ public class SimpleGraphDecorator
         for ( String propertyName : settings.getNodeIconPropertyNames() )
         {
             String tmpPropVal = (String) node.getProperty( propertyName, "" );
-            if ( tmpPropVal != "" ) // no empty strings
+            if ( !"".equals( tmpPropVal ) ) // no empty strings
             {
                 img = userIcons.getImage( tmpPropVal );
                 if ( img != null )

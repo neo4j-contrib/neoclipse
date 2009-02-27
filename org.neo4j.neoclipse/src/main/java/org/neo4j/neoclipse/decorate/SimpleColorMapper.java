@@ -24,8 +24,8 @@ import org.eclipse.swt.widgets.Display;
 /**
  * Map some type to colors.
  * @author Anders Nawroth
- *
- * @param <T> type to map
+ * @param <T>
+ *            type to map
  */
 public class SimpleColorMapper<T>
 {
@@ -46,7 +46,7 @@ public class SimpleColorMapper<T>
             }
         }
 
-        public Color getColor( int index )
+        public Color getColor( final int index )
         {
             return colors[index];
         }
@@ -91,8 +91,8 @@ public class SimpleColorMapper<T>
         {
             throw new IllegalArgumentException( "Different size arrays given." );
         }
-        this.saturations = saturations;
-        this.brightnesses = brightnesses;
+        this.saturations = saturations.clone();
+        this.brightnesses = brightnesses.clone();
     }
 
     public Color getColor( final T type, final int index )

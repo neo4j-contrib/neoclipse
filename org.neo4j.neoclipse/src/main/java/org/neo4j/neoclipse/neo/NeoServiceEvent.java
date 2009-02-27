@@ -25,12 +25,12 @@ public class NeoServiceEvent extends EventObject
     /**
      * The status.
      */
-    protected NeoServiceStatus status;
+    protected final NeoServiceStatus status;
 
     /**
      * The constructor.
      */
-    public NeoServiceEvent( Object source, NeoServiceStatus status )
+    public NeoServiceEvent( final Object source, final NeoServiceStatus status )
     {
         super( source );
         this.status = status;

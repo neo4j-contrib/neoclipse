@@ -32,7 +32,7 @@ public class DecreaseTraversalDepthAction extends Action
     /**
      * The constructor.
      */
-    public DecreaseTraversalDepthAction( NeoGraphViewPart view )
+    public DecreaseTraversalDepthAction( final NeoGraphViewPart view )
     {
         super( DECREASE_TRAVERSAL_DEPTH, Action.AS_PUSH_BUTTON );
         this.view = view;
