@@ -262,9 +262,7 @@ public class RelationshipTypeView extends ViewPart implements
                     null );
                 if ( input.open() == OK && input.getReturnCode() == OK )
                 {
-                    RelationshipType relType = createRelationshipType( input
-                        .getValue() );
-                    provider.addFakeType( relType );
+                    provider.addFakeType( input.getValue() );
                     viewer.refresh();
                 }
             }
@@ -493,17 +491,6 @@ public class RelationshipTypeView extends ViewPart implements
                 markRelationshipAction.run();
             }
         } );
-    }
-
-    private RelationshipType createRelationshipType( final String name )
-    {
-        return new RelationshipType()
-        {
-            public String name()
-            {
-                return name;
-            }
-        };
     }
 
     /**

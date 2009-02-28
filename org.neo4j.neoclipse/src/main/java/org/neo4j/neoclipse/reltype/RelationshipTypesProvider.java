@@ -13,9 +13,7 @@
  */
 package org.neo4j.neoclipse.reltype;
 
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.jface.viewers.IContentProvider;
@@ -30,8 +28,46 @@ import org.neo4j.neoclipse.view.NeoGraphLabelProviderWrapper;
 public class RelationshipTypesProvider implements IContentProvider,
     IStructuredContentProvider
 {
+
+    private static class RelationshipTypeImpl implements RelationshipType
+    {
+        // TODO: this is a nice hack for now, but depends on the
+        // impl in EmbeddedNeo. (the code is from there)
+        private String name;
+
+        RelationshipTypeImpl( String name )
+        {
+            assert name != null;
+            this.name = name;
+        }
+
+        public String name()
+        {
+            return name;
+        }
+
+        public String toString()
+        {
+            return name;
+        }
+
+        public boolean equals( Object o )
+        {
+            if ( !(o instanceof RelationshipType) )
+            {
+                return false;
+            }
+            return name.equals( ((RelationshipType) o).name() );
+        }
+
+        public int hashCode()
+        {
+            return name.hashCode();
+        }
+    }
+
     private boolean viewAll = true;
-    private Map<String,RelationshipType> fakeTypes = new HashMap<String,RelationshipType>();
+    private Set<RelationshipType> fakeTypes = new HashSet<RelationshipType>();
 
     public RelationshipTypesProvider()
     {
@@ -53,26 +89,23 @@ public class RelationshipTypesProvider implements IContentProvider,
                 .getRelationshipTypes() )
             {
                 relDirList.add( relType );
-                if ( fakeTypes.containsKey( relType.name() ) )
-                {
-                    fakeTypes.remove( relType.name() );
-                }
             }
-            relDirList.addAll( fakeTypes.values() );
+            relDirList.addAll( fakeTypes );
             return relDirList.toArray();
         }
         else
         {
             Set<RelationshipType> relationshipTypes = NeoGraphLabelProviderWrapper
                 .getInstance().getRelationshipTypes();
-            relationshipTypes.addAll( fakeTypes.values() );
+            relationshipTypes.addAll( fakeTypes );
             return relationshipTypes.toArray();
         }
     }
 
-    public void addFakeType( RelationshipType relType )
+    public void addFakeType( final String name )
     {
-        fakeTypes.put( relType.name(), relType );
+        RelationshipType relType = new RelationshipTypeImpl( name );
+        fakeTypes.add( relType );
     }
 
     public void dispose()
