@@ -16,6 +16,7 @@ package org.neo4j.neoclipse.reltype;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -205,12 +206,11 @@ public class RelationshipTypeView extends ViewPart implements
         {
             public void run()
             {
-                RelationshipType relType = getCurrentRelType();
-                if ( relType == null )
+                List<RelationshipType> relTypes = getCurrentRelTypes();
+                for ( RelationshipType relType : relTypes )
                 {
-                    return;
+                    highlightNodes( relType, Direction.INCOMING );
                 }
-                highlightNodes( relType, Direction.INCOMING );
                 clearMarkedAction.setEnabled( true );
             }
         };
@@ -223,12 +223,11 @@ public class RelationshipTypeView extends ViewPart implements
         {
             public void run()
             {
-                RelationshipType relType = getCurrentRelType();
-                if ( relType == null )
+                List<RelationshipType> relTypes = getCurrentRelTypes();
+                for ( RelationshipType relType : relTypes )
                 {
-                    return;
+                    highlightNodes( relType, Direction.OUTGOING );
                 }
-                highlightNodes( relType, Direction.OUTGOING );
                 clearMarkedAction.setEnabled( true );
             }
         };
@@ -310,12 +309,11 @@ public class RelationshipTypeView extends ViewPart implements
         {
             public void run()
             {
-                RelationshipType relType = getCurrentRelType();
-                if ( relType == null )
+                List<RelationshipType> relTypes = getCurrentRelTypes();
+                for ( RelationshipType relType : relTypes )
                 {
-                    return;
+                    highlightRelationshipType( relType );
                 }
-                highlightRelationshipType( relType );
                 setEnableRestrictedActions( true );
                 clearMarkedAction.setEnabled( true );
             }
@@ -436,6 +434,19 @@ public class RelationshipTypeView extends ViewPart implements
         return null;
     }
 
+    private List<RelationshipType> getCurrentRelTypes()
+    {
+        ISelection selection = viewer.getSelection();
+        if ( selection instanceof IStructuredSelection )
+        {
+            @SuppressWarnings( "unchecked" )
+            List<RelationshipType> result = ((IStructuredSelection) selection)
+                .toList();
+            return result;
+        }
+        return Collections.emptyList();
+    }
+
     private void highlightRelationshipType( RelationshipType relType )
     {
         if ( graphView == null )
@@ -510,47 +521,37 @@ public class RelationshipTypeView extends ViewPart implements
         {
             return;
         }
+        setEnableAddRelationship( false );
+        setEnableAddNode( false );
         IStructuredSelection parSs = (IStructuredSelection) selection;
-        Object firstElement = parSs.getFirstElement();
         if ( part instanceof NeoGraphViewPart )
         {
             graphView = (NeoGraphViewPart) part;
-            setEnableAddRelationship( false );
-            setEnableAddNode( false );
             currentSelectedNodes = Collections.emptyList();
-            if ( firstElement instanceof Relationship )
+            Set<RelationshipType> relTypes = new HashSet<RelationshipType>();
+            List<Node> nodes = new ArrayList<Node>();
+            Iterator<?> iter = parSs.iterator();
+            while ( iter.hasNext() )
             {
-                RelationshipType currentSelection = ((Relationship) firstElement)
-                    .getType();
-                viewer
-                    .setSelection( new StructuredSelection( currentSelection ) );
+                Object o = iter.next();
+                if ( o instanceof Node )
+                {
+                    nodes.add( (Node) o );
+                }
+                else if ( o instanceof Relationship )
+                {
+                    relTypes.add( ((Relationship) o).getType() );
+                }
+            }
+            if ( !relTypes.isEmpty() )
+            {
+                viewer.setSelection( new StructuredSelection( relTypes
+                    .toArray() ) );
                 setEnableRestrictedActions( true );
             }
-            else if ( firstElement instanceof Node )
+            if ( !nodes.isEmpty() )
             {
-                boolean onlyNodes = true;
-                List<Node> nodes = new ArrayList<Node>();
-                for ( Object o : parSs.toList() )
-                {
-                    if ( o instanceof Node )
-                    {
-                        nodes.add( (Node) o );
-                    }
-                    else
-                    {
-                        onlyNodes = false;
-                        break;
-                    }
-                }
-                if ( onlyNodes )
-                {
-                    currentSelectedNodes = nodes;
-                    setEnableAddNode( true );
-                    if ( currentSelectedNodes.size() == 2 )
-                    {
-                        setEnableAddRelationship( true );
-                    }
-                }
+                currentSelectedNodes = nodes;
             }
         }
         else if ( this.equals( part ) )
@@ -562,6 +563,17 @@ public class RelationshipTypeView extends ViewPart implements
             else
             {
                 setEnableRestrictedActions( true );
+            }
+        }
+        if ( getCurrentRelTypes().size() == 1 )
+        {
+            if ( currentSelectedNodes.size() == 2 )
+            {
+                setEnableAddRelationship( true );
+            }
+            if ( !currentSelectedNodes.isEmpty() )
+            {
+                setEnableAddNode( true );
             }
         }
     }
