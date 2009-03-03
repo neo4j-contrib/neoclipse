@@ -13,62 +13,130 @@
  */
 package org.neo4j.neoclipse.reltype;
 
-import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.neo4j.api.core.Direction;
 import org.neo4j.api.core.RelationshipType;
 
-public class RelationshipTypeControl
+/**
+ * This is a single item in the relationship type view, wrapping a relationship
+ * type.
+ * @author anders
+ */
+public class RelationshipTypeControl implements
+    Comparable<RelationshipTypeControl>
 {
-    private List<PropertyChangeListener> listeners = new ArrayList<PropertyChangeListener>();
+    private List<IPropertyChangeListener> listeners = new ArrayList<IPropertyChangeListener>();
 
     private final RelationshipType relType;
-    private boolean in = false;
+    private boolean in = true;
     private boolean out = true;
 
-    public RelationshipTypeControl( RelationshipType relType )
+    /**
+     * Wrap a relationship type for display in the table viewer.
+     * @param relType
+     */
+    RelationshipTypeControl( RelationshipType relType )
     {
         this.relType = relType;
-        notifyListeners();
     }
 
+    /**
+     * Is incoming realtionships selected?
+     * @return
+     */
     public boolean isIn()
     {
         return in;
     }
 
+    /**
+     * Set if incoming relationships are selected.
+     * @param in
+     */
     public void setIn( boolean in )
     {
         this.in = in;
         notifyListeners();
     }
 
+    /**
+     * Is outgoing realtionships selected?
+     * @return
+     */
     public boolean isOut()
     {
         return out;
     }
 
+    /**
+     * Set if outgoing relationships are selected.
+     * @param in
+     */
     public void setOut( boolean out )
     {
         this.out = out;
         notifyListeners();
     }
 
+    /**
+     * Get the relationship type in this wrapper.
+     * @return
+     */
     public RelationshipType getRelType()
     {
         return relType;
     }
 
+    /**
+     * True if either incoming or outgoing or both exists.
+     * @return
+     */
+    public boolean hasDirection()
+    {
+        return in || out;
+    }
+
+    /**
+     * Get direction filter for this relationship type.
+     * @return
+     */
+    public Direction getDirection()
+    {
+        if ( in && out )
+        {
+            return Direction.BOTH;
+        }
+        if ( in )
+        {
+            return Direction.INCOMING;
+        }
+        if ( out )
+        {
+            return Direction.OUTGOING;
+        }
+        throw new RuntimeException(
+            "There is no direction set for RelationshipType: " + relType.name() );
+    }
+
+    /**
+     * Notify listeners in/out attributes changed.
+     */
     private void notifyListeners()
     {
-        for ( PropertyChangeListener listener : listeners )
+        for ( IPropertyChangeListener listener : listeners )
         {
             listener.propertyChange( null );
         }
     }
 
-    public void addChangeListener( PropertyChangeListener newListener )
+    /**
+     * Add a new listener to changes.
+     * @param newListener
+     */
+    public void addChangeListener( IPropertyChangeListener newListener )
     {
         listeners.add( newListener );
     }
@@ -98,5 +166,10 @@ public class RelationshipTypeControl
     public int hashCode()
     {
         return this.getRelType().hashCode();
+    }
+
+    public int compareTo( RelationshipTypeControl other )
+    {
+        return relType.name().compareTo( other.relType.name() );
     }
 }

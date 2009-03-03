@@ -55,8 +55,8 @@ public enum NeoIcons
         shared( ISharedImages.IMG_TOOL_NEW_WIZARD ) ), RENAME( "rename",
         path( "obj16/change.gif" ) ), PASTE( "paste",
         shared( ISharedImages.IMG_TOOL_PASTE ) ), CHECKED( "checked",
-        shared( ISharedImages.IMG_TOOL_BACK ) ), UNCHECKED( "unchecked",
-        shared( ISharedImages.IMG_TOOL_FORWARD ) ),
+        path( "obj16/box_checked.gif" ) ), UNCHECKED( "unchecked",
+        path( "obj16/box_unchecked.gif" ) ),
     // relationship types actions
     ADD( "add", path( "obj16/add.gif" ) ), ADD_INCOMING( "add_incoming",
         path( "obj16/add_incoming.gif" ) ), ADD_OUTGOING( "add_outgoing",
@@ -65,10 +65,10 @@ public enum NeoIcons
         "highlight_incoming", path( "obj16/highlight_incoming.gif" ) ),
     HIGHLIGHT_OUTGOING( "highlight_outgoing",
         path( "obj16/highlight_outgoing.gif" ) ), INCOMING( "incoming",
-        shared( ISharedImages.IMG_TOOL_BACK ) ), OUTGOING( "outgoing",
-        shared( ISharedImages.IMG_TOOL_FORWARD ) ), CLEAR_ENABLED(
-        "clear_enabled", path( "enabled/clear.gif" ) ), CLEAR_DISABLED(
-        "clear_disabled", path( "disabled/clear.gif" ) );
+        path( "obj16/incoming.gif" ) ), OUTGOING( "outgoing",
+        path( "obj16/outgoing.gif" ) ), CLEAR_ENABLED( "clear_enabled",
+        path( "enabled/clear.gif" ) ), CLEAR_DISABLED( "clear_disabled",
+        path( "disabled/clear.gif" ) );
 
     private static final String ICON_LOCATION = "icons/";
     private static ImageRegistry reg = null;

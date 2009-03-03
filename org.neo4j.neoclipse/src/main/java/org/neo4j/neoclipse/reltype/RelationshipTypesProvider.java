@@ -14,10 +14,17 @@
 package org.neo4j.neoclipse.reltype;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
@@ -27,10 +34,17 @@ import org.neo4j.api.core.RelationshipType;
 import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.view.NeoGraphLabelProviderWrapper;
 
+/**
+ * Provide (filtered) relationship types. Initial clients: Database graph view
+ * and Relationship types view.
+ * @author anders
+ */
 public class RelationshipTypesProvider implements IContentProvider,
-    IStructuredContentProvider
+    IStructuredContentProvider, IPropertyChangeListener, Comparator<String>
 {
-
+    /**
+     * Class used to create relationship types dynamically.
+     */
     private static class RelationshipTypeImpl implements RelationshipType
     {
         // TODO: this is a nice hack for now, but depends on the
@@ -70,50 +84,151 @@ public class RelationshipTypesProvider implements IContentProvider,
 
     private boolean viewAll = true;
     private Set<RelationshipType> fakeTypes = new HashSet<RelationshipType>();
+    private Collection<RelationshipType> currentRelTypes;
+    private Map<RelationshipType,RelationshipTypeControl> currentRelTypeCtrls = new HashMap<RelationshipType,RelationshipTypeControl>();
+    private List<IPropertyChangeListener> listeners = new ArrayList<IPropertyChangeListener>();
 
-    public RelationshipTypesProvider()
+    /**
+     * Factory method that creates relationship type items for the table view.
+     * @param relType
+     *            the relationship type to wrap
+     * @return
+     */
+    public RelationshipTypeControl createRelationshipTypeControl(
+        RelationshipType relType )
     {
+        RelationshipTypeControl relTypeCtrl = new RelationshipTypeControl(
+            relType );
+        relTypeCtrl.addChangeListener( this );
+        return relTypeCtrl;
     }
 
+    /**
+     * Get all relationship types. If the viewAll attribute is set to false only
+     * the relationship types that was handled in the current database graph
+     * view will be returned.
+     */
     public Object[] getElements( Object inputElement )
     {
-        Set<RelationshipType> relationshipTypes;
         if ( viewAll )
         {
-            relationshipTypes = new HashSet<RelationshipType>();
-            NeoService ns = Activator.getDefault().getNeoServiceSafely();
-            if ( ns == null )
-            {
-                // todo
-                return new Object[0];
-            }
-            @SuppressWarnings( "deprecation" )
-            Iterable<RelationshipType> relationshipTypesIterable = ((EmbeddedNeo) ns)
-                .getRelationshipTypes();
-            for ( RelationshipType relType : relationshipTypesIterable )
-            {
-                relationshipTypes.add( relType );
-            }
-            relationshipTypes.addAll( fakeTypes );
+            currentRelTypes = getRelationshipTypesFromNeo();
+            currentRelTypes.addAll( fakeTypes );
         }
         else
         {
-            relationshipTypes = NeoGraphLabelProviderWrapper.getInstance()
+            currentRelTypes = NeoGraphLabelProviderWrapper.getInstance()
                 .getRelationshipTypes();
-            relationshipTypes.addAll( fakeTypes );
+            currentRelTypes.addAll( fakeTypes );
         }
-        List<RelationshipTypeControl> list = new ArrayList<RelationshipTypeControl>();
-        for ( RelationshipType relType : relationshipTypes )
+        for ( RelationshipType relType : currentRelTypes )
         {
-            list.add( new RelationshipTypeControl( relType ) );
+            // only add if it's not already there
+            if ( !currentRelTypeCtrls.containsKey( relType ) )
+            {
+                currentRelTypeCtrls.put( relType,
+                    createRelationshipTypeControl( relType ) );
+            }
         }
-        return list.toArray();
+        return currentRelTypeCtrls.values().toArray();
     }
 
+    /**
+     * Get all realtionship types in the database.
+     * @return
+     */
+    public List<RelationshipType> getRelationshipTypesFromNeo()
+    {
+        List<RelationshipType> relationshipTypes;
+        relationshipTypes = new ArrayList<RelationshipType>();
+        NeoService ns = Activator.getDefault().getNeoServiceSafely();
+        if ( ns == null )
+        {
+            // todo ?
+            return Collections.emptyList();
+        }
+        @SuppressWarnings( "deprecation" )
+        Iterable<RelationshipType> relationshipTypesIterable = ((EmbeddedNeo) ns)
+            .getRelationshipTypes();
+        for ( RelationshipType relType : relationshipTypesIterable )
+        {
+            relationshipTypes.add( relType );
+        }
+        return relationshipTypes;
+    }
+
+    /**
+     * Add a "fake" relationship type. It will be persisted to the database upon
+     * usage (creating a relationship of this type).
+     * @param name
+     *            the name of the relationship type
+     */
     public void addFakeType( final String name )
     {
         RelationshipType relType = new RelationshipTypeImpl( name );
         fakeTypes.add( relType );
+    }
+
+    /**
+     * Get the table items correspnding to a collection of relationship types.
+     * @param relTypes
+     *            the relationship types to select
+     * @return the relationship type controls that are used in the table
+     */
+    public Collection<RelationshipTypeControl> getFilteredControls(
+        Collection<RelationshipType> relTypes )
+    {
+        Collection<RelationshipTypeControl> relTypeCtrls = new ArrayList<RelationshipTypeControl>();
+        for ( RelationshipType relType : relTypes )
+        {
+            RelationshipTypeControl relTypeCtrl = currentRelTypeCtrls
+                .get( relType );
+            if ( relTypeCtrl != null )
+            {
+                relTypeCtrls.add( relTypeCtrl );
+            }
+        }
+        return relTypeCtrls;
+    }
+
+    /**
+     * Get relationship types and direction from current filterset.
+     * @return an array of RelationshipType and Direction (alternating)
+     */
+    public Object[] getFilteredRelationshipTypes()
+    {
+        List<Object> list = new ArrayList<Object>();
+        for ( RelationshipTypeControl relTypeCtrl : currentRelTypeCtrls
+            .values() )
+        {
+            if ( relTypeCtrl.hasDirection() )
+            {
+                list.add( relTypeCtrl.getRelType() );
+                list.add( relTypeCtrl.getDirection() );
+            }
+        }
+        return list.toArray();
+    }
+
+    /**
+     * Set all relationship types to the same filtering.
+     * @param in
+     *            state for incoming relationships
+     * @param out
+     *            state for outgoing relationships
+     */
+    public void setAllFilters( boolean in, boolean out )
+    {
+        for ( RelationshipType relType : currentRelTypeCtrls.keySet() )
+        {
+            RelationshipTypeControl relTypeCtrl = currentRelTypeCtrls
+                .get( relType );
+            if ( relTypeCtrl != null )
+            {
+                relTypeCtrl.setIn( in );
+                relTypeCtrl.setOut( out );
+            }
+        }
     }
 
     public void dispose()
@@ -124,13 +239,58 @@ public class RelationshipTypesProvider implements IContentProvider,
     {
     }
 
+    /**
+     * Set provider to return all existing relationship types.
+     */
     public void setViewAll()
     {
         viewAll = true;
     }
 
+    /**
+     * Set provider to only return relationship types currently used in the
+     * database graph view.
+     */
     public void setViewTraversed()
     {
         viewAll = false;
+    }
+
+    /**
+     * Recieceve and forward to own listeners. This class acts as listener for
+     * all relationship type controls in the table.
+     */
+    public void propertyChange( PropertyChangeEvent event )
+    {
+        notifyListeners( event );
+    }
+
+    /**
+     * Notify listeners something changed in the relationship types.
+     * @param event
+     */
+    private void notifyListeners( PropertyChangeEvent event )
+    {
+        for ( IPropertyChangeListener listener : listeners )
+        {
+            listener.propertyChange( event );
+        }
+    }
+
+    /**
+     * Add listener to relationship types changes.
+     * @param newListener
+     */
+    public void addChangeListener( IPropertyChangeListener newListener )
+    {
+        listeners.add( newListener );
+    }
+
+    /**
+     * Compare relationship type names to order the table view.
+     */
+    public int compare( String rtc1, String rtc2 )
+    {
+        return rtc1.compareTo( rtc2 );
     }
 }

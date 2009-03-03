@@ -19,7 +19,6 @@ import java.util.List;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.zest.core.viewers.IGraphEntityRelationshipContentProvider;
 import org.neo4j.api.core.Direction;
-import org.neo4j.api.core.EmbeddedNeo;
 import org.neo4j.api.core.NeoService;
 import org.neo4j.api.core.Node;
 import org.neo4j.api.core.Relationship;
@@ -30,6 +29,7 @@ import org.neo4j.api.core.TraversalPosition;
 import org.neo4j.api.core.Traverser;
 import org.neo4j.api.core.Traverser.Order;
 import org.neo4j.neoclipse.Activator;
+import org.neo4j.neoclipse.reltype.RelationshipTypesProviderWrapper;
 
 /**
  * Provides the elements that must be displayed in the graph.
@@ -80,26 +80,30 @@ public class NeoGraphContentProvider implements
     public Object[] getElements( Object inputElement )
     {
         Node node = (Node) inputElement;
-        List<Object> relDirList = new ArrayList<Object>();
         final NeoService neoService = Activator.getDefault()
             .getNeoServiceSafely();
         if ( neoService == null )
         {
             return new Node[] { node };
         }
-        @SuppressWarnings( "deprecation" )
-        Iterable<RelationshipType> relationshipTypes = ((EmbeddedNeo) neoService)
-            .getRelationshipTypes();
-        for ( RelationshipType relType : relationshipTypes )
+        Object[] relDirListArray = RelationshipTypesProviderWrapper
+            .getInstance().getFilteredRelationshipTypes();
+        if ( relDirListArray.length == 0 )
         {
-            relDirList.add( relType );
-            relDirList.add( Direction.BOTH );
-        }
-        if ( relDirList.isEmpty() )
-        {
-            // if there are no relationship types,
-            // there can't be any relationships ...
-            return new Node[] { node };
+            List<Object> relDirList = new ArrayList<Object>();
+            for ( RelationshipType relType : RelationshipTypesProviderWrapper
+                .getInstance().getRelationshipTypesFromNeo() )
+            {
+                relDirList.add( relType );
+                relDirList.add( Direction.BOTH );
+            }
+            if ( relDirList.isEmpty() )
+            {
+                // if there are no relationship types,
+                // there can't be any relationships ...
+                return new Node[] { node };
+            }
+            relDirListArray = relDirList.toArray();
         }
         final int depth = view.getTraversalDepth();
         Traverser trav = node.traverse( Order.BREADTH_FIRST,
@@ -109,7 +113,7 @@ public class NeoGraphContentProvider implements
                 {
                     return currentPos.depth() >= depth;
                 }
-            }, ReturnableEvaluator.ALL, relDirList.toArray() );
+            }, ReturnableEvaluator.ALL, relDirListArray );
         List<Node> nodes = new ArrayList<Node>();
         for ( Node currentNode : trav )
         {

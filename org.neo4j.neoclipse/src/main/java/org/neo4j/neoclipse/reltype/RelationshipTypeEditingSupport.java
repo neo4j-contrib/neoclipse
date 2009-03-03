@@ -21,17 +21,21 @@ import org.eclipse.swt.SWT;
 
 public class RelationshipTypeEditingSupport extends EditingSupport
 {
-    private final int column;
+    public enum ColumnType
+    {
+        HEADING, IN, OUT
+    }
+    private final ColumnType column;
     private final CellEditor editor;
 
-    public RelationshipTypeEditingSupport( ColumnViewer viewer, int column )
+    public RelationshipTypeEditingSupport( ColumnViewer viewer, ColumnType column )
     {
         super( viewer );
         this.column = column;
         switch ( column )
         {
-            case 1:
-            case 2:
+            case IN:
+            case OUT:
                 editor = new CheckboxCellEditor( null, SWT.CHECK );
                 break;
             default:
@@ -59,11 +63,11 @@ public class RelationshipTypeEditingSupport extends EditingSupport
             RelationshipTypeControl control = (RelationshipTypeControl) element;
             switch ( column )
             {
-                case 0:
+                case HEADING:
                     return control.getRelType();
-                case 1:
+                case IN:
                     return control.isIn();
-                case 2:
+                case OUT:
                     return control.isOut();
             }
         }
@@ -80,10 +84,10 @@ public class RelationshipTypeEditingSupport extends EditingSupport
             Boolean status = (Boolean) value;
             switch ( column )
             {
-                case 1:
+                case IN:
                     control.setIn( status );
                     break;
-                case 2:
+                case OUT:
                     control.setOut( status );
                     break;
             }

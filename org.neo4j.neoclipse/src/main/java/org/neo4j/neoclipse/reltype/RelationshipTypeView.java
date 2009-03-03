@@ -14,6 +14,7 @@
 package org.neo4j.neoclipse.reltype;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -27,14 +28,16 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.InputDialog;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
@@ -59,14 +62,18 @@ import org.neo4j.neoclipse.view.NeoGraphLabelProvider;
 import org.neo4j.neoclipse.view.NeoGraphLabelProviderWrapper;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
+/**
+ * View that shows the relationships of the database.
+ * @author anders
+ */
 public class RelationshipTypeView extends ViewPart implements
-    ISelectionListener
+    ISelectionListener, IPropertyChangeListener
 {
     public final static String ID = "org.neo4j.neoclipse.reltype.RelationshipTypeView";
-    private static final String MARK_RELATIONSHIPS_TOOL_TIP = "Mark all relationships of this type.";
+    private static final String MARK_RELATIONSHIPS_TOOL_TIP = "Highlight all relationships of the selected types.";
     private static final String NEW_RELTYPE_DIALOG_TEXT = "Please enter the name of the new relationships type";
     private static final String NEW_RELTYPE_DIALOG_TITLE = "New relationship type entry";
-    private static final String MARK_RELATIONSHIPS_LABEL = "Mark relationships";
+    private static final String MARK_RELATIONSHIPS_LABEL = "Highlight relationships";
     private static final String ADD_NODE_START_TOOL_TIP = "Add a node with a relationship; "
         + "the new node is the start node of the relationship(s).";
     private static final String ADD_NODE_START_LABEL = "Add node as start node";
@@ -77,10 +84,10 @@ public class RelationshipTypeView extends ViewPart implements
     private static final String CREATE_NEW_TOOL_TIP = "Create new relationship type.";
     private static final String CREATE_NEW_LABEL = "Create new type";
     private static final String CLEAR_HIGHLIGHT = "Remove highlighting";
-    private static final String MARK_START_NODES_TOOLTIP = "Mark start nodes for relationships of this type.";
-    private static final String MARK_START_NODES_LABEL = "Mark start nodes";
-    private static final String MARK_END_NODES_TOOLTIP = "Mark end nodes for relationships of this type.";
-    private static final String MARK_END_NODES_LABEL = "Mark end nodes";
+    private static final String MARK_START_NODES_TOOLTIP = "Highlight start nodes for relationships of the selcted types.";
+    private static final String MARK_START_NODES_LABEL = "Highlight start nodes";
+    private static final String MARK_END_NODES_TOOLTIP = "Highlight end nodes for relationships of the selcted types.";
+    private static final String MARK_END_NODES_LABEL = "Highlight end nodes";
     protected static final int OK = 0;
     private TableViewer viewer;
     private Action markIncomingAction;
@@ -97,22 +104,6 @@ public class RelationshipTypeView extends ViewPart implements
     private List<Node> currentSelectedNodes = Collections.emptyList();
     private Action addIncomingNode;
 
-    static class NameSorter extends ViewerSorter
-    {
-        @Override
-        public int compare( Viewer viewer, Object e1, Object e2 )
-        {
-            if ( e1 instanceof RelationshipTypeControl
-                && e2 instanceof RelationshipTypeControl )
-            {
-                return ((RelationshipTypeControl) e1).getRelType().name()
-                    .compareTo(
-                        ((RelationshipTypeControl) e2).getRelType().name() );
-            }
-            return super.compare( viewer, e1, e2 );
-        }
-    }
-
     /**
      * The constructor.
      */
@@ -121,19 +112,19 @@ public class RelationshipTypeView extends ViewPart implements
     }
 
     /**
-     * This is a callback that will allow us to create the viewer and initialize
-     * it.
+     * Initialization of the workbench part.
      */
     public void createPartControl( Composite parent )
     {
         viewer = new TableViewer( parent, SWT.MULTI | SWT.V_SCROLL );
-        provider = new RelationshipTypesProvider();
+        provider = RelationshipTypesProviderWrapper.getInstance();
         viewer.setContentProvider( provider );
+        provider.addChangeListener( this );
         NeoGraphLabelProvider labelProvider = NeoGraphLabelProviderWrapper
             .getInstance();
         labelProvider.createTableColumns( viewer );
         viewer.setLabelProvider( labelProvider );
-        viewer.setSorter( new NameSorter() );
+        viewer.setComparator( new ViewerComparator( provider ) );
         viewer.setInput( getViewSite() );
 
         PlatformUI.getWorkbench().getHelpSystem().setHelp( viewer.getControl(),
@@ -154,6 +145,23 @@ public class RelationshipTypeView extends ViewPart implements
         getSite().getPage().addSelectionListener( ID, this );
     }
 
+    /**
+     * Hook the double click listener into the view.
+     */
+    private void hookDoubleClickAction()
+    {
+        viewer.addDoubleClickListener( new IDoubleClickListener()
+        {
+            public void doubleClick( DoubleClickEvent event )
+            {
+                markRelationshipAction.run();
+            }
+        } );
+    }
+
+    /**
+     * Create and hook up the context menu.
+     */
     private void hookContextMenu()
     {
         MenuManager menuMgr = new MenuManager( "#PopupMenu" );
@@ -170,20 +178,59 @@ public class RelationshipTypeView extends ViewPart implements
         getSite().registerContextMenu( menuMgr, viewer );
     }
 
+    /**
+     * Add contributions to the different actions bars.
+     */
     private void contributeToActionBars()
     {
         IActionBars bars = getViewSite().getActionBars();
-        // fillLocalPullDown( bars.getMenuManager() );
+        fillLocalPullDown( bars.getMenuManager() );
         fillLocalToolBar( bars.getToolBarManager() );
     }
 
-    // private void fillLocalPullDown( IMenuManager manager )
-    // {
-    // manager.add( markIncomingAction );
-    // manager.add( markOutgoingAction );
-    // manager.add( clearMarkedAction );
-    // }
+    /**
+     * Add actions to the local pull down menu.
+     * @param manager
+     *            the pul down menu manager
+     */
+    private void fillLocalPullDown( IMenuManager manager )
+    {
+        manager.add( markIncomingAction );
+        manager.add( markOutgoingAction );
+        manager.add( markRelationshipAction );
+        manager.add( clearMarkedAction );
+        manager.add( new Separator() );
+        manager.add( addRelationship );
+        manager.add( addOutgoingNode );
+        manager.add( addIncomingNode );
+        manager.add( new Separator() );
+        manager.add( newAction );
+    }
 
+    /**
+     * Add actions to the local tool bar menu.
+     * @param manager
+     *            the tool bar manager
+     */
+    private void fillLocalToolBar( IToolBarManager manager )
+    {
+        manager.add( markIncomingAction );
+        manager.add( markOutgoingAction );
+        manager.add( markRelationshipAction );
+        manager.add( clearMarkedAction );
+        manager.add( new Separator() );
+        manager.add( addRelationship );
+        manager.add( addOutgoingNode );
+        manager.add( addIncomingNode );
+        manager.add( new Separator() );
+        manager.add( newAction );
+    }
+
+    /**
+     * Add actions to the context menu.
+     * @param manager
+     *            contect menu manager
+     */
     private void fillContextMenu( IMenuManager manager )
     {
         manager.add( markOutgoingAction );
@@ -192,18 +239,14 @@ public class RelationshipTypeView extends ViewPart implements
         manager.add( addRelationship );
         manager.add( addOutgoingNode );
         manager.add( addIncomingNode );
+        manager.add( newAction );
         // Other plug-ins can contribute there actions here
         manager.add( new Separator( IWorkbenchActionConstants.MB_ADDITIONS ) );
     }
 
-    private void fillLocalToolBar( IToolBarManager manager )
-    {
-        manager.add( markIncomingAction );
-        manager.add( markOutgoingAction );
-        manager.add( clearMarkedAction );
-        manager.add( newAction );
-    }
-
+    /**
+     * Create all actions.
+     */
     private void makeActions()
     {
         markIncomingAction = new Action( MARK_END_NODES_LABEL )
@@ -277,7 +320,16 @@ public class RelationshipTypeView extends ViewPart implements
         {
             public void run()
             {
-                RelationshipType relType = getAddRelPreconditions();
+                if ( currentSelectedNodes.isEmpty()
+                    || currentSelectedNodes.size() != 2 )
+                {
+                    // TODO err msg
+                    MessageDialog
+                        .openWarning( null, "Adding relationship",
+                            "Two nodes must be selected in the database graph to add a relationship." );
+                }
+                RelationshipType relType1 = getCurrentRelType();
+                RelationshipType relType = relType1;
                 Node source = currentSelectedNodes.get( 0 );
                 Node dest = currentSelectedNodes.get( 1 );
                 createRelationship( source, dest, relType );
@@ -318,7 +370,7 @@ public class RelationshipTypeView extends ViewPart implements
                 {
                     highlightRelationshipType( relType );
                 }
-                setEnableRestrictedActions( true );
+                setEnableHighlightningActions( true );
                 clearMarkedAction.setEnabled( true );
             }
         };
@@ -327,6 +379,15 @@ public class RelationshipTypeView extends ViewPart implements
         markRelationshipAction.setToolTipText( MARK_RELATIONSHIPS_TOOL_TIP );
     }
 
+    /**
+     * Create a relationship between two nodes
+     * @param source
+     *            start node of the relationship
+     * @param dest
+     *            end node of the relationship
+     * @param relType
+     *            type of relationship
+     */
     private void createRelationship( Node source, Node dest,
         RelationshipType relType )
     {
@@ -359,7 +420,13 @@ public class RelationshipTypeView extends ViewPart implements
     {
         if ( relType == null )
         {
-            return;
+            throw new IllegalArgumentException(
+                "RelationshipType can not be null" );
+        }
+        if ( sourceNodes == null && destNodes == null )
+        {
+            throw new IllegalArgumentException(
+                "Both soure and destination can not be null" );
         }
         NeoService ns = Activator.getDefault().getNeoServiceSafely();
         if ( ns == null )
@@ -399,34 +466,40 @@ public class RelationshipTypeView extends ViewPart implements
         graphView.refreshPreserveLayout();
     }
 
-    private RelationshipType getAddRelPreconditions()
-    {
-        if ( currentSelectedNodes.isEmpty() || currentSelectedNodes.size() != 2 )
-        {
-            // TODO err msg
-            return null;
-        }
-        RelationshipType relType = getCurrentRelType();
-        return relType;
-    }
-
-    private void setEnableRestrictedActions( boolean enabled )
+    /**
+     * Enable or disable highlightning actions.
+     * @param enabled
+     */
+    private void setEnableHighlightningActions( boolean enabled )
     {
         markIncomingAction.setEnabled( enabled );
         markOutgoingAction.setEnabled( enabled );
+        markRelationshipAction.setEnabled( enabled );
     }
 
+    /**
+     * Enable or disable addition of a relationship.
+     * @param enabled
+     */
     private void setEnableAddRelationship( boolean enabled )
     {
         addRelationship.setEnabled( enabled );
     }
 
+    /**
+     * Enable or disable to add a node.
+     * @param enabled
+     */
     private void setEnableAddNode( boolean enabled )
     {
         addOutgoingNode.setEnabled( enabled );
         addIncomingNode.setEnabled( enabled );
     }
 
+    /**
+     * Get the currently first selected relationship type.
+     * @return
+     */
     private RelationshipType getCurrentRelType()
     {
         ISelection selection = viewer.getSelection();
@@ -438,6 +511,10 @@ public class RelationshipTypeView extends ViewPart implements
         return null;
     }
 
+    /**
+     * Get the currently selected relationship types.
+     * @return
+     */
     private List<RelationshipType> getCurrentRelTypes()
     {
         ISelection selection = viewer.getSelection();
@@ -458,6 +535,10 @@ public class RelationshipTypeView extends ViewPart implements
         return Collections.emptyList();
     }
 
+    /**
+     * Highlight a relationship type.
+     * @param relType
+     */
     private void highlightRelationshipType( RelationshipType relType )
     {
         if ( graphView == null )
@@ -481,6 +562,13 @@ public class RelationshipTypeView extends ViewPart implements
         gViewer.refresh( true );
     }
 
+    /**
+     * Highlight nodes that are connected to a relationship type.
+     * @param relType
+     *            relationship type to use
+     * @param direction
+     *            direction in which nodes should be highlighted
+     */
     private void highlightNodes( RelationshipType relType, Direction direction )
     {
         if ( graphView == null )
@@ -502,17 +590,6 @@ public class RelationshipTypeView extends ViewPart implements
         }
         graphLabelProvider.addMarkedNodes( nodes );
         gViewer.refresh( true );
-    }
-
-    private void hookDoubleClickAction()
-    {
-        viewer.addDoubleClickListener( new IDoubleClickListener()
-        {
-            public void doubleClick( DoubleClickEvent event )
-            {
-                markRelationshipAction.run();
-            }
-        } );
     }
 
     /**
@@ -556,21 +633,11 @@ public class RelationshipTypeView extends ViewPart implements
             }
             if ( !relTypes.isEmpty() )
             {
-                List<RelationshipTypeControl> relTypeCtrls = new ArrayList<RelationshipTypeControl>();
-                for ( Object o : provider.getElements( null ) )
-                {
-                    if ( o instanceof RelationshipTypeControl )
-                    {
-                        RelationshipTypeControl relTypeCtrl = (RelationshipTypeControl) o;
-                        if ( relTypes.contains( relTypeCtrl.getRelType() ) )
-                        {
-                            relTypeCtrls.add( relTypeCtrl );
-                        }
-                    }
-                }
+                Collection<RelationshipTypeControl> relTypeCtrls = provider
+                    .getFilteredControls( relTypes );
                 viewer.setSelection( new StructuredSelection( relTypeCtrls
                     .toArray() ) );
-                setEnableRestrictedActions( true );
+                setEnableHighlightningActions( true );
             }
             if ( !nodes.isEmpty() )
             {
@@ -581,11 +648,11 @@ public class RelationshipTypeView extends ViewPart implements
         {
             if ( selection.isEmpty() )
             {
-                setEnableRestrictedActions( false );
+                setEnableHighlightningActions( false );
             }
             else
             {
-                setEnableRestrictedActions( true );
+                setEnableHighlightningActions( true );
             }
         }
         if ( getCurrentRelTypes().size() == 1 )
@@ -598,6 +665,17 @@ public class RelationshipTypeView extends ViewPart implements
             {
                 setEnableAddNode( true );
             }
+        }
+    }
+
+    /**
+     * Respond to changes in the underlying relationship type provider.
+     */
+    public void propertyChange( PropertyChangeEvent event )
+    {
+        if ( graphView != null )
+        {
+            graphView.refreshPreserveLayout();
         }
     }
 }

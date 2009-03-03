@@ -30,6 +30,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.zest.core.viewers.IConnectionStyleProvider;
 import org.eclipse.zest.core.widgets.ZestStyles;
 import org.neo4j.api.core.Direction;
@@ -543,26 +544,49 @@ public class NeoGraphLabelProvider extends LabelProvider implements
         return graphDecorator.getRelationshipColor( control.getRelType() );
     }
 
+    /**
+     * Get the relationship types that was decorated.
+     * @return
+     */
     public Set<RelationshipType> getRelationshipTypes()
     {
         return graphDecorator.getRelationshipTypes();
     }
 
+    /**
+     * Create the table columns of the Relationship types view.
+     * @param tableViewer
+     */
     public void createTableColumns( TableViewer tableViewer )
     {
         Table table = tableViewer.getTable();
-        String[] headers = { "Relationship type", "I", "O" };
-        int[] widths = { 200, 24, 24 };
-        for ( int i = 0; i < headers.length; i++ )
-        {
-            TableViewerColumn column = new TableViewerColumn( tableViewer,
-                SWT.NONE );
-            column.getColumn().setText( headers[i] );
-            column.getColumn().setWidth( widths[i] );
-            column.getColumn().setResizable( i < 1 );
-            column.setEditingSupport( new RelationshipTypeEditingSupport(
-                tableViewer, i ) );
-        }
+        TableViewerColumn column = new TableViewerColumn( tableViewer, SWT.LEFT );
+        TableColumn col = column.getColumn();
+        col.setText( "Relationship type" );
+        col.setWidth( 200 );
+        col.setResizable( true );
+        column.setEditingSupport( new RelationshipTypeEditingSupport(
+            tableViewer, RelationshipTypeEditingSupport.ColumnType.HEADING ) );
+        column = new TableViewerColumn( tableViewer, SWT.LEFT );
+        col = column.getColumn();
+        col.setText( "In" );
+        col
+            .setToolTipText( "Filter incoming relationships of this relationship type." );
+        col.setWidth( 50 );
+        col.setImage( NeoIcons.INCOMING.getImage() );
+        col.setResizable( false );
+        column.setEditingSupport( new RelationshipTypeEditingSupport(
+            tableViewer, RelationshipTypeEditingSupport.ColumnType.IN ) );
+        column = new TableViewerColumn( tableViewer, SWT.LEFT );
+        col = column.getColumn();
+        col.setText( "Out" );
+        col
+            .setToolTipText( "Filter outgoing relationships of this relationship type." );
+        col.setWidth( 50 );
+        col.setImage( NeoIcons.OUTGOING.getImage() );
+        col.setResizable( false );
+        column.setEditingSupport( new RelationshipTypeEditingSupport(
+            tableViewer, RelationshipTypeEditingSupport.ColumnType.OUT ) );
         table.setHeaderVisible( true );
         table.setLinesVisible( true );
     }
