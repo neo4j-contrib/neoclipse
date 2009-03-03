@@ -102,11 +102,12 @@ public class RelationshipTypeView extends ViewPart implements
         @Override
         public int compare( Viewer viewer, Object e1, Object e2 )
         {
-            if ( e1 instanceof RelationshipType
-                && e2 instanceof RelationshipType )
+            if ( e1 instanceof RelationshipTypeControl
+                && e2 instanceof RelationshipTypeControl )
             {
-                return ((RelationshipType) e1).name().compareTo(
-                    ((RelationshipType) e2).name() );
+                return ((RelationshipTypeControl) e1).getRelType().name()
+                    .compareTo(
+                        ((RelationshipTypeControl) e2).getRelType().name() );
             }
             return super.compare( viewer, e1, e2 );
         }
@@ -128,7 +129,10 @@ public class RelationshipTypeView extends ViewPart implements
         viewer = new TableViewer( parent, SWT.MULTI | SWT.V_SCROLL );
         provider = new RelationshipTypesProvider();
         viewer.setContentProvider( provider );
-        viewer.setLabelProvider( NeoGraphLabelProviderWrapper.getInstance() );
+        NeoGraphLabelProvider labelProvider = NeoGraphLabelProviderWrapper
+            .getInstance();
+        labelProvider.createTableColumns( viewer );
+        viewer.setLabelProvider( labelProvider );
         viewer.setSorter( new NameSorter() );
         viewer.setInput( getViewSite() );
 
@@ -427,9 +431,9 @@ public class RelationshipTypeView extends ViewPart implements
     {
         ISelection selection = viewer.getSelection();
         Object obj = ((IStructuredSelection) selection).getFirstElement();
-        if ( obj instanceof RelationshipType )
+        if ( obj instanceof RelationshipTypeControl )
         {
-            return (RelationshipType) obj;
+            return ((RelationshipTypeControl) obj).getRelType();
         }
         return null;
     }
@@ -439,9 +443,16 @@ public class RelationshipTypeView extends ViewPart implements
         ISelection selection = viewer.getSelection();
         if ( selection instanceof IStructuredSelection )
         {
-            @SuppressWarnings( "unchecked" )
-            List<RelationshipType> result = ((IStructuredSelection) selection)
-                .toList();
+            List<RelationshipType> result = new ArrayList<RelationshipType>();
+            Iterator<?> iter = ((IStructuredSelection) selection).iterator();
+            while ( iter.hasNext() )
+            {
+                Object o = iter.next();
+                if ( o instanceof RelationshipTypeControl )
+                {
+                    result.add( ((RelationshipTypeControl) o).getRelType() );
+                }
+            }
             return result;
         }
         return Collections.emptyList();
@@ -545,7 +556,19 @@ public class RelationshipTypeView extends ViewPart implements
             }
             if ( !relTypes.isEmpty() )
             {
-                viewer.setSelection( new StructuredSelection( relTypes
+                List<RelationshipTypeControl> relTypeCtrls = new ArrayList<RelationshipTypeControl>();
+                for ( Object o : provider.getElements( null ) )
+                {
+                    if ( o instanceof RelationshipTypeControl )
+                    {
+                        RelationshipTypeControl relTypeCtrl = (RelationshipTypeControl) o;
+                        if ( relTypes.contains( relTypeCtrl.getRelType() ) )
+                        {
+                            relTypeCtrls.add( relTypeCtrl );
+                        }
+                    }
+                }
+                viewer.setSelection( new StructuredSelection( relTypeCtrls
                     .toArray() ) );
                 setEnableRestrictedActions( true );
             }

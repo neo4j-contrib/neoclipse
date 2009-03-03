@@ -54,7 +54,9 @@ public enum NeoIcons
         shared( ISharedImages.IMG_TOOL_COPY ) ), NEW( "new",
         shared( ISharedImages.IMG_TOOL_NEW_WIZARD ) ), RENAME( "rename",
         path( "obj16/change.gif" ) ), PASTE( "paste",
-        shared( ISharedImages.IMG_TOOL_PASTE ) ),
+        shared( ISharedImages.IMG_TOOL_PASTE ) ), CHECKED( "checked",
+        shared( ISharedImages.IMG_TOOL_BACK ) ), UNCHECKED( "unchecked",
+        shared( ISharedImages.IMG_TOOL_FORWARD ) ),
     // relationship types actions
     ADD( "add", path( "obj16/add.gif" ) ), ADD_INCOMING( "add_incoming",
         path( "obj16/add_incoming.gif" ) ), ADD_OUTGOING( "add_outgoing",

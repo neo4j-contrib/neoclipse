@@ -77,7 +77,6 @@ public class NeoGraphContentProvider implements
     /**
      * Returns all nodes the given node is connected with.
      */
-    @SuppressWarnings( "deprecation" )
     public Object[] getElements( Object inputElement )
     {
         Node node = (Node) inputElement;
@@ -88,8 +87,10 @@ public class NeoGraphContentProvider implements
         {
             return new Node[] { node };
         }
-        for ( RelationshipType relType : ((EmbeddedNeo) neoService)
-            .getRelationshipTypes() )
+        @SuppressWarnings( "deprecation" )
+        Iterable<RelationshipType> relationshipTypes = ((EmbeddedNeo) neoService)
+            .getRelationshipTypes();
+        for ( RelationshipType relType : relationshipTypes )
         {
             relDirList.add( relType );
             relDirList.add( Direction.BOTH );

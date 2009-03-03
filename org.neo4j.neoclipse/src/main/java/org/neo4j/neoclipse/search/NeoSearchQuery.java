@@ -178,15 +178,16 @@ public class NeoSearchQuery implements ISearchQuery
     /**
      * Finds all nodes matching the search criteria.
      */
-    @SuppressWarnings( "deprecation" )
     protected Iterable<Node> getMatchingNodesByTraversing( final Node node,
         final IProgressMonitor monitor )
     {
         // monitor.beginTask( "Neo4j search operation started.",
         // IProgressMonitor.UNKNOWN );
         final List<Object> relDirList = new ArrayList<Object>();
-        for ( RelationshipType relType : ((EmbeddedNeo) neoService)
-            .getRelationshipTypes() )
+        @SuppressWarnings( "deprecation" )
+        Iterable<RelationshipType> relationshipTypes = ((EmbeddedNeo) neoService)
+            .getRelationshipTypes();
+        for ( RelationshipType relType : relationshipTypes )
         {
             relDirList.add( relType );
             relDirList.add( Direction.BOTH );

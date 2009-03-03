@@ -59,7 +59,6 @@ public class NeoGraphRelationshipContentProvider implements
         return ((Relationship) rel).getEndNode();
     }
 
-    @SuppressWarnings( "deprecation" )
     public Object[] getElements( Object input )
     {
         final int depth = view.getTraversalDepth() - 1;
@@ -75,8 +74,10 @@ public class NeoGraphRelationshipContentProvider implements
         {
             return EMPTY_REL_ARRAY;
         }
-        for ( RelationshipType relType : ((EmbeddedNeo) neoService)
-            .getRelationshipTypes() )
+        @SuppressWarnings( "deprecation" )
+        Iterable<RelationshipType> relationshipTypes = ((EmbeddedNeo) neoService)
+            .getRelationshipTypes();
+        for ( RelationshipType relType : relationshipTypes )
         {
             relDirList.add( relType );
             relDirList.add( Direction.BOTH );

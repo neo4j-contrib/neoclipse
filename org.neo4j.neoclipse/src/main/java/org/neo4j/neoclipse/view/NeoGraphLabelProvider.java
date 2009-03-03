@@ -24,8 +24,12 @@ import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ITableColorProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.TableViewerColumn;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Table;
 import org.eclipse.zest.core.viewers.IConnectionStyleProvider;
 import org.eclipse.zest.core.widgets.ZestStyles;
 import org.neo4j.api.core.Direction;
@@ -35,6 +39,7 @@ import org.neo4j.api.core.Relationship;
 import org.neo4j.api.core.RelationshipType;
 import org.neo4j.api.core.Transaction;
 import org.neo4j.neoclipse.Activator;
+import org.neo4j.neoclipse.NeoIcons;
 import org.neo4j.neoclipse.action.decorate.node.ShowNodeColorsAction;
 import org.neo4j.neoclipse.action.decorate.node.ShowNodeIconsAction;
 import org.neo4j.neoclipse.action.decorate.node.ShowNodeIdsAction;
@@ -47,6 +52,8 @@ import org.neo4j.neoclipse.action.decorate.rel.ShowRelationshipTypesAction;
 import org.neo4j.neoclipse.decorate.SimpleGraphDecorator;
 import org.neo4j.neoclipse.decorate.SimpleGraphDecorator.Settings;
 import org.neo4j.neoclipse.preference.NeoPreferences;
+import org.neo4j.neoclipse.reltype.RelationshipTypeControl;
+import org.neo4j.neoclipse.reltype.RelationshipTypeEditingSupport;
 
 /**
  * Provides the labels for graph elements.
@@ -109,6 +116,8 @@ public class NeoGraphLabelProvider extends LabelProvider implements
      * Marked nodes.
      */
     private Set<Node> markedNodes = new HashSet<Node>();
+    private static final Image CHECKED = NeoIcons.CHECKED.getImage();
+    private static final Image UNCHECKED = NeoIcons.UNCHECKED.getImage();
 
     public NeoGraphLabelProvider()
     {
@@ -490,38 +499,71 @@ public class NeoGraphLabelProvider extends LabelProvider implements
         return null;
     }
 
-    public Image getColumnImage( Object element, int arg1 )
+    public Image getColumnImage( Object element, int index )
     {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    public String getColumnText( Object element, int arg1 )
-    {
-        if ( element instanceof RelationshipType )
+        if ( element instanceof RelationshipTypeControl )
         {
-            return ((RelationshipType) element).name();
+            RelationshipTypeControl control = (RelationshipTypeControl) element;
+            if ( index == 1 )
+            {
+                return control.isIn() ? CHECKED : UNCHECKED;
+            }
+            if ( index == 2 )
+            {
+                return control.isOut() ? CHECKED : UNCHECKED;
+            }
         }
-        return "[unknown]";
+        return null;
     }
 
-    public Color getBackground( Object element, int arg1 )
+    public String getColumnText( Object element, int index )
+    {
+        if ( index == 0 && element instanceof RelationshipTypeControl )
+        {
+            RelationshipTypeControl control = (RelationshipTypeControl) element;
+            return control.getRelType().name();
+        }
+        return null;
+    }
+
+    public Color getBackground( Object element, int index )
     {
         // TODO Auto-generated method stub
         return null;
     }
 
-    public Color getForeground( Object element, int arg1 )
+    public Color getForeground( Object element, int index )
     {
-        if ( !showRelationshipColors || !(element instanceof RelationshipType) )
+        if ( !showRelationshipColors || index != 0
+            || !(element instanceof RelationshipTypeControl) )
         {
             return graphDecorator.getRelationshipColor();
         }
-        return graphDecorator.getRelationshipColor( (RelationshipType) element );
+        RelationshipTypeControl control = (RelationshipTypeControl) element;
+        return graphDecorator.getRelationshipColor( control.getRelType() );
     }
 
     public Set<RelationshipType> getRelationshipTypes()
     {
         return graphDecorator.getRelationshipTypes();
+    }
+
+    public void createTableColumns( TableViewer tableViewer )
+    {
+        Table table = tableViewer.getTable();
+        String[] headers = { "Relationship type", "I", "O" };
+        int[] widths = { 200, 24, 24 };
+        for ( int i = 0; i < headers.length; i++ )
+        {
+            TableViewerColumn column = new TableViewerColumn( tableViewer,
+                SWT.NONE );
+            column.getColumn().setText( headers[i] );
+            column.getColumn().setWidth( widths[i] );
+            column.getColumn().setResizable( i < 1 );
+            column.setEditingSupport( new RelationshipTypeEditingSupport(
+                tableViewer, i ) );
+        }
+        table.setHeaderVisible( true );
+        table.setLinesVisible( true );
     }
 }

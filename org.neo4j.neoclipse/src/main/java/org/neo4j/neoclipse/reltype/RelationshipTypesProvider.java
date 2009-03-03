@@ -13,7 +13,9 @@
  */
 package org.neo4j.neoclipse.reltype;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.eclipse.jface.viewers.IContentProvider;
@@ -73,33 +75,39 @@ public class RelationshipTypesProvider implements IContentProvider,
     {
     }
 
-    @SuppressWarnings( "deprecation" )
     public Object[] getElements( Object inputElement )
     {
+        Set<RelationshipType> relationshipTypes;
         if ( viewAll )
         {
-            Set<RelationshipType> relDirList = new HashSet<RelationshipType>();
+            relationshipTypes = new HashSet<RelationshipType>();
             NeoService ns = Activator.getDefault().getNeoServiceSafely();
             if ( ns == null )
             {
                 // todo
                 return new Object[0];
             }
-            for ( RelationshipType relType : ((EmbeddedNeo) ns)
-                .getRelationshipTypes() )
+            @SuppressWarnings( "deprecation" )
+            Iterable<RelationshipType> relationshipTypesIterable = ((EmbeddedNeo) ns)
+                .getRelationshipTypes();
+            for ( RelationshipType relType : relationshipTypesIterable )
             {
-                relDirList.add( relType );
+                relationshipTypes.add( relType );
             }
-            relDirList.addAll( fakeTypes );
-            return relDirList.toArray();
+            relationshipTypes.addAll( fakeTypes );
         }
         else
         {
-            Set<RelationshipType> relationshipTypes = NeoGraphLabelProviderWrapper
-                .getInstance().getRelationshipTypes();
+            relationshipTypes = NeoGraphLabelProviderWrapper.getInstance()
+                .getRelationshipTypes();
             relationshipTypes.addAll( fakeTypes );
-            return relationshipTypes.toArray();
         }
+        List<RelationshipTypeControl> list = new ArrayList<RelationshipTypeControl>();
+        for ( RelationshipType relType : relationshipTypes )
+        {
+            list.add( new RelationshipTypeControl( relType ) );
+        }
+        return list.toArray();
     }
 
     public void addFakeType( final String name )
