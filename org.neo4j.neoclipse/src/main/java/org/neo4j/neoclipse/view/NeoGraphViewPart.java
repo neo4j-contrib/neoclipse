@@ -15,6 +15,7 @@ package org.neo4j.neoclipse.view;
 
 import org.eclipse.draw2d.ChangeEvent;
 import org.eclipse.draw2d.ChangeListener;
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
@@ -221,6 +222,19 @@ public class NeoGraphViewPart extends ViewPart implements
         }
         // label settings actions
         contributeLabelActions( mm );
+        // separator
+        {
+            mm.add( new Separator() );
+        }
+        // preference action
+        mm.add( new Action( "Preferences" )
+        {
+            @Override
+            public void run()
+            {
+                Activator.getDefault().showPreferenceDialog();
+            }
+        } );
         // printing
         getViewSite().getActionBars().setGlobalActionHandler(
             ActionFactory.PRINT.getId(), new PrintGraphAction( this ) );

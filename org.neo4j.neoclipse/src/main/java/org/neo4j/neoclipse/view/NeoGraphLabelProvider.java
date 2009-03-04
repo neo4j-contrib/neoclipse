@@ -560,6 +560,7 @@ public class NeoGraphLabelProvider extends LabelProvider implements
     public void createTableColumns( TableViewer tableViewer )
     {
         Table table = tableViewer.getTable();
+
         TableViewerColumn column = new TableViewerColumn( tableViewer, SWT.LEFT );
         TableColumn col = column.getColumn();
         col.setText( "Relationship type" );
@@ -567,26 +568,29 @@ public class NeoGraphLabelProvider extends LabelProvider implements
         col.setResizable( true );
         column.setEditingSupport( new RelationshipTypeEditingSupport(
             tableViewer, RelationshipTypeEditingSupport.ColumnType.HEADING ) );
+
         column = new TableViewerColumn( tableViewer, SWT.LEFT );
         col = column.getColumn();
         col.setText( "In" );
         col
             .setToolTipText( "Filter incoming relationships of this relationship type." );
-        col.setWidth( 50 );
+        col.setWidth( 60 );
         col.setImage( NeoIcons.INCOMING.getImage() );
-        col.setResizable( false );
+        col.setResizable( true );
         column.setEditingSupport( new RelationshipTypeEditingSupport(
             tableViewer, RelationshipTypeEditingSupport.ColumnType.IN ) );
+
         column = new TableViewerColumn( tableViewer, SWT.LEFT );
         col = column.getColumn();
         col.setText( "Out" );
         col
             .setToolTipText( "Filter outgoing relationships of this relationship type." );
-        col.setWidth( 50 );
+        col.setWidth( 60 );
         col.setImage( NeoIcons.OUTGOING.getImage() );
-        col.setResizable( false );
+        col.setResizable( true );
         column.setEditingSupport( new RelationshipTypeEditingSupport(
             tableViewer, RelationshipTypeEditingSupport.ColumnType.OUT ) );
+
         table.setHeaderVisible( true );
         table.setLinesVisible( true );
     }

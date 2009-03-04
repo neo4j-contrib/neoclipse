@@ -70,6 +70,8 @@ public class RelationshipTypeView extends ViewPart implements
     ISelectionListener, IPropertyChangeListener
 {
     public final static String ID = "org.neo4j.neoclipse.reltype.RelationshipTypeView";
+    private static final String ADDING_REL_WARNING_MESSAGE = "Two nodes must be selected in the database graph to add a relationship.";
+    private static final String ADDING_REL_WARNING_LABEL = "Adding relationship";
     private static final String MARK_RELATIONSHIPS_TOOL_TIP = "Highlight all relationships of the selected types.";
     private static final String NEW_RELTYPE_DIALOG_TEXT = "Please enter the name of the new relationships type";
     private static final String NEW_RELTYPE_DIALOG_TITLE = "New relationship type entry";
@@ -249,6 +251,107 @@ public class RelationshipTypeView extends ViewPart implements
      */
     private void makeActions()
     {
+        makeHighlightingActions();
+
+        makeRelationshipTypeActions();
+
+        makeAddActions();
+    }
+
+    /**
+     * Create actions that add something.
+     */
+    private void makeAddActions()
+    {
+        addRelationship = new Action( ADD_RELATIONSHIP_LABEL )
+        {
+            public void run()
+            {
+                if ( currentSelectedNodes.isEmpty()
+                    || currentSelectedNodes.size() != 2 )
+                {
+                    MessageDialog.openWarning( null, ADDING_REL_WARNING_LABEL,
+                        ADDING_REL_WARNING_MESSAGE );
+                }
+                RelationshipType relType1 = getCurrentRelType();
+                RelationshipType relType = relType1;
+                Node source = currentSelectedNodes.get( 0 );
+                Node dest = currentSelectedNodes.get( 1 );
+                createRelationship( source, dest, relType );
+            }
+        };
+        addRelationship.setImageDescriptor( NeoIcons.ADD.getDescriptor() );
+
+        addOutgoingNode = new Action( ADD_NODE_END_LABEL )
+        {
+            public void run()
+            {
+                RelationshipType relType = getCurrentRelType();
+                createRelationship( currentSelectedNodes, null, relType );
+            }
+        };
+        addOutgoingNode.setImageDescriptor( NeoIcons.ADD_OUTGOING
+            .getDescriptor() );
+        addOutgoingNode.setToolTipText( ADD_NODE_END_TOOL_TIP );
+
+        addIncomingNode = new Action( ADD_NODE_START_LABEL )
+        {
+            public void run()
+            {
+                RelationshipType relType = getCurrentRelType();
+                createRelationship( null, currentSelectedNodes, relType );
+            }
+        };
+        addIncomingNode.setImageDescriptor( NeoIcons.ADD_INCOMING
+            .getDescriptor() );
+        addIncomingNode.setToolTipText( ADD_NODE_START_TOOL_TIP );
+    }
+
+    /**
+     * Create actions that affect relationship types.
+     */
+    private void makeRelationshipTypeActions()
+    {
+        newAction = new Action( CREATE_NEW_LABEL )
+        {
+            public void run()
+            {
+                InputDialog input = new InputDialog( null,
+                    NEW_RELTYPE_DIALOG_TITLE, NEW_RELTYPE_DIALOG_TEXT, null,
+                    null );
+                if ( input.open() == OK && input.getReturnCode() == OK )
+                {
+                    provider.addFakeType( input.getValue() );
+                    viewer.refresh();
+                }
+            }
+        };
+        newAction.setToolTipText( CREATE_NEW_TOOL_TIP );
+        newAction.setImageDescriptor( NeoIcons.NEW.getDescriptor() );
+    }
+
+    /**
+     * Create actions working with highlighting.
+     */
+    private void makeHighlightingActions()
+    {
+        markRelationshipAction = new Action( MARK_RELATIONSHIPS_LABEL )
+        {
+            public void run()
+            {
+                List<RelationshipType> relTypes = getCurrentRelTypes();
+                for ( RelationshipType relType : relTypes )
+                {
+                    highlightRelationshipType( relType );
+                }
+                setEnableHighlightingActions( true );
+                clearMarkedAction.setEnabled( true );
+            }
+        };
+        markRelationshipAction.setImageDescriptor( NeoIcons.HIGHLIGHT
+            .getDescriptor() );
+        markRelationshipAction.setToolTipText( MARK_RELATIONSHIPS_TOOL_TIP );
+
         markIncomingAction = new Action( MARK_END_NODES_LABEL )
         {
             public void run()
@@ -291,6 +394,7 @@ public class RelationshipTypeView extends ViewPart implements
                 graphLabelProvider.clearMarkedRels();
                 graphView.getViewer().refresh( true );
                 setEnabled( false );
+                setEnableAddActions( false );
             }
         };
         clearMarkedAction.setImageDescriptor( NeoIcons.CLEAR_ENABLED
@@ -298,85 +402,6 @@ public class RelationshipTypeView extends ViewPart implements
         clearMarkedAction.setDisabledImageDescriptor( NeoIcons.CLEAR_DISABLED
             .getDescriptor() );
         clearMarkedAction.setEnabled( false );
-
-        newAction = new Action( CREATE_NEW_LABEL )
-        {
-            public void run()
-            {
-                InputDialog input = new InputDialog( null,
-                    NEW_RELTYPE_DIALOG_TITLE, NEW_RELTYPE_DIALOG_TEXT, null,
-                    null );
-                if ( input.open() == OK && input.getReturnCode() == OK )
-                {
-                    provider.addFakeType( input.getValue() );
-                    viewer.refresh();
-                }
-            }
-        };
-        newAction.setToolTipText( CREATE_NEW_TOOL_TIP );
-        newAction.setImageDescriptor( NeoIcons.NEW.getDescriptor() );
-
-        addRelationship = new Action( ADD_RELATIONSHIP_LABEL )
-        {
-            public void run()
-            {
-                if ( currentSelectedNodes.isEmpty()
-                    || currentSelectedNodes.size() != 2 )
-                {
-                    // TODO err msg
-                    MessageDialog
-                        .openWarning( null, "Adding relationship",
-                            "Two nodes must be selected in the database graph to add a relationship." );
-                }
-                RelationshipType relType1 = getCurrentRelType();
-                RelationshipType relType = relType1;
-                Node source = currentSelectedNodes.get( 0 );
-                Node dest = currentSelectedNodes.get( 1 );
-                createRelationship( source, dest, relType );
-            }
-        };
-        addRelationship.setImageDescriptor( NeoIcons.ADD.getDescriptor() );
-
-        addOutgoingNode = new Action( ADD_NODE_END_LABEL )
-        {
-            public void run()
-            {
-                RelationshipType relType = getCurrentRelType();
-                createRelationship( currentSelectedNodes, null, relType );
-            }
-        };
-        addOutgoingNode.setImageDescriptor( NeoIcons.ADD_OUTGOING
-            .getDescriptor() );
-        addOutgoingNode.setToolTipText( ADD_NODE_END_TOOL_TIP );
-
-        addIncomingNode = new Action( ADD_NODE_START_LABEL )
-        {
-            public void run()
-            {
-                RelationshipType relType = getCurrentRelType();
-                createRelationship( null, currentSelectedNodes, relType );
-            }
-        };
-        addIncomingNode.setImageDescriptor( NeoIcons.ADD_INCOMING
-            .getDescriptor() );
-        addIncomingNode.setToolTipText( ADD_NODE_START_TOOL_TIP );
-
-        markRelationshipAction = new Action( MARK_RELATIONSHIPS_LABEL )
-        {
-            public void run()
-            {
-                List<RelationshipType> relTypes = getCurrentRelTypes();
-                for ( RelationshipType relType : relTypes )
-                {
-                    highlightRelationshipType( relType );
-                }
-                setEnableHighlightningActions( true );
-                clearMarkedAction.setEnabled( true );
-            }
-        };
-        markRelationshipAction.setImageDescriptor( NeoIcons.HIGHLIGHT
-            .getDescriptor() );
-        markRelationshipAction.setToolTipText( MARK_RELATIONSHIPS_TOOL_TIP );
     }
 
     /**
@@ -467,10 +492,10 @@ public class RelationshipTypeView extends ViewPart implements
     }
 
     /**
-     * Enable or disable highlightning actions.
+     * Enable or disable highlighting actions.
      * @param enabled
      */
-    private void setEnableHighlightningActions( boolean enabled )
+    private void setEnableHighlightingActions( boolean enabled )
     {
         markIncomingAction.setEnabled( enabled );
         markOutgoingAction.setEnabled( enabled );
@@ -494,6 +519,16 @@ public class RelationshipTypeView extends ViewPart implements
     {
         addOutgoingNode.setEnabled( enabled );
         addIncomingNode.setEnabled( enabled );
+    }
+
+    /**
+     * Enable or disable all add actions.
+     * @param enabled
+     */
+    private void setEnableAddActions( boolean enabled )
+    {
+        setEnableAddNode( enabled );
+        setEnableAddRelationship( enabled );
     }
 
     /**
@@ -560,6 +595,7 @@ public class RelationshipTypeView extends ViewPart implements
         }
         graphLabelProvider.addMarkedRels( rels );
         gViewer.refresh( true );
+        setEnableAddActions( false );
     }
 
     /**
@@ -590,6 +626,7 @@ public class RelationshipTypeView extends ViewPart implements
         }
         graphLabelProvider.addMarkedNodes( nodes );
         gViewer.refresh( true );
+        setEnableAddActions( false );
     }
 
     /**
@@ -637,7 +674,7 @@ public class RelationshipTypeView extends ViewPart implements
                     .getFilteredControls( relTypes );
                 viewer.setSelection( new StructuredSelection( relTypeCtrls
                     .toArray() ) );
-                setEnableHighlightningActions( true );
+                setEnableHighlightingActions( true );
             }
             if ( !nodes.isEmpty() )
             {
@@ -648,11 +685,11 @@ public class RelationshipTypeView extends ViewPart implements
         {
             if ( selection.isEmpty() )
             {
-                setEnableHighlightningActions( false );
+                setEnableHighlightingActions( false );
             }
             else
             {
-                setEnableHighlightningActions( true );
+                setEnableHighlightingActions( true );
             }
         }
         if ( getCurrentRelTypes().size() == 1 )

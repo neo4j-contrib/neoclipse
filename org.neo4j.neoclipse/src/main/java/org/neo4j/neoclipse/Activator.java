@@ -146,24 +146,34 @@ public class Activator extends AbstractUIPlugin
                 .openInformation(
                     null,
                     "Database location problem",
-                    "Please make sure that the database location is correctly set. " +
-                    "To create an empty database, point the location to an empty directory." );
-            PreferenceDialog pref = PreferencesUtil.createPreferenceDialogOn(
-                null, "org.neo4j.neoclipse.preference.NeoPreferencePage",
-                new String[] {}, null );
-            if ( pref != null )
+                    "Please make sure that the database location is correctly set. "
+                        + "To create an empty database, point the location to an empty directory." );
+            showPreferenceDialog();
+            ns = sm.getNeoService();
+            if ( ns == null )
             {
-                pref.open();
-                ns = sm.getNeoService();
-                if ( ns == null )
-                {
-                    MessageDialog.openError( null, "Error message",
-                        "The Neo service is not available." );
-                    return null;
-                }
+                MessageDialog.openError( null, "Error message",
+                    "The Neo service is not available." );
+                return null;
             }
         }
         return ns;
+    }
+
+    /**
+     * Show the Neo4j preference page.
+     * @return
+     */
+    public int showPreferenceDialog()
+    {
+        PreferenceDialog pref = PreferencesUtil.createPreferenceDialogOn( null,
+            "org.neo4j.neoclipse.preference.NeoPreferencePage",
+            new String[] {}, null );
+        if ( pref != null )
+        {
+            return pref.open();
+        }
+        return 1;
     }
 
     /**

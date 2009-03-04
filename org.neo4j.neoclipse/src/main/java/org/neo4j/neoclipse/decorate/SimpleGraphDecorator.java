@@ -343,6 +343,7 @@ public class SimpleGraphDecorator
     private String readProperties( final PropertyContainer primitive,
         final List<String> propertyNames )
     {
+        List<String> values = new ArrayList<String>();
         for ( String propertyName : propertyNames )
         {
             Object propertyValue = primitive.getProperty( propertyName, "" );
@@ -353,15 +354,20 @@ public class SimpleGraphDecorator
                     // no empty strings here, thanks
                     continue;
                 }
-                return (String) propertyValue;
+                values.add( (String) propertyValue );
             }
             else
             {
                 // get a proper String from other types
-                return (String) PropertyTransform.getPropertyHandler(
+                Object render = PropertyTransform.getPropertyHandler(
                     propertyValue.getClass() ).render( propertyValue );
-
+                values.add( (String) render );
             }
+        }
+        if ( values.size() > 0 )
+        {
+            String result = values.toString();
+            return result.substring( 1, result.length() - 1 );
         }
         return null;
     }
