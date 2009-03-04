@@ -13,6 +13,10 @@
  */
 package org.neo4j.neoclipse.action.context;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelection;
@@ -24,8 +28,8 @@ abstract public class AbstractContextAction extends AbstractBaseContextAction
 {
     protected NeoGraphViewPart graphView;
 
-    public AbstractContextAction( final String name, final ImageDescriptor image,
-        final NeoGraphViewPart neoGraphViewPart )
+    public AbstractContextAction( final String name,
+        final ImageDescriptor image, final NeoGraphViewPart neoGraphViewPart )
     {
         super( name, image );
         this.graphView = neoGraphViewPart;
@@ -34,21 +38,21 @@ abstract public class AbstractContextAction extends AbstractBaseContextAction
     @Override
     public void run()
     {
-        PropertyContainer propertyContainer = getPropertyContainer();
-        if ( propertyContainer == null )
+        List<PropertyContainer> propertyContainers = getPropertyContainers();
+        if ( propertyContainers == null )
         {
             return;
         }
-        performOperation( propertyContainer );
+        performOperation( propertyContainers );
     }
 
     /**
-     * Perform an operation that requires only the property container. Is called
-     * by the default <code>run()</code> implementation.
-     * @param container
+     * Perform an operation that requires only property containers. Is called by
+     * the default <code>run()</code> implementation.
+     * @param containers
      * @param key
      */
-    protected void performOperation( final PropertyContainer container )
+    protected void performOperation( final List<PropertyContainer> containers )
     {
         throw new UnsupportedOperationException();
     }
@@ -76,5 +80,39 @@ abstract public class AbstractContextAction extends AbstractBaseContextAction
             return null;
         }
         return (PropertyContainer) parFirstElement;
+    }
+
+    /**
+     * Get the PropertyContainers of the current graph view. Returns
+     * <code>null</code> on failure, after showing appropriate error messages.
+     * @return selected property containers
+     */
+    protected List<PropertyContainer> getPropertyContainers()
+    {
+        ISelection selected = graphView.getViewer().getSelection();
+        if ( !(selected instanceof IStructuredSelection) )
+        {
+            MessageDialog.openError( null, "Error",
+                "Unknown error in graph view selection type." );
+            return null;
+        }
+        IStructuredSelection parSs = (IStructuredSelection) selected;
+        List<PropertyContainer> items = new ArrayList<PropertyContainer>();
+        Iterator<?> iter = parSs.iterator();
+        while ( iter.hasNext() )
+        {
+            Object o = iter.next();
+            if ( o instanceof PropertyContainer )
+            {
+                items.add( (PropertyContainer) o );
+            }
+        }
+        if ( items.isEmpty() )
+        {
+            MessageDialog.openError( null, "Error",
+                "No nodes or relationships are selected." );
+            return null;
+        }
+        return items;
     }
 }

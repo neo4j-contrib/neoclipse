@@ -13,6 +13,8 @@
  */
 package org.neo4j.neoclipse.action.context;
 
+import java.util.List;
+
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.neo4j.api.core.NeoService;
 import org.neo4j.api.core.Node;
@@ -36,13 +38,7 @@ public class CreateNodeAction extends AbstractContextAction
     }
 
     @Override
-    public void run()
-    {
-        performOperation( getPropertyContainer() );
-    }
-
-    @Override
-    protected void performOperation( final PropertyContainer container )
+    protected void performOperation( final List<PropertyContainer> containers )
     {
         NeoService ns = Activator.getDefault().getNeoServiceSafely();
         if ( ns == null )
@@ -52,18 +48,21 @@ public class CreateNodeAction extends AbstractContextAction
         Transaction tx = ns.beginTx();
         try
         {
-            if ( container instanceof Node )
+            for ( PropertyContainer container : containers )
             {
-                // create a relation to this node
-                // Node node = (Node) container;
-            }
-            else if ( container instanceof Relationship )
-            {
-                // a relation!
-            }
-            else
-            {
-                // nothing selected
+                if ( container instanceof Node )
+                {
+                    // create a relation to this node
+                    // Node node = (Node) container;
+                }
+                else if ( container instanceof Relationship )
+                {
+                    // a relation!
+                }
+                else
+                {
+                    // nothing selected
+                }
             }
             tx.success();
         }

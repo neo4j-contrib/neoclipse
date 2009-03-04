@@ -70,6 +70,7 @@ public class RelationshipTypeView extends ViewPart implements
     ISelectionListener, IPropertyChangeListener
 {
     public final static String ID = "org.neo4j.neoclipse.reltype.RelationshipTypeView";
+    private static final String ADDING_REL_TYPECOUNT_WARNING_MESSAGE = "There has to be exactly one selected relationship type to add a relationship.";
     private static final String ADDING_REL_WARNING_MESSAGE = "Two nodes must be selected in the database graph to add a relationship.";
     private static final String ADDING_REL_WARNING_LABEL = "Adding relationship";
     private static final String MARK_RELATIONSHIPS_TOOL_TIP = "Highlight all relationships of the selected types.";
@@ -105,6 +106,7 @@ public class RelationshipTypeView extends ViewPart implements
     private Action addOutgoingNode;
     private List<Node> currentSelectedNodes = Collections.emptyList();
     private Action addIncomingNode;
+    private List<RelationshipType> currentSelectedRelTypes = new ArrayList<RelationshipType>();
 
     /**
      * The constructor.
@@ -272,9 +274,15 @@ public class RelationshipTypeView extends ViewPart implements
                 {
                     MessageDialog.openWarning( null, ADDING_REL_WARNING_LABEL,
                         ADDING_REL_WARNING_MESSAGE );
+                    return;
                 }
-                RelationshipType relType1 = getCurrentRelType();
-                RelationshipType relType = relType1;
+                if ( currentSelectedRelTypes.size() != 1 )
+                {
+                    MessageDialog.openWarning( null, ADDING_REL_WARNING_LABEL,
+                        ADDING_REL_TYPECOUNT_WARNING_MESSAGE );
+                    return;
+                }
+                RelationshipType relType = getCurrentRelType();
                 Node source = currentSelectedNodes.get( 0 );
                 Node dest = currentSelectedNodes.get( 1 );
                 createRelationship( source, dest, relType );
@@ -537,37 +545,20 @@ public class RelationshipTypeView extends ViewPart implements
      */
     private RelationshipType getCurrentRelType()
     {
-        ISelection selection = viewer.getSelection();
-        Object obj = ((IStructuredSelection) selection).getFirstElement();
-        if ( obj instanceof RelationshipTypeControl )
+        if ( currentSelectedRelTypes.size() < 1 )
         {
-            return ((RelationshipTypeControl) obj).getRelType();
+            return null;
         }
-        return null;
+        return currentSelectedRelTypes.get( 0 );
     }
 
     /**
      * Get the currently selected relationship types.
      * @return
      */
-    private List<RelationshipType> getCurrentRelTypes()
+    public List<RelationshipType> getCurrentRelTypes()
     {
-        ISelection selection = viewer.getSelection();
-        if ( selection instanceof IStructuredSelection )
-        {
-            List<RelationshipType> result = new ArrayList<RelationshipType>();
-            Iterator<?> iter = ((IStructuredSelection) selection).iterator();
-            while ( iter.hasNext() )
-            {
-                Object o = iter.next();
-                if ( o instanceof RelationshipTypeControl )
-                {
-                    result.add( ((RelationshipTypeControl) o).getRelType() );
-                }
-            }
-            return result;
-        }
-        return Collections.emptyList();
+        return currentSelectedRelTypes;
     }
 
     /**
@@ -648,25 +639,16 @@ public class RelationshipTypeView extends ViewPart implements
         }
         setEnableAddRelationship( false );
         setEnableAddNode( false );
-        IStructuredSelection parSs = (IStructuredSelection) selection;
         if ( part instanceof NeoGraphViewPart )
         {
             graphView = (NeoGraphViewPart) part;
-            currentSelectedNodes = Collections.emptyList();
+            currentSelectedNodes = graphView.getCurrentSelectedNodes();
+            List<Relationship> currentSelectedRels = graphView
+                .getCurrentSelectedRels();
             Set<RelationshipType> relTypes = new HashSet<RelationshipType>();
-            List<Node> nodes = new ArrayList<Node>();
-            Iterator<?> iter = parSs.iterator();
-            while ( iter.hasNext() )
+            for ( Relationship rel : currentSelectedRels )
             {
-                Object o = iter.next();
-                if ( o instanceof Node )
-                {
-                    nodes.add( (Node) o );
-                }
-                else if ( o instanceof Relationship )
-                {
-                    relTypes.add( ((Relationship) o).getType() );
-                }
+                relTypes.add( rel.getType() );
             }
             if ( !relTypes.isEmpty() )
             {
@@ -675,10 +657,6 @@ public class RelationshipTypeView extends ViewPart implements
                 viewer.setSelection( new StructuredSelection( relTypeCtrls
                     .toArray() ) );
                 setEnableHighlightingActions( true );
-            }
-            if ( !nodes.isEmpty() )
-            {
-                currentSelectedNodes = nodes;
             }
         }
         else if ( this.equals( part ) )
@@ -691,18 +669,23 @@ public class RelationshipTypeView extends ViewPart implements
             {
                 setEnableHighlightingActions( true );
             }
-        }
-        if ( getCurrentRelTypes().size() == 1 )
-        {
-            if ( currentSelectedNodes.size() == 2 )
+            currentSelectedRelTypes.clear();
+            Iterator<?> iter = ((IStructuredSelection) selection).iterator();
+            while ( iter.hasNext() )
             {
-                setEnableAddRelationship( true );
-            }
-            if ( !currentSelectedNodes.isEmpty() )
-            {
-                setEnableAddNode( true );
+                Object o = iter.next();
+                if ( o instanceof RelationshipTypeControl )
+                {
+                    currentSelectedRelTypes.add( ((RelationshipTypeControl) o)
+                        .getRelType() );
+                }
             }
         }
+
+        setEnableAddRelationship( getCurrentRelTypes().size() == 1
+            && currentSelectedNodes.size() == 2 );
+        setEnableAddNode( getCurrentRelTypes().size() == 1
+            && !currentSelectedNodes.isEmpty() );
     }
 
     /**

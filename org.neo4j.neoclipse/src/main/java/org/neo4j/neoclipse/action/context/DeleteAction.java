@@ -13,6 +13,8 @@
  */
 package org.neo4j.neoclipse.action.context;
 
+import java.util.List;
+
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.neo4j.api.core.NeoService;
 import org.neo4j.api.core.Node;
@@ -29,6 +31,8 @@ import org.neo4j.neoclipse.view.NeoGraphViewPart;
  */
 public class DeleteAction extends AbstractContextAction
 {
+    private static final String CONFIRM_DELETE_TITLE = "Confirm delete";
+
     public DeleteAction( NeoGraphViewPart neoGraphViewPart )
     {
         super( "Delete", NeoIcons.DELETE.getDescriptor(), neoGraphViewPart );
@@ -36,19 +40,12 @@ public class DeleteAction extends AbstractContextAction
     }
 
     @Override
-    protected void performOperation( PropertyContainer container )
+    protected void performOperation( final List<PropertyContainer> containers )
     {
-        String question = "Are you sure you want to remove the selected ";
-        if ( container instanceof Node )
-        {
-            question += "node?";
-        }
-        else if ( container instanceof Relationship )
-        {
-            question += "relationship?";
-        }
-        boolean confirmation = MessageDialog.openQuestion( null,
-            "Confirm delete", question );
+        boolean confirmation = MessageDialog.openConfirm( null,
+            CONFIRM_DELETE_TITLE,
+            "Do you really want to delete the selected " + containers.size()
+                + " items?" );
         if ( !confirmation )
         {
             return;
@@ -61,28 +58,31 @@ public class DeleteAction extends AbstractContextAction
         Transaction tx = ns.beginTx();
         try
         {
-            if ( container instanceof Node )
+            for ( PropertyContainer container : containers )
             {
-                Node node = (Node) container;
-                if ( ns.getReferenceNode().equals( node ) )
+                if ( container instanceof Node )
                 {
-                    question = "Are you really sure you want to delete the REFERENCE NODE?";
-                    confirmation = MessageDialog.openQuestion( null,
-                        "Confirm delete", question );
-                    if ( !confirmation )
+                    Node node = (Node) container;
+                    if ( node.equals( ns.getReferenceNode() ) )
                     {
-                        return;
+                        confirmation = MessageDialog
+                            .openConfirm( null, CONFIRM_DELETE_TITLE,
+                                "Do you really, really want to delete the REFERENCE NODE?" );
+                        if ( !confirmation )
+                        {
+                            return;
+                        }
                     }
+                    for ( Relationship rel : node.getRelationships() )
+                    {
+                        rel.delete();
+                    }
+                    node.delete();
                 }
-                for ( Relationship rel : node.getRelationships() )
+                else if ( container instanceof Relationship )
                 {
-                    rel.delete();
+                    ((Relationship) container).delete();
                 }
-                node.delete();
-            }
-            else if ( container instanceof Relationship )
-            {
-                ((Relationship) container).delete();
             }
             tx.success();
         }

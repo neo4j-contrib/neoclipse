@@ -29,6 +29,7 @@ public enum NeoIcons
     NEO( "small", path( "obj16/neo-16.png" ) ),
     NEO_ROOT( "root", path( "enabled/home.gif" ) ),
     HELP( "help", shared( ISharedImages.IMG_LCL_LINKTO_HELP ) ),
+    PREFERENCES( "preferences", path( "obj16/preferences.gif" ) ),
     // navigation
     HOME( "home", path( "enabled/home.gif" ) ),
     BACK_ENABLED( "back_enabled", shared( ISharedImages.IMG_TOOL_BACK ) ),

@@ -13,6 +13,10 @@
  */
 package org.neo4j.neoclipse.view;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import org.eclipse.draw2d.ChangeEvent;
 import org.eclipse.draw2d.ChangeListener;
 import org.eclipse.jface.action.Action;
@@ -43,14 +47,17 @@ import org.eclipse.zest.layouts.algorithms.SpringLayoutAlgorithm;
 import org.neo4j.api.core.NeoService;
 import org.neo4j.api.core.Node;
 import org.neo4j.api.core.NotFoundException;
-import org.neo4j.api.core.PropertyContainer;
+import org.neo4j.api.core.Relationship;
+import org.neo4j.api.core.RelationshipType;
 import org.neo4j.api.core.Transaction;
 import org.neo4j.neoclipse.Activator;
+import org.neo4j.neoclipse.NeoIcons;
 import org.neo4j.neoclipse.action.PrintGraphAction;
 import org.neo4j.neoclipse.action.browse.GoBackAction;
 import org.neo4j.neoclipse.action.browse.GoForwardAction;
 import org.neo4j.neoclipse.action.browse.RefreshAction;
 import org.neo4j.neoclipse.action.browse.ShowReferenceNodeAction;
+import org.neo4j.neoclipse.action.context.CreateNodeAction;
 import org.neo4j.neoclipse.action.context.DeleteAction;
 import org.neo4j.neoclipse.action.decorate.node.ShowNodeColorsAction;
 import org.neo4j.neoclipse.action.decorate.node.ShowNodeIconsAction;
@@ -124,6 +131,10 @@ public class NeoGraphViewPart extends ViewPart implements
      */
     private int traversalDepth = 1;
     private DeleteAction deleteAction;
+    private List<RelationshipType> relTypeSelection;
+    private CreateNodeAction createNodeAction;
+    private List<Node> currentSelectedNodes = new ArrayList<Node>();
+    private List<Relationship> currentSelectedRels = new ArrayList<Relationship>();
 
     /**
      * Creates the view.
@@ -147,17 +158,18 @@ public class NeoGraphViewPart extends ViewPart implements
         showSomeNode();
         PlatformUI.getWorkbench().getHelpSystem().setHelp( viewer.getControl(),
             HelpContextConstants.NEO_GRAPH_VIEW_PART );
-        createMenu();
     }
 
     /**
      * Create a context menu.
      */
-    private void createMenu()
+    private void createContextMenu()
     {
         MenuManager menuMgr = new MenuManager();
         deleteAction = new DeleteAction( this );
         menuMgr.add( deleteAction );
+        createNodeAction = new CreateNodeAction( this );
+        menuMgr.add( createNodeAction );
         Menu menu = menuMgr.createContextMenu( viewer.getControl() );
         viewer.getControl().setMenu( menu );
     }
@@ -165,11 +177,31 @@ public class NeoGraphViewPart extends ViewPart implements
     /**
      * Set context menu to the correct state.
      */
-    private void setRestrictedEnabled( boolean enabled )
+    private void updateMenuState()
     {
+        if ( createNodeAction != null )
+        {
+            int selectedNodeCount = currentSelectedNodes.size();
+            if ( selectedNodeCount < 1 )
+            {
+                createNodeAction.setEnabled( false );
+            }
+            else if ( selectedNodeCount > 0 )
+            {
+                createNodeAction.setEnabled( true );
+            }
+        }
         if ( deleteAction != null )
         {
-            deleteAction.setEnabled( enabled );
+            if ( currentSelectedNodes.size() > 0
+                || currentSelectedRels.size() > 0 )
+            {
+                deleteAction.setEnabled( true );
+            }
+            else
+            {
+                deleteAction.setEnabled( false );
+            }
         }
     }
 
@@ -208,8 +240,17 @@ public class NeoGraphViewPart extends ViewPart implements
         IToolBarManager tm = getViewSite().getActionBars().getToolBarManager();
         IMenuManager mm = getViewSite().getActionBars().getMenuManager();
 
-        // standard actions
-        contributeStandardActions( tm );
+        createContextMenu();
+
+        // platform actions
+        tm.add( deleteAction );
+        // separator
+        {
+            tm.add( new Separator() );
+        }
+
+        // navigation actions
+        contributeNavigationActions( tm );
         // recursion level actions
         contributeRecursionLevelActions( tm );
         // zoom actions
@@ -226,18 +267,30 @@ public class NeoGraphViewPart extends ViewPart implements
         {
             mm.add( new Separator() );
         }
-        // preference action
-        mm.add( new Action( "Preferences" )
-        {
-            @Override
-            public void run()
-            {
-                Activator.getDefault().showPreferenceDialog();
-            }
-        } );
+        // platform actions
+        contributePlatformActions( mm );
         // printing
         getViewSite().getActionBars().setGlobalActionHandler(
             ActionFactory.PRINT.getId(), new PrintGraphAction( this ) );
+    }
+
+    /**
+     * Add platform actions like showing the preference page.
+     * @param mm
+     *            current menu manager
+     */
+    private void contributePlatformActions( IMenuManager mm )
+    {
+        mm
+            .add( new Action( "Preferences", NeoIcons.PREFERENCES
+                .getDescriptor() )
+            {
+                @Override
+                public void run()
+                {
+                    Activator.getDefault().showPreferenceDialog();
+                }
+            } );
     }
 
     /**
@@ -366,7 +419,7 @@ public class NeoGraphViewPart extends ViewPart implements
      * @param tm
      *            current tool bar manager
      */
-    private void contributeStandardActions( IToolBarManager tm )
+    private void contributeNavigationActions( IToolBarManager tm )
     {
         {
             tm.add( backAction );
@@ -829,20 +882,39 @@ public class NeoGraphViewPart extends ViewPart implements
     {
         if ( this.equals( part ) )
         {
+            currentSelectedNodes.clear();
+            currentSelectedRels.clear();
             if ( !(selection instanceof IStructuredSelection) )
             {
-                setRestrictedEnabled( false );
+                updateMenuState();
                 return;
             }
-            IStructuredSelection parSs = (IStructuredSelection) selection;
-            Object parFirstElement = parSs.getFirstElement();
-            if ( parFirstElement instanceof PropertyContainer )
+            IStructuredSelection structSel = (IStructuredSelection) selection;
+            Iterator<?> iter = structSel.iterator();
+            while ( iter.hasNext() )
             {
-                setRestrictedEnabled( true );
-                return;
+                Object o = iter.next();
+                if ( o instanceof Node )
+                {
+                    currentSelectedNodes.add( (Node) o );
+                }
+                else if ( o instanceof Relationship )
+                {
+                    currentSelectedRels.add( (Relationship) o );
+                }
             }
-            setRestrictedEnabled( false );
+            updateMenuState();
         }
+    }
+
+    public List<Node> getCurrentSelectedNodes()
+    {
+        return currentSelectedNodes;
+    }
+
+    public List<Relationship> getCurrentSelectedRels()
+    {
+        return currentSelectedRels;
     }
 
     public void handleStateChanged( ChangeEvent event )

@@ -45,9 +45,9 @@ public class DeleteAction extends PropertyAction
         {
             return;
         }
-        boolean confirmation = MessageDialog.openQuestion( null,
+        boolean confirmation = MessageDialog.openConfirm( null,
             "Confirm delete",
-            "Are you sure you want to delete the selected property?" );
+            "Do you really want to delete the selected property?" );
         if ( !confirmation )
         {
             return;

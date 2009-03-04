@@ -59,6 +59,7 @@ public class PasteAction extends PropertyAction
      */
     protected void performOperation( PropertyContainer container )
     {
+        // TODO handle the case where a key already exists?
         NeoService ns = Activator.getDefault().getNeoServiceSafely();
         if ( ns == null )
         {
