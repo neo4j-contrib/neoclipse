@@ -11,33 +11,33 @@
  * OF ANY KIND, either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-package org.neo4j.neoclipse.action.browse;
+package org.neo4j.neoclipse.action.context;
 
-import org.eclipse.jface.action.Action;
+import java.util.List;
+
+import org.neo4j.api.core.RelationshipType;
 import org.neo4j.neoclipse.action.AbstractGraphAction;
 import org.neo4j.neoclipse.action.Actions;
+import org.neo4j.neoclipse.neo.NodeSpaceUtil;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**
- * This action moves backward in the browsing history.
+ * Action to create a node with an outgoing relationship from sources.
  * @author Anders Nawroth
  */
-public class GoBackAction extends AbstractGraphAction
+public class AddOutgoingNodeAction extends AbstractGraphAction
 {
-    /**
-     * The constructor.
-     */
-    public GoBackAction( NeoGraphViewPart view )
+    public AddOutgoingNodeAction( final NeoGraphViewPart neoGraphViewPart )
     {
-        super( Actions.GO_BACK, Action.AS_PUSH_BUTTON, view );
+        super( Actions.ADD_OUTGOING_NODE, neoGraphViewPart );
         setEnabled( false );
     }
 
-    /**
-     * Executes the action.
-     */
+    @Override
     public void run()
     {
-        graphView.goBack();
+        List<RelationshipType> relTypes = graphView.getRelTypeView()
+            .getCurrentSelectedRelTypes();
+        NodeSpaceUtil.addOutgoingNodeAction( relTypes, graphView );
     }
 }

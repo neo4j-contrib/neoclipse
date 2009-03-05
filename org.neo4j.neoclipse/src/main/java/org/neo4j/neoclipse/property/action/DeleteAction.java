@@ -20,7 +20,7 @@ import org.neo4j.api.core.NeoService;
 import org.neo4j.api.core.PropertyContainer;
 import org.neo4j.api.core.Transaction;
 import org.neo4j.neoclipse.Activator;
-import org.neo4j.neoclipse.NeoIcons;
+import org.neo4j.neoclipse.action.Actions;
 import org.neo4j.neoclipse.property.NeoPropertySheetPage;
 
 /**
@@ -32,7 +32,7 @@ public class DeleteAction extends PropertyAction
     public DeleteAction( final Composite parent,
         final NeoPropertySheetPage propertySheet )
     {
-        super( "Remove", NeoIcons.DELETE.getDescriptor(), parent, propertySheet );
+        super( Actions.REMOVE, parent, propertySheet );
     }
 
     @Override

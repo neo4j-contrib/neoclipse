@@ -85,7 +85,7 @@ public class NeoSearchResult implements ISearchResult
      */
     public ImageDescriptor getImageDescriptor()
     {
-        return NeoIcons.NEO.getDescriptor();
+        return NeoIcons.NEO.descriptor();
     }
 
     /**

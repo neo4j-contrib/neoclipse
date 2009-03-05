@@ -14,6 +14,7 @@
 package org.neo4j.neoclipse.property.action;
 
 import org.eclipse.jface.dialogs.InputDialog;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.widgets.Composite;
 import org.neo4j.api.core.NeoService;
 import org.neo4j.api.core.PropertyContainer;
@@ -34,7 +35,15 @@ public class NewAction extends PropertyAction
         final NeoPropertySheetPage propertySheet, final Object defaultValue )
     {
         super( defaultValue.getClass().getSimpleName(), NeoIcons.NEW
-            .getDescriptor(), parent, propertySheet );
+            .descriptor(), parent, propertySheet );
+        this.value = defaultValue;
+    }
+
+    public NewAction( final ImageDescriptor image, final Composite parent,
+        final NeoPropertySheetPage propertySheet, final Object defaultValue )
+    {
+        super( defaultValue.getClass().getSimpleName(), image, parent,
+            propertySheet );
         this.value = defaultValue;
     }
 

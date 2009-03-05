@@ -15,7 +15,6 @@ package org.neo4j.neoclipse.reltype;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -28,7 +27,6 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.InputDialog;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.DoubleClickEvent;
@@ -50,14 +48,12 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.zest.core.viewers.GraphViewer;
 import org.neo4j.api.core.Direction;
-import org.neo4j.api.core.NeoService;
 import org.neo4j.api.core.Node;
 import org.neo4j.api.core.Relationship;
 import org.neo4j.api.core.RelationshipType;
-import org.neo4j.api.core.Transaction;
-import org.neo4j.neoclipse.Activator;
-import org.neo4j.neoclipse.NeoIcons;
+import org.neo4j.neoclipse.action.Actions;
 import org.neo4j.neoclipse.help.HelpContextConstants;
+import org.neo4j.neoclipse.neo.NodeSpaceUtil;
 import org.neo4j.neoclipse.view.NeoGraphLabelProvider;
 import org.neo4j.neoclipse.view.NeoGraphLabelProviderWrapper;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
@@ -70,27 +66,8 @@ public class RelationshipTypeView extends ViewPart implements
     ISelectionListener, IPropertyChangeListener
 {
     public final static String ID = "org.neo4j.neoclipse.reltype.RelationshipTypeView";
-    private static final String ADDING_REL_TYPECOUNT_WARNING_MESSAGE = "There has to be exactly one selected relationship type to add a relationship.";
-    private static final String ADDING_REL_WARNING_MESSAGE = "Two nodes must be selected in the database graph to add a relationship.";
-    private static final String ADDING_REL_WARNING_LABEL = "Adding relationship";
-    private static final String MARK_RELATIONSHIPS_TOOL_TIP = "Highlight all relationships of the selected types.";
     private static final String NEW_RELTYPE_DIALOG_TEXT = "Please enter the name of the new relationships type";
     private static final String NEW_RELTYPE_DIALOG_TITLE = "New relationship type entry";
-    private static final String MARK_RELATIONSHIPS_LABEL = "Highlight relationships";
-    private static final String ADD_NODE_START_TOOL_TIP = "Add a node with a relationship; "
-        + "the new node is the start node of the relationship(s).";
-    private static final String ADD_NODE_START_LABEL = "Add node as start node";
-    private static final String ADD_NODE_END_TOOL_TIP = "Add a node with a relationship; "
-        + "the new node is the end node of the relationship(s).";
-    private static final String ADD_NODE_END_LABEL = "Add node as end node";
-    private static final String ADD_RELATIONSHIP_LABEL = "Add relationship";
-    private static final String CREATE_NEW_TOOL_TIP = "Create new relationship type.";
-    private static final String CREATE_NEW_LABEL = "Create new type";
-    private static final String CLEAR_HIGHLIGHT = "Remove highlighting";
-    private static final String MARK_START_NODES_TOOLTIP = "Highlight start nodes for relationships of the selcted types.";
-    private static final String MARK_START_NODES_LABEL = "Highlight start nodes";
-    private static final String MARK_END_NODES_TOOLTIP = "Highlight end nodes for relationships of the selcted types.";
-    private static final String MARK_END_NODES_LABEL = "Highlight end nodes";
     protected static final int OK = 0;
     private TableViewer viewer;
     private Action markIncomingAction;
@@ -104,9 +81,8 @@ public class RelationshipTypeView extends ViewPart implements
     private Action newAction;
     private Action addRelationship;
     private Action addOutgoingNode;
-    private List<Node> currentSelectedNodes = Collections.emptyList();
     private Action addIncomingNode;
-    private List<RelationshipType> currentSelectedRelTypes = new ArrayList<RelationshipType>();
+    public List<RelationshipType> currentSelectedRelTypes = new ArrayList<RelationshipType>();
 
     /**
      * The constructor.
@@ -265,54 +241,35 @@ public class RelationshipTypeView extends ViewPart implements
      */
     private void makeAddActions()
     {
-        addRelationship = new Action( ADD_RELATIONSHIP_LABEL )
+        addRelationship = new Action()
         {
             public void run()
             {
-                if ( currentSelectedNodes.isEmpty()
-                    || currentSelectedNodes.size() != 2 )
-                {
-                    MessageDialog.openWarning( null, ADDING_REL_WARNING_LABEL,
-                        ADDING_REL_WARNING_MESSAGE );
-                    return;
-                }
-                if ( currentSelectedRelTypes.size() != 1 )
-                {
-                    MessageDialog.openWarning( null, ADDING_REL_WARNING_LABEL,
-                        ADDING_REL_TYPECOUNT_WARNING_MESSAGE );
-                    return;
-                }
-                RelationshipType relType = getCurrentRelType();
-                Node source = currentSelectedNodes.get( 0 );
-                Node dest = currentSelectedNodes.get( 1 );
-                createRelationship( source, dest, relType );
+                NodeSpaceUtil.addRelationshipAction(
+                    getCurrentSelectedRelTypes(), graphView );
             }
         };
-        addRelationship.setImageDescriptor( NeoIcons.ADD.getDescriptor() );
+        Actions.ADD_RELATIONSHIP.initialize( addRelationship );
 
-        addOutgoingNode = new Action( ADD_NODE_END_LABEL )
+        addOutgoingNode = new Action()
         {
             public void run()
             {
-                RelationshipType relType = getCurrentRelType();
-                createRelationship( currentSelectedNodes, null, relType );
+                NodeSpaceUtil.addOutgoingNodeAction(
+                    getCurrentSelectedRelTypes(), graphView );
             }
         };
-        addOutgoingNode.setImageDescriptor( NeoIcons.ADD_OUTGOING
-            .getDescriptor() );
-        addOutgoingNode.setToolTipText( ADD_NODE_END_TOOL_TIP );
+        Actions.ADD_OUTGOING_NODE.initialize( addOutgoingNode );
 
-        addIncomingNode = new Action( ADD_NODE_START_LABEL )
+        addIncomingNode = new Action()
         {
             public void run()
             {
-                RelationshipType relType = getCurrentRelType();
-                createRelationship( null, currentSelectedNodes, relType );
+                NodeSpaceUtil.addIncomingNodeAction(
+                    getCurrentSelectedRelTypes(), graphView );
             }
         };
-        addIncomingNode.setImageDescriptor( NeoIcons.ADD_INCOMING
-            .getDescriptor() );
-        addIncomingNode.setToolTipText( ADD_NODE_START_TOOL_TIP );
+        Actions.ADD_INCOMING_NODE.initialize( addIncomingNode );
     }
 
     /**
@@ -320,7 +277,7 @@ public class RelationshipTypeView extends ViewPart implements
      */
     private void makeRelationshipTypeActions()
     {
-        newAction = new Action( CREATE_NEW_LABEL )
+        newAction = new Action()
         {
             public void run()
             {
@@ -334,8 +291,7 @@ public class RelationshipTypeView extends ViewPart implements
                 }
             }
         };
-        newAction.setToolTipText( CREATE_NEW_TOOL_TIP );
-        newAction.setImageDescriptor( NeoIcons.NEW.getDescriptor() );
+        Actions.NEW_RELATIONSHIP_TYPE.initialize( newAction );
     }
 
     /**
@@ -343,11 +299,11 @@ public class RelationshipTypeView extends ViewPart implements
      */
     private void makeHighlightingActions()
     {
-        markRelationshipAction = new Action( MARK_RELATIONSHIPS_LABEL )
+        markRelationshipAction = new Action()
         {
             public void run()
             {
-                List<RelationshipType> relTypes = getCurrentRelTypes();
+                List<RelationshipType> relTypes = getCurrentSelectedRelTypes();
                 for ( RelationshipType relType : relTypes )
                 {
                     highlightRelationshipType( relType );
@@ -356,15 +312,13 @@ public class RelationshipTypeView extends ViewPart implements
                 clearMarkedAction.setEnabled( true );
             }
         };
-        markRelationshipAction.setImageDescriptor( NeoIcons.HIGHLIGHT
-            .getDescriptor() );
-        markRelationshipAction.setToolTipText( MARK_RELATIONSHIPS_TOOL_TIP );
+        Actions.HIGHLIGHT_RELATIONSHIPS.initialize( markRelationshipAction );
 
-        markIncomingAction = new Action( MARK_END_NODES_LABEL )
+        markIncomingAction = new Action()
         {
             public void run()
             {
-                List<RelationshipType> relTypes = getCurrentRelTypes();
+                List<RelationshipType> relTypes = getCurrentSelectedRelTypes();
                 for ( RelationshipType relType : relTypes )
                 {
                     highlightNodes( relType, Direction.INCOMING );
@@ -372,16 +326,14 @@ public class RelationshipTypeView extends ViewPart implements
                 clearMarkedAction.setEnabled( true );
             }
         };
-        markIncomingAction.setToolTipText( MARK_END_NODES_TOOLTIP );
-        markIncomingAction.setImageDescriptor( NeoIcons.HIGHLIGHT_INCOMING
-            .getDescriptor() );
+        Actions.HIGHLIGHT_INCOMING.initialize( markIncomingAction );
         markIncomingAction.setEnabled( false );
 
-        markOutgoingAction = new Action( MARK_START_NODES_LABEL )
+        markOutgoingAction = new Action()
         {
             public void run()
             {
-                List<RelationshipType> relTypes = getCurrentRelTypes();
+                List<RelationshipType> relTypes = getCurrentSelectedRelTypes();
                 for ( RelationshipType relType : relTypes )
                 {
                     highlightNodes( relType, Direction.OUTGOING );
@@ -389,12 +341,10 @@ public class RelationshipTypeView extends ViewPart implements
                 clearMarkedAction.setEnabled( true );
             }
         };
-        markOutgoingAction.setToolTipText( MARK_START_NODES_TOOLTIP );
-        markOutgoingAction.setImageDescriptor( NeoIcons.HIGHLIGHT_OUTGOING
-            .getDescriptor() );
+        Actions.HIGHLIGHT_OUTGOING.initialize( markOutgoingAction );
         markOutgoingAction.setEnabled( false );
 
-        clearMarkedAction = new Action( CLEAR_HIGHLIGHT )
+        clearMarkedAction = new Action()
         {
             public void run()
             {
@@ -405,98 +355,8 @@ public class RelationshipTypeView extends ViewPart implements
                 setEnableAddActions( false );
             }
         };
-        clearMarkedAction.setImageDescriptor( NeoIcons.CLEAR_ENABLED
-            .getDescriptor() );
-        clearMarkedAction.setDisabledImageDescriptor( NeoIcons.CLEAR_DISABLED
-            .getDescriptor() );
+        Actions.HIGHLIGHT_CLEAR.initialize( clearMarkedAction );
         clearMarkedAction.setEnabled( false );
-    }
-
-    /**
-     * Create a relationship between two nodes
-     * @param source
-     *            start node of the relationship
-     * @param dest
-     *            end node of the relationship
-     * @param relType
-     *            type of relationship
-     */
-    private void createRelationship( Node source, Node dest,
-        RelationshipType relType )
-    {
-        List<Node> sourceNodes = null;
-        if ( source != null )
-        {
-            sourceNodes = new ArrayList<Node>();
-            sourceNodes.add( source );
-        }
-        List<Node> destNodes = null;
-        if ( dest != null )
-        {
-            destNodes = new ArrayList<Node>();
-            destNodes.add( dest );
-        }
-        createRelationship( sourceNodes, destNodes, relType );
-    }
-
-    /**
-     * Create relationship between two nodes. One node can be created, but not
-     * both
-     * @param sourceNodes
-     *            source, is created if <code>null</code> is given
-     * @param destNodes
-     *            destination, is created if <code>null</code> is given
-     * @param relType
-     */
-    private void createRelationship( List<Node> sourceNodes,
-        List<Node> destNodes, RelationshipType relType )
-    {
-        if ( relType == null )
-        {
-            throw new IllegalArgumentException(
-                "RelationshipType can not be null" );
-        }
-        if ( sourceNodes == null && destNodes == null )
-        {
-            throw new IllegalArgumentException(
-                "Both soure and destination can not be null" );
-        }
-        NeoService ns = Activator.getDefault().getNeoServiceSafely();
-        if ( ns == null )
-        {
-            return;
-        }
-        Transaction tx = ns.beginTx();
-        try
-        {
-            if ( destNodes == null )
-            {
-                destNodes = new ArrayList<Node>();
-                destNodes.add( ns.createNode() );
-            }
-            else if ( sourceNodes == null )
-            {
-                sourceNodes = new ArrayList<Node>();
-                sourceNodes.add( ns.createNode() );
-            }
-            for ( Node source : sourceNodes )
-            {
-                for ( Node dest : destNodes )
-                {
-                    source.createRelationshipTo( dest, relType );
-                }
-            }
-            tx.success();
-        }
-        catch ( Exception e )
-        {
-            e.printStackTrace();
-        }
-        finally
-        {
-            tx.finish();
-        }
-        graphView.refreshPreserveLayout();
     }
 
     /**
@@ -543,7 +403,7 @@ public class RelationshipTypeView extends ViewPart implements
      * Get the currently first selected relationship type.
      * @return
      */
-    private RelationshipType getCurrentRelType()
+    public RelationshipType getCurrentSelectedRelType()
     {
         if ( currentSelectedRelTypes.size() < 1 )
         {
@@ -556,7 +416,7 @@ public class RelationshipTypeView extends ViewPart implements
      * Get the currently selected relationship types.
      * @return
      */
-    public List<RelationshipType> getCurrentRelTypes()
+    public List<RelationshipType> getCurrentSelectedRelTypes()
     {
         return currentSelectedRelTypes;
     }
@@ -642,7 +502,6 @@ public class RelationshipTypeView extends ViewPart implements
         if ( part instanceof NeoGraphViewPart )
         {
             graphView = (NeoGraphViewPart) part;
-            currentSelectedNodes = graphView.getCurrentSelectedNodes();
             List<Relationship> currentSelectedRels = graphView
                 .getCurrentSelectedRels();
             Set<RelationshipType> relTypes = new HashSet<RelationshipType>();
@@ -682,10 +541,12 @@ public class RelationshipTypeView extends ViewPart implements
             }
         }
 
-        setEnableAddRelationship( getCurrentRelTypes().size() == 1
+        List<Node> currentSelectedNodes = graphView.getCurrentSelectedNodes();
+        setEnableAddRelationship( getCurrentSelectedRelTypes().size() == 1
             && currentSelectedNodes.size() == 2 );
-        setEnableAddNode( getCurrentRelTypes().size() == 1
+        setEnableAddNode( getCurrentSelectedRelTypes().size() == 1
             && !currentSelectedNodes.isEmpty() );
+        graphView.updateMenuState();
     }
 
     /**

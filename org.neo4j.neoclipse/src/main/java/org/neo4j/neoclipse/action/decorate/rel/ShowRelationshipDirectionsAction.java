@@ -14,30 +14,27 @@
 package org.neo4j.neoclipse.action.decorate.rel;
 
 import org.eclipse.jface.action.Action;
+import org.neo4j.neoclipse.action.AbstractGraphAction;
+import org.neo4j.neoclipse.action.Actions;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**
  * This action handles the relationship directions setting.
  * @author Anders Nawroth
  */
-public class ShowRelationshipDirectionsAction extends Action
+public class ShowRelationshipDirectionsAction extends AbstractGraphAction
 {
     /**
      * Default state for this view menu alternative.
      */
     public static final boolean DEFAULT_STATE = true;
-    /**
-     * The view.
-     */
-    protected NeoGraphViewPart view;
 
     /**
      * The constructor.
      */
     public ShowRelationshipDirectionsAction( NeoGraphViewPart view )
     {
-        super( "Relationship directions", Action.AS_CHECK_BOX );
-        this.view = view;
+        super( Actions.RELATIONSHIP_DIRECTIONS, Action.AS_CHECK_BOX, view );
         setChecked( DEFAULT_STATE );
     }
 
@@ -46,7 +43,7 @@ public class ShowRelationshipDirectionsAction extends Action
      */
     public void run()
     {
-        view.getLabelProvider().setShowArrows( isChecked() );
-        view.refreshPreserveLayout();
+        graphView.getLabelProvider().setShowArrows( isChecked() );
+        graphView.refreshPreserveLayout();
     }
 }

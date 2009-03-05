@@ -194,7 +194,7 @@ public class NeoPropertySheetPage extends PropertySheetPage implements
     private MenuManager createNewSubmenu( final Composite parent )
     {
         MenuManager addMenuMgr = new MenuManager( "New", NeoIcons.NEW
-            .getDescriptor(), "propertiesAddSubmenu" );
+            .descriptor(), "propertiesAddSubmenu" );
         addMenuMgr.add( new NewAction( parent, this, "" ) );
         addMenuMgr.add( new NewAction( parent, this, (char) 0 ) );
         addMenuMgr.add( new NewAction( parent, this, 0L ) );
@@ -213,7 +213,7 @@ public class NeoPropertySheetPage extends PropertySheetPage implements
     private MenuManager createNewArraySubmenu( final Composite parent )
     {
         MenuManager addMenuMgr = new MenuManager( "New[]", NeoIcons.NEW
-            .getDescriptor(), "propertiesArrayAddSubmenu" );
+            .descriptor(), "propertiesArrayAddSubmenu" );
         addMenuMgr.add( new NewAction( parent, this, new String[0] ) );
         addMenuMgr.add( new NewAction( parent, this, new char[0] ) );
         addMenuMgr.add( new NewAction( parent, this, new long[0] ) );

@@ -20,19 +20,28 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.views.properties.IPropertySheetEntry;
 import org.neo4j.api.core.PropertyContainer;
-import org.neo4j.neoclipse.action.context.AbstractBaseContextAction;
+import org.neo4j.neoclipse.action.AbstractBaseAction;
+import org.neo4j.neoclipse.action.Actions;
 import org.neo4j.neoclipse.property.NeoPropertySheetPage;
 
 /**
  * Base class for actions on properties.
  * @author Anders Nawroth
  */
-abstract public class PropertyAction extends AbstractBaseContextAction
+abstract public class PropertyAction extends AbstractBaseAction
 {
     protected static final int OK = 0;
     protected final Composite parent;
     protected final NeoPropertySheetPage propertySheet;
 
+    public PropertyAction( final Actions action,
+        final Composite parent, final NeoPropertySheetPage propertySheet )
+    {
+        super( action );
+        this.parent = parent;
+        this.propertySheet = propertySheet;
+    }
+    
     public PropertyAction( final String name, final ImageDescriptor image,
         final Composite parent, final NeoPropertySheetPage propertySheet )
     {
@@ -84,7 +93,7 @@ abstract public class PropertyAction extends AbstractBaseContextAction
                 "Selected item is not a Node or Relationship." );
             return null;
         }
-        return (PropertyContainer) container;
+        return container;
     }
 
     /**

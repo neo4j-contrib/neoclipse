@@ -122,7 +122,7 @@ public enum NeoIcons
      * Get image descriptor of icon.
      * @return icon image descriptor
      */
-    public ImageDescriptor getDescriptor()
+    public ImageDescriptor descriptor()
     {
         return getRegistry().getDescriptor( key );
     }
@@ -131,7 +131,7 @@ public enum NeoIcons
      * Get icon image.
      * @return icon image
      */
-    public Image getImage()
+    public Image image()
     {
         return getRegistry().get( key );
     }

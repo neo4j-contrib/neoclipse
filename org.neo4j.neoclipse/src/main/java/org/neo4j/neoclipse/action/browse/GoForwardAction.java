@@ -14,31 +14,22 @@
 package org.neo4j.neoclipse.action.browse;
 
 import org.eclipse.jface.action.Action;
-import org.neo4j.neoclipse.NeoIcons;
+import org.neo4j.neoclipse.action.AbstractGraphAction;
+import org.neo4j.neoclipse.action.Actions;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**
  * This action moves forward in the browsing history.
  * @author Anders Nawroth
  */
-public class GoForwardAction extends Action
+public class GoForwardAction extends AbstractGraphAction
 {
-    private static final String GO_FORWARD = "Go Forward";
-    /**
-     * The view.
-     */
-    protected NeoGraphViewPart view;
-
     /**
      * The constructor.
      */
     public GoForwardAction( NeoGraphViewPart view )
     {
-        super( GO_FORWARD, Action.AS_PUSH_BUTTON );
-        this.view = view;
-        setToolTipText( GO_FORWARD );
-        setImageDescriptor( NeoIcons.FORWARD_ENABLED.getDescriptor() );
-        setDisabledImageDescriptor( NeoIcons.FORWARD_DISABLED.getDescriptor() );
+        super( Actions.GO_FORWARD, Action.AS_PUSH_BUTTON, view );
         setEnabled( false );
     }
 
@@ -47,6 +38,6 @@ public class GoForwardAction extends Action
      */
     public void run()
     {
-        view.goForward();
+        graphView.goForward();
     }
 }

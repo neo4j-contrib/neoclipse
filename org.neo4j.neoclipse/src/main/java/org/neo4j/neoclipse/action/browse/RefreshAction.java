@@ -14,7 +14,8 @@
 package org.neo4j.neoclipse.action.browse;
 
 import org.eclipse.jface.action.Action;
-import org.neo4j.neoclipse.NeoIcons;
+import org.neo4j.neoclipse.action.AbstractGraphAction;
+import org.neo4j.neoclipse.action.Actions;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**
@@ -22,23 +23,14 @@ import org.neo4j.neoclipse.view.NeoGraphViewPart;
  * input source.
  * @author Peter H&auml;nsgen
  */
-public class RefreshAction extends Action
+public class RefreshAction extends AbstractGraphAction
 {
-    private static final String REFRESH = "Refresh";
-    /**
-     * The view.
-     */
-    protected NeoGraphViewPart view;
-
     /**
      * The constructor.
      */
     public RefreshAction( NeoGraphViewPart view )
     {
-        super( REFRESH, Action.AS_PUSH_BUTTON );
-        this.view = view;
-        setToolTipText( REFRESH );
-        setImageDescriptor( NeoIcons.REFRESH.getDescriptor() );
+        super( Actions.REFRESH, Action.AS_PUSH_BUTTON, view );
     }
 
     /**
@@ -46,6 +38,6 @@ public class RefreshAction extends Action
      */
     public void run()
     {
-        view.refresh();
+        graphView.refresh();
     }
 }

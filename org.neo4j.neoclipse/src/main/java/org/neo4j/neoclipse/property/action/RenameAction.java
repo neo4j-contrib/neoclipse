@@ -21,7 +21,7 @@ import org.neo4j.api.core.NeoService;
 import org.neo4j.api.core.PropertyContainer;
 import org.neo4j.api.core.Transaction;
 import org.neo4j.neoclipse.Activator;
-import org.neo4j.neoclipse.NeoIcons;
+import org.neo4j.neoclipse.action.Actions;
 import org.neo4j.neoclipse.property.NeoPropertySheetPage;
 
 public class RenameAction extends PropertyAction
@@ -29,7 +29,7 @@ public class RenameAction extends PropertyAction
     public RenameAction( final Composite parent,
         final NeoPropertySheetPage propertySheet )
     {
-        super( "Rename", NeoIcons.RENAME.getDescriptor(), parent, propertySheet );
+        super( Actions.RENAME, parent, propertySheet );
     }
 
     @Override

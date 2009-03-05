@@ -14,30 +14,27 @@
 package org.neo4j.neoclipse.action.decorate.rel;
 
 import org.eclipse.jface.action.Action;
+import org.neo4j.neoclipse.action.AbstractGraphAction;
+import org.neo4j.neoclipse.action.Actions;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**
  * This action handles the relationship colors setting.
  * @author Anders Nawroth
  */
-public class ShowRelationshipColorsAction extends Action
+public class ShowRelationshipColorsAction extends AbstractGraphAction
 {
     /**
      * Default state for this view menu alternative.
      */
     public static final boolean DEFAULT_STATE = true;
-    /**
-     * The view.
-     */
-    protected NeoGraphViewPart view;
 
     /**
      * The constructor.
      */
     public ShowRelationshipColorsAction( NeoGraphViewPart view )
     {
-        super( "Relationship colors", Action.AS_CHECK_BOX );
-        this.view = view;
+        super( Actions.RELATIONSHIP_COLORS, Action.AS_CHECK_BOX, view );
         setChecked( DEFAULT_STATE );
     }
 
@@ -46,7 +43,7 @@ public class ShowRelationshipColorsAction extends Action
      */
     public void run()
     {
-        view.getLabelProvider().setShowRelationshipColors( isChecked() );
-        view.refreshPreserveLayout();
+        graphView.getLabelProvider().setShowRelationshipColors( isChecked() );
+        graphView.refreshPreserveLayout();
     }
 }

@@ -14,30 +14,27 @@
 package org.neo4j.neoclipse.action.decorate.rel;
 
 import org.eclipse.jface.action.Action;
+import org.neo4j.neoclipse.action.AbstractGraphAction;
+import org.neo4j.neoclipse.action.Actions;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**
  * This action handles the relationship type setting.
  * @author Anders Nawroth
  */
-public class ShowRelationshipTypesAction extends Action
+public class ShowRelationshipTypesAction extends AbstractGraphAction
 {
     /**
      * Default state for this view menu alternative.
      */
     public static final boolean DEFAULT_STATE = false;
-    /**
-     * The view.
-     */
-    protected NeoGraphViewPart view;
 
     /**
      * The constructor.
      */
     public ShowRelationshipTypesAction( NeoGraphViewPart view )
     {
-        super( "Relationship types", Action.AS_CHECK_BOX );
-        this.view = view;
+        super( Actions.RELATIONSHIP_TYPES, Action.AS_CHECK_BOX, view );
         setChecked( DEFAULT_STATE );
     }
 
@@ -46,7 +43,7 @@ public class ShowRelationshipTypesAction extends Action
      */
     public void run()
     {
-        view.getLabelProvider().setShowRelationshipTypes( isChecked() );
-        view.refreshPreserveLayout();
+        graphView.getLabelProvider().setShowRelationshipTypes( isChecked() );
+        graphView.refreshPreserveLayout();
     }
 }

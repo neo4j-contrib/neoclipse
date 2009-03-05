@@ -14,30 +14,22 @@
 package org.neo4j.neoclipse.action.browse;
 
 import org.eclipse.jface.action.Action;
-import org.neo4j.neoclipse.NeoIcons;
+import org.neo4j.neoclipse.action.AbstractGraphAction;
+import org.neo4j.neoclipse.action.Actions;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**
  * This action focuses the graph viewer on the neo reference node.
  * @author Peter H&auml;nsgen
  */
-public class ShowReferenceNodeAction extends Action
+public class ShowReferenceNodeAction extends AbstractGraphAction
 {
-    private static final String SHOW_REFERENCE_NODE = "Show Reference Node";
-    /**
-     * The view.
-     */
-    protected NeoGraphViewPart view;
-
     /**
      * The constructor.
      */
     public ShowReferenceNodeAction( NeoGraphViewPart view )
     {
-        super( SHOW_REFERENCE_NODE, Action.AS_PUSH_BUTTON );
-        this.view = view;
-        setToolTipText( SHOW_REFERENCE_NODE );
-        setImageDescriptor( NeoIcons.HOME.getDescriptor() );
+        super( Actions.SHOW_REFERENCE_NODE, Action.AS_PUSH_BUTTON, view );
     }
 
     /**
@@ -45,6 +37,6 @@ public class ShowReferenceNodeAction extends Action
      */
     public void run()
     {
-        view.showReferenceNode();
+        graphView.showReferenceNode();
     }
 }

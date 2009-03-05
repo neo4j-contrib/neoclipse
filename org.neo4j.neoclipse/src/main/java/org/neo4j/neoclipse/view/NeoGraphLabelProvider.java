@@ -117,8 +117,8 @@ public class NeoGraphLabelProvider extends LabelProvider implements
      * Marked nodes.
      */
     private Set<Node> markedNodes = new HashSet<Node>();
-    private static final Image CHECKED = NeoIcons.CHECKED.getImage();
-    private static final Image UNCHECKED = NeoIcons.UNCHECKED.getImage();
+    private static final Image CHECKED = NeoIcons.CHECKED.image();
+    private static final Image UNCHECKED = NeoIcons.UNCHECKED.image();
 
     public NeoGraphLabelProvider()
     {
@@ -575,7 +575,7 @@ public class NeoGraphLabelProvider extends LabelProvider implements
         col
             .setToolTipText( "Filter incoming relationships of this relationship type." );
         col.setWidth( 60 );
-        col.setImage( NeoIcons.INCOMING.getImage() );
+        col.setImage( NeoIcons.INCOMING.image() );
         col.setResizable( true );
         column.setEditingSupport( new RelationshipTypeEditingSupport(
             tableViewer, RelationshipTypeEditingSupport.ColumnType.IN ) );
@@ -586,7 +586,7 @@ public class NeoGraphLabelProvider extends LabelProvider implements
         col
             .setToolTipText( "Filter outgoing relationships of this relationship type." );
         col.setWidth( 60 );
-        col.setImage( NeoIcons.OUTGOING.getImage() );
+        col.setImage( NeoIcons.OUTGOING.image() );
         col.setResizable( true );
         column.setEditingSupport( new RelationshipTypeEditingSupport(
             tableViewer, RelationshipTypeEditingSupport.ColumnType.OUT ) );

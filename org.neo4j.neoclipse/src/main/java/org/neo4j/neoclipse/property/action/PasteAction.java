@@ -22,7 +22,7 @@ import org.neo4j.api.core.NeoService;
 import org.neo4j.api.core.PropertyContainer;
 import org.neo4j.api.core.Transaction;
 import org.neo4j.neoclipse.Activator;
-import org.neo4j.neoclipse.NeoIcons;
+import org.neo4j.neoclipse.action.Actions;
 import org.neo4j.neoclipse.property.NeoPropertySheetPage;
 
 /**
@@ -38,7 +38,7 @@ public class PasteAction extends PropertyAction
     public PasteAction( final Composite parent,
         final NeoPropertySheetPage propertySheet )
     {
-        super( "Paste", NeoIcons.PASTE.getDescriptor(), parent, propertySheet );
+        super( Actions.PASTE, parent, propertySheet );
         shell = propertySheet.getControl().getShell();
     }
 

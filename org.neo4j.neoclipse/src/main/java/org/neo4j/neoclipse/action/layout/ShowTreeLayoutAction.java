@@ -16,30 +16,22 @@ package org.neo4j.neoclipse.action.layout;
 import org.eclipse.jface.action.Action;
 import org.eclipse.zest.layouts.LayoutStyles;
 import org.eclipse.zest.layouts.algorithms.TreeLayoutAlgorithm;
-import org.neo4j.neoclipse.NeoIcons;
+import org.neo4j.neoclipse.action.AbstractGraphAction;
+import org.neo4j.neoclipse.action.Actions;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**
  * This action switches the neo graph view to tree layout.
  * @author Peter H&auml;nsgen
  */
-public class ShowTreeLayoutAction extends Action
+public class ShowTreeLayoutAction extends AbstractGraphAction
 {
-    private static final String TREE_LAYOUT = "Tree Layout";
-    /**
-     * The view.
-     */
-    protected NeoGraphViewPart view;
-
     /**
      * The constructor.
      */
     public ShowTreeLayoutAction( NeoGraphViewPart view )
     {
-        super( TREE_LAYOUT, Action.AS_RADIO_BUTTON );
-        this.view = view;
-        setToolTipText( TREE_LAYOUT );
-        setImageDescriptor( NeoIcons.TREE.getDescriptor() );
+        super( Actions.TREE_LAYOUT, Action.AS_RADIO_BUTTON, view );
         setChecked( false );
     }
 
@@ -50,7 +42,7 @@ public class ShowTreeLayoutAction extends Action
     {
         if ( isChecked() )
         {
-            view.getViewer()
+            graphView.getViewer()
                 .setLayoutAlgorithm(
                     new TreeLayoutAlgorithm(
                         LayoutStyles.NO_LAYOUT_NODE_RESIZING ), true );

@@ -11,19 +11,31 @@
  * OF ANY KIND, either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-package org.neo4j.neoclipse.action.context;
+package org.neo4j.neoclipse.action;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 
 /**
- * Base class for actions on context menus.
+ * Base class for actions.
  * @author Anders Nawroth
  */
-abstract public class AbstractBaseContextAction extends Action
+abstract public class AbstractBaseAction extends Action
 {
-    public AbstractBaseContextAction( final String name, final ImageDescriptor image )
+    public AbstractBaseAction( final String name, final ImageDescriptor image )
     {
         super( name, image );
+    }
+
+    public AbstractBaseAction( final Actions action )
+    {
+        super();
+        action.initialize( this );
+    }
+
+    public AbstractBaseAction( final Actions action, final int style )
+    {
+        super( action.label(), style );
+        action.initialize( this );
     }
 }

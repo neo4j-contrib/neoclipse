@@ -11,33 +11,33 @@
  * OF ANY KIND, either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-package org.neo4j.neoclipse.action.browse;
+package org.neo4j.neoclipse.action;
 
-import org.eclipse.jface.action.Action;
-import org.neo4j.neoclipse.action.AbstractGraphAction;
-import org.neo4j.neoclipse.action.Actions;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
-/**
- * This action moves backward in the browsing history.
- * @author Anders Nawroth
- */
-public class GoBackAction extends AbstractGraphAction
+abstract public class AbstractGraphAction extends AbstractBaseAction
 {
-    /**
-     * The constructor.
-     */
-    public GoBackAction( NeoGraphViewPart view )
+    protected NeoGraphViewPart graphView;
+
+    public AbstractGraphAction( final String name,
+        final ImageDescriptor image, final NeoGraphViewPart neoGraphViewPart )
     {
-        super( Actions.GO_BACK, Action.AS_PUSH_BUTTON, view );
-        setEnabled( false );
+        super( name, image );
+        this.graphView = neoGraphViewPart;
     }
 
-    /**
-     * Executes the action.
-     */
-    public void run()
+    public AbstractGraphAction( final Actions action,
+        final NeoGraphViewPart neoGraphViewPart )
     {
-        graphView.goBack();
+        super( action );
+        this.graphView = neoGraphViewPart;
+    }
+
+    public AbstractGraphAction( final Actions action, final int style,
+        final NeoGraphViewPart neoGraphViewPart )
+    {
+        super( action, style );
+        this.graphView = neoGraphViewPart;
     }
 }

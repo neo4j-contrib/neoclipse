@@ -14,31 +14,22 @@
 package org.neo4j.neoclipse.action.view;
 
 import org.eclipse.jface.action.Action;
-import org.neo4j.neoclipse.NeoIcons;
+import org.neo4j.neoclipse.action.AbstractGraphAction;
+import org.neo4j.neoclipse.action.Actions;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**
  * Decreases the traversal depth of the neo graph view.
  * @author Peter H&auml;nsgen
  */
-public class DecreaseTraversalDepthAction extends Action
+public class DecreaseTraversalDepthAction extends AbstractGraphAction
 {
-    private static final String DECREASE_TRAVERSAL_DEPTH = "Decrease Traversal Depth";
-    /**
-     * The view.
-     */
-    protected NeoGraphViewPart view;
-
     /**
      * The constructor.
      */
     public DecreaseTraversalDepthAction( final NeoGraphViewPart view )
     {
-        super( DECREASE_TRAVERSAL_DEPTH, Action.AS_PUSH_BUTTON );
-        this.view = view;
-        setToolTipText( DECREASE_TRAVERSAL_DEPTH );
-        setImageDescriptor( NeoIcons.MINUS_ENABLED.getDescriptor() );
-        setDisabledImageDescriptor( NeoIcons.MINUS_DISABLED.getDescriptor() );
+        super( Actions.DECREASE_TRAVERSAL_DEPTH, Action.AS_PUSH_BUTTON, view );
     }
 
     /**
@@ -46,6 +37,6 @@ public class DecreaseTraversalDepthAction extends Action
      */
     public void run()
     {
-        view.decTraversalDepth();
+        graphView.decTraversalDepth();
     }
 }

@@ -16,30 +16,22 @@ package org.neo4j.neoclipse.action.layout;
 import org.eclipse.jface.action.Action;
 import org.eclipse.zest.layouts.LayoutStyles;
 import org.eclipse.zest.layouts.algorithms.RadialLayoutAlgorithm;
-import org.neo4j.neoclipse.NeoIcons;
+import org.neo4j.neoclipse.action.AbstractGraphAction;
+import org.neo4j.neoclipse.action.Actions;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**
  * This action switches the graph view to radial layout.
  * @author Peter H&auml;nsgen
  */
-public class ShowRadialLayoutAction extends Action
+public class ShowRadialLayoutAction extends AbstractGraphAction
 {
-    private static final String RADIAL_LAYOUT = "Radial Layout";
-    /**
-     * The view.
-     */
-    protected NeoGraphViewPart view;
-
     /**
      * The constructor.
      */
     public ShowRadialLayoutAction( NeoGraphViewPart view )
     {
-        super( RADIAL_LAYOUT, Action.AS_RADIO_BUTTON );
-        this.view = view;
-        setToolTipText( RADIAL_LAYOUT );
-        setImageDescriptor( NeoIcons.RADIAL.getDescriptor() );
+        super( Actions.RADIAL_LAYOUT, Action.AS_RADIO_BUTTON, view );
         setChecked( false );
     }
 
@@ -50,7 +42,7 @@ public class ShowRadialLayoutAction extends Action
     {
         if ( isChecked() )
         {
-            view.getViewer()
+            graphView.getViewer()
                 .setLayoutAlgorithm(
                     new RadialLayoutAlgorithm(
                         LayoutStyles.NO_LAYOUT_NODE_RESIZING ), true );

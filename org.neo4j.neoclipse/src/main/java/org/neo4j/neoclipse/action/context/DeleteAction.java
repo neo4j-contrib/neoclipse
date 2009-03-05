@@ -13,88 +13,43 @@
  */
 package org.neo4j.neoclipse.action.context;
 
-import java.util.List;
-
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.neo4j.api.core.NeoService;
-import org.neo4j.api.core.Node;
-import org.neo4j.api.core.PropertyContainer;
-import org.neo4j.api.core.Relationship;
-import org.neo4j.api.core.Transaction;
-import org.neo4j.neoclipse.Activator;
-import org.neo4j.neoclipse.NeoIcons;
+import org.neo4j.neoclipse.action.AbstractGraphAction;
+import org.neo4j.neoclipse.action.Actions;
+import org.neo4j.neoclipse.neo.NodeSpaceUtil;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**
  * Action to delete a node or relationship.
  * @author Anders Nawroth
  */
-public class DeleteAction extends AbstractContextAction
+public class DeleteAction extends AbstractGraphAction
 {
-    private static final String CONFIRM_DELETE_TITLE = "Confirm delete";
-
     public DeleteAction( NeoGraphViewPart neoGraphViewPart )
     {
-        super( "Delete", NeoIcons.DELETE.getDescriptor(), neoGraphViewPart );
+        super( Actions.DELETE, neoGraphViewPart );
         setEnabled( false );
     }
 
     @Override
-    protected void performOperation( final List<PropertyContainer> containers )
+    public void run()
     {
-        boolean confirmation = MessageDialog.openConfirm( null,
-            CONFIRM_DELETE_TITLE,
-            "Do you really want to delete the selected " + containers.size()
-                + " items?" );
-        if ( !confirmation )
+        int count = graphView.getCurrentSelectedNodes().size()
+            + graphView.getCurrentSelectedRels().size();
+        if ( count < 1 )
+        {
+            MessageDialog
+                .openWarning( null, "Delete", "No items are selected." );
+            return;
+        }
+        if ( !NodeSpaceUtil.confirmDelete( count ) )
         {
             return;
         }
-        NeoService ns = Activator.getDefault().getNeoServiceSafely();
-        if ( ns == null )
-        {
-            return;
-        }
-        Transaction tx = ns.beginTx();
-        try
-        {
-            for ( PropertyContainer container : containers )
-            {
-                if ( container instanceof Node )
-                {
-                    Node node = (Node) container;
-                    if ( node.equals( ns.getReferenceNode() ) )
-                    {
-                        confirmation = MessageDialog
-                            .openConfirm( null, CONFIRM_DELETE_TITLE,
-                                "Do you really, really want to delete the REFERENCE NODE?" );
-                        if ( !confirmation )
-                        {
-                            return;
-                        }
-                    }
-                    for ( Relationship rel : node.getRelationships() )
-                    {
-                        rel.delete();
-                    }
-                    node.delete();
-                }
-                else if ( container instanceof Relationship )
-                {
-                    ((Relationship) container).delete();
-                }
-            }
-            tx.success();
-        }
-        catch ( Exception e )
-        {
-            MessageDialog.openError( null, "Error", "Error when deleting: "
-                + e.getMessage() );
-        }
-        finally
-        {
-            tx.finish();
-        }
-        graphView.refreshPreserveLayout();
+        setEnabled( false );
+        NodeSpaceUtil.deletePropertyContainers( graphView
+            .getCurrentSelectedRels(), graphView );
+        NodeSpaceUtil.deletePropertyContainers( graphView
+            .getCurrentSelectedNodes(), graphView );
     }
 }

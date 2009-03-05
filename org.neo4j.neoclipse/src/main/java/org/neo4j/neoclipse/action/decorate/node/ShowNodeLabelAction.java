@@ -14,30 +14,27 @@
 package org.neo4j.neoclipse.action.decorate.node;
 
 import org.eclipse.jface.action.Action;
+import org.neo4j.neoclipse.action.AbstractGraphAction;
+import org.neo4j.neoclipse.action.Actions;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**
  * This action handles the node names setting.
  * @author Anders Nawroth
  */
-public class ShowNodeLabelAction extends Action
+public class ShowNodeLabelAction extends AbstractGraphAction
 {
     /**
      * Default state for this view menu alternative.
      */
     public static final boolean DEFAULT_STATE = true;
-    /**
-     * The view.
-     */
-    protected NeoGraphViewPart view;
 
     /**
      * The constructor.
      */
     public ShowNodeLabelAction( NeoGraphViewPart view )
     {
-        super( "Node labels", Action.AS_CHECK_BOX );
-        this.view = view;
+        super( Actions.NODE_LABELS, Action.AS_CHECK_BOX, view );
         setChecked( DEFAULT_STATE );
     }
 
@@ -46,7 +43,7 @@ public class ShowNodeLabelAction extends Action
      */
     public void run()
     {
-        view.getLabelProvider().setShowNodeNames( isChecked() );
-        view.refreshPreserveLayout();
+        graphView.getLabelProvider().setShowNodeNames( isChecked() );
+        graphView.refreshPreserveLayout();
     }
 }

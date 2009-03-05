@@ -16,28 +16,22 @@ package org.neo4j.neoclipse.action.layout;
 import org.eclipse.jface.action.Action;
 import org.eclipse.zest.layouts.LayoutStyles;
 import org.eclipse.zest.layouts.algorithms.HorizontalShift;
+import org.neo4j.neoclipse.action.AbstractGraphAction;
+import org.neo4j.neoclipse.action.Actions;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**
  * This action sets the layout of the graph viewer to horizontal shift layout.
  * @author Anders Nawroth
  */
-public class ShowHorizontalShiftLayoutAction extends Action
+public class ShowHorizontalShiftLayoutAction extends AbstractGraphAction
 {
-    private static final String HORIZONTAL_SHIFT_LAYOUT = "Horizontal Shift Layout";
-    /**
-     * The view.
-     */
-    protected NeoGraphViewPart view;
-
     /**
      * The constructor.
      */
     public ShowHorizontalShiftLayoutAction( NeoGraphViewPart view )
     {
-        super( HORIZONTAL_SHIFT_LAYOUT, Action.AS_RADIO_BUTTON );
-        this.view = view;
-        setToolTipText( HORIZONTAL_SHIFT_LAYOUT );
+        super( Actions.HORIZONTAL_SHIFT_LAYOUT, Action.AS_RADIO_BUTTON, view );
         setChecked( false );
     }
 
@@ -48,7 +42,7 @@ public class ShowHorizontalShiftLayoutAction extends Action
     {
         if ( isChecked() )
         {
-            view.getViewer().setLayoutAlgorithm(
+            graphView.getViewer().setLayoutAlgorithm(
                 new HorizontalShift( LayoutStyles.NO_LAYOUT_NODE_RESIZING ),
                 true );
         }

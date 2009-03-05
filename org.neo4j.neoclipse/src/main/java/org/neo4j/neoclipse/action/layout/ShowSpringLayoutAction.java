@@ -16,30 +16,22 @@ package org.neo4j.neoclipse.action.layout;
 import org.eclipse.jface.action.Action;
 import org.eclipse.zest.layouts.LayoutStyles;
 import org.eclipse.zest.layouts.algorithms.SpringLayoutAlgorithm;
-import org.neo4j.neoclipse.NeoIcons;
+import org.neo4j.neoclipse.action.AbstractGraphAction;
+import org.neo4j.neoclipse.action.Actions;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**
  * This action sets the layout of the graph viewer to spring layout.
  * @author Peter H&auml;nsgen
  */
-public class ShowSpringLayoutAction extends Action
+public class ShowSpringLayoutAction extends AbstractGraphAction
 {
-    private static final String SPRING_LAYOUT = "Spring Layout";
-    /**
-     * The view.
-     */
-    protected NeoGraphViewPart view;
-
     /**
      * The constructor.
      */
     public ShowSpringLayoutAction( NeoGraphViewPart view )
     {
-        super( SPRING_LAYOUT, Action.AS_RADIO_BUTTON );
-        this.view = view;
-        setToolTipText( SPRING_LAYOUT );
-        setImageDescriptor( NeoIcons.SPRING.getDescriptor() );
+        super( Actions.SPRING_LAYOUT, Action.AS_RADIO_BUTTON, view );
         setChecked( true );
     }
 
@@ -50,7 +42,7 @@ public class ShowSpringLayoutAction extends Action
     {
         if ( isChecked() )
         {
-            view.getViewer()
+            graphView.getViewer()
                 .setLayoutAlgorithm(
                     new SpringLayoutAlgorithm(
                         LayoutStyles.NO_LAYOUT_NODE_RESIZING ), true );

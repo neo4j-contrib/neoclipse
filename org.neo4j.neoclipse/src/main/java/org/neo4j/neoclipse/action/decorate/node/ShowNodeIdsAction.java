@@ -14,30 +14,27 @@
 package org.neo4j.neoclipse.action.decorate.node;
 
 import org.eclipse.jface.action.Action;
+import org.neo4j.neoclipse.action.AbstractGraphAction;
+import org.neo4j.neoclipse.action.Actions;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**
  * This action handles the node id setting.
  * @author Anders Nawroth
  */
-public class ShowNodeIdsAction extends Action
+public class ShowNodeIdsAction extends AbstractGraphAction
 {
     /**
      * Default state for this view menu alternative.
      */
     public static final boolean DEFAULT_STATE = true;
-    /**
-     * The view.
-     */
-    protected NeoGraphViewPart view;
 
     /**
      * The constructor.
      */
     public ShowNodeIdsAction( NeoGraphViewPart view )
     {
-        super( "Node id", Action.AS_CHECK_BOX );
-        this.view = view;
+        super( Actions.NODE_ID, Action.AS_CHECK_BOX, view );
         setChecked( DEFAULT_STATE );
     }
 
@@ -46,7 +43,7 @@ public class ShowNodeIdsAction extends Action
      */
     public void run()
     {
-        view.getLabelProvider().setShowNodeIds( isChecked() );
-        view.refreshPreserveLayout();
+        graphView.getLabelProvider().setShowNodeIds( isChecked() );
+        graphView.refreshPreserveLayout();
     }
 }

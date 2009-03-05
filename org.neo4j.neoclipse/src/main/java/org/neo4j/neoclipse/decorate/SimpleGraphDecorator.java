@@ -41,11 +41,11 @@ public class SimpleGraphDecorator
     /**
      * The icon for nodes.
      */
-    private static final Image nodeImage = NeoIcons.NEO.getImage();
+    private static final Image nodeImage = NeoIcons.NEO.image();
     /**
      * The icon for the root node.
      */
-    private static final Image rootImage = NeoIcons.NEO_ROOT.getImage();
+    private static final Image rootImage = NeoIcons.NEO_ROOT.image();
     /**
      * User icons for nodes.
      */

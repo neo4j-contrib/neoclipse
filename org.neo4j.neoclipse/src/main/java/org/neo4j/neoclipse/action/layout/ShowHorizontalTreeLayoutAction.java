@@ -16,28 +16,22 @@ package org.neo4j.neoclipse.action.layout;
 import org.eclipse.jface.action.Action;
 import org.eclipse.zest.layouts.LayoutStyles;
 import org.eclipse.zest.layouts.algorithms.HorizontalTreeLayoutAlgorithm;
+import org.neo4j.neoclipse.action.AbstractGraphAction;
+import org.neo4j.neoclipse.action.Actions;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**
  * This action sets the layout of the graph viewer to horizontal tree layout.
  * @author Anders Nawroth
  */
-public class ShowHorizontalTreeLayoutAction extends Action
+public class ShowHorizontalTreeLayoutAction extends AbstractGraphAction
 {
-    private static final String HORIZONTAL_TREE_LAYOUT = "Horizontal Tree Layout";
-    /**
-     * The view.
-     */
-    protected NeoGraphViewPart view;
-
     /**
      * The constructor.
      */
     public ShowHorizontalTreeLayoutAction( NeoGraphViewPart view )
     {
-        super( HORIZONTAL_TREE_LAYOUT, Action.AS_RADIO_BUTTON );
-        this.view = view;
-        setToolTipText( HORIZONTAL_TREE_LAYOUT );
+        super( Actions.HORIZONTAL_TREE_LAYOUT, Action.AS_RADIO_BUTTON, view );
         setChecked( false );
     }
 
@@ -48,7 +42,7 @@ public class ShowHorizontalTreeLayoutAction extends Action
     {
         if ( isChecked() )
         {
-            view.getViewer().setLayoutAlgorithm(
+            graphView.getViewer().setLayoutAlgorithm(
                 new HorizontalTreeLayoutAlgorithm(
                     LayoutStyles.NO_LAYOUT_NODE_RESIZING ), true );
         }

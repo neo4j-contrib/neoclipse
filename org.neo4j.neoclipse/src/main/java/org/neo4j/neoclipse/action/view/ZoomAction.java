@@ -18,20 +18,16 @@ import org.eclipse.jface.action.IMenuCreator;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.zest.core.viewers.ZoomContributionViewItem;
-import org.neo4j.neoclipse.NeoIcons;
+import org.neo4j.neoclipse.action.AbstractGraphAction;
+import org.neo4j.neoclipse.action.Actions;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**
  * This action allows to zoom in / out the graph view.
  * @author Peter H&auml;nsgen
  */
-public class ZoomAction extends Action implements IMenuCreator
+public class ZoomAction extends AbstractGraphAction implements IMenuCreator
 {
-    private static final String ZOOM = "Zoom";
-    /**
-     * The view.
-     */
-    private final NeoGraphViewPart view;
     /**
      * The zoom menu.
      */
@@ -42,11 +38,8 @@ public class ZoomAction extends Action implements IMenuCreator
      */
     public ZoomAction( final NeoGraphViewPart view )
     {
-        super( ZOOM, Action.AS_DROP_DOWN_MENU );
-        this.view = view;
+        super( Actions.ZOOM, Action.AS_DROP_DOWN_MENU, view );
         setMenuCreator( this );
-        setToolTipText( ZOOM );
-        setImageDescriptor( NeoIcons.ZOOM.getDescriptor() );
     }
 
     /**
@@ -55,7 +48,7 @@ public class ZoomAction extends Action implements IMenuCreator
     public void run()
     {
         // represents 100%, workaround for non-public API of zoom manager
-        view.getZoomableViewer().zoomTo( 0, 0, 0, 0 );
+        graphView.getZoomableViewer().zoomTo( 0, 0, 0, 0 );
     }
 
     /**
@@ -66,7 +59,8 @@ public class ZoomAction extends Action implements IMenuCreator
         if ( menu == null )
         {
             menu = new Menu( parent );
-            ZoomContributionViewItem zoom = new ZoomContributionViewItem( view );
+            ZoomContributionViewItem zoom = new ZoomContributionViewItem(
+                graphView );
             zoom.fill( menu, 0 );
         }
         return menu;
@@ -80,7 +74,8 @@ public class ZoomAction extends Action implements IMenuCreator
         if ( menu == null )
         {
             menu = new Menu( parent );
-            ZoomContributionViewItem zoom = new ZoomContributionViewItem( view );
+            ZoomContributionViewItem zoom = new ZoomContributionViewItem(
+                graphView );
             zoom.fill( menu, 0 );
         }
         return menu;

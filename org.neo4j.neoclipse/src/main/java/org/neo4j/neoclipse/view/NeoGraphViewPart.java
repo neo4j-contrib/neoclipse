@@ -34,6 +34,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.ISelectionListener;
+import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionFactory;
@@ -48,16 +49,17 @@ import org.neo4j.api.core.NeoService;
 import org.neo4j.api.core.Node;
 import org.neo4j.api.core.NotFoundException;
 import org.neo4j.api.core.Relationship;
-import org.neo4j.api.core.RelationshipType;
 import org.neo4j.api.core.Transaction;
 import org.neo4j.neoclipse.Activator;
-import org.neo4j.neoclipse.NeoIcons;
+import org.neo4j.neoclipse.action.Actions;
 import org.neo4j.neoclipse.action.PrintGraphAction;
 import org.neo4j.neoclipse.action.browse.GoBackAction;
 import org.neo4j.neoclipse.action.browse.GoForwardAction;
 import org.neo4j.neoclipse.action.browse.RefreshAction;
 import org.neo4j.neoclipse.action.browse.ShowReferenceNodeAction;
-import org.neo4j.neoclipse.action.context.CreateNodeAction;
+import org.neo4j.neoclipse.action.context.AddIncomingNodeAction;
+import org.neo4j.neoclipse.action.context.AddOutgoingNodeAction;
+import org.neo4j.neoclipse.action.context.AddRelationshipAction;
 import org.neo4j.neoclipse.action.context.DeleteAction;
 import org.neo4j.neoclipse.action.decorate.node.ShowNodeColorsAction;
 import org.neo4j.neoclipse.action.decorate.node.ShowNodeIconsAction;
@@ -131,10 +133,12 @@ public class NeoGraphViewPart extends ViewPart implements
      */
     private int traversalDepth = 1;
     private DeleteAction deleteAction;
-    private List<RelationshipType> relTypeSelection;
-    private CreateNodeAction createNodeAction;
+    private AddRelationshipAction addRelationshipAction;
     private List<Node> currentSelectedNodes = new ArrayList<Node>();
     private List<Relationship> currentSelectedRels = new ArrayList<Relationship>();
+    private RelationshipTypeView relTypeView;
+    private AddOutgoingNodeAction addOutgoingAction;
+    private AddIncomingNodeAction addIncomingAction;
 
     /**
      * Creates the view.
@@ -158,6 +162,13 @@ public class NeoGraphViewPart extends ViewPart implements
         showSomeNode();
         PlatformUI.getWorkbench().getHelpSystem().setHelp( viewer.getControl(),
             HelpContextConstants.NEO_GRAPH_VIEW_PART );
+        for ( IViewReference view : getSite().getPage().getViewReferences() )
+        {
+            if ( RelationshipTypeView.ID.equals( view.getId() ) )
+            {
+                relTypeView = (RelationshipTypeView) view.getView( false );
+            }
+        }
     }
 
     /**
@@ -168,8 +179,12 @@ public class NeoGraphViewPart extends ViewPart implements
         MenuManager menuMgr = new MenuManager();
         deleteAction = new DeleteAction( this );
         menuMgr.add( deleteAction );
-        createNodeAction = new CreateNodeAction( this );
-        menuMgr.add( createNodeAction );
+        addRelationshipAction = new AddRelationshipAction( this );
+        menuMgr.add( addRelationshipAction );
+        addOutgoingAction = new AddOutgoingNodeAction( this );
+        menuMgr.add( addOutgoingAction );
+        addIncomingAction = new AddIncomingNodeAction( this );
+        menuMgr.add( addIncomingAction );
         Menu menu = menuMgr.createContextMenu( viewer.getControl() );
         viewer.getControl().setMenu( menu );
     }
@@ -177,31 +192,33 @@ public class NeoGraphViewPart extends ViewPart implements
     /**
      * Set context menu to the correct state.
      */
-    private void updateMenuState()
+    public void updateMenuState()
     {
-        if ( createNodeAction != null )
-        {
-            int selectedNodeCount = currentSelectedNodes.size();
-            if ( selectedNodeCount < 1 )
-            {
-                createNodeAction.setEnabled( false );
-            }
-            else if ( selectedNodeCount > 0 )
-            {
-                createNodeAction.setEnabled( true );
-            }
-        }
+        int selectedNodeCount = currentSelectedNodes.size();
+        int selectedRelationshipCount = currentSelectedRels.size();
         if ( deleteAction != null )
         {
-            if ( currentSelectedNodes.size() > 0
-                || currentSelectedRels.size() > 0 )
-            {
-                deleteAction.setEnabled( true );
-            }
-            else
-            {
-                deleteAction.setEnabled( false );
-            }
+            deleteAction.setEnabled( selectedNodeCount > 0
+                || selectedRelationshipCount > 0 );
+        }
+
+        int selectedRelTypeCount = -1;
+        if ( relTypeView != null )
+        {
+            selectedRelTypeCount = relTypeView.getCurrentSelectedRelTypes()
+                .size();
+        }
+        if ( addRelationshipAction != null )
+        {
+            addRelationshipAction.setEnabled( selectedNodeCount == 2
+                && selectedRelTypeCount == 1 );
+        }
+        if ( addOutgoingAction != null && addIncomingAction != null )
+        {
+            boolean enabled = selectedNodeCount > 0
+                && selectedRelTypeCount == 1;
+            addOutgoingAction.setEnabled( enabled );
+            addIncomingAction.setEnabled( enabled );
         }
     }
 
@@ -281,16 +298,16 @@ public class NeoGraphViewPart extends ViewPart implements
      */
     private void contributePlatformActions( IMenuManager mm )
     {
-        mm
-            .add( new Action( "Preferences", NeoIcons.PREFERENCES
-                .getDescriptor() )
+        Action preferenesAction = new Action()
+        {
+            @Override
+            public void run()
             {
-                @Override
-                public void run()
-                {
-                    Activator.getDefault().showPreferenceDialog();
-                }
-            } );
+                Activator.getDefault().showPreferenceDialog();
+            }
+        };
+        Actions.PREFERENCES.initialize( preferenesAction );
+        mm.add( preferenesAction );
     }
 
     /**
@@ -905,6 +922,10 @@ public class NeoGraphViewPart extends ViewPart implements
             }
             updateMenuState();
         }
+        else if ( part instanceof RelationshipTypeView )
+        {
+            relTypeView = (RelationshipTypeView) part;
+        }
     }
 
     public List<Node> getCurrentSelectedNodes()
@@ -920,5 +941,10 @@ public class NeoGraphViewPart extends ViewPart implements
     public void handleStateChanged( ChangeEvent event )
     {
         viewer.refresh( event.getSource(), true );
+    }
+
+    public RelationshipTypeView getRelTypeView()
+    {
+        return relTypeView;
     }
 }

@@ -26,7 +26,7 @@ import org.neo4j.api.core.NeoService;
 import org.neo4j.api.core.PropertyContainer;
 import org.neo4j.api.core.Transaction;
 import org.neo4j.neoclipse.Activator;
-import org.neo4j.neoclipse.NeoIcons;
+import org.neo4j.neoclipse.action.Actions;
 import org.neo4j.neoclipse.property.NeoPropertySheetPage;
 
 /**
@@ -42,7 +42,7 @@ public class CopyAction extends PropertyAction
     public CopyAction( final Composite parent,
         final NeoPropertySheetPage propertySheet )
     {
-        super( "Copy", NeoIcons.COPY.getDescriptor(), parent, propertySheet );
+        super( Actions.COPY, parent, propertySheet );
         shell = propertySheet.getControl().getShell();
     }
 
