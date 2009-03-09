@@ -38,17 +38,15 @@ import org.neo4j.api.core.NeoService;
  */
 public abstract class NeoclipseExample
 {
-    private static final String FILE_SEP = System
-        .getProperty( "file.separator" );
     private static final String TARGET_DIR = "target";
     private static final String NEOSTORE_SUBDIR = "neo";
     private static final String ICON_SUBDIR = "icons";
-    private static final String STORE_LOCATION_DIR = TARGET_DIR + FILE_SEP
-        + NEOSTORE_SUBDIR;
-    private static final String ICON_LOCATION_DIR = TARGET_DIR + FILE_SEP
+    private static final String STORE_LOCATION_DIR = TARGET_DIR
+        + File.separator + NEOSTORE_SUBDIR;
+    private static final String ICON_LOCATION_DIR = TARGET_DIR + File.separator
         + ICON_SUBDIR;
-    private static final String EXAMPLES_DIR = "src" + FILE_SEP + "test"
-        + FILE_SEP + "java" + FILE_SEP + "examples";
+    private static final String EXAMPLES_DIR = "src" + File.separator + "test"
+        + File.separator + "java" + File.separator + "examples";
     /**
      * Local Neo4j instance.
      */
@@ -77,8 +75,8 @@ public abstract class NeoclipseExample
         {
             deleteDir( dest );
         }
-        copyDir( EXAMPLES_DIR + FILE_SEP + exampleDir + FILE_SEP + ICON_SUBDIR,
-            ICON_LOCATION_DIR );
+        copyDir( EXAMPLES_DIR + File.separator + exampleDir + File.separator
+            + ICON_SUBDIR, ICON_LOCATION_DIR );
     }
 
     @AfterClass
@@ -135,7 +133,7 @@ public abstract class NeoclipseExample
         String[] contents = directory.list();
         for ( int i = 0; i < contents.length; i++ )
         {
-            File file = new File( source + FILE_SEP + contents[i] );
+            File file = new File( source + File.separator + contents[i] );
             if ( !file.isFile() || !file.canRead() )
             {
                 continue;
@@ -153,12 +151,12 @@ public abstract class NeoclipseExample
             FileChannel out = null;
             try
             {
-                out = new FileOutputStream( dest + FILE_SEP + contents[i] )
+                out = new FileOutputStream( dest + File.separator + contents[i] )
                     .getChannel();
             }
             catch ( FileNotFoundException e )
             {
-                System.err.println( "File not found: " + dest + FILE_SEP
+                System.err.println( "File not found: " + dest + File.separator
                     + contents[i] );
                 return;
             }

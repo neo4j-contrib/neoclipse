@@ -123,7 +123,8 @@ public class NeoPropertySheetPage extends PropertySheetPage implements
         createMenu( parent );
         getControl().setMenu( menu );
         getSite().getPage().addSelectionListener( NeoGraphViewPart.ID, this );
-        PlatformUI.getWorkbench().getHelpSystem().setHelp( parent, HelpContextConstants.NEO_PROPERTY_SHEET_PAGE );
+        PlatformUI.getWorkbench().getHelpSystem().setHelp( parent,
+            HelpContextConstants.NEO_PROPERTY_SHEET_PAGE );
     }
 
     /**
@@ -195,15 +196,21 @@ public class NeoPropertySheetPage extends PropertySheetPage implements
     {
         MenuManager addMenuMgr = new MenuManager( "New", NeoIcons.NEW
             .descriptor(), "propertiesAddSubmenu" );
-        addMenuMgr.add( new NewAction( parent, this, "" ) );
-        addMenuMgr.add( new NewAction( parent, this, (char) 0 ) );
-        addMenuMgr.add( new NewAction( parent, this, 0L ) );
-        addMenuMgr.add( new NewAction( parent, this, 0 ) );
-        addMenuMgr.add( new NewAction( parent, this, (short) 0 ) );
-        addMenuMgr.add( new NewAction( parent, this, (byte) 0 ) );
-        addMenuMgr.add( new NewAction( parent, this, 0d ) );
-        addMenuMgr.add( new NewAction( parent, this, 0f ) );
-        addMenuMgr.add( new NewAction( parent, this, false ) );
+        addMenuMgr
+            .add( new NewAction( parent, this, "", NeoIcons.TYPE_STRING ) );
+        addMenuMgr.add( new NewAction( parent, this, (char) 0,
+            NeoIcons.TYPE_CHAR ) );
+        addMenuMgr.add( new NewAction( parent, this, 0L, NeoIcons.TYPE_LONG ) );
+        addMenuMgr.add( new NewAction( parent, this, 0, NeoIcons.TYPE_INT ) );
+        addMenuMgr.add( new NewAction( parent, this, (short) 0,
+            NeoIcons.TYPE_SHORT ) );
+        addMenuMgr.add( new NewAction( parent, this, (byte) 0,
+            NeoIcons.TYPE_BYTE ) );
+        addMenuMgr
+            .add( new NewAction( parent, this, 0d, NeoIcons.TYPE_DOUBLE ) );
+        addMenuMgr.add( new NewAction( parent, this, 0f, NeoIcons.TYPE_FLOAT ) );
+        addMenuMgr.add( new NewAction( parent, this, false,
+            NeoIcons.TYPE_BOOLEAN ) );
         return addMenuMgr;
     }
 
@@ -214,15 +221,24 @@ public class NeoPropertySheetPage extends PropertySheetPage implements
     {
         MenuManager addMenuMgr = new MenuManager( "New[]", NeoIcons.NEW
             .descriptor(), "propertiesArrayAddSubmenu" );
-        addMenuMgr.add( new NewAction( parent, this, new String[0] ) );
-        addMenuMgr.add( new NewAction( parent, this, new char[0] ) );
-        addMenuMgr.add( new NewAction( parent, this, new long[0] ) );
-        addMenuMgr.add( new NewAction( parent, this, new int[0] ) );
-        addMenuMgr.add( new NewAction( parent, this, new short[0] ) );
-        addMenuMgr.add( new NewAction( parent, this, new byte[0] ) );
-        addMenuMgr.add( new NewAction( parent, this, new double[0] ) );
-        addMenuMgr.add( new NewAction( parent, this, new float[0] ) );
-        addMenuMgr.add( new NewAction( parent, this, new boolean[0] ) );
+        addMenuMgr.add( new NewAction( parent, this, new String[0],
+            NeoIcons.TYPE_STRING ) );
+        addMenuMgr.add( new NewAction( parent, this, new char[0],
+            NeoIcons.TYPE_CHAR ) );
+        addMenuMgr.add( new NewAction( parent, this, new long[0],
+            NeoIcons.TYPE_LONG ) );
+        addMenuMgr.add( new NewAction( parent, this, new int[0],
+            NeoIcons.TYPE_INT ) );
+        addMenuMgr.add( new NewAction( parent, this, new short[0],
+            NeoIcons.TYPE_SHORT ) );
+        addMenuMgr.add( new NewAction( parent, this, new byte[0],
+            NeoIcons.TYPE_BYTE ) );
+        addMenuMgr.add( new NewAction( parent, this, new double[0],
+            NeoIcons.TYPE_DOUBLE ) );
+        addMenuMgr.add( new NewAction( parent, this, new float[0],
+            NeoIcons.TYPE_FLOAT ) );
+        addMenuMgr.add( new NewAction( parent, this, new boolean[0],
+            NeoIcons.TYPE_BOOLEAN ) );
         return addMenuMgr;
     }
 

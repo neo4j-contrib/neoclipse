@@ -46,10 +46,11 @@ public class DeleteAction extends AbstractGraphAction
         {
             return;
         }
-        setEnabled( false );
         NodeSpaceUtil.deletePropertyContainers( graphView
             .getCurrentSelectedRels(), graphView );
         NodeSpaceUtil.deletePropertyContainers( graphView
             .getCurrentSelectedNodes(), graphView );
+        setEnabled( false );
+        graphView.refreshPreserveLayout();
     }
 }

@@ -261,6 +261,7 @@ public class NeoGraphViewPart extends ViewPart implements
 
         // platform actions
         tm.add( deleteAction );
+
         // separator
         {
             tm.add( new Separator() );
@@ -776,8 +777,30 @@ public class NeoGraphViewPart extends ViewPart implements
      */
     private void refreshViewer()
     {
+        disableDelete();
         viewer.refresh();
         refreshStatusBar();
+    }
+
+    public void refresh( boolean updateLabels )
+    {
+        disableDelete();
+        viewer.refresh( updateLabels );
+        refreshStatusBar();
+    }
+
+    public void refresh( Object element, boolean updateLabels )
+    {
+        disableDelete();
+        viewer.refresh( element, updateLabels );
+        refreshStatusBar();
+    }
+
+    private void disableDelete()
+    {
+        currentSelectedNodes.clear();
+        currentSelectedRels.clear();
+        updateMenuState();
     }
 
     /**
@@ -940,7 +963,7 @@ public class NeoGraphViewPart extends ViewPart implements
 
     public void handleStateChanged( ChangeEvent event )
     {
-        viewer.refresh( event.getSource(), true );
+        refresh( event.getSource(), true );
     }
 
     public RelationshipTypeView getRelTypeView()

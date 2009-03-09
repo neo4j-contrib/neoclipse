@@ -21,6 +21,8 @@ import java.util.Set;
 
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
+import org.neo4j.api.core.Direction;
+import org.neo4j.api.core.RelationshipType;
 
 /**
  * This class manages user icons.
@@ -36,7 +38,7 @@ public class UserIcons
     /**
      * Image file EXTENSIONS to look for.
      */
-    private static final String[] EXTENSIONS = new String[] { "png", "PNG",
+    public static final String[] EXTENSIONS = new String[] { "png", "PNG",
         "gif", "GIF", "ico", "ICO", "bmp", "BMP", "jpg", "JPG", "jpeg", "JPEG",
         "tif", "TIF", "tiff", "TIFF" };
     /**
@@ -116,5 +118,28 @@ public class UserIcons
         }
         misses.add( name );
         return null;
+    }
+
+    /**
+     * Lookup user icon from relationship type and direction.
+     */
+    public Image getImage( RelationshipType relType, Direction direction )
+    {
+        return getImage( createFilename( relType, direction ) );
+    }
+
+    /**
+     * Get filename (without extension) from relationship type and direction.
+     * The direction has to be incoming or outgoing.
+     */
+    public static String createFilename( RelationshipType relType,
+        Direction direction )
+    {
+        if ( direction == Direction.BOTH )
+        {
+            throw new IllegalArgumentException(
+                "Icons can not be set for BOTH direction." );
+        }
+        return relType.name() + "." + direction.name();
     }
 }

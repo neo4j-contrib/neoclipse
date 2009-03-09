@@ -418,8 +418,7 @@ public class SimpleGraphDecorator
         {
             for ( Relationship rel : node.getRelationships( direction ) )
             {
-                String typeName = rel.getType().name();
-                img = userIcons.getImage( typeName + "." + direction.name() );
+                img = userIcons.getImage( rel.getType(), direction );
                 if ( img != null )
                 {
                     return img;

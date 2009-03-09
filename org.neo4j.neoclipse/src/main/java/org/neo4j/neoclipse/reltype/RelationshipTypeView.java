@@ -13,6 +13,12 @@
  */
 package org.neo4j.neoclipse.reltype;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -27,6 +33,7 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.InputDialog;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.DoubleClickEvent;
@@ -38,6 +45,7 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.ISelectionListener;
@@ -51,9 +59,12 @@ import org.neo4j.api.core.Direction;
 import org.neo4j.api.core.Node;
 import org.neo4j.api.core.Relationship;
 import org.neo4j.api.core.RelationshipType;
+import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.action.Actions;
+import org.neo4j.neoclipse.decorate.UserIcons;
 import org.neo4j.neoclipse.help.HelpContextConstants;
 import org.neo4j.neoclipse.neo.NodeSpaceUtil;
+import org.neo4j.neoclipse.preference.NeoPreferences;
 import org.neo4j.neoclipse.view.NeoGraphLabelProvider;
 import org.neo4j.neoclipse.view.NeoGraphLabelProviderWrapper;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
@@ -83,6 +94,21 @@ public class RelationshipTypeView extends ViewPart implements
     private Action addOutgoingNode;
     private Action addIncomingNode;
     public List<RelationshipType> currentSelectedRelTypes = new ArrayList<RelationshipType>();
+    private Action addIncomingIcon;
+    private Action addOutgoingIcon;
+    private static final String[] EXT_FILTER;
+    private static final String[] EXT_FILTER_NAMES;
+
+    static
+    {
+        String filter = "";
+        for ( String ext : UserIcons.EXTENSIONS )
+        {
+            filter += "*." + ext + ";";
+        }
+        EXT_FILTER = new String[] { filter };
+        EXT_FILTER_NAMES = new String[] { "Image files" };
+    }
 
     /**
      * The constructor.
@@ -213,13 +239,18 @@ public class RelationshipTypeView extends ViewPart implements
      */
     private void fillContextMenu( IMenuManager manager )
     {
-        manager.add( markOutgoingAction );
-        manager.add( markIncomingAction );
-        manager.add( markRelationshipAction );
-        manager.add( addRelationship );
-        manager.add( addOutgoingNode );
-        manager.add( addIncomingNode );
-        manager.add( newAction );
+        // manager.add( markOutgoingAction );
+        // manager.add( markIncomingAction );
+        // manager.add( markRelationshipAction );
+        // manager.add( new Separator() );
+        // manager.add( addRelationship );
+        // manager.add( addOutgoingNode );
+        // manager.add( addIncomingNode );
+        // manager.add( new Separator() );
+        // manager.add( newAction );
+        // manager.add( new Separator() );
+        manager.add( addIncomingIcon );
+        manager.add( addOutgoingIcon );
         // Other plug-ins can contribute there actions here
         manager.add( new Separator( IWorkbenchActionConstants.MB_ADDITIONS ) );
     }
@@ -292,6 +323,120 @@ public class RelationshipTypeView extends ViewPart implements
             }
         };
         Actions.NEW_RELATIONSHIP_TYPE.initialize( newAction );
+
+        addIncomingIcon = new Action()
+        {
+            public void run()
+            {
+                copyIcon( Direction.INCOMING );
+            }
+        };
+        Actions.ADD_INCOMING_ICON.initialize( addIncomingIcon );
+
+        addOutgoingIcon = new Action()
+        {
+            public void run()
+            {
+                copyIcon( Direction.OUTGOING );
+            }
+        };
+        Actions.ADD_OUTGOING_ICON.initialize( addOutgoingIcon );
+    }
+
+    private void copyIcon( final Direction direction )
+    {
+        File dest = getIconLocation();
+        if ( !dest.exists() || !dest.isDirectory() )
+        {
+            MessageDialog
+                .openInformation( null, "Icon location problem",
+                    "Please make sure that the node icon location is correctly set." );
+            Activator.getDefault().showPreferenceDialog();
+            dest = getIconLocation();
+            if ( !dest.exists() || !dest.isDirectory() )
+            {
+                MessageDialog.openError( null, "Error message",
+                    "The icon location can not be found." );
+                return;
+            }
+        }
+        String filter = "";
+        for ( String ext : UserIcons.EXTENSIONS )
+        {
+            filter += "*." + ext + ";";
+        }
+        FileDialog fd = new FileDialog( RelationshipTypeView.this.getSite()
+            .getShell(), SWT.OPEN );
+        fd.setFilterExtensions( EXT_FILTER );
+        fd.setFilterNames( EXT_FILTER_NAMES );
+        String src = fd.open();
+        if ( src == null )
+        {
+            return; // cancel by user
+        }
+        int dot = src.lastIndexOf( '.' );
+        if ( dot == -1 )
+        {
+            MessageDialog.openError( null, "Error message",
+                "Could not find a file extension on the icon image file." );
+            return;
+        }
+        String ext = src.substring( dot ); // includes dot
+        File inFile = new File( src );
+        FileChannel in = null;
+        try
+        {
+            in = new FileInputStream( inFile ).getChannel();
+        }
+        catch ( FileNotFoundException e1 )
+        {
+            e1.printStackTrace();
+            return;
+        }
+        for ( RelationshipType relType : getCurrentSelectedRelTypes() )
+        {
+            String destFilename = UserIcons.createFilename( relType, direction )
+                + ext;
+            FileChannel out = null;
+            try
+            {
+                out = new FileOutputStream( dest.getAbsolutePath()
+                    + File.separator + destFilename ).getChannel();
+            }
+            catch ( FileNotFoundException e )
+            {
+                e.printStackTrace();
+                continue;
+            }
+            try
+            {
+                in.transferTo( 0, in.size(), out );
+                out.close();
+            }
+            catch ( IOException e )
+            {
+                e.printStackTrace();
+                return;
+            }
+        }
+        try
+        {
+            in.close();
+        }
+        catch ( IOException e )
+        {
+            e.printStackTrace();
+        }
+        graphLabelProvider.readNodeIconLocation();
+        graphView.refreshPreserveLayout();
+    }
+
+    private File getIconLocation()
+    {
+        String location = Activator.getDefault().getPreferenceStore()
+            .getString( NeoPreferences.NODE_ICON_LOCATION );
+        File dest = new File( location );
+        return dest;
     }
 
     /**
@@ -350,7 +495,7 @@ public class RelationshipTypeView extends ViewPart implements
             {
                 graphLabelProvider.clearMarkedNodes();
                 graphLabelProvider.clearMarkedRels();
-                graphView.getViewer().refresh( true );
+                graphView.refresh( true );
                 setEnabled( false );
                 setEnableAddActions( false );
             }
@@ -377,6 +522,16 @@ public class RelationshipTypeView extends ViewPart implements
     private void setEnableAddRelationship( boolean enabled )
     {
         addRelationship.setEnabled( enabled );
+    }
+
+    /**
+     * Enable or disable setting of relationship type-dependent icons.
+     * @param enabled
+     */
+    private void setEnableSetIcon( boolean enabled )
+    {
+        addIncomingIcon.setEnabled( enabled );
+        addOutgoingIcon.setEnabled( enabled );
     }
 
     /**
@@ -445,7 +600,7 @@ public class RelationshipTypeView extends ViewPart implements
             }
         }
         graphLabelProvider.addMarkedRels( rels );
-        gViewer.refresh( true );
+        graphView.refresh( true );
         setEnableAddActions( false );
     }
 
@@ -476,7 +631,7 @@ public class RelationshipTypeView extends ViewPart implements
             }
         }
         graphLabelProvider.addMarkedNodes( nodes );
-        gViewer.refresh( true );
+        graphView.refresh( true );
         setEnableAddActions( false );
     }
 
@@ -546,6 +701,7 @@ public class RelationshipTypeView extends ViewPart implements
             && currentSelectedNodes.size() == 2 );
         setEnableAddNode( getCurrentSelectedRelTypes().size() == 1
             && !currentSelectedNodes.isEmpty() );
+        setEnableSetIcon( !getCurrentSelectedRelTypes().isEmpty() );
         graphView.updateMenuState();
     }
 

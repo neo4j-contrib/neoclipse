@@ -150,11 +150,16 @@ public class NodeSpaceUtil
         final List<? extends PropertyContainer> containers,
         final NeoGraphViewPart graphView )
     {
+        if ( containers.isEmpty() )
+        {
+            return;
+        }
         NeoService ns = Activator.getDefault().getNeoServiceSafely();
         if ( ns == null )
         {
             return;
-        }
+        }        System.out.println("finished deleting");
+
         Transaction tx = ns.beginTx();
         try
         {
@@ -195,7 +200,6 @@ public class NodeSpaceUtil
         {
             tx.finish();
         }
-        graphView.refreshPreserveLayout();
     }
 
     public static void addRelationshipAction( List<RelationshipType> relTypes,

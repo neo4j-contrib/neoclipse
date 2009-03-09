@@ -28,6 +28,8 @@ public enum Actions
         "Add relationship",
         "Add a directed relationship from the first selected node to the second.",
         NeoIcons.ADD ),
+    ADD_INCOMING_ICON( "Set end node icon", NeoIcons.ICON_INCOMING ),
+    ADD_OUTGOING_ICON( "Set start node icon", NeoIcons.ICON_OUTGOING ),
     // add node
     ADD_INCOMING_NODE( "Add node as start node",
         "Add a node with a relationship; "

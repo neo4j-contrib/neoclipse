@@ -69,7 +69,19 @@ public enum NeoIcons
         path( "obj16/incoming.gif" ) ), OUTGOING( "outgoing",
         path( "obj16/outgoing.gif" ) ), CLEAR_ENABLED( "clear_enabled",
         path( "enabled/clear.gif" ) ), CLEAR_DISABLED( "clear_disabled",
-        path( "disabled/clear.gif" ) );
+        path( "disabled/clear.gif" ) ), ICON_INCOMING( "icon_in",
+        path( "obj16/icon_incoming.gif" ) ), ICON_OUTGOING( "icon_out",
+        path( "obj16/icon_outgoing.gif" ) ),
+    // types
+    TYPE_BOOLEAN( "boolean", path( "obj16/type-boolean.gif" ) ), TYPE_BYTE(
+        "byte", path( "obj16/type-byte.gif" ) ), TYPE_CHAR( "char",
+        path( "obj16/type-char.gif" ) ), TYPE_DOUBLE( "double",
+        path( "obj16/type-double.gif" ) ), TYPE_FLOAT( "float",
+        path( "obj16/type-float.gif" ) ), TYPE_INT( "int",
+        path( "obj16/type-int.gif" ) ), TYPE_LONG( "long",
+        path( "obj16/type-long.gif" ) ), TYPE_SHORT( "short",
+        path( "obj16/type-short.gif" ) ), TYPE_STRING( "string",
+        path( "obj16/type-string.gif" ) );
 
     private static final String ICON_LOCATION = "icons/";
     private static ImageRegistry reg = null;
