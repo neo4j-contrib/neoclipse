@@ -158,7 +158,7 @@ public class NodeSpaceUtil
         if ( ns == null )
         {
             return;
-        }        System.out.println("finished deleting");
+        }
 
         Transaction tx = ns.beginTx();
         try

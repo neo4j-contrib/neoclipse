@@ -19,8 +19,8 @@ import org.neo4j.api.core.NeoService;
 import org.neo4j.api.core.PropertyContainer;
 import org.neo4j.api.core.Transaction;
 import org.neo4j.neoclipse.Activator;
-import org.neo4j.neoclipse.NeoIcons;
 import org.neo4j.neoclipse.property.NeoPropertySheetPage;
+import org.neo4j.neoclipse.property.PropertyTransform.PropertyHandler;
 
 /**
  * Action to add a new property to a PropertyContainer.
@@ -28,23 +28,15 @@ import org.neo4j.neoclipse.property.NeoPropertySheetPage;
  */
 public class NewAction extends PropertyAction
 {
-    private Object value;
+    private final Object value;
 
     public NewAction( final Composite parent,
-        final NeoPropertySheetPage propertySheet, final Object defaultValue )
+        final NeoPropertySheetPage propertySheet,
+        final PropertyHandler propertyHandler )
     {
-        super( defaultValue.getClass().getSimpleName(), NeoIcons.NEW
+        super( propertyHandler.name(), propertyHandler
             .descriptor(), parent, propertySheet );
-        this.value = defaultValue;
-    }
-
-    public NewAction( final Composite parent,
-        final NeoPropertySheetPage propertySheet, final Object defaultValue,
-        final NeoIcons icon )
-    {
-        super( defaultValue.getClass().getSimpleName(), icon.descriptor(),
-            parent, propertySheet );
-        this.value = defaultValue;
+        this.value = propertyHandler.value();
     }
 
     @Override

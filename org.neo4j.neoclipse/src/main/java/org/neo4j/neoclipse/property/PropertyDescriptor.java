@@ -43,6 +43,8 @@ public class PropertyDescriptor implements IPropertyDescriptor
      */
     private Class<?> cls = null;
     private PropertyHandler propertyHandler;
+    private final static ILabelProvider labelProvider = new PropertyLabelProvider();
+    private final static ILabelProvider containerLabelProvider = new ContainerLabelProvider();
     /**
      * A constant, empty array, to be used instead of a null array.
      */
@@ -66,7 +68,7 @@ public class PropertyDescriptor implements IPropertyDescriptor
         this.name = name;
         this.category = category;
         this.cls = cls;
-        this.propertyHandler = PropertyTransform.getPropertyHandler( cls );
+        this.propertyHandler = PropertyTransform.getHandler( cls );
     }
 
     /**
@@ -134,7 +136,12 @@ public class PropertyDescriptor implements IPropertyDescriptor
 
     public ILabelProvider getLabelProvider()
     {
-        return null;
+        if ( NodePropertySource.NODE_CATEGORY == category
+            || RelationshipPropertySource.RELATIONSHIP_CATEGORY == category )
+        {
+            return containerLabelProvider;
+        }
+        return labelProvider;
     }
 
     public boolean isCompatibleWith( IPropertyDescriptor anotherProperty )

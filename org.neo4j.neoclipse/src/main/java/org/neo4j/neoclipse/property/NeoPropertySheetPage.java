@@ -196,21 +196,24 @@ public class NeoPropertySheetPage extends PropertySheetPage implements
     {
         MenuManager addMenuMgr = new MenuManager( "New", NeoIcons.NEW
             .descriptor(), "propertiesAddSubmenu" );
-        addMenuMgr
-            .add( new NewAction( parent, this, "", NeoIcons.TYPE_STRING ) );
-        addMenuMgr.add( new NewAction( parent, this, (char) 0,
-            NeoIcons.TYPE_CHAR ) );
-        addMenuMgr.add( new NewAction( parent, this, 0L, NeoIcons.TYPE_LONG ) );
-        addMenuMgr.add( new NewAction( parent, this, 0, NeoIcons.TYPE_INT ) );
-        addMenuMgr.add( new NewAction( parent, this, (short) 0,
-            NeoIcons.TYPE_SHORT ) );
-        addMenuMgr.add( new NewAction( parent, this, (byte) 0,
-            NeoIcons.TYPE_BYTE ) );
-        addMenuMgr
-            .add( new NewAction( parent, this, 0d, NeoIcons.TYPE_DOUBLE ) );
-        addMenuMgr.add( new NewAction( parent, this, 0f, NeoIcons.TYPE_FLOAT ) );
-        addMenuMgr.add( new NewAction( parent, this, false,
-            NeoIcons.TYPE_BOOLEAN ) );
+        addMenuMgr.add( new NewAction( parent, this, PropertyTransform
+            .getHandler( String.class ) ) );
+        addMenuMgr.add( new NewAction( parent, this, PropertyTransform
+            .getHandler( Character.class ) ) );
+        addMenuMgr.add( new NewAction( parent, this, PropertyTransform
+            .getHandler( Long.class ) ) );
+        addMenuMgr.add( new NewAction( parent, this, PropertyTransform
+            .getHandler( Integer.class ) ) );
+        addMenuMgr.add( new NewAction( parent, this, PropertyTransform
+            .getHandler( Short.class ) ) );
+        addMenuMgr.add( new NewAction( parent, this, PropertyTransform
+            .getHandler( Byte.class ) ) );
+        addMenuMgr.add( new NewAction( parent, this, PropertyTransform
+            .getHandler( Double.class ) ) );
+        addMenuMgr.add( new NewAction( parent, this, PropertyTransform
+            .getHandler( Float.class ) ) );
+        addMenuMgr.add( new NewAction( parent, this, PropertyTransform
+            .getHandler( Boolean.class ) ) );
         return addMenuMgr;
     }
 
@@ -221,24 +224,24 @@ public class NeoPropertySheetPage extends PropertySheetPage implements
     {
         MenuManager addMenuMgr = new MenuManager( "New[]", NeoIcons.NEW
             .descriptor(), "propertiesArrayAddSubmenu" );
-        addMenuMgr.add( new NewAction( parent, this, new String[0],
-            NeoIcons.TYPE_STRING ) );
-        addMenuMgr.add( new NewAction( parent, this, new char[0],
-            NeoIcons.TYPE_CHAR ) );
-        addMenuMgr.add( new NewAction( parent, this, new long[0],
-            NeoIcons.TYPE_LONG ) );
-        addMenuMgr.add( new NewAction( parent, this, new int[0],
-            NeoIcons.TYPE_INT ) );
-        addMenuMgr.add( new NewAction( parent, this, new short[0],
-            NeoIcons.TYPE_SHORT ) );
-        addMenuMgr.add( new NewAction( parent, this, new byte[0],
-            NeoIcons.TYPE_BYTE ) );
-        addMenuMgr.add( new NewAction( parent, this, new double[0],
-            NeoIcons.TYPE_DOUBLE ) );
-        addMenuMgr.add( new NewAction( parent, this, new float[0],
-            NeoIcons.TYPE_FLOAT ) );
-        addMenuMgr.add( new NewAction( parent, this, new boolean[0],
-            NeoIcons.TYPE_BOOLEAN ) );
+        addMenuMgr.add( new NewAction( parent, this, PropertyTransform
+            .getHandler( String[].class ) ) );
+        addMenuMgr.add( new NewAction( parent, this, PropertyTransform
+            .getHandler( char[].class ) ) );
+        addMenuMgr.add( new NewAction( parent, this, PropertyTransform
+            .getHandler( long[].class ) ) );
+        addMenuMgr.add( new NewAction( parent, this, PropertyTransform
+            .getHandler( int[].class ) ) );
+        addMenuMgr.add( new NewAction( parent, this, PropertyTransform
+            .getHandler( short[].class ) ) );
+        addMenuMgr.add( new NewAction( parent, this, PropertyTransform
+            .getHandler( byte[].class ) ) );
+        addMenuMgr.add( new NewAction( parent, this, PropertyTransform
+            .getHandler( double[].class ) ) );
+        addMenuMgr.add( new NewAction( parent, this, PropertyTransform
+            .getHandler( float[].class ) ) );
+        addMenuMgr.add( new NewAction( parent, this, PropertyTransform
+            .getHandler( boolean[].class ) ) );
         return addMenuMgr;
     }
 

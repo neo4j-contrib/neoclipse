@@ -81,7 +81,17 @@ public enum NeoIcons
         path( "obj16/type-int.gif" ) ), TYPE_LONG( "long",
         path( "obj16/type-long.gif" ) ), TYPE_SHORT( "short",
         path( "obj16/type-short.gif" ) ), TYPE_STRING( "string",
-        path( "obj16/type-string.gif" ) );
+        path( "obj16/type-string.gif" ) ), TYPE_BOOLEANS( "booleans",
+        path( "obj16/type-booleans.gif" ) ), TYPE_BYTES( "bytes",
+        path( "obj16/type-bytes.gif" ) ), TYPE_CHARS( "chars",
+        path( "obj16/type-chars.gif" ) ), TYPE_DOUBLES( "doubles",
+        path( "obj16/type-doubles.gif" ) ), TYPE_FLOATS( "floats",
+        path( "obj16/type-floats.gif" ) ), TYPE_INTS( "ints",
+        path( "obj16/type-ints.gif" ) ), TYPE_LONGS( "longs",
+        path( "obj16/type-longs.gif" ) ), TYPE_SHORTS( "shorts",
+        path( "obj16/type-shorts.gif" ) ), TYPE_STRINGS( "strings",
+        path( "obj16/type-strings.gif" ) ), TYPE_ID( "id",
+        path( "obj16/key.gif" ) ), TYPES( "types", path( "obj16/types.gif" ) );
 
     private static final String ICON_LOCATION = "icons/";
     private static ImageRegistry reg = null;

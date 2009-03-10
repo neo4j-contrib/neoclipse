@@ -359,9 +359,9 @@ public class SimpleGraphDecorator
             else
             {
                 // get a proper String from other types
-                Object render = PropertyTransform.getPropertyHandler(
-                    propertyValue.getClass() ).render( propertyValue );
-                values.add( (String) render );
+                String render = PropertyTransform.getHandler( propertyValue )
+                    .render( propertyValue );
+                values.add( render );
             }
         }
         if ( values.size() > 0 )

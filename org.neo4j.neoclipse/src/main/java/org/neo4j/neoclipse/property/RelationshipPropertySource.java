@@ -25,7 +25,8 @@ import org.neo4j.api.core.Relationship;
  */
 public class RelationshipPropertySource extends PropertySource
 {
-    private static final String RELATIONSHIP_CATEGORY = "Relationship";
+    public static final String RELATIONSHIP_CATEGORY = "Relationship";
+    public static final String RELATIONSHIP_TYPE_KEY = "neoclipse.type";
     private static final String RELATIONSHIP_ID = "Id";
     private static final String RELATIONSHIP_TYPE = "Type";
 
@@ -39,9 +40,9 @@ public class RelationshipPropertySource extends PropertySource
     protected List<IPropertyDescriptor> getHeadPropertyDescriptors()
     {
         List<IPropertyDescriptor> descs = new ArrayList<IPropertyDescriptor>();
-        descs.add( new PropertyDescriptor( RELATIONSHIP_ID, RELATIONSHIP_ID,
+        descs.add( new PropertyDescriptor( ID_KEY, RELATIONSHIP_ID,
             RELATIONSHIP_CATEGORY ) );
-        descs.add( new PropertyDescriptor( RELATIONSHIP_TYPE,
+        descs.add( new PropertyDescriptor( RELATIONSHIP_TYPE_KEY,
             RELATIONSHIP_TYPE, RELATIONSHIP_CATEGORY ) );
         return descs;
     }
@@ -49,13 +50,13 @@ public class RelationshipPropertySource extends PropertySource
     @Override
     protected Object getValue( Object id )
     {
-        if ( id == RELATIONSHIP_ID )
+        if ( id == ID_KEY )
         {
-            return String.valueOf( ((Relationship) container).getId() );
+            return ((Relationship) container).getId();
         }
-        else if ( id == RELATIONSHIP_TYPE )
+        else if ( id == RELATIONSHIP_TYPE_KEY )
         {
-            return String.valueOf( ((Relationship) container).getType().name() );
+            return ((Relationship) container).getType();
         }
         else
         {
@@ -66,11 +67,11 @@ public class RelationshipPropertySource extends PropertySource
     @Override
     protected boolean isSet( Object id )
     {
-        if ( id == RELATIONSHIP_ID )
+        if ( id == ID_KEY )
         {
             return true;
         }
-        else if ( id == RELATIONSHIP_TYPE )
+        else if ( id == RELATIONSHIP_TYPE_KEY )
         {
             return true;
         }

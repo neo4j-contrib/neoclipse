@@ -31,6 +31,7 @@ import org.neo4j.neoclipse.property.PropertyTransform.PropertyHandler;
  */
 public class PropertySource implements IPropertySource
 {
+    public static final String ID_KEY = "neoclipse.id";
     protected static final String PROPERTIES_CATEGORY = "Properties";
     /**
      * The container of the properties (either Relationship or Node).
@@ -109,17 +110,7 @@ public class PropertySource implements IPropertySource
      */
     protected Object getValue( Object id )
     {
-        Object value = container.getProperty( (String) id );
-        PropertyHandler propertyHandler = PropertyTransform
-            .getPropertyHandler( value.getClass() );
-        if ( propertyHandler != null )
-        {
-            return propertyHandler.render( value );
-        }
-        else
-        {
-            return "(no rendering available)";
-        }
+        return container.getProperty( (String) id );
     }
 
     /**
@@ -165,8 +156,7 @@ public class PropertySource implements IPropertySource
         {
             // try to keep the same type as the previous value
             Class<?> c = container.getProperty( (String) id ).getClass();
-            PropertyHandler propertyHandler = PropertyTransform
-                .getPropertyHandler( c );
+            PropertyHandler propertyHandler = PropertyTransform.getHandler( c );
             if ( propertyHandler == null )
             {
                 MessageDialog.openError( null, "Error",

@@ -43,7 +43,7 @@ public class RenameAction extends PropertyAction
             return;
         }
         InputDialog input = new InputDialog( null, "New key entry",
-            "Please enter the new key for the property \"" + key + "\"", null,
+            "Please enter the new key for the property \"" + key + "\"", key,
             null );
         if ( input.open() == OK && input.getReturnCode() == OK )
         {

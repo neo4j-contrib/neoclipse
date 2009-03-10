@@ -22,9 +22,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ICellEditorValidator;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
+import org.neo4j.neoclipse.NeoIcons;
 
 /**
  * Transform between property values and representations for editors.
@@ -37,6 +40,17 @@ public final class PropertyTransform
      */
     public static abstract class PropertyHandler
     {
+        private final Class<?> type;
+        private final NeoIcons icon;
+        private final Object standard;
+
+        private PropertyHandler( Class<?> type, NeoIcons icon, Object standard )
+        {
+            this.type = type;
+            this.icon = icon;
+            this.standard = standard;
+        }
+
         /**
          * Transform from editor representation to property value.
          * @param o
@@ -44,7 +58,24 @@ public final class PropertyTransform
          * @return property value or null
          * @throws IOException
          */
-        public abstract Object parse( Object o ) throws IOException;
+        public Object parse( Object o ) throws IOException
+        {
+            if ( isType( o.getClass() ) )
+            {
+                return o;
+            }
+            return parser( o );
+        }
+
+        /**
+         * Compare type to the type of this handler.
+         */
+        public boolean isType( Class<?> t )
+        {
+            return t.equals( type );
+        }
+
+        protected abstract Object parser( Object o ) throws IOException;
 
         /**
          * Transform from property value to editor representation.
@@ -52,13 +83,46 @@ public final class PropertyTransform
          *            property value
          * @return editor representation of the value
          */
-        public abstract Object render( Object o );
+        public String render( Object o )
+        {
+            return type.cast( o ).toString();
+        }
 
         /**
-         * Get type wrapped in this editor.
-         * @return the type
+         * Get the icon image for this type.
+         * @return
          */
-        protected abstract Class<?> getType();
+        public ImageDescriptor descriptor()
+        {
+            return icon.descriptor();
+        }
+
+        /**
+         * Get the icon image for this type.
+         * @return
+         */
+        public Image image()
+        {
+            return icon.image();
+        }
+
+        /**
+         * Get default value.
+         * @return default value
+         */
+        public Object value()
+        {
+            return standard;
+        }
+
+        /**
+         * Get simple name of the class.
+         * @return
+         */
+        public String name()
+        {
+            return type.getSimpleName();
+        }
 
         /**
          * Editor for this property type.
@@ -66,7 +130,7 @@ public final class PropertyTransform
          */
         public CellEditor getEditor( final Composite parent )
         {
-            CellEditor editor = PropertyEditor.TEXT.getEditor( parent );
+            CellEditor editor = PropertyEditor.TEXT.getEditor( parent, this );
             editor.setValidator( new ICellEditorValidator()
             {
                 public String isValid( Object value )
@@ -77,8 +141,8 @@ public final class PropertyTransform
                     }
                     catch ( Exception e )
                     {
-                        return "Could not parse the input as type "
-                            + getType().getSimpleName() + ".";
+                        return "Could not parse the input as type " + name()
+                            + ".";
                     }
                     return null;
                 }
@@ -179,9 +243,20 @@ public final class PropertyTransform
      *            type to handle
      * @return handler for type
      */
-    public static PropertyHandler getPropertyHandler( Class<?> cls )
+    public static PropertyHandler getHandler( Class<?> cls )
     {
         return HANDLERS.get( cls );
+    }
+
+    /**
+     * Get a PropertyHandler for an object.
+     * @param o
+     *            object to handle
+     * @return handler for type
+     */
+    public static PropertyHandler getHandler( Object o )
+    {
+        return HANDLERS.get( o.getClass() );
     }
 
     /**
@@ -192,28 +267,19 @@ public final class PropertyTransform
     private static final Map<Class<?>,PropertyHandler> HANDLERS = new HashMap<Class<?>,PropertyHandler>()
     {
         private static final long serialVersionUID = 1L;
-
         {
-            put( String.class, new PropertyHandler()
+            put( String.class, new PropertyHandler( String.class,
+                NeoIcons.TYPE_STRING, "" )
             {
-                public Object parse( Object o )
+                protected Object parser( Object o )
                 {
                     return o;
                 }
-
-                public Object render( Object o )
-                {
-                    return (String) o;
-                }
-
-                protected Class<?> getType()
-                {
-                    return String.class;
-                }
             } );
-            put( String[].class, new PropertyHandler()
+            put( String[].class, new PropertyHandler( String[].class,
+                NeoIcons.TYPE_STRINGS, new String[0] )
             {
-                public Object parse( Object o ) throws IOException
+                protected Object parser( Object o ) throws IOException
                 {
                     List<String> items = stringArrayToCollection( o );
                     String[] res = new String[items.size()];
@@ -224,7 +290,7 @@ public final class PropertyTransform
                     return res;
                 }
 
-                public Object render( Object o )
+                public String render( Object o )
                 {
                     String[] res = new String[((String[]) o).length];
                     for ( int i = 0; i < res.length; i++ )
@@ -235,32 +301,19 @@ public final class PropertyTransform
                     }
                     return Arrays.toString( res );
                 }
-
-                protected Class<?> getType()
-                {
-                    return String[].class;
-                }
             } );
-            put( Integer.class, new PropertyHandler()
+            put( Integer.class, new PropertyHandler( Integer.class,
+                NeoIcons.TYPE_INT, (int) 0 )
             {
-                public Object parse( Object o )
+                protected Object parser( Object o )
                 {
                     return Integer.parseInt( (String) o );
                 }
-
-                public Object render( Object o )
-                {
-                    return ((Integer) o).toString();
-                }
-
-                protected Class<?> getType()
-                {
-                    return Integer.class;
-                }
             } );
-            put( int[].class, new PropertyHandler()
+            put( int[].class, new PropertyHandler( int[].class,
+                NeoIcons.TYPE_INTS, new int[0] )
             {
-                public Object parse( Object o )
+                protected Object parser( Object o )
                 {
                     List<String> items = arrayToCollection( o );
                     int[] res = new int[items.size()];
@@ -271,36 +324,23 @@ public final class PropertyTransform
                     return res;
                 }
 
-                public Object render( Object o )
+                public String render( Object o )
                 {
                     return Arrays.toString( (int[]) o );
                 }
-
-                protected Class<?> getType()
-                {
-                    return int[].class;
-                }
             } );
-            put( Double.class, new PropertyHandler()
+            put( Double.class, new PropertyHandler( Double.class,
+                NeoIcons.TYPE_DOUBLE, 0d )
             {
-                public Object parse( Object o )
+                protected Object parser( Object o )
                 {
                     return Double.parseDouble( (String) o );
                 }
-
-                public Object render( Object o )
-                {
-                    return ((Double) o).toString();
-                }
-
-                protected Class<?> getType()
-                {
-                    return Double.class;
-                }
             } );
-            put( double[].class, new PropertyHandler()
+            put( double[].class, new PropertyHandler( double[].class,
+                NeoIcons.TYPE_DOUBLES, new double[0] )
             {
-                public Object parse( Object o )
+                protected Object parser( Object o )
                 {
                     List<String> items = arrayToCollection( o );
                     double[] res = new double[items.size()];
@@ -311,36 +351,23 @@ public final class PropertyTransform
                     return res;
                 }
 
-                public Object render( Object o )
+                public String render( Object o )
                 {
                     return Arrays.toString( (double[]) o );
                 }
-
-                protected Class<?> getType()
-                {
-                    return double.class;
-                }
             } );
-            put( Float.class, new PropertyHandler()
+            put( Float.class, new PropertyHandler( Float.class,
+                NeoIcons.TYPE_FLOAT, 0f )
             {
-                public Object parse( Object o )
+                protected Object parser( Object o )
                 {
                     return Float.parseFloat( (String) o );
                 }
-
-                public Object render( Object o )
-                {
-                    return ((Float) o).toString();
-                }
-
-                protected Class<?> getType()
-                {
-                    return Float.class;
-                }
             } );
-            put( float[].class, new PropertyHandler()
+            put( float[].class, new PropertyHandler( float[].class,
+                NeoIcons.TYPE_FLOATS, new float[0] )
             {
-                public Object parse( Object o )
+                protected Object parser( Object o )
                 {
                     List<String> items = arrayToCollection( o );
                     float[] res = new float[items.size()];
@@ -351,38 +378,25 @@ public final class PropertyTransform
                     return res;
                 }
 
-                public Object render( Object o )
+                public String render( Object o )
                 {
                     return Arrays.toString( (float[]) o );
                 }
-
-                protected Class<?> getType()
-                {
-                    return float[].class;
-                }
             } );
-            put( Boolean.class, new PropertyHandler()
+            put( Boolean.class, new PropertyHandler( Boolean.class,
+                NeoIcons.TYPE_BOOLEAN, false )
             {
                 // has it's dedicated editor, handling transforms,
                 // so we just pass things through here
-                public Object parse( Object o )
+                protected Object parser( Object o )
                 {
                     return Boolean.parseBoolean( (String) o );
                 }
-
-                public Object render( Object o )
-                {
-                    return ((Boolean) o).toString();
-                }
-
-                protected Class<?> getType()
-                {
-                    return Boolean.class;
-                }
             } );
-            put( boolean[].class, new PropertyHandler()
+            put( boolean[].class, new PropertyHandler( boolean[].class,
+                NeoIcons.TYPE_BOOLEANS, new boolean[0] )
             {
-                public Object parse( Object o )
+                protected Object parser( Object o )
                 {
                     List<String> items = arrayToCollection( o );
                     boolean[] res = new boolean[items.size()];
@@ -393,36 +407,23 @@ public final class PropertyTransform
                     return res;
                 }
 
-                public Object render( Object o )
+                public String render( Object o )
                 {
                     return Arrays.toString( (boolean[]) o );
                 }
-
-                protected Class<?> getType()
-                {
-                    return boolean[].class;
-                }
             } );
-            put( Byte.class, new PropertyHandler()
+            put( Byte.class, new PropertyHandler( Byte.class,
+                NeoIcons.TYPE_BYTE, (byte) 0 )
             {
-                public Object parse( Object o )
+                protected Object parser( Object o )
                 {
                     return Byte.parseByte( (String) o );
                 }
-
-                public Object render( Object o )
-                {
-                    return ((Byte) o).toString();
-                }
-
-                protected Class<?> getType()
-                {
-                    return Byte.class;
-                }
             } );
-            put( byte[].class, new PropertyHandler()
+            put( byte[].class, new PropertyHandler( byte[].class,
+                NeoIcons.TYPE_BYTES, new byte[0] )
             {
-                public Object parse( Object o )
+                protected Object parser( Object o )
                 {
                     List<String> items = arrayToCollection( o );
                     byte[] res = new byte[items.size()];
@@ -433,36 +434,23 @@ public final class PropertyTransform
                     return res;
                 }
 
-                public Object render( Object o )
+                public String render( Object o )
                 {
                     return Arrays.toString( (byte[]) o );
                 }
-
-                protected Class<?> getType()
-                {
-                    return byte[].class;
-                }
             } );
-            put( Short.class, new PropertyHandler()
+            put( Short.class, new PropertyHandler( Short.class,
+                NeoIcons.TYPE_SHORT, (short) 0 )
             {
-                public Object parse( Object o )
+                protected Object parser( Object o )
                 {
                     return Short.parseShort( (String) o );
                 }
-
-                public Object render( Object o )
-                {
-                    return ((Short) o).toString();
-                }
-
-                protected Class<?> getType()
-                {
-                    return Short.class;
-                }
             } );
-            put( short[].class, new PropertyHandler()
+            put( short[].class, new PropertyHandler( short[].class,
+                NeoIcons.TYPE_SHORTS, new short[0] )
             {
-                public Object parse( Object o )
+                protected Object parser( Object o )
                 {
                     List<String> items = arrayToCollection( o );
                     short[] res = new short[items.size()];
@@ -473,36 +461,23 @@ public final class PropertyTransform
                     return res;
                 }
 
-                public Object render( Object o )
+                public String render( Object o )
                 {
                     return Arrays.toString( (short[]) o );
                 }
-
-                protected Class<?> getType()
-                {
-                    return short[].class;
-                }
             } );
-            put( Long.class, new PropertyHandler()
+            put( Long.class, new PropertyHandler( Long.class,
+                NeoIcons.TYPE_LONG, 0L )
             {
-                public Object parse( Object o )
+                protected Object parser( Object o )
                 {
                     return Long.parseLong( (String) o );
                 }
-
-                public Object render( Object o )
-                {
-                    return ((Long) o).toString();
-                }
-
-                protected Class<?> getType()
-                {
-                    return Long.class;
-                }
             } );
-            put( long[].class, new PropertyHandler()
+            put( long[].class, new PropertyHandler( long[].class,
+                NeoIcons.TYPE_LONGS, new long[0] )
             {
-                public Object parse( Object o )
+                protected Object parser( Object o )
                 {
                     List<String> items = arrayToCollection( o );
                     long[] res = new long[items.size()];
@@ -513,19 +488,15 @@ public final class PropertyTransform
                     return res;
                 }
 
-                public Object render( Object o )
+                public String render( Object o )
                 {
                     return Arrays.toString( (long[]) o );
                 }
-
-                protected Class<?> getType()
-                {
-                    return long[].class;
-                }
             } );
-            put( Character.class, new PropertyHandler()
+            put( Character.class, new PropertyHandler( Character.class,
+                NeoIcons.TYPE_CHAR, (char) 0 )
             {
-                public Object parse( Object o )
+                protected Object parser( Object o )
                 {
                     String s = (String) o;
                     if ( s.length() > 0 )
@@ -534,20 +505,11 @@ public final class PropertyTransform
                     }
                     return null;
                 }
-
-                public Object render( Object o )
-                {
-                    return ((Character) o).toString();
-                }
-
-                protected Class<?> getType()
-                {
-                    return Character.class;
-                }
             } );
-            put( char[].class, new PropertyHandler()
+            put( char[].class, new PropertyHandler( char[].class,
+                NeoIcons.TYPE_CHARS, new char[0] )
             {
-                public Object parse( Object o )
+                protected Object parser( Object o )
                 {
                     List<String> items = arrayToCollection( o );
                     char[] res = new char[items.size()];
@@ -558,14 +520,9 @@ public final class PropertyTransform
                     return res;
                 }
 
-                public Object render( Object o )
+                public String render( Object o )
                 {
                     return Arrays.toString( (char[]) o );
-                }
-
-                protected Class<?> getType()
-                {
-                    return char[].class;
                 }
             } );
         }

@@ -49,8 +49,7 @@ public class ClipboardUtil
         String representation = content.substring( contentPos + 1 );
         try
         {
-            value = PropertyTransform.getPropertyHandler( cls ).parse(
-                representation );
+            value = PropertyTransform.getHandler( cls ).parse( representation );
         }
         catch ( IOException e )
         {
@@ -70,8 +69,8 @@ public class ClipboardUtil
     public String getRepresentation()
     {
         String type = cls.getName();
-        String representation = (String) PropertyTransform.getPropertyHandler(
-            cls ).render( value );
+        String representation = PropertyTransform.getHandler( cls ).render(
+            value );
         return type + CLS_SEP + key + KEY_SEP + representation;
     }
 

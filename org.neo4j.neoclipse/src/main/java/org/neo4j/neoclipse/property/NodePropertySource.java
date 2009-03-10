@@ -25,7 +25,7 @@ import org.neo4j.api.core.Node;
  */
 public class NodePropertySource extends PropertySource
 {
-    private static final String NODE_CATEGORY = "Node";
+    public static final String NODE_CATEGORY = "Node";
     private static final String NODE_ID = "Id";
 
     /**
@@ -42,16 +42,16 @@ public class NodePropertySource extends PropertySource
     {
         List<IPropertyDescriptor> descs = new ArrayList<IPropertyDescriptor>();
         // standard properties for nodes
-        descs.add( new PropertyDescriptor( NODE_ID, NODE_ID, NODE_CATEGORY ) );
+        descs.add( new PropertyDescriptor( ID_KEY, NODE_ID, NODE_CATEGORY ) );
         return descs;
     }
 
     @Override
     protected Object getValue( Object id )
     {
-        if ( id == NODE_ID )
+        if ( id == ID_KEY )
         {
-            return String.valueOf( ((Node) container).getId() );
+            return ((Node) container).getId();
         }
         else
         {
@@ -62,7 +62,7 @@ public class NodePropertySource extends PropertySource
     @Override
     protected boolean isSet( Object id )
     {
-        if ( id == NODE_ID )
+        if ( id == ID_KEY )
         {
             return true;
         }
