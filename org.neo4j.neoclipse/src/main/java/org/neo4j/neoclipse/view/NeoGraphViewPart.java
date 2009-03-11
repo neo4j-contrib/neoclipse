@@ -17,6 +17,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.eclipse.core.runtime.Preferences.IPropertyChangeListener;
+import org.eclipse.core.runtime.Preferences.PropertyChangeEvent;
 import org.eclipse.draw2d.ChangeEvent;
 import org.eclipse.draw2d.ChangeListener;
 import org.eclipse.jface.action.Action;
@@ -159,6 +161,8 @@ public class NeoGraphViewPart extends ViewPart implements
         NeoServiceManager sm = Activator.getDefault().getNeoServiceManager();
         sm.addServiceEventListener( new NeoGraphServiceEventListener() );
         getSite().setSelectionProvider( viewer );
+        Activator.getDefault().getPluginPreferences()
+            .addPropertyChangeListener( new PreferenceChangeHandler() );
         showSomeNode();
         PlatformUI.getWorkbench().getHelpSystem().setHelp( viewer.getControl(),
             HelpContextConstants.NEO_GRAPH_VIEW_PART );
@@ -853,7 +857,8 @@ public class NeoGraphViewPart extends ViewPart implements
     /**
      * Updates the view according to service changes.
      */
-    class NeoGraphServiceEventListener implements NeoServiceEventListener
+    private class NeoGraphServiceEventListener implements
+        NeoServiceEventListener
     {
         /**
          * Refreshes the input source of the view.
@@ -862,6 +867,9 @@ public class NeoGraphViewPart extends ViewPart implements
         {
             if ( event.getStatus() == NeoServiceStatus.STOPPED )
             {
+                // throw away old relationship colors
+                NeoGraphLabelProviderWrapper.getInstance()
+                    .refreshRelationshipColors();
                 // when called during shutdown the content provider may already
                 // have been disposed
                 if ( getViewer().getContentProvider() != null )
@@ -961,6 +969,9 @@ public class NeoGraphViewPart extends ViewPart implements
         return currentSelectedRels;
     }
 
+    /**
+     * Handle change in properties.
+     */
     public void handleStateChanged( ChangeEvent event )
     {
         refresh( event.getSource(), true );
@@ -969,5 +980,22 @@ public class NeoGraphViewPart extends ViewPart implements
     public RelationshipTypeView getRelTypeView()
     {
         return relTypeView;
+    }
+
+    /**
+     * Class that responds to changes in preferences.
+     */
+    private class PreferenceChangeHandler implements IPropertyChangeListener
+    {
+        /**
+         * Forward event, then refresh view.
+         */
+        public void propertyChange( PropertyChangeEvent event )
+        {
+            if (NeoGraphLabelProviderWrapper.getInstance().propertyChanged( event ))
+            {
+                refresh( true );
+            }
+        }
     }
 }

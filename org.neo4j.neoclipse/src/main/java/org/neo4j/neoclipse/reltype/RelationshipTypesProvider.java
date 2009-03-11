@@ -230,6 +230,13 @@ public class RelationshipTypesProvider implements IContentProvider,
             }
         }
     }
+    
+    public void refresh()
+    {
+        fakeTypes.clear();
+        currentRelTypes.clear();
+        currentRelTypeCtrls.clear();
+    }
 
     public void dispose()
     {

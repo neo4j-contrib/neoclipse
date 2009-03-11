@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.eclipse.core.runtime.Preferences.PropertyChangeEvent;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.jface.viewers.IColorProvider;
 import org.eclipse.jface.viewers.ILabelProvider;
@@ -593,5 +594,31 @@ public class NeoGraphLabelProvider extends LabelProvider implements
 
         table.setHeaderVisible( true );
         table.setLinesVisible( true );
+    }
+
+    public boolean propertyChanged( PropertyChangeEvent event )
+    {
+        String property = event.getProperty();
+        if ( NeoPreferences.NODE_PROPERTY_NAMES.equals( property ) )
+        {
+            readNodePropertyNames();
+            return true;
+        }
+        else if ( NeoPreferences.RELATIONSHIP_PROPERTY_NAMES.equals( property ) )
+        {
+            readRelPropertyNames();
+            return true;
+        }
+        else if ( NeoPreferences.NODE_ICON_LOCATION.equals( property ) )
+        {
+            readNodeIconLocation();
+            return true;
+        }
+        else if ( NeoPreferences.NODE_ICON_PROPERTY_NAMES.equals( property ) )
+        {
+            readNodeIconPropertyNames();
+            return true;
+        }
+        return false;
     }
 }

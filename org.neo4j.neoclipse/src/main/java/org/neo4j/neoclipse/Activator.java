@@ -23,7 +23,6 @@ import org.neo4j.api.core.NeoService;
 import org.neo4j.api.core.Transaction;
 import org.neo4j.neoclipse.neo.NeoServiceManager;
 import org.neo4j.neoclipse.preference.NeoPreferences;
-import org.neo4j.neoclipse.view.NeoGraphLabelProviderWrapper;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -66,33 +65,6 @@ public class Activator extends AbstractUIPlugin
                         // restart neo with the new location
                         neoManager.stopNeoService();
                         neoManager.startNeoService();
-                        // throw away old relationship colors
-                        NeoGraphLabelProviderWrapper.getInstance()
-                            .refreshRelationshipColors();
-                    }
-                    else if ( NeoPreferences.NODE_PROPERTY_NAMES
-                        .equals( property ) )
-                    {
-                        NeoGraphLabelProviderWrapper.getInstance()
-                            .readNodePropertyNames();
-                    }
-                    else if ( NeoPreferences.RELATIONSHIP_PROPERTY_NAMES
-                        .equals( property ) )
-                    {
-                        NeoGraphLabelProviderWrapper.getInstance()
-                            .readRelPropertyNames();
-                    }
-                    else if ( NeoPreferences.NODE_ICON_LOCATION
-                        .equals( property ) )
-                    {
-                        NeoGraphLabelProviderWrapper.getInstance()
-                            .readNodeIconLocation();
-                    }
-                    else if ( NeoPreferences.NODE_ICON_PROPERTY_NAMES
-                        .equals( property ) )
-                    {
-                        NeoGraphLabelProviderWrapper.getInstance()
-                            .readNodeIconPropertyNames();
                     }
                 }
             } );
@@ -103,8 +75,8 @@ public class Activator extends AbstractUIPlugin
      */
     public void stop( BundleContext context ) throws Exception
     {
-        PLUGIN = null;
         neoManager.stopNeoService();
+        PLUGIN = null;
         super.stop( context );
     }
 

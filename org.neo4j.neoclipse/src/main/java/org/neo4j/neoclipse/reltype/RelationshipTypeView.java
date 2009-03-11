@@ -63,6 +63,9 @@ import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.action.Actions;
 import org.neo4j.neoclipse.decorate.UserIcons;
 import org.neo4j.neoclipse.help.HelpContextConstants;
+import org.neo4j.neoclipse.neo.NeoServiceEvent;
+import org.neo4j.neoclipse.neo.NeoServiceEventListener;
+import org.neo4j.neoclipse.neo.NeoServiceStatus;
 import org.neo4j.neoclipse.neo.NodeSpaceUtil;
 import org.neo4j.neoclipse.preference.NeoPreferences;
 import org.neo4j.neoclipse.view.NeoGraphLabelProvider;
@@ -74,7 +77,7 @@ import org.neo4j.neoclipse.view.NeoGraphViewPart;
  * @author anders
  */
 public class RelationshipTypeView extends ViewPart implements
-    ISelectionListener, IPropertyChangeListener
+    ISelectionListener, IPropertyChangeListener, NeoServiceEventListener
 {
     public final static String ID = "org.neo4j.neoclipse.reltype.RelationshipTypeView";
     private static final String NEW_RELTYPE_DIALOG_TEXT = "Please enter the name of the new relationships type";
@@ -132,6 +135,9 @@ public class RelationshipTypeView extends ViewPart implements
         viewer.setLabelProvider( labelProvider );
         viewer.setComparator( new ViewerComparator( provider ) );
         viewer.setInput( getViewSite() );
+
+        Activator.getDefault().getNeoServiceManager().addServiceEventListener(
+            this );
 
         PlatformUI.getWorkbench().getHelpSystem().setHelp( viewer.getControl(),
             HelpContextConstants.NEO_RELATIONSHIP_TYPE_VIEW );
@@ -713,6 +719,18 @@ public class RelationshipTypeView extends ViewPart implements
         if ( graphView != null )
         {
             graphView.refreshPreserveLayout();
+        }
+    }
+
+    public void serviceChanged( NeoServiceEvent event )
+    {
+        if ( event.getStatus() == NeoServiceStatus.STOPPED )
+        {
+            provider.refresh();
+        }
+        else if ( event.getStatus() == NeoServiceStatus.STARTED )
+        {
+            viewer.refresh( true );
         }
     }
 }
