@@ -84,7 +84,7 @@ public class RelationshipTypesProvider implements IContentProvider,
 
     private boolean viewAll = true;
     private Set<RelationshipType> fakeTypes = new HashSet<RelationshipType>();
-    private Collection<RelationshipType> currentRelTypes;
+    private Set<RelationshipType> currentRelTypes = Collections.emptySet();
     private Map<RelationshipType,RelationshipTypeControl> currentRelTypeCtrls = new HashMap<RelationshipType,RelationshipTypeControl>();
     private List<IPropertyChangeListener> listeners = new ArrayList<IPropertyChangeListener>();
 
@@ -137,15 +137,15 @@ public class RelationshipTypesProvider implements IContentProvider,
      * Get all realtionship types in the database.
      * @return
      */
-    public List<RelationshipType> getRelationshipTypesFromNeo()
+    public Set<RelationshipType> getRelationshipTypesFromNeo()
     {
-        List<RelationshipType> relationshipTypes;
-        relationshipTypes = new ArrayList<RelationshipType>();
+        Set<RelationshipType> relationshipTypes;
+        relationshipTypes = new HashSet<RelationshipType>();
         NeoService ns = Activator.getDefault().getNeoServiceSafely();
         if ( ns == null )
         {
             // todo ?
-            return Collections.emptyList();
+            return Collections.emptySet();
         }
         @SuppressWarnings( "deprecation" )
         Iterable<RelationshipType> relationshipTypesIterable = ((EmbeddedNeo) ns)
@@ -195,19 +195,19 @@ public class RelationshipTypesProvider implements IContentProvider,
      * Get relationship types and direction from current filterset.
      * @return an array of RelationshipType and Direction (alternating)
      */
-    public Object[] getFilteredRelationshipTypes()
+    public List<Object> getFilteredRelTypesDirections()
     {
-        List<Object> list = new ArrayList<Object>();
+        List<Object> relDirList = new ArrayList<Object>();
         for ( RelationshipTypeControl relTypeCtrl : currentRelTypeCtrls
             .values() )
         {
             if ( relTypeCtrl.hasDirection() )
             {
-                list.add( relTypeCtrl.getRelType() );
-                list.add( relTypeCtrl.getDirection() );
+                relDirList.add( relTypeCtrl.getRelType() );
+                relDirList.add( relTypeCtrl.getDirection() );
             }
         }
-        return list.toArray();
+        return relDirList;
     }
 
     /**

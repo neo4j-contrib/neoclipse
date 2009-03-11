@@ -14,7 +14,9 @@
 package org.neo4j.neoclipse.view;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.zest.core.viewers.IGraphEntityRelationshipContentProvider;
@@ -29,6 +31,7 @@ import org.neo4j.api.core.TraversalPosition;
 import org.neo4j.api.core.Traverser;
 import org.neo4j.api.core.Traverser.Order;
 import org.neo4j.neoclipse.Activator;
+import org.neo4j.neoclipse.reltype.RelationshipTypesProvider;
 import org.neo4j.neoclipse.reltype.RelationshipTypesProviderWrapper;
 
 /**
@@ -42,10 +45,13 @@ public class NeoGraphContentProvider implements
      * Limit the number of nodes returned.
      */
     private static final int MAXIMUM_NODES_RETURNED = 500;
+    private RelationshipTypesProvider relTypesProvider = RelationshipTypesProviderWrapper
+        .getInstance();
     /**
      * The view.
      */
     protected NeoGraphViewPart view;
+    private Set<RelationshipType> relTypes = new HashSet<RelationshipType>();
 
     /**
      * The constructor.
@@ -64,11 +70,27 @@ public class NeoGraphContentProvider implements
         Node end = (Node) dest;
         List<Relationship> rels = new ArrayList<Relationship>();
         Iterable<Relationship> rs = start.getRelationships( Direction.OUTGOING );
-        for ( Relationship r : rs )
+        if ( relTypes.size() > 0 )
         {
-            if ( r.getEndNode().equals( end ) )
+            for ( Relationship r : rs )
             {
-                rels.add( r );
+                if ( relTypes.contains( r.getType() ) )
+                {
+                    if ( r.getEndNode().equals( end ) )
+                    {
+                        rels.add( r );
+                    }
+                }
+            }
+        }
+        else
+        {
+            for ( Relationship r : rs )
+            {
+                if ( r.getEndNode().equals( end ) )
+                {
+                    rels.add( r );
+                }
             }
         }
         return rels.toArray();
@@ -86,8 +108,10 @@ public class NeoGraphContentProvider implements
         {
             return new Node[] { node };
         }
-        Object[] relDirListArray = RelationshipTypesProviderWrapper
-            .getInstance().getFilteredRelationshipTypes();
+
+        Object[] relDirListArray = relTypesProvider
+            .getFilteredRelTypesDirections().toArray();
+
         if ( relDirListArray.length == 0 )
         {
             List<Object> relDirList = new ArrayList<Object>();
@@ -105,6 +129,16 @@ public class NeoGraphContentProvider implements
             }
             relDirListArray = relDirList.toArray();
         }
+
+        relTypes.clear();
+        for ( Object o : relDirListArray )
+        {
+            if ( o instanceof RelationshipType )
+            {
+                relTypes.add( (RelationshipType) o );
+            }
+        }
+
         final int depth = view.getTraversalDepth();
         Traverser trav = node.traverse( Order.BREADTH_FIRST,
             new StopEvaluator()
