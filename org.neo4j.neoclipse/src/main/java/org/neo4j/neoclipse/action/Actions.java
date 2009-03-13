@@ -25,23 +25,24 @@ public enum Actions
     PREFERENCES( "Preferences", NeoIcons.PREFERENCES ),
     // add rel
     ADD_RELATIONSHIP(
-        "Add relationship",
-        "Add a directed relationship from the first selected node to the second.",
-        NeoIcons.ADD ),
+        "Create relationship",
+        "Create a directed relationship from the first selected node to the second.",
+        NeoIcons.ADD_ENABLED, NeoIcons.ADD_DISABLED ),
     ADD_INCOMING_ICON( "Set end node icon for type", NeoIcons.ICON_INCOMING ),
     ADD_OUTGOING_ICON( "Set start node icon for type", NeoIcons.ICON_OUTGOING ),
     // add node
-    ADD_INCOMING_NODE( "Add node as start node",
-        "Add a node with a relationship; "
+    ADD_INCOMING_NODE( "Create node as start node",
+        "Create a node with a relationship; "
             + "the new node is the start node of the relationship(s).",
         NeoIcons.ADD_INCOMING ),
-    ADD_OUTGOING_NODE( "Add node as end node",
-        "Add a node with a relationship; "
+    ADD_OUTGOING_NODE( "Create node as end node",
+        "Create a node with a relationship; "
             + "the new node is the end node of the relationship(s).",
         NeoIcons.ADD_OUTGOING ),
     // add reltype
-    NEW_RELATIONSHIP_TYPE( "Create new type",
-        "Create a new relationship type.", NeoIcons.NEW ),
+    NEW_RELATIONSHIP_TYPE( "Create relationship type",
+        "Create a new relationship type.", NeoIcons.NEW_ENABLED,
+        NeoIcons.NEW_DISABLED ),
     // highlight
     HIGHLIGHT_RELATIONSHIPS( "Highlight relationships",
         "Highlight all relationships of the selected types.",
@@ -62,7 +63,7 @@ public enum Actions
     REFRESH( "Refresh", NeoIcons.REFRESH ),
     SHOW_REFERENCE_NODE( "Show reference node", NeoIcons.HOME ),
     // edit
-    DELETE( "Delete", NeoIcons.DELETE ),
+    DELETE( "Delete", NeoIcons.DELETE_ENABLED, NeoIcons.DELETE_DISABLED ),
     // view node settings
     NODE_COLORS( "Node colors" ),
     NODE_ICONS( "Node icons" ),
@@ -88,8 +89,10 @@ public enum Actions
     // zoom
     ZOOM( "Zoom", NeoIcons.ZOOM ),
     // property
-    COPY( "Copy", NeoIcons.COPY ), REMOVE( "Remove", NeoIcons.DELETE ), PASTE(
-        "Paste", NeoIcons.PASTE ), RENAME( "Rename", NeoIcons.RENAME );
+    COPY( "Copy", NeoIcons.COPY_ENABLED, NeoIcons.COPY_DISABLED ), REMOVE(
+        "Remove", NeoIcons.DELETE_ENABLED, NeoIcons.DELETE_DISABLED ), PASTE(
+        "Paste", NeoIcons.PASTE_ENABLED, NeoIcons.PASTE_DISABLED ), RENAME(
+        "Rename", NeoIcons.RENAME );
 
     private final String label;
     private final String tooltip;

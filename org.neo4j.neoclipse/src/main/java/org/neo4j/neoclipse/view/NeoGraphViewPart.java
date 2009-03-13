@@ -992,7 +992,8 @@ public class NeoGraphViewPart extends ViewPart implements
          */
         public void propertyChange( PropertyChangeEvent event )
         {
-            if (NeoGraphLabelProviderWrapper.getInstance().propertyChanged( event ))
+            if ( NeoGraphLabelProviderWrapper.getInstance().propertyChanged(
+                event ) )
             {
                 refresh( true );
             }

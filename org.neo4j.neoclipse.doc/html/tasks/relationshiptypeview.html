@@ -1,0 +1,123 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>Using Neo4j Relationship type view</title>
+<link rel="stylesheet" type="text/css" href="../../styles/doc.css" />
+</head>
+
+<body>
+
+<div id="content">
+
+<h1>Using Neo4j Relationship type view</h1>
+
+<p>Tasks that can be performed from this view:</p>
+<ul>
+	<li><a href="#create-rel-type">create relationship type</a></li>
+	<li><a href="#create-rel">create relationship</a></li>
+	<li><a href="#create-node">create node with relationship</a></li>
+	<li><a href="#filter-by-rels">filter by incoming/outgoing
+	relationships</a></li>
+	<li><a href="#highlight">highlight relationships/nodes</a></li>
+	<li><a href="#set-icons">set node icons</a></li>
+</ul>
+
+<h2>Basic usage</h2>
+<ul>
+	<li>selecting relationships in the Database graph view will select
+	the corresponding relationship type in this view</li>
+	<li>double-clicking a relationship type will highlight the
+	corresponding relationships in the Database graph view</li>
+	<li>the highlighting is separate from selections</li>
+</ul>
+
+<h3 id="create-rel-type">Create relationship type</h3>
+
+<p>Click the <strong>Create relationship type</strong> button (<img
+	src="PLUGINS_ROOT/org.neo4j.neoclipse/icons/enabled/new.gif">)
+button in the toolbar or select it from the view menu, then enter the
+name of the new relationship type.</p>
+<p><strong>Note: </strong><em>new relationship types are only
+persisted after being used in the database</em>. Duplicate relationship type
+entries are silently removed (as identity is only concerned with the
+name in this case, they are in fact identical).</p>
+
+<h3 id="create-rel">Create relationship</h3>
+
+<p>Click the <strong>Create relationship</strong> button (<img
+	src="PLUGINS_ROOT/org.neo4j.neoclipse/icons/enabled/add.gif">) in
+the toolbar or select it in the view menu to add a relationship. To
+create a relationship you have to select one relationship type and two
+nodes. The relationship will have the first selected node as start node
+and the second selected node will be the end node.</p>
+
+<h3 id="create-node">Create node with relationship</h3>
+
+<p>To create a new node, select at least one node and click the <strong>Create
+node as start node</strong> button (<img
+	src="PLUGINS_ROOT/org.neo4j.neoclipse/icons/obj16/add_incoming.gif">)
+or the <strong>Create node as end node</strong> button (<img
+	src="PLUGINS_ROOT/org.neo4j.neoclipse/icons/obj16/add_outgoing.gif">)
+in the toolbar or select it from the view menu.</p>
+
+<p><strong>Note: </strong>when multiple nodes are selected,
+relationships will be created between all of them and the new node.</p>
+
+<p>It is by <em>Neoclipse</em> design that you cannot create new
+nodes without creating a relationship; in Neo4j this is fully possible.
+However, it doesn't really make sense in the Neoclipse context to create
+nodes that it wouldn't be possible to traverse.</p>
+
+<h3 id="filter-by-rels">Filter by incoming or outgoing
+relationships</h3>
+
+<p>By toggling the In and Out checkboxes of each relationship type,
+you can decide what relationship types will be followed by the Neoclipse
+node space traverser. The Database graph view is updated instantly.</p>
+
+<h3 id="highlight">Highlight relationships or nodes</h3>
+
+<p>To highlight relationships or nodes you first have to select at
+least one relationship type. The actions will then be performed for all
+the selected relationship types. The actions are:</p>
+
+<ul>
+	<li><img
+		src="PLUGINS_ROOT/org.neo4j.neoclipse/icons/obj16/highlight.gif">
+	Highlight relationships</li>
+	<li><img
+		src="PLUGINS_ROOT/org.neo4j.neoclipse/icons/obj16/highlight_incoming.gif">
+	Highlight end nodes</li>
+	<li><img
+		src="PLUGINS_ROOT/org.neo4j.neoclipse/icons/obj16/highlight_outgoing.gif">
+	Highlight start nodes</li>
+	<li><img
+        src="PLUGINS_ROOT/org.neo4j.neoclipse/icons/enabled/clear.gif">
+    Remove highlighting</li>
+</ul>
+
+<p><strong>Note: </strong>double-clicking a relationship type will
+highlight the corresponding relationships.</p>
+<p><strong>Note: </strong>The highlighting is separate from
+selections.</p>
+
+<h3 id="set-icons">Set node icons</h3>
+
+<p>By selecting and right-clicking one or more relationship types,
+you can add start/end node icons. If you didn't already set up a "Node
+icon location" in the preferences, Neoclipse will ask you to.</p>
+
+<p><strong>Note: </strong>Even if multiple icons could apply to a
+node only one will be used as of now.</p>
+
+<p>Another way to add node icons is described in the <a
+	href="../reference/preferences.html#node-label-properties">Node
+label properties</a> section of the <a href="../reference/preferences.html">preferences
+reference page</a>.</p>
+
+</div>
+
+</body>
+</html>

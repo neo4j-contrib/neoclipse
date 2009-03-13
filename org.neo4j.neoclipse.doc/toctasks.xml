@@ -2,7 +2,9 @@
 <?NLS TYPE="org.eclipse.help.toc"?>
 
 <toc label="Tasks" link_to="toc.xml#tasks">
- <topic href="html/tasks/NewGraphViewPart.html" label="Using Neo4j Graph view">
+ <topic href="html/tasks/graphview.html" label="Using Database graph view">
+ </topic>
+ <topic href="html/tasks/relationshiptypeview.html" label="Using Relationship types view">
  </topic>
  <topic href="html/tasks/PropertySheetPage.html" label="Using Properties view">
  </topic> 

@@ -37,32 +37,37 @@ public enum NeoIcons
         shared( ISharedImages.IMG_TOOL_BACK_DISABLED ) ),
     FORWARD_ENABLED( "forward_enabled", shared( ISharedImages.IMG_TOOL_FORWARD ) ),
     FORWARD_DISABLED( "forward_disabled",
-        shared( ISharedImages.IMG_TOOL_FORWARD_DISABLED ) ), REFRESH(
-        "refresh", path( "enabled/refresh.gif" ) ),
+        shared( ISharedImages.IMG_TOOL_FORWARD_DISABLED ) ),
+    REFRESH( "refresh", path( "enabled/refresh.gif" ) ),
     ZOOM( "zoom", path( "enabled/zoom.gif" ) ),
     // traversal depth
-    PLUS_ENABLED( "plus_enabled", path( "enabled/plus.gif" ) ), PLUS_DISABLED(
-        "plus_disabled", path( "disabled/plus.gif" ) ), MINUS_ENABLED(
-        "minus_enabled", path( "enabled/minus.gif" ) ),
+    PLUS_ENABLED( "plus_enabled", path( "enabled/plus.gif" ) ),
+    PLUS_DISABLED( "plus_disabled", path( "disabled/plus.gif" ) ),
+    MINUS_ENABLED( "minus_enabled", path( "enabled/minus.gif" ) ),
     MINUS_DISABLED( "minus_disabled", path( "disabled/minus.gif" ) ),
     // layouts
-    GRID( "grid", path( "enabled/grid.gif" ) ), RADIAL( "radial",
-        path( "enabled/radial.gif" ) ), SPRING( "spring",
-        path( "enabled/spring.gif" ) ),
+    GRID( "grid", path( "enabled/grid.gif" ) ),
+    RADIAL( "radial", path( "enabled/radial.gif" ) ),
+    SPRING( "spring", path( "enabled/spring.gif" ) ),
     TREE( "tree", path( "enabled/tree.gif" ) ),
     // edit actions
-    DELETE( "delete", shared( ISharedImages.IMG_TOOL_DELETE ) ), COPY( "copy",
-        shared( ISharedImages.IMG_TOOL_COPY ) ), NEW( "new",
-        shared( ISharedImages.IMG_TOOL_NEW_WIZARD ) ), RENAME( "rename",
-        path( "obj16/change.gif" ) ), PASTE( "paste",
-        shared( ISharedImages.IMG_TOOL_PASTE ) ), CHECKED( "checked",
+    DELETE_ENABLED( "delete_enabled", path( "enabled/delete.gif" ) ),
+    DELETE_DISABLED( "delete_disabled", path( "disabled/delete.gif" ) ),
+    COPY_ENABLED( "copy_enabled", path( "enabled/copy.gif" ) ), COPY_DISABLED(
+        "copy_disabled", path( "disabled/copy.gif" ) ), NEW_ENABLED(
+        "new_enabled", path( "enabled/new.gif" ) ), NEW_DISABLED(
+        "new_disabled", path( "disabled/new.gif" ) ), RENAME( "rename",
+        path( "obj16/change.gif" ) ), PASTE_ENABLED( "paste_enabled",
+        path( "enabled/paste.gif" ) ), PASTE_DISABLED( "paste_disabled",
+        path( "disabled/paste.gif" ) ), CHECKED( "checked",
         path( "obj16/box_checked.gif" ) ), UNCHECKED( "unchecked",
         path( "obj16/box_unchecked.gif" ) ),
     // relationship types actions
-    ADD( "add", path( "obj16/add.gif" ) ), ADD_INCOMING( "add_incoming",
-        path( "obj16/add_incoming.gif" ) ), ADD_OUTGOING( "add_outgoing",
-        path( "obj16/add_outgoing.gif" ) ), HIGHLIGHT( "highlight",
-        path( "obj16/highlight.gif" ) ), HIGHLIGHT_INCOMING(
+    ADD_ENABLED( "add_enabled", path( "enabled/add.gif" ) ), ADD_DISABLED(
+        "add_disabled", path( "disabled/add.gif" ) ), ADD_INCOMING(
+        "add_incoming", path( "obj16/add_incoming.gif" ) ), ADD_OUTGOING(
+        "add_outgoing", path( "obj16/add_outgoing.gif" ) ), HIGHLIGHT(
+        "highlight", path( "obj16/highlight.gif" ) ), HIGHLIGHT_INCOMING(
         "highlight_incoming", path( "obj16/highlight_incoming.gif" ) ),
     HIGHLIGHT_OUTGOING( "highlight_outgoing",
         path( "obj16/highlight_outgoing.gif" ) ), INCOMING( "incoming",
@@ -73,25 +78,25 @@ public enum NeoIcons
         path( "obj16/icon_incoming.gif" ) ), ICON_OUTGOING( "icon_out",
         path( "obj16/icon_outgoing.gif" ) ),
     // types
-    TYPE_BOOLEAN( "boolean", path( "obj16/type-boolean.gif" ) ), TYPE_BYTE(
-        "byte", path( "obj16/type-byte.gif" ) ), TYPE_CHAR( "char",
-        path( "obj16/type-char.gif" ) ), TYPE_DOUBLE( "double",
-        path( "obj16/type-double.gif" ) ), TYPE_FLOAT( "float",
-        path( "obj16/type-float.gif" ) ), TYPE_INT( "int",
-        path( "obj16/type-int.gif" ) ), TYPE_LONG( "long",
-        path( "obj16/type-long.gif" ) ), TYPE_SHORT( "short",
-        path( "obj16/type-short.gif" ) ), TYPE_STRING( "string",
-        path( "obj16/type-string.gif" ) ), TYPE_BOOLEANS( "booleans",
-        path( "obj16/type-booleans.gif" ) ), TYPE_BYTES( "bytes",
-        path( "obj16/type-bytes.gif" ) ), TYPE_CHARS( "chars",
-        path( "obj16/type-chars.gif" ) ), TYPE_DOUBLES( "doubles",
-        path( "obj16/type-doubles.gif" ) ), TYPE_FLOATS( "floats",
-        path( "obj16/type-floats.gif" ) ), TYPE_INTS( "ints",
-        path( "obj16/type-ints.gif" ) ), TYPE_LONGS( "longs",
-        path( "obj16/type-longs.gif" ) ), TYPE_SHORTS( "shorts",
-        path( "obj16/type-shorts.gif" ) ), TYPE_STRINGS( "strings",
-        path( "obj16/type-strings.gif" ) ), TYPE_ID( "id",
-        path( "obj16/key.gif" ) ), TYPES( "types", path( "obj16/types.gif" ) );
+    TYPE_BOOLEAN( "boolean", path( "types/type-boolean.gif" ) ), TYPE_BYTE(
+        "byte", path( "types/type-byte.gif" ) ), TYPE_CHAR( "char",
+        path( "types/type-char.gif" ) ), TYPE_DOUBLE( "double",
+        path( "types/type-double.gif" ) ), TYPE_FLOAT( "float",
+        path( "types/type-float.gif" ) ), TYPE_INT( "int",
+        path( "types/type-int.gif" ) ), TYPE_LONG( "long",
+        path( "types/type-long.gif" ) ), TYPE_SHORT( "short",
+        path( "types/type-short.gif" ) ), TYPE_STRING( "string",
+        path( "types/type-string.gif" ) ), TYPE_BOOLEANS( "booleans",
+        path( "types/type-booleans.gif" ) ), TYPE_BYTES( "bytes",
+        path( "types/type-bytes.gif" ) ), TYPE_CHARS( "chars",
+        path( "types/type-chars.gif" ) ), TYPE_DOUBLES( "doubles",
+        path( "types/type-doubles.gif" ) ), TYPE_FLOATS( "floats",
+        path( "types/type-floats.gif" ) ), TYPE_INTS( "ints",
+        path( "types/type-ints.gif" ) ), TYPE_LONGS( "longs",
+        path( "types/type-longs.gif" ) ), TYPE_SHORTS( "shorts",
+        path( "types/type-shorts.gif" ) ), TYPE_STRINGS( "strings",
+        path( "types/type-strings.gif" ) ), TYPE_ID( "id",
+        path( "obj16/key.gif" ) ), TYPES( "types", path( "types/types.gif" ) );
 
     private static final String ICON_LOCATION = "icons/";
     private static ImageRegistry reg = null;

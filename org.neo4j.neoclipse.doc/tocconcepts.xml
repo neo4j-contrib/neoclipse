@@ -2,10 +2,10 @@
 <?NLS TYPE="org.eclipse.help.toc"?>
 
 <toc label="Concepts" link_to="toc.xml#concepts">
- 	<topic label="What is Neoclipse" href="html/concepts/whatisneoclipse.html">
- 	</topic>
 	<topic href="html/concepts/graph-database.html" label="Graph database concepts">
 	</topic> 
 	<topic label="What is Neo4j"  href="html/concepts/whatisneo.html"> 
-	</topic> 
+	</topic>
+ 	<topic label="What is Neoclipse" href="html/concepts/whatisneoclipse.html">
+ 	</topic> 
 </toc>

@@ -93,6 +93,7 @@ public class NeoPropertySheetPage extends PropertySheetPage implements
 
     public void fireChangeEvent( Object element, String key )
     {
+        // TODO make sure this key gets selected in the view
         ChangeEvent ce = new ChangeEvent( element, key );
         for ( ChangeListener listener : listeners )
         {
@@ -194,7 +195,7 @@ public class NeoPropertySheetPage extends PropertySheetPage implements
      */
     private MenuManager createNewSubmenu( final Composite parent )
     {
-        MenuManager addMenuMgr = new MenuManager( "New", NeoIcons.NEW
+        MenuManager addMenuMgr = new MenuManager( "New", NeoIcons.NEW_ENABLED
             .descriptor(), "propertiesAddSubmenu" );
         addMenuMgr.add( new NewAction( parent, this, PropertyTransform
             .getHandler( String.class ) ) );
@@ -222,7 +223,7 @@ public class NeoPropertySheetPage extends PropertySheetPage implements
      */
     private MenuManager createNewArraySubmenu( final Composite parent )
     {
-        MenuManager addMenuMgr = new MenuManager( "New[]", NeoIcons.NEW
+        MenuManager addMenuMgr = new MenuManager( "New[]", NeoIcons.NEW_ENABLED
             .descriptor(), "propertiesArrayAddSubmenu" );
         addMenuMgr.add( new NewAction( parent, this, PropertyTransform
             .getHandler( String[].class ) ) );

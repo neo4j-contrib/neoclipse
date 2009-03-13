@@ -13,8 +13,22 @@
 
 <h1>Using Neo4j property sheet</h1>
 
+<p>Properties are <em>key/value pairs</em> that can be set on <em>both
+nodes and relationships</em>. You can use the property sheet to:</p>
+
+<ul>
+	<li><a href="#inspect">inspect properties</a></li>
+	<li><a href="#edit">edit property values</a></li>
+	<li><a href="#remove">remove a property</a></li>
+	<li>create new properties</li>
+	<li>rename property keys</li>
+</ul>
+
+<h2>Basic usage</h2>
+
 <p>Neo4j Graph view integrates with the property view of the Eclipse
 IDE. There are two ways to make the property sheet show up:</p>
+
 <ul>
 	<li>It opens as part of the Neo4j perspective, which is found in
 	the menu through: Window -&gt; Open Perspective -&gt; Neo4j</li>
@@ -22,15 +36,40 @@ IDE. There are two ways to make the property sheet show up:</p>
 	View -&gt; General -&gt; Properties</li>
 </ul>
 
+<p><strong>Note: </strong><em>IDs and relationship types can
+not be altered</em> (by Neo4j design).</p>
+
+<h2 id="inspect">Inspect properties</h2>
+
 <p>When you select a node or relationship in the Neo4j Graph view,
 the properties view will show the keys and values of all properties.</p>
 
-<p>Property values can be altered by editing the text representation
-of the value (just click into them). Standard Java <code>parse[Type]()</code> methods are used
-to parse the input.</p>
+<h2 id="edit">Edit property values</h2>
 
-<p><strong>Note: </strong><em>IDs and relationship types can
-not be altered</em> (by Neo4j design).</p>
+<p>Property values can be altered by editing the text representation
+of the value (just click into them). Standard Java <code>parse[Type]()</code>
+methods are used to parse the input.</p>
+
+<p>There's also different ways to use <em>copy & paste:</em></p>
+
+<ul>
+	<li>Copy & paste text in the value editor works just the usual
+	way.</li>
+	<li><img
+		src="PLUGINS_ROOT/org.neo4j.neoclipse/icons/enabled/copy.gif">
+	Copy & <img
+		src="PLUGINS_ROOT/org.neo4j.neoclipse/icons/enabled/paste.gif">
+	paste using the context menu will copy the key name and the value in a
+	typesafe way.</li>
+</ul>
+
+
+<h2 id="remove">Pemove a property</h2>
+
+<p>Right-click on the property key and choose the <strong>Remove</strong>
+(<img src="PLUGINS_ROOT/org.neo4j.neoclipse/icons/enabled/delete.gif">)
+action from the context menu.</p>
+
 
 </div>
 
