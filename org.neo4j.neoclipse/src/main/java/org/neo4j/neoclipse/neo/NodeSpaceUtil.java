@@ -85,7 +85,7 @@ public class NodeSpaceUtil
      * @param graphView
      *            current database graph view
      */
-    public static void createRelationship( List<Node> sourceNodes,
+    private static void createRelationship( List<Node> sourceNodes,
         List<Node> destNodes, RelationshipType relType,
         NeoGraphViewPart graphView )
     {
@@ -105,17 +105,20 @@ public class NodeSpaceUtil
             return;
         }
         Transaction tx = ns.beginTx();
+        Node createNode = null;
         try
         {
             if ( destNodes == null )
             {
                 destNodes = new ArrayList<Node>();
-                destNodes.add( ns.createNode() );
+                createNode = ns.createNode();
+                destNodes.add( createNode );
             }
             else if ( sourceNodes == null )
             {
                 sourceNodes = new ArrayList<Node>();
-                sourceNodes.add( ns.createNode() );
+                createNode = ns.createNode();
+                sourceNodes.add( createNode );
             }
             for ( Node source : sourceNodes )
             {
@@ -134,9 +137,9 @@ public class NodeSpaceUtil
         {
             tx.finish();
         }
-        if ( graphView != null )
+        if ( graphView != null && createNode != null )
         {
-            graphView.refreshPreserveLayout();
+            graphView.setInput( createNode );
         }
     }
 

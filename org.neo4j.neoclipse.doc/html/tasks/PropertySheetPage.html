@@ -20,8 +20,8 @@ nodes and relationships</em>. You can use the property sheet to:</p>
 	<li><a href="#inspect">inspect properties</a></li>
 	<li><a href="#edit">edit property values</a></li>
 	<li><a href="#remove">remove a property</a></li>
-	<li>create new properties</li>
-	<li>rename property keys</li>
+	<li><a href="#create">create new properties</a></li>
+	<li><a href="#rename">rename property keys</a></li>
 </ul>
 
 <h2>Basic usage</h2>
@@ -30,8 +30,9 @@ nodes and relationships</em>. You can use the property sheet to:</p>
 IDE. There are two ways to make the property sheet show up:</p>
 
 <ul>
-	<li>It opens as part of the Neo4j perspective, which is found in
-	the menu through: Window -&gt; Open Perspective -&gt; Neo4j</li>
+	<li>The Neo4j Property sheet opens as part of the Neo4j
+	perspective, which is found in the menu through: Window -&gt; Open
+	Perspective -&gt; Neo4j</li>
 	<li>You can open it independently from the menu: Window -&gt; Show
 	View -&gt; General -&gt; Properties</li>
 </ul>
@@ -64,11 +65,61 @@ methods are used to parse the input.</p>
 </ul>
 
 
-<h2 id="remove">Pemove a property</h2>
+<h2 id="remove">Remove a property</h2>
 
 <p>Right-click on the property key and choose the <strong>Remove</strong>
 (<img src="PLUGINS_ROOT/org.neo4j.neoclipse/icons/enabled/delete.gif">)
 action from the context menu.</p>
+
+<h2 id="create">Create new properties</h2>
+
+<p>By right-clicking the property sheet you get access to the "New"
+and "New[]" (both <img
+	src="PLUGINS_ROOT/org.neo4j.neoclipse/icons/enabled/new.gif">
+icon) menu alternatives. This is while Neo4j properties can be either
+single-valued or contain an array of values. Selecting one of the
+alternatives will bring up a list of types to choose from:</p>
+<ul>
+	<li><img
+		src="PLUGINS_ROOT/org.neo4j.neoclipse/icons/types/type-string.gif">
+	String</li>
+	<li><img
+		src="PLUGINS_ROOT/org.neo4j.neoclipse/icons/types/type-char.gif">
+	char</li>
+	<li><img
+		src="PLUGINS_ROOT/org.neo4j.neoclipse/icons/types/type-long.gif">
+	long</li>
+	<li><img
+		src="PLUGINS_ROOT/org.neo4j.neoclipse/icons/types/type-int.gif">
+	int</li>
+	<li><img
+		src="PLUGINS_ROOT/org.neo4j.neoclipse/icons/types/type-short.gif">
+	short</li>
+	<li><img
+		src="PLUGINS_ROOT/org.neo4j.neoclipse/icons/types/type-byte.gif">
+	byte</li>
+	<li><img
+		src="PLUGINS_ROOT/org.neo4j.neoclipse/icons/types/type-double.gif">
+	double</li>
+	<li><img
+		src="PLUGINS_ROOT/org.neo4j.neoclipse/icons/types/type-float.gif">
+	float</li>
+	<li><img
+		src="PLUGINS_ROOT/org.neo4j.neoclipse/icons/types/type-boolean.gif">
+	boolean</li>
+</ul>
+
+<p>After choosing type you will be prompted for the key name, and
+that's it: the new property is created and set to the default value of
+the type. (At the moment, the new property entry won't get focus in the
+view.)</p>
+
+<h2 id="rename">Rename property keys</h2>
+
+<p>As a convenience function, you can also rename a property key.
+Right-click the property key and choose the <strong>Rename</strong> (<img
+        src="PLUGINS_ROOT/org.neo4j.neoclipse/icons/obj16/change.gif">)
+button from the context menu. Neoclipse will prompt you for the new key name.</p>
 
 
 </div>

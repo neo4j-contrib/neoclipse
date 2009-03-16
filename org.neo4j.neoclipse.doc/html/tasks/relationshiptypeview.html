@@ -65,10 +65,8 @@ in the toolbar or select it from the view menu.</p>
 <p><strong>Note: </strong>when multiple nodes are selected,
 relationships will be created between all of them and the new node.</p>
 
-<p>It is by <em>Neoclipse</em> design that you cannot create new
-nodes without creating a relationship; in Neo4j this is fully possible.
-However, it doesn't really make sense in the Neoclipse context to create
-nodes that it wouldn't be possible to traverse.</p>
+<p>To make sure the new node is visible, it is set as starting point
+for the Database graph view traverser as well.</p>
 
 <h3 id="filter-by-rels">Filter by incoming or outgoing
 relationships</h3>
@@ -94,8 +92,8 @@ the selected relationship types. The actions are:</p>
 		src="PLUGINS_ROOT/org.neo4j.neoclipse/icons/obj16/highlight_outgoing.gif">
 	Highlight start nodes</li>
 	<li><img
-        src="PLUGINS_ROOT/org.neo4j.neoclipse/icons/enabled/clear.gif">
-    Remove highlighting</li>
+		src="PLUGINS_ROOT/org.neo4j.neoclipse/icons/enabled/clear.gif">
+	Remove highlighting</li>
 </ul>
 
 <p><strong>Note: </strong>double-clicking a relationship type will

@@ -834,7 +834,7 @@ public class NeoGraphViewPart extends ViewPart implements
      * @param node
      *            the node to use as input/start
      */
-    private void setInput( Node node )
+    public void setInput( Node node )
     {
         viewer.setInput( node );
         if ( node != null )
