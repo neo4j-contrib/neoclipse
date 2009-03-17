@@ -13,7 +13,10 @@
  */
 package org.neo4j.neoclipse.property.action;
 
+import java.io.IOException;
+
 import org.eclipse.jface.dialogs.InputDialog;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Composite;
 import org.neo4j.api.core.NeoService;
 import org.neo4j.api.core.PropertyContainer;
@@ -28,15 +31,15 @@ import org.neo4j.neoclipse.property.PropertyTransform.PropertyHandler;
  */
 public class NewAction extends PropertyAction
 {
-    private final Object value;
+    private final PropertyHandler propertyHandler;
 
     public NewAction( final Composite parent,
         final NeoPropertySheetPage propertySheet,
         final PropertyHandler propertyHandler )
     {
-        super( propertyHandler.name(), propertyHandler
-            .descriptor(), parent, propertySheet );
-        this.value = propertyHandler.value();
+        super( propertyHandler.name(), propertyHandler.descriptor(), parent,
+            propertySheet );
+        this.propertyHandler = propertyHandler;
     }
 
     @Override
@@ -57,27 +60,64 @@ public class NewAction extends PropertyAction
     private void addProperty( PropertyContainer container )
     {
         NeoService ns = Activator.getDefault().getNeoServiceSafely();
-        if ( ns != null )
+        if ( ns == null )
         {
-            InputDialog input = new InputDialog( null, "Key entry",
-                "Please enter the key of the new property", null, null );
-            if ( input.open() == OK && input.getReturnCode() == OK )
+            return;
+        }
+        InputDialog keyInput = new InputDialog( null, "Key entry",
+            "Please enter the key of the new property", null, null );
+        if ( keyInput.open() != OK || keyInput.getReturnCode() != OK )
+        {
+            return;
+        }
+        String key = keyInput.getValue();
+        Transaction tx = ns.beginTx();
+        try
+        {
+            if ( container.hasProperty( key ) )
             {
-                String key = null;
-                Transaction tx = ns.beginTx();
-                try
-                {
-                    key = input.getValue();
-                    container.setProperty( key, value );
-                    tx.success();
-                }
-                finally
+                if ( !MessageDialog
+                    .openQuestion(
+                        null,
+                        "Key exists",
+                        "The key \""
+                            + key
+                            + "\" already exists, do you want to overwrite the old value?" ) )
                 {
                     tx.finish();
+                    return;
                 }
-                propertySheet.fireChangeEvent( container, key );
-                propertySheet.refresh();
             }
+            InputDialog valueInput = new InputDialog( null, "Value entry",
+                "Please enter the value of the new property", propertyHandler
+                    .render( propertyHandler.value() ), propertyHandler
+                    .getValidator() );
+            if ( valueInput.open() != OK && valueInput.getReturnCode() != OK )
+            {
+                tx.finish();
+                return;
+            }
+            Object val = null;
+            try
+            {
+                val = propertyHandler.parse( valueInput.getValue() );
+            }
+            catch ( IOException e )
+            {
+                MessageDialog
+                    .openError( null, "Error message",
+                        "Error parsing the input value, no changes will be performed." );
+                tx.finish();
+                return;
+            }
+            container.setProperty( key, val );
+            tx.success();
         }
+        finally
+        {
+            tx.finish();
+        }
+        propertySheet.fireChangeEvent( container, key );
+        propertySheet.refresh();
     }
 }

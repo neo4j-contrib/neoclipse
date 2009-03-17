@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ICellEditorValidator;
@@ -43,6 +44,7 @@ public final class PropertyTransform
         private final Class<?> type;
         private final NeoIcons icon;
         private final Object standard;
+        private Validator validator = null;
 
         private PropertyHandler( Class<?> type, NeoIcons icon, Object standard )
         {
@@ -124,29 +126,73 @@ public final class PropertyTransform
             return type.getSimpleName();
         }
 
+        private class Validator implements ICellEditorValidator,
+            IInputValidator
+        {
+            /**
+             * cell editor validator
+             */
+            public String isValid( Object value )
+            {
+                try
+                {
+                    parse( value );
+                }
+                catch ( Exception e )
+                {
+                    return "Could not parse the input as type " + name() + ".";
+                }
+                return null;
+            }
+
+            /**
+             * dialog field validator
+             */
+            public String isValid( String value )
+            {
+                return isValid( (Object) value );
+            }
+        }
+
+        /**
+         * get an input field validator
+         * @return
+         */
+        public IInputValidator getValidator()
+        {
+            return getInternalValidator();
+        }
+
+        /**
+         * get a cell editor validator
+         * @return
+         */
+        private ICellEditorValidator getCellValidator()
+        {
+            return getInternalValidator();
+        }
+
+        /**
+         * Get the real internal validator.
+         * @return
+         */
+        private Validator getInternalValidator()
+        {
+            if ( validator == null )
+            {
+                validator = new Validator();
+            }
+            return validator;
+        }
+
         /**
          * Editor for this property type.
          * @return editor
          */
         public CellEditor getEditor( final Composite parent )
         {
-            CellEditor editor = PropertyEditor.TEXT.getEditor( parent, this );
-            editor.setValidator( new ICellEditorValidator()
-            {
-                public String isValid( Object value )
-                {
-                    try
-                    {
-                        parse( value );
-                    }
-                    catch ( Exception e )
-                    {
-                        return "Could not parse the input as type " + name()
-                            + ".";
-                    }
-                    return null;
-                }
-            } );
+            CellEditor editor = getEditorType().getEditor( parent, this );
+            editor.setValidator( getCellValidator() );
             return editor;
         }
 

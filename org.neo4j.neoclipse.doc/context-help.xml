@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <contexts>
    <context id="NeoGraphViewPart" title="Neo4j Graph view">
-      <description>The Neo4j Graph view visualizes the nodes available in a Neo4j node space.</description>
+      <description>The Neo4j Graph view visualizes the nodes and relationships available in a Neo4j node space.</description>
       <topic href="html/tasks/graphview.html" label="Using Neo4j Graph view"/>
       <topic href="html/tasks/PropertySheetPage.html" label="Using Neo4j Properties view"/>
       <topic href="html/concepts/graph-database.html" label="Graph database concepts"/>
    </context>
-    <context id="NeoRelationshipTypeView" title="Relationship Type view">
-        <description>The Neo4j Relationship Types view presents a list of existing relationship types and let you create new such types and perform different operations on the node space.</description>
+    <context id="NeoRelationshipTypeView" title="Relationship types">
+        <description>The Neo4j Relationship types view presents a list of existing relationship types and lets you create new such types and perform different operations on the node space.</description>
     </context>
    <context id="NeoPropertySheetPage" title="Properties view">
       <description>The Neo4j properties view is used to read and alter properties of nodes and relationships.</description>
