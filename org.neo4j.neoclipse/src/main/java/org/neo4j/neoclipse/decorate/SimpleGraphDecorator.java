@@ -66,6 +66,11 @@ public class SimpleGraphDecorator
     private static final Color NODE_FOREGROUND_COLOR = new Color( Display
         .getDefault(), new RGB( 0, 0, 0 ) );
     /**
+     * Color of node foreground/text.
+     */
+    private static final Color INPUTNODE_FOREGROUND_COLOR = new Color( Display
+        .getDefault(), new RGB( 130, 10, 10 ) );
+    /**
      * Highlight color for relationships.
      */
     private static final Color HIGHLIGHTED_RELATIONSHIP_COLOR = new Color(
@@ -98,10 +103,6 @@ public class SimpleGraphDecorator
          */
         private List<String> nodeIconPropertyNames;
         /**
-         * The current reference node.
-         */
-        private Node referenceNode;
-        /**
          * Current location of icons.
          */
         private String nodeIconLocation;
@@ -114,16 +115,6 @@ public class SimpleGraphDecorator
         public void setDirections( final List<Direction> directions )
         {
             this.directions = directions;
-        }
-
-        public Node getReferenceNode()
-        {
-            return referenceNode;
-        }
-
-        public void setReferenceNode( final Node referenceNode )
-        {
-            this.referenceNode = referenceNode;
         }
 
         public String getNodeIconLocation()
@@ -317,9 +308,9 @@ public class SimpleGraphDecorator
         return colorMapper.getColor( relType, RELATIONSHIP );
     }
 
-    public String getNodeText( final Node node )
+    public String getNodeText( final Node node, final boolean isReferenceNode )
     {
-        if ( settings.getReferenceNode().equals( node ) )
+        if ( isReferenceNode )
         {
             return "Reference Node";
         }
@@ -329,7 +320,8 @@ public class SimpleGraphDecorator
         }
     }
 
-    public String getNodeTextFromProperty( final Node node )
+    public String getNodeTextFromProperty( final Node node,
+        final boolean isReferenceNode )
     {
         String propertyValue = readProperties( node, settings
             .getNodePropertyNames() );
@@ -337,7 +329,7 @@ public class SimpleGraphDecorator
         {
             return (String) propertyValue;
         }
-        return getNodeText( node );
+        return getNodeText( node, isReferenceNode );
     }
 
     private String readProperties( final PropertyContainer primitive,
@@ -382,11 +374,11 @@ public class SimpleGraphDecorator
         return readProperties( rel, settings.getRelPropertyNames() );
     }
 
-    public Image getNodeImage( final Node node )
+    public Image getNodeImage( final Node node, final boolean isReferenceNode )
     {
         Image img;
 
-        if ( settings.getReferenceNode().equals( node ) )
+        if ( isReferenceNode )
         {
             img = rootImage;
         }
@@ -397,7 +389,8 @@ public class SimpleGraphDecorator
         return img;
     }
 
-    public Image getNodeImageFromProperty( final Node node )
+    public Image getNodeImageFromProperty( final Node node,
+        final boolean isReferenceNode )
     {
         Image img = null;
         // look in properties
@@ -425,7 +418,7 @@ public class SimpleGraphDecorator
                 }
             }
         }
-        return getNodeImage( node );
+        return getNodeImage( node, isReferenceNode );
     }
 
     public Color getRelationshipHighlightColor( Relationship rel )
@@ -433,9 +426,17 @@ public class SimpleGraphDecorator
         return HIGHLIGHTED_RELATIONSHIP_COLOR;
     }
 
-    public Color getNodeForegroundColor( Node node )
+    public Color getNodeForegroundColor( final Node node,
+        final boolean isInputNode )
     {
-        return NODE_FOREGROUND_COLOR;
+        if ( isInputNode )
+        {
+            return INPUTNODE_FOREGROUND_COLOR;
+        }
+        else
+        {
+            return NODE_FOREGROUND_COLOR;
+        }
     }
 
     public Set<RelationshipType> getRelationshipTypes()

@@ -64,7 +64,7 @@ import org.neo4j.neoclipse.reltype.RelationshipTypeEditingSupport;
  */
 public class NeoGraphLabelProvider extends LabelProvider implements
     IConnectionStyleProvider, IColorProvider, ILabelProvider,
-    ITableLabelProvider, ITableColorProvider
+    ITableLabelProvider, ITableColorProvider, InputChangeListener
 {
     /**
      * Keep track of relationship types display on/off.
@@ -120,6 +120,8 @@ public class NeoGraphLabelProvider extends LabelProvider implements
     private Set<Node> markedNodes = new HashSet<Node>();
     private static final Image CHECKED = NeoIcons.CHECKED.image();
     private static final Image UNCHECKED = NeoIcons.UNCHECKED.image();
+    private Node referenceNode = null;
+    private Node inputNode = null;
 
     public NeoGraphLabelProvider()
     {
@@ -135,7 +137,7 @@ public class NeoGraphLabelProvider extends LabelProvider implements
             Transaction txn = ns.beginTx();
             try
             {
-                settings.setReferenceNode( ns.getReferenceNode() );
+                referenceNode = ns.getReferenceNode();
             }
             finally
             {
@@ -146,6 +148,42 @@ public class NeoGraphLabelProvider extends LabelProvider implements
             Direction.OUTGOING ) );
         // refresh relationship colors
         refreshGraphDecorator();
+    }
+
+    /**
+     * Check if a node is the reference node.
+     * @param node
+     * @return
+     */
+    private boolean isReferenceNode( final Node node )
+    {
+        if ( referenceNode == null )
+        {
+            return false;
+        }
+        return referenceNode.equals( node );
+    }
+
+    /**
+     * Check if the current node is the input node.
+     * @param node
+     * @return
+     */
+    private boolean isInputNode( Node node )
+    {
+        if ( inputNode == null )
+        {
+            return false;
+        }
+        return inputNode.equals( node );
+    }
+
+    /**
+     * Handle change of node in graph view.
+     */
+    public void inputChange( Node node )
+    {
+        inputNode = node;
     }
 
     /**
@@ -194,11 +232,13 @@ public class NeoGraphLabelProvider extends LabelProvider implements
             Node node = (Node) element;
             if ( showNodeIcons && settings.getNodeIconLocation() != "" )
             {
-                return graphDecorator.getNodeImageFromProperty( node );
+                return graphDecorator.getNodeImageFromProperty( node,
+                    isReferenceNode( node ) );
             }
             else
             {
-                return graphDecorator.getNodeImage( node );
+                return graphDecorator.getNodeImage( node,
+                    isReferenceNode( node ) );
             }
         }
         return null;
@@ -216,12 +256,14 @@ public class NeoGraphLabelProvider extends LabelProvider implements
             if ( !showNodeNames || settings.getNodePropertyNames().size() == 0 )
             {
                 // don't look for the default property
-                text = graphDecorator.getNodeText( node );
+                text = graphDecorator
+                    .getNodeText( node, isReferenceNode( node ) );
             }
             else
             {
                 // show the default property
-                text = graphDecorator.getNodeTextFromProperty( node );
+                text = graphDecorator.getNodeTextFromProperty( node,
+                    isReferenceNode( node ) );
             }
             if ( showNodeIds )
             {
@@ -496,7 +538,9 @@ public class NeoGraphLabelProvider extends LabelProvider implements
     {
         if ( element instanceof Node )
         {
-            return graphDecorator.getNodeForegroundColor( (Node) element );
+            Node node = (Node) element;
+            return graphDecorator.getNodeForegroundColor( node,
+                isInputNode( node ) );
         }
         return null;
     }

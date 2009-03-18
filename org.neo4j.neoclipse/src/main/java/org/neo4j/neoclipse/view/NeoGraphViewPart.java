@@ -96,7 +96,7 @@ import org.neo4j.neoclipse.reltype.RelationshipTypeView;
  * @author Anders Nawroth
  */
 public class NeoGraphViewPart extends ViewPart implements
-    IZoomableWorkbenchPart, ISelectionListener, ChangeListener
+    IZoomableWorkbenchPart
 {
     /**
      * The Eclipse view ID.
@@ -141,6 +141,8 @@ public class NeoGraphViewPart extends ViewPart implements
     private RelationshipTypeView relTypeView;
     private AddOutgoingNodeAction addOutgoingAction;
     private AddIncomingNodeAction addIncomingAction;
+    private List<InputChangeListener> listeners = new ArrayList<InputChangeListener>();
+    private Node previousInputNode = null;
 
     /**
      * Creates the view.
@@ -150,13 +152,19 @@ public class NeoGraphViewPart extends ViewPart implements
         viewer = new GraphViewer( parent, SWT.NONE );
         viewer.setUseHashlookup( true );
         viewer.setContentProvider( new NeoGraphContentProvider( this ) );
-        viewer.setLabelProvider( NeoGraphLabelProviderWrapper.getInstance() );
         viewer.addDoubleClickListener( new NeoGraphDoubleClickListener() );
         viewer.setLayoutAlgorithm( new SpringLayoutAlgorithm(
             LayoutStyles.NO_LAYOUT_NODE_RESIZING ) );
-        getSite().getPage().addSelectionListener( ID, this );
-        getSite().getPage()
-            .addSelectionListener( RelationshipTypeView.ID, this );
+        NeoGraphLabelProvider labelProvider = NeoGraphLabelProviderWrapper
+            .getInstance();
+        viewer.setLabelProvider( labelProvider );
+        addListener( labelProvider );
+
+        getSite().getPage().addSelectionListener( ID,
+            new SelectionChangeHandler() );
+        getSite().getPage().addSelectionListener( RelationshipTypeView.ID,
+            new RelTypeSelectionChangeHandler() );
+
         makeContributions();
         NeoServiceManager sm = Activator.getDefault().getNeoServiceManager();
         sm.addServiceEventListener( new NeoGraphServiceEventListener() );
@@ -173,6 +181,34 @@ public class NeoGraphViewPart extends ViewPart implements
                 relTypeView = (RelationshipTypeView) view.getView( false );
             }
         }
+    }
+
+    /**
+     * Add listener for input changes.
+     * @param listener
+     */
+    public void addListener( InputChangeListener listener )
+    {
+        listeners.add( listener );
+    }
+
+    /**
+     * Notify listeners of new input node.
+     * @param node
+     */
+    private void notifyListeners( Node node )
+    {
+        for ( InputChangeListener listener : listeners )
+        {
+            listener.inputChange( node );
+        }
+        // make sure to update only these label colors
+        if ( previousInputNode != null )
+        {
+            refresh( previousInputNode, true );
+        }
+        refresh( node, true );
+        previousInputNode = node;
     }
 
     /**
@@ -511,7 +547,7 @@ public class NeoGraphViewPart extends ViewPart implements
         if ( propertySheetPage == null )
         {
             propertySheetPage = new NeoPropertySheetPage();
-            propertySheetPage.addChangeListener( this );
+            propertySheetPage.addChangeListener( new PropertyChangeHandler() );
         }
         return propertySheetPage;
     }
@@ -839,6 +875,7 @@ public class NeoGraphViewPart extends ViewPart implements
         viewer.setInput( node );
         if ( node != null )
         {
+            notifyListeners( node );
             getBrowserHistory().add( node );
         }
         updateNavStatus();
@@ -924,11 +961,15 @@ public class NeoGraphViewPart extends ViewPart implements
     }
 
     /**
-     * Handles selection, making the context menu look right.
+     * Class to handle changes in selection of this view.
+     * @author Anders Nawroth
      */
-    public void selectionChanged( IWorkbenchPart part, ISelection selection )
+    private class SelectionChangeHandler implements ISelectionListener
     {
-        if ( this.equals( part ) )
+        /**
+         * Handles selection, making the context menu look right.
+         */
+        public void selectionChanged( IWorkbenchPart part, ISelection selection )
         {
             currentSelectedNodes.clear();
             currentSelectedRels.clear();
@@ -953,9 +994,22 @@ public class NeoGraphViewPart extends ViewPart implements
             }
             updateMenuState();
         }
-        else if ( part instanceof RelationshipTypeView )
+    }
+
+    /**
+     * Class that handles changes in the relationship properties view.
+     */
+    private class RelTypeSelectionChangeHandler implements ISelectionListener
+    {
+        /**
+         * Handles selection, just updating the relTypeView reference.
+         */
+        public void selectionChanged( IWorkbenchPart part, ISelection selection )
         {
-            relTypeView = (RelationshipTypeView) part;
+            if ( part instanceof RelationshipTypeView )
+            {
+                relTypeView = (RelationshipTypeView) part;
+            }
         }
     }
 
@@ -970,11 +1024,17 @@ public class NeoGraphViewPart extends ViewPart implements
     }
 
     /**
-     * Handle change in properties.
+     * Class that responds to changes in properties.
      */
-    public void handleStateChanged( ChangeEvent event )
+    private class PropertyChangeHandler implements ChangeListener
     {
-        refresh( event.getSource(), true );
+        /**
+         * Handle change in properties.
+         */
+        public void handleStateChanged( ChangeEvent event )
+        {
+            refresh( event.getSource(), true );
+        }
     }
 
     public RelationshipTypeView getRelTypeView()
