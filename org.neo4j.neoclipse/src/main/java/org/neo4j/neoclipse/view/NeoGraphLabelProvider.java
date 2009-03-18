@@ -35,11 +35,9 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.zest.core.viewers.IConnectionStyleProvider;
 import org.eclipse.zest.core.widgets.ZestStyles;
 import org.neo4j.api.core.Direction;
-import org.neo4j.api.core.NeoService;
 import org.neo4j.api.core.Node;
 import org.neo4j.api.core.Relationship;
 import org.neo4j.api.core.RelationshipType;
-import org.neo4j.api.core.Transaction;
 import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.NeoIcons;
 import org.neo4j.neoclipse.action.decorate.node.ShowNodeColorsAction;
@@ -131,19 +129,7 @@ public class NeoGraphLabelProvider extends LabelProvider implements
         refreshRelPropertyNames();
         refreshNodeIconPropertyNames();
         // get reference node
-        NeoService ns = Activator.getDefault().getNeoServiceSafely();
-        if ( ns != null )
-        {
-            Transaction txn = ns.beginTx();
-            try
-            {
-                referenceNode = ns.getReferenceNode();
-            }
-            finally
-            {
-                txn.finish();
-            }
-        }
+        referenceNode = Activator.getDefault().getReferenceNode();
         settings.setDirections( Arrays.asList( Direction.INCOMING,
             Direction.OUTGOING ) );
         // refresh relationship colors

@@ -20,6 +20,7 @@ import org.eclipse.jface.preference.PreferenceDialog;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.neo4j.api.core.NeoService;
+import org.neo4j.api.core.Node;
 import org.neo4j.api.core.Transaction;
 import org.neo4j.neoclipse.neo.NeoServiceManager;
 import org.neo4j.neoclipse.preference.NeoPreferences;
@@ -133,6 +134,20 @@ public class Activator extends AbstractUIPlugin
     }
 
     /**
+     * Get the reference node.
+     * @return the reference node
+     */
+    public Node getReferenceNode()
+    {
+        NeoService ns = getNeoServiceSafely();
+        if ( ns == null )
+        {
+            return null;
+        }
+        return ns.getReferenceNode();
+    }
+
+    /**
      * Show the Neo4j preference page.
      * @return
      */
@@ -153,7 +168,7 @@ public class Activator extends AbstractUIPlugin
      * after showing appropriate error messages.
      * @return the transaction
      */
-    public Transaction beginNeoTxSafely()
+    private Transaction beginNeoTxSafely()
     {
         NeoService ns = getNeoServiceSafely();
         if ( ns == null )

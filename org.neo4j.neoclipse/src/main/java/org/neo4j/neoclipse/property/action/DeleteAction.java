@@ -16,10 +16,7 @@ package org.neo4j.neoclipse.property.action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.views.properties.IPropertySheetEntry;
-import org.neo4j.api.core.NeoService;
 import org.neo4j.api.core.PropertyContainer;
-import org.neo4j.api.core.Transaction;
-import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.action.Actions;
 import org.neo4j.neoclipse.property.NeoPropertySheetPage;
 
@@ -40,11 +37,6 @@ public class DeleteAction extends PropertyAction
         IPropertySheetEntry entry )
     {
         String key = entry.getDisplayName();
-        NeoService ns = Activator.getDefault().getNeoServiceSafely();
-        if ( ns == null )
-        {
-            return;
-        }
         boolean confirmation = MessageDialog.openConfirm( null,
             "Confirm delete",
             "Do you really want to delete the selected property?" );
@@ -52,20 +44,14 @@ public class DeleteAction extends PropertyAction
         {
             return;
         }
-        Transaction tx = ns.beginTx();
         try
         {
             container.removeProperty( key );
-            tx.success();
         }
         catch ( Exception e )
         {
             MessageDialog.openError( null, "Error", "Error in Neo service: "
                 + e.getMessage() );
-        }
-        finally
-        {
-            tx.finish();
         }
         propertySheet.fireChangeEvent( container, key );
         propertySheet.refresh();

@@ -51,7 +51,6 @@ import org.neo4j.api.core.NeoService;
 import org.neo4j.api.core.Node;
 import org.neo4j.api.core.NotFoundException;
 import org.neo4j.api.core.Relationship;
-import org.neo4j.api.core.Transaction;
 import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.action.Actions;
 import org.neo4j.neoclipse.action.PrintGraphAction;
@@ -273,10 +272,10 @@ public class NeoGraphViewPart extends ViewPart implements
         {
             return (Node) node;
         }
-        NeoService ns = Activator.getDefault().getNeoServiceSafely();
-        if ( ns != null )
+        Node refNode = Activator.getDefault().getReferenceNode();
+        if ( refNode != null )
         {
-            return ns.getReferenceNode();
+            return refNode;
         }
         throw new NotFoundException( "No current node could be found." );
     }
@@ -603,20 +602,8 @@ public class NeoGraphViewPart extends ViewPart implements
      */
     public void showReferenceNode()
     {
-        NeoService ns = Activator.getDefault().getNeoServiceSafely();
-        if ( ns != null )
-        {
-            Transaction txn = ns.beginTx();
-            try
-            {
-                Node node = ns.getReferenceNode();
-                setInput( node );
-            }
-            finally
-            {
-                txn.finish();
-            }
-        }
+        Node node = Activator.getDefault().getReferenceNode();
+        setInput( node );
     }
 
     /**
@@ -629,41 +616,33 @@ public class NeoGraphViewPart extends ViewPart implements
         NeoService ns = Activator.getDefault().getNeoServiceSafely();
         if ( ns != null )
         {
-            Transaction txn = ns.beginTx();
-            try
+            Node node = ns.getReferenceNode();
+            if ( !node.hasRelationship() )
             {
-                Node node = ns.getReferenceNode();
-                if ( !node.hasRelationship() )
+                // so, find a more friendly node if possible!
+                Node betterNode;
+                for ( long id = 0; id < MAX_ID_GUESSES; id++ )
                 {
-                    // so, find a more friendly node if possible!
-                    Node betterNode;
-                    for ( long id = 0; id < MAX_ID_GUESSES; id++ )
+                    try
                     {
-                        try
+                        betterNode = ns.getNodeById( id );
+                        if ( node.equals( betterNode ) )
                         {
-                            betterNode = ns.getNodeById( id );
-                            if ( node.equals( betterNode ) )
-                            {
-                                continue;
-                            }
-                            if ( betterNode.hasRelationship() )
-                            {
-                                node = betterNode;
-                                break;
-                            }
+                            continue;
                         }
-                        catch ( NotFoundException e )
+                        if ( betterNode.hasRelationship() )
                         {
-                            // really nothing to do in here
+                            node = betterNode;
+                            break;
                         }
                     }
+                    catch ( NotFoundException e )
+                    {
+                        // really nothing to do in here
+                    }
                 }
-                setInput( node );
             }
-            finally
-            {
-                txn.finish();
-            }
+            setInput( node );
         }
     }
 
@@ -675,16 +654,8 @@ public class NeoGraphViewPart extends ViewPart implements
         NeoService ns = Activator.getDefault().getNeoServiceSafely();
         if ( ns != null )
         {
-            Transaction txn = ns.beginTx();
-            try
-            {
-                Node node = ns.getNodeById( nodeId );
-                viewer.setInput( node );
-            }
-            finally
-            {
-                txn.finish();
-            }
+            Node node = ns.getNodeById( nodeId );
+            viewer.setInput( node );
         }
     }
 
@@ -693,19 +664,7 @@ public class NeoGraphViewPart extends ViewPart implements
      */
     public void showNode( Node node )
     {
-        NeoService ns = Activator.getDefault().getNeoServiceSafely();
-        if ( ns != null )
-        {
-            Transaction txn = ns.beginTx();
-            try
-            {
-                viewer.setInput( node );
-            }
-            finally
-            {
-                txn.finish();
-            }
-        }
+        viewer.setInput( node );
     }
 
     /**
@@ -721,21 +680,9 @@ public class NeoGraphViewPart extends ViewPart implements
      */
     public void incTraversalDepth()
     {
-        NeoService ns = Activator.getDefault().getNeoServiceSafely();
-        if ( ns != null )
-        {
-            Transaction txn = ns.beginTx();
-            try
-            {
-                traversalDepth++;
-                refreshViewer();
-                viewer.applyLayout();
-            }
-            finally
-            {
-                txn.finish();
-            }
-        }
+        traversalDepth++;
+        refreshViewer();
+        viewer.applyLayout();
         if ( traversalDepth > 0 )
         {
             decAction.setEnabled( true );
@@ -749,21 +696,10 @@ public class NeoGraphViewPart extends ViewPart implements
     {
         if ( traversalDepth > 0 )
         {
-            NeoService ns = Activator.getDefault().getNeoServiceSafely();
-            if ( ns != null )
-            {
-                Transaction txn = ns.beginTx();
-                try
-                {
-                    traversalDepth--;
-                    refreshViewer();
-                    viewer.applyLayout();
-                }
-                finally
-                {
-                    txn.finish();
-                }
-            }
+            traversalDepth--;
+            refreshViewer();
+            viewer.applyLayout();
+
             if ( traversalDepth < 1 )
             {
                 decAction.setEnabled( false );
@@ -776,20 +712,8 @@ public class NeoGraphViewPart extends ViewPart implements
      */
     public void refresh()
     {
-        NeoService ns = Activator.getDefault().getNeoServiceSafely();
-        if ( ns != null )
-        {
-            Transaction txn = ns.beginTx();
-            try
-            {
-                refreshViewer();
-                viewer.applyLayout();
-            }
-            finally
-            {
-                txn.finish();
-            }
-        }
+        refreshViewer();
+        viewer.applyLayout();
     }
 
     /**
@@ -797,19 +721,7 @@ public class NeoGraphViewPart extends ViewPart implements
      */
     public void refreshPreserveLayout()
     {
-        NeoService ns = Activator.getDefault().getNeoServiceSafely();
-        if ( ns != null )
-        {
-            Transaction tn = ns.beginTx();
-            try
-            {
-                refreshViewer();
-            }
-            finally
-            {
-                tn.finish();
-            }
-        }
+        refreshViewer();
     }
 
     /**
@@ -937,25 +849,13 @@ public class NeoGraphViewPart extends ViewPart implements
             if ( (s != null) && (s instanceof Node) )
             {
                 Node node = (Node) s;
-                Transaction txn = Activator.getDefault().beginNeoTxSafely();
-                if ( txn == null )
+                if ( viewer != event.getViewer() )
                 {
-                    return;
+                    throw new IllegalStateException(
+                        "Double click event comes from wrong view." );
                 }
-                try
-                {
-                    if ( viewer != event.getViewer() )
-                    {
-                        throw new IllegalStateException(
-                            "Double click event comes from wrong view." );
-                    }
-                    setInput( node );
-                    refreshStatusBar();
-                }
-                finally
-                {
-                    txn.finish();
-                }
+                setInput( node );
+                refreshStatusBar();
             }
         }
     }

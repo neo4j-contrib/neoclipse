@@ -34,7 +34,6 @@ import org.neo4j.api.core.Relationship;
 import org.neo4j.api.core.RelationshipType;
 import org.neo4j.api.core.ReturnableEvaluator;
 import org.neo4j.api.core.StopEvaluator;
-import org.neo4j.api.core.Transaction;
 import org.neo4j.api.core.TraversalPosition;
 import org.neo4j.api.core.Traverser;
 import org.neo4j.api.core.Traverser.Order;
@@ -136,42 +135,29 @@ public class NeoSearchQuery implements ISearchQuery
                 "There is no active Neo4j service." );
         }
 
-        Transaction tx = neoService.beginTx();
-        try
+        // TODO here we should do some real search using Neo's index service
+        // for now simply navigate along the graph
+        Node start = null;
+        if ( graphView != null )
         {
-
-            // TODO here we should do some real search using Neo's index service
-            // for now simply navigate along the graph
-            Node start = null;
-            if ( graphView != null )
-            {
-                start = graphView.getCurrentNode();
-            }
-            else
-            {
-                start = neoService.getReferenceNode();
-            }
-
-            Iterable<Node> matches = getMatchingNodesByTraversing( start,
-                monitor );
-            result.setMatches( matches );
-
-            tx.success();
-
-            if ( monitor.isCanceled() )
-            {
-                return new Status( IStatus.CANCEL, Activator.PLUGIN_ID,
-                    "Cancelled." );
-            }
-            else
-            {
-                return new Status( IStatus.OK, Activator.PLUGIN_ID, "OK" );
-            }
-
+            start = graphView.getCurrentNode();
         }
-        finally
+        else
         {
-            tx.finish();
+            start = Activator.getDefault().getReferenceNode();
+        }
+
+        Iterable<Node> matches = getMatchingNodesByTraversing( start, monitor );
+        result.setMatches( matches );
+
+        if ( monitor.isCanceled() )
+        {
+            return new Status( IStatus.CANCEL, Activator.PLUGIN_ID,
+                "Cancelled." );
+        }
+        else
+        {
+            return new Status( IStatus.OK, Activator.PLUGIN_ID, "OK" );
         }
     }
 

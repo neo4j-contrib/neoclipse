@@ -18,10 +18,7 @@ import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
-import org.neo4j.api.core.NeoService;
 import org.neo4j.api.core.PropertyContainer;
-import org.neo4j.api.core.Transaction;
-import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.action.Actions;
 import org.neo4j.neoclipse.property.NeoPropertySheetPage;
 
@@ -60,11 +57,6 @@ public class PasteAction extends PropertyAction
     protected void performOperation( PropertyContainer container )
     {
         // TODO handle the case where a key already exists?
-        NeoService ns = Activator.getDefault().getNeoServiceSafely();
-        if ( ns == null )
-        {
-            return;
-        }
         Clipboard clipboard = new Clipboard( shell.getDisplay() );
         Object data = clipboard.getContents( TRANSFER_TYPE );
         clipboard.dispose();
@@ -83,15 +75,13 @@ public class PasteAction extends PropertyAction
                     "The clipboard content doesn't seem to be a neo4j property value." );
             return;
         }
-        Transaction tx = ns.beginTx();
         try
         {
             container.setProperty( cu.getKey(), cu.getValue() );
-            tx.success();
         }
-        finally
+        catch ( Exception e )
         {
-            tx.finish();
+            e.printStackTrace();
         }
         propertySheet.fireChangeEvent( container, cu.getKey() );
         propertySheet.refresh();

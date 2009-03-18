@@ -28,10 +28,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.Page;
-import org.neo4j.api.core.NeoService;
 import org.neo4j.api.core.Node;
-import org.neo4j.api.core.Transaction;
-import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.view.NeoGraphLabelProviderWrapper;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
@@ -150,21 +147,7 @@ public class NeoSearchResultPage extends Page implements ISearchResultPage
      */
     protected void setInput( final ISearchResult result )
     {
-        NeoService service = Activator.getDefault().getNeoServiceSafely();
-        if ( service != null )
-        {
-            Transaction txn = service.beginTx();
-            try
-            {
-                viewer.setInput( result );
-
-                txn.success();
-            }
-            finally
-            {
-                txn.finish();
-            }
-        }
+        viewer.setInput( result );
     }
 
     /**

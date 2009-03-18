@@ -22,10 +22,7 @@ import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.views.properties.IPropertySheetEntry;
-import org.neo4j.api.core.NeoService;
 import org.neo4j.api.core.PropertyContainer;
-import org.neo4j.api.core.Transaction;
-import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.action.Actions;
 import org.neo4j.neoclipse.property.NeoPropertySheetPage;
 
@@ -49,23 +46,8 @@ public class CopyAction extends PropertyAction
     protected void performOperation( PropertyContainer container,
         IPropertySheetEntry entry )
     {
-        NeoService ns = Activator.getDefault().getNeoServiceSafely();
-        if ( ns == null )
-        {
-            return;
-        }
-        Transaction tx = ns.beginTx();
-        Object value = null;
         final String key = entry.getDisplayName();
-        try
-        {
-            value = container.getProperty( key, null );
-            tx.success();
-        }
-        finally
-        {
-            tx.finish();
-        }
+        Object value = container.getProperty( key, null );
         if ( value == null )
         {
             MessageDialog.openError( shell, "Error",

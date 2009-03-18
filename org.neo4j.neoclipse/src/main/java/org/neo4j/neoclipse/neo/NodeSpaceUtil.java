@@ -22,7 +22,6 @@ import org.neo4j.api.core.Node;
 import org.neo4j.api.core.PropertyContainer;
 import org.neo4j.api.core.Relationship;
 import org.neo4j.api.core.RelationshipType;
-import org.neo4j.api.core.Transaction;
 import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
@@ -104,7 +103,6 @@ public class NodeSpaceUtil
         {
             return;
         }
-        Transaction tx = ns.beginTx();
         Node createNode = null;
         try
         {
@@ -127,19 +125,21 @@ public class NodeSpaceUtil
                     source.createRelationshipTo( dest, relType );
                 }
             }
-            tx.success();
         }
         catch ( Exception e )
         {
             e.printStackTrace();
         }
-        finally
+        if ( graphView != null )
         {
-            tx.finish();
-        }
-        if ( graphView != null && createNode != null )
-        {
-            graphView.setInput( createNode );
+            if ( createNode != null )
+            {
+                graphView.setInput( createNode );
+            }
+            else
+            {
+                graphView.refreshPreserveLayout();
+            }
         }
     }
 
@@ -157,13 +157,7 @@ public class NodeSpaceUtil
         {
             return;
         }
-        NeoService ns = Activator.getDefault().getNeoServiceSafely();
-        if ( ns == null )
-        {
-            return;
-        }
 
-        Transaction tx = ns.beginTx();
         try
         {
             for ( PropertyContainer container : containers )
@@ -171,7 +165,8 @@ public class NodeSpaceUtil
                 if ( container instanceof Node )
                 {
                     Node node = (Node) container;
-                    if ( node.equals( ns.getReferenceNode() ) )
+                    if ( node
+                        .equals( Activator.getDefault().getReferenceNode() ) )
                     {
                         boolean confirmation = MessageDialog
                             .openConfirm( null, CONFIRM_DELETE_TITLE,
@@ -192,16 +187,11 @@ public class NodeSpaceUtil
                     ((Relationship) container).delete();
                 }
             }
-            tx.success();
         }
         catch ( Exception e )
         {
             MessageDialog.openError( null, "Error", "Error when deleting: "
                 + e.getMessage() );
-        }
-        finally
-        {
-            tx.finish();
         }
     }
 

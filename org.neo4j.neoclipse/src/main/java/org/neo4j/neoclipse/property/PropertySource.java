@@ -20,8 +20,6 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.neo4j.api.core.PropertyContainer;
-import org.neo4j.api.core.Transaction;
-import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.property.PropertyTransform.PropertyHandler;
 
 /**
@@ -60,25 +58,17 @@ public class PropertySource implements IPropertySource
      */
     public IPropertyDescriptor[] getPropertyDescriptors()
     {
-        Transaction tx = Activator.getDefault().beginNeoTxSafely();
-        try
+        List<IPropertyDescriptor> descs = new ArrayList<IPropertyDescriptor>();
+        descs.addAll( getHeadPropertyDescriptors() );
+        Iterable<String> keys = container.getPropertyKeys();
+        for ( String key : keys )
         {
-            List<IPropertyDescriptor> descs = new ArrayList<IPropertyDescriptor>();
-            descs.addAll( getHeadPropertyDescriptors() );
-            Iterable<String> keys = container.getPropertyKeys();
-            for ( String key : keys )
-            {
-                Object value = container.getProperty( (String) key );
-                Class<?> c = value.getClass();
-                descs.add( new PropertyDescriptor( key, key,
-                    PROPERTIES_CATEGORY, c ) );
-            }
-            return descs.toArray( new IPropertyDescriptor[descs.size()] );
+            Object value = container.getProperty( (String) key );
+            Class<?> c = value.getClass();
+            descs
+                .add( new PropertyDescriptor( key, key, PROPERTIES_CATEGORY, c ) );
         }
-        finally
-        {
-            tx.finish();
-        }
+        return descs.toArray( new IPropertyDescriptor[descs.size()] );
     }
 
     protected List<IPropertyDescriptor> getHeadPropertyDescriptors()
@@ -91,15 +81,7 @@ public class PropertySource implements IPropertySource
      */
     public Object getPropertyValue( Object id )
     {
-        Transaction tx = Activator.getDefault().beginNeoTxSafely();
-        try
-        {
-            return getValue( id );
-        }
-        finally
-        {
-            tx.finish();
-        }
+        return getValue( id );
     }
 
     /**
@@ -118,15 +100,7 @@ public class PropertySource implements IPropertySource
      */
     public boolean isPropertySet( Object id )
     {
-        Transaction tx = Activator.getDefault().beginNeoTxSafely();
-        try
-        {
-            return isSet( id );
-        }
-        finally
-        {
-            tx.finish();
-        }
+        return isSet( id );
     }
 
     /**
@@ -182,39 +156,27 @@ public class PropertySource implements IPropertySource
                     "Input parsing resulted in null value." );
                 return;
             }
-            Transaction tx = Activator.getDefault().beginNeoTxSafely();
             try
             {
                 container.setProperty( (String) id, o );
-                tx.success();
             }
             catch ( Exception e )
             {
                 MessageDialog.openError( null, "Error",
                     "Error in Neo service: " + e.getMessage() );
-            }
-            finally
-            {
-                tx.finish();
             }
         }
         else
         {
             // simply set the value
-            Transaction tx = Activator.getDefault().beginNeoTxSafely();
             try
             {
                 container.setProperty( (String) id, value );
-                tx.success();
             }
             catch ( Exception e )
             {
                 MessageDialog.openError( null, "Error",
                     "Error in Neo service: " + e.getMessage() );
-            }
-            finally
-            {
-                tx.finish();
             }
         }
         propertySheet.fireChangeEvent( container, (String) id );

@@ -17,10 +17,7 @@ import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.views.properties.IPropertySheetEntry;
-import org.neo4j.api.core.NeoService;
 import org.neo4j.api.core.PropertyContainer;
-import org.neo4j.api.core.Transaction;
-import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.action.Actions;
 import org.neo4j.neoclipse.property.NeoPropertySheetPage;
 
@@ -37,33 +34,22 @@ public class RenameAction extends PropertyAction
         IPropertySheetEntry entry )
     {
         String key = entry.getDisplayName();
-        NeoService ns = Activator.getDefault().getNeoServiceSafely();
-        if ( ns == null )
-        {
-            return;
-        }
         InputDialog input = new InputDialog( null, "New key entry",
             "Please enter the new key for the property \"" + key + "\"", key,
             null );
         if ( input.open() == OK && input.getReturnCode() == OK )
         {
             String newKey = null;
-            Transaction tx = ns.beginTx();
             try
             {
                 newKey = input.getValue();
                 container.setProperty( newKey, container.getProperty( key ) );
                 container.removeProperty( key );
-                tx.success();
             }
             catch ( Exception e )
             {
                 MessageDialog.openError( null, "Error",
                     "Error in Neo service: " + e.getMessage() );
-            }
-            finally
-            {
-                tx.finish();
             }
             propertySheet.fireChangeEvent( container, newKey );
             propertySheet.refresh();

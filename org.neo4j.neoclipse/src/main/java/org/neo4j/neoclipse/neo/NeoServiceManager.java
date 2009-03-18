@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.core.runtime.SafeRunner;
 import org.neo4j.api.core.EmbeddedNeo;
 import org.neo4j.api.core.NeoService;
+import org.neo4j.api.core.Transaction;
 import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.preference.NeoPreferences;
 
@@ -35,6 +36,7 @@ public class NeoServiceManager
      * The registered service change listeners.
      */
     protected ListenerList listeners;
+    private Transaction tx;
 
     /**
      * The constructor.
@@ -62,6 +64,7 @@ public class NeoServiceManager
             try
             {
                 neo = new EmbeddedNeo( location );
+                tx = neo.beginTx();
             }
             catch ( Exception e )
             {
@@ -92,6 +95,15 @@ public class NeoServiceManager
     {
         if ( neo != null )
         {
+            try
+            {
+                tx.success();
+                tx.finish();
+            }
+            catch ( Exception e )
+            {
+                e.printStackTrace();
+            }
             try
             {
                 neo.shutdown();

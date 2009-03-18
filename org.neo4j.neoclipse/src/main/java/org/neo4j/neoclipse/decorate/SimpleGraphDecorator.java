@@ -69,7 +69,7 @@ public class SimpleGraphDecorator
      * Color of node foreground/text.
      */
     private static final Color INPUTNODE_FOREGROUND_COLOR = new Color( Display
-        .getDefault(), new RGB( 130, 10, 10 ) );
+        .getDefault(), new RGB( 60, 60, 200 ) );
     /**
      * Highlight color for relationships.
      */
