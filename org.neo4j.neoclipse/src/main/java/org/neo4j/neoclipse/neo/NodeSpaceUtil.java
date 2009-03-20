@@ -13,9 +13,11 @@
  */
 package org.neo4j.neoclipse.neo;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.neo4j.api.core.NeoService;
 import org.neo4j.api.core.Node;
@@ -23,6 +25,8 @@ import org.neo4j.api.core.PropertyContainer;
 import org.neo4j.api.core.Relationship;
 import org.neo4j.api.core.RelationshipType;
 import org.neo4j.neoclipse.Activator;
+import org.neo4j.neoclipse.property.NeoPropertySheetPage;
+import org.neo4j.neoclipse.property.PropertyTransform.PropertyHandler;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**
@@ -31,6 +35,7 @@ import org.neo4j.neoclipse.view.NeoGraphViewPart;
  */
 public class NodeSpaceUtil
 {
+    private static final int OK = 0;
     private static final String CONFIRM_DELETE_TITLE = "Confirm delete";
     private static final String ADDING_REL_TYPECOUNT_WARNING_MESSAGE = "There has to be exactly one selected relationship type to add a relationship.";
     private static final String ADDING_REL_WARNING_MESSAGE = "Two nodes must be selected in the database graph to add a relationship.";
@@ -132,6 +137,7 @@ public class NodeSpaceUtil
         }
         if ( graphView != null )
         {
+            graphView.setDirty( true );
             if ( createNode != null )
             {
                 graphView.setInput( createNode );
@@ -186,6 +192,7 @@ public class NodeSpaceUtil
                 {
                     ((Relationship) container).delete();
                 }
+                graphView.setDirty( true );
             }
         }
         catch ( Exception e )
@@ -278,4 +285,102 @@ public class NodeSpaceUtil
         return true;
     }
 
+    /**
+     * Remove a property from Node/Relationship.
+     * @param container
+     * @param key
+     * @param propertySheet
+     */
+    public static void removeProperty( final PropertyContainer container,
+        final String key, final NeoPropertySheetPage propertySheet )
+    {
+        boolean confirmation = MessageDialog.openConfirm( null,
+            "Confirm removal",
+            "Do you really want to remove the selected property?" );
+        if ( !confirmation )
+        {
+            return;
+        }
+        try
+        {
+            container.removeProperty( key );
+        }
+        catch ( Exception e )
+        {
+            MessageDialog.openError( null, "Error", "Error in Neo service: "
+                + e.getMessage() );
+        }
+        propertySheet.fireChangeEvent( container, key );
+        propertySheet.refresh();
+    }
+
+    public static void addProperty( final PropertyContainer container,
+        final String key, final PropertyHandler propertyHandler,
+        final NeoPropertySheetPage propertySheet )
+    {
+        if ( container.hasProperty( key ) )
+        {
+            if ( !MessageDialog.openQuestion( null, "Key exists", "The key \""
+                + key
+                + "\" already exists, do you want to overwrite the old value?" ) )
+            {
+                return;
+            }
+        }
+        InputDialog valueInput = new InputDialog( null, "Value entry",
+            "Please enter the value of the new property", propertyHandler
+                .render( propertyHandler.value() ), propertyHandler
+                .getValidator() );
+        if ( valueInput.open() != OK && valueInput.getReturnCode() != OK )
+        {
+            return;
+        }
+        Object val = null;
+        try
+        {
+            val = propertyHandler.parse( valueInput.getValue() );
+        }
+        catch ( IOException e )
+        {
+            MessageDialog.openError( null, "Error message",
+                "Error parsing the input value, no changes will be performed." );
+            return;
+        }
+        container.setProperty( key, val );
+        propertySheet.fireChangeEvent( container, key );
+        propertySheet.refresh();
+    }
+
+    public static void setProperty( PropertyContainer container,
+        final String key, final Object value,
+        final NeoPropertySheetPage propertySheet )
+    {
+        try
+        {
+            container.setProperty( key, value );
+        }
+        catch ( Exception e )
+        {
+            e.printStackTrace();
+        }
+        propertySheet.fireChangeEvent( container, key );
+        propertySheet.refresh();
+    }
+
+    public static void renameProperty( PropertyContainer container, String key,
+        String newKey, final NeoPropertySheetPage propertySheet )
+    {
+        try
+        {
+            container.setProperty( newKey, container.getProperty( key ) );
+            container.removeProperty( key );
+        }
+        catch ( Exception e )
+        {
+            MessageDialog.openError( null, "Error", "Error in Neo service: "
+                + e.getMessage() );
+        }
+        propertySheet.fireChangeEvent( container, newKey );
+        propertySheet.refresh();
+    }
 }

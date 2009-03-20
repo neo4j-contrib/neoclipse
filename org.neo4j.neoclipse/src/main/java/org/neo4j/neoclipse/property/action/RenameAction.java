@@ -14,11 +14,11 @@
 package org.neo4j.neoclipse.property.action;
 
 import org.eclipse.jface.dialogs.InputDialog;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.views.properties.IPropertySheetEntry;
 import org.neo4j.api.core.PropertyContainer;
 import org.neo4j.neoclipse.action.Actions;
+import org.neo4j.neoclipse.neo.NodeSpaceUtil;
 import org.neo4j.neoclipse.property.NeoPropertySheetPage;
 
 public class RenameAction extends PropertyAction
@@ -39,20 +39,8 @@ public class RenameAction extends PropertyAction
             null );
         if ( input.open() == OK && input.getReturnCode() == OK )
         {
-            String newKey = null;
-            try
-            {
-                newKey = input.getValue();
-                container.setProperty( newKey, container.getProperty( key ) );
-                container.removeProperty( key );
-            }
-            catch ( Exception e )
-            {
-                MessageDialog.openError( null, "Error",
-                    "Error in Neo service: " + e.getMessage() );
-            }
-            propertySheet.fireChangeEvent( container, newKey );
-            propertySheet.refresh();
+            String newKey = input.getValue();
+            NodeSpaceUtil.renameProperty( container, key, newKey, propertySheet );
         }
     }
 }

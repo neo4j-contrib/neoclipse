@@ -77,7 +77,7 @@ import org.neo4j.neoclipse.view.NeoGraphViewPart;
  * @author anders
  */
 public class RelationshipTypeView extends ViewPart implements
-    ISelectionListener, IPropertyChangeListener, NeoServiceEventListener
+    ISelectionListener
 {
     public final static String ID = "org.neo4j.neoclipse.reltype.RelationshipTypeView";
     private static final String NEW_RELTYPE_DIALOG_TEXT = "Please enter the name of the new relationships type";
@@ -128,7 +128,7 @@ public class RelationshipTypeView extends ViewPart implements
         viewer = new TableViewer( parent, SWT.MULTI | SWT.V_SCROLL );
         provider = RelationshipTypesProviderWrapper.getInstance();
         viewer.setContentProvider( provider );
-        provider.addChangeListener( this );
+        provider.addChangeListener( new ProviderChangeHandler() );
         NeoGraphLabelProvider labelProvider = NeoGraphLabelProviderWrapper
             .getInstance();
         labelProvider.createTableColumns( viewer );
@@ -137,7 +137,7 @@ public class RelationshipTypeView extends ViewPart implements
         viewer.setInput( getViewSite() );
 
         Activator.getDefault().getNeoServiceManager().addServiceEventListener(
-            this );
+            new ServiceChangeHandler() );
 
         PlatformUI.getWorkbench().getHelpSystem().setHelp( viewer.getControl(),
             HelpContextConstants.NEO_RELATIONSHIP_TYPE_VIEW );
@@ -711,26 +711,37 @@ public class RelationshipTypeView extends ViewPart implements
         graphView.updateMenuState();
     }
 
-    /**
-     * Respond to changes in the underlying relationship type provider.
-     */
-    public void propertyChange( PropertyChangeEvent event )
+    private class ProviderChangeHandler implements IPropertyChangeListener
     {
-        if ( graphView != null )
+        /**
+         * Respond to changes in the underlying relationship type provider.
+         */
+        public void propertyChange( PropertyChangeEvent event )
         {
-            graphView.refreshPreserveLayout();
+            if ( graphView != null )
+            {
+                graphView.refreshPreserveLayout();
+            }
         }
     }
 
-    public void serviceChanged( NeoServiceEvent event )
+    private class ServiceChangeHandler implements NeoServiceEventListener
     {
-        if ( event.getStatus() == NeoServiceStatus.STOPPED )
+        public void serviceChanged( NeoServiceEvent event )
         {
-            provider.refresh();
-        }
-        else if ( event.getStatus() == NeoServiceStatus.STARTED )
-        {
-            viewer.refresh( true );
+            if ( event.getStatus() == NeoServiceStatus.STOPPED )
+            {
+                provider.refresh();
+            }
+            else if ( event.getStatus() == NeoServiceStatus.STARTED )
+            {
+                viewer.refresh( true );
+            }
+            else if ( event.getStatus() == NeoServiceStatus.ROLLBACK )
+            {
+                provider.refresh();
+                viewer.refresh( true );
+            }
         }
     }
 }

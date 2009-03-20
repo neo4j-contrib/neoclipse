@@ -64,6 +64,8 @@ public enum Actions
     SHOW_REFERENCE_NODE( "Show reference node", NeoIcons.HOME ),
     // edit
     DELETE( "Delete", NeoIcons.DELETE_ENABLED, NeoIcons.DELETE_DISABLED ),
+    COMMIT( "Commit", NeoIcons.COMMIT_ENABLED, NeoIcons.COMMIT_DISABLED ),
+    ROLLBACK( "Rollback", NeoIcons.ROLLBACK_ENABLED, NeoIcons.ROLLBACK_DISABLED ),
     // view node settings
     NODE_COLORS( "Node colors" ),
     NODE_ICONS( "Node icons" ),

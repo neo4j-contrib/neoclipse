@@ -20,6 +20,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.neo4j.api.core.PropertyContainer;
 import org.neo4j.neoclipse.action.Actions;
+import org.neo4j.neoclipse.neo.NodeSpaceUtil;
 import org.neo4j.neoclipse.property.NeoPropertySheetPage;
 
 /**
@@ -68,22 +69,15 @@ public class PasteAction extends PropertyAction
         }
         // parse the string
         ClipboardUtil cu = new ClipboardUtil( (String) data );
-        if ( cu.getValue() == null )
+        final Object value = cu.getValue();
+        if ( value == null )
         {
             MessageDialog
                 .openError( shell, "Error",
                     "The clipboard content doesn't seem to be a neo4j property value." );
             return;
         }
-        try
-        {
-            container.setProperty( cu.getKey(), cu.getValue() );
-        }
-        catch ( Exception e )
-        {
-            e.printStackTrace();
-        }
-        propertySheet.fireChangeEvent( container, cu.getKey() );
-        propertySheet.refresh();
+        final String key = cu.getKey();
+        NodeSpaceUtil.setProperty( container, key, value, propertySheet );
     }
 }

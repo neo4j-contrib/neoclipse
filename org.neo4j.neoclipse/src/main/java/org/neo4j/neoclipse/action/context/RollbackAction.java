@@ -11,13 +11,28 @@
  * OF ANY KIND, either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-package org.neo4j.neoclipse.neo;
+package org.neo4j.neoclipse.action.context;
+
+import org.neo4j.neoclipse.Activator;
+import org.neo4j.neoclipse.action.AbstractGraphAction;
+import org.neo4j.neoclipse.action.Actions;
+import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**
- * The possible states of the neo service.
- * @author Peter H&auml;nsgen
+ * Action to rollback the current changes.
+ * @author Anders Nawroth
  */
-public enum NeoServiceStatus
+public class RollbackAction extends AbstractGraphAction
 {
-    STARTED, STOPPED, COMMIT, ROLLBACK;
+    public RollbackAction( NeoGraphViewPart neoGraphViewPart )
+    {
+        super( Actions.ROLLBACK, neoGraphViewPart );
+        setEnabled( false );
+    }
+
+    @Override
+    public void run()
+    {
+        Activator.getDefault().getNeoServiceManager().rollback();
+    }
 }

@@ -13,12 +13,10 @@
  */
 package org.neo4j.neoclipse.property.action;
 
-import java.io.IOException;
-
 import org.eclipse.jface.dialogs.InputDialog;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Composite;
 import org.neo4j.api.core.PropertyContainer;
+import org.neo4j.neoclipse.neo.NodeSpaceUtil;
 import org.neo4j.neoclipse.property.NeoPropertySheetPage;
 import org.neo4j.neoclipse.property.PropertyTransform.PropertyHandler;
 
@@ -47,15 +45,6 @@ public class NewAction extends PropertyAction
         {
             return;
         }
-        addProperty( propertyContainer );
-    }
-
-    /**
-     * @param entry
-     * @param parFirstElement
-     */
-    private void addProperty( PropertyContainer container )
-    {
         InputDialog keyInput = new InputDialog( null, "Key entry",
             "Please enter the key of the new property", null, null );
         if ( keyInput.open() != OK || keyInput.getReturnCode() != OK )
@@ -63,36 +52,7 @@ public class NewAction extends PropertyAction
             return;
         }
         String key = keyInput.getValue();
-        if ( container.hasProperty( key ) )
-        {
-            if ( !MessageDialog.openQuestion( null, "Key exists", "The key \""
-                + key
-                + "\" already exists, do you want to overwrite the old value?" ) )
-            {
-                return;
-            }
-        }
-        InputDialog valueInput = new InputDialog( null, "Value entry",
-            "Please enter the value of the new property", propertyHandler
-                .render( propertyHandler.value() ), propertyHandler
-                .getValidator() );
-        if ( valueInput.open() != OK && valueInput.getReturnCode() != OK )
-        {
-            return;
-        }
-        Object val = null;
-        try
-        {
-            val = propertyHandler.parse( valueInput.getValue() );
-        }
-        catch ( IOException e )
-        {
-            MessageDialog.openError( null, "Error message",
-                "Error parsing the input value, no changes will be performed." );
-            return;
-        }
-        container.setProperty( key, val );
-        propertySheet.fireChangeEvent( container, key );
-        propertySheet.refresh();
+        NodeSpaceUtil.addProperty( propertyContainer, key, propertyHandler,
+            propertySheet );
     }
 }

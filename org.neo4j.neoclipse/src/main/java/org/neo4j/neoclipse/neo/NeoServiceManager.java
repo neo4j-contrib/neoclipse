@@ -118,6 +118,28 @@ public class NeoServiceManager
     }
 
     /**
+     * Commit Neo transaction.
+     */
+    public void commit()
+    {
+        tx.success();
+        tx.finish();
+        tx = neo.beginTx();
+        fireServiceChangedEvent( NeoServiceStatus.COMMIT );
+    }
+
+    /**
+     * Rollback neo transaction.
+     */
+    public void rollback()
+    {
+        tx.failure();
+        tx.finish();
+        tx = neo.beginTx();
+        fireServiceChangedEvent( NeoServiceStatus.ROLLBACK );
+    }
+
+    /**
      * Registers a service listener.
      */
     public void addServiceEventListener( final NeoServiceEventListener listener )

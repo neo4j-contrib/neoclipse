@@ -23,6 +23,7 @@ import org.eclipse.zest.core.viewers.IGraphEntityRelationshipContentProvider;
 import org.neo4j.api.core.Direction;
 import org.neo4j.api.core.NeoService;
 import org.neo4j.api.core.Node;
+import org.neo4j.api.core.NotFoundException;
 import org.neo4j.api.core.Relationship;
 import org.neo4j.api.core.RelationshipType;
 import org.neo4j.api.core.ReturnableEvaluator;
@@ -140,22 +141,32 @@ public class NeoGraphContentProvider implements
         }
 
         final int depth = view.getTraversalDepth();
-        Traverser trav = node.traverse( Order.BREADTH_FIRST,
-            new StopEvaluator()
-            {
-                public boolean isStopNode( TraversalPosition currentPos )
-                {
-                    return currentPos.depth() >= depth;
-                }
-            }, ReturnableEvaluator.ALL, relDirListArray );
         List<Node> nodes = new ArrayList<Node>();
-        for ( Node currentNode : trav )
+        try
         {
-            if ( nodes.size() >= MAXIMUM_NODES_RETURNED )
+            Traverser trav = node.traverse( Order.BREADTH_FIRST,
+                new StopEvaluator()
+                {
+                    public boolean isStopNode( TraversalPosition currentPos )
+                    {
+                        return currentPos.depth() >= depth;
+                    }
+                }, ReturnableEvaluator.ALL, relDirListArray );
+            for ( Node currentNode : trav )
             {
-                break;
+                if ( nodes.size() >= MAXIMUM_NODES_RETURNED )
+                {
+                    break;
+                }
+                nodes.add( currentNode );
             }
-            nodes.add( currentNode );
+
+        }
+        catch ( NotFoundException nfe )
+        {
+            // this happens when the start node has been removed
+            // somehow (could be a rollback operation)
+            // just return an empty array then
         }
         return nodes.toArray();
     }

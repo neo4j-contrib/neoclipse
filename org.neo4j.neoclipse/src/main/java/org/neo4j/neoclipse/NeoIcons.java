@@ -61,7 +61,11 @@ public enum NeoIcons
         path( "enabled/paste.gif" ) ), PASTE_DISABLED( "paste_disabled",
         path( "disabled/paste.gif" ) ), CHECKED( "checked",
         path( "obj16/box_checked.gif" ) ), UNCHECKED( "unchecked",
-        path( "obj16/box_unchecked.gif" ) ),
+        path( "obj16/box_unchecked.gif" ) ), COMMIT_ENABLED( "commit_enabled",
+        path( "enabled/commit.gif" ) ), COMMIT_DISABLED( "commit_disabled",
+        path( "disabled/commit.gif" ) ), ROLLBACK_ENABLED( "rollback_enabled",
+        path( "enabled/rollback.gif" ) ), ROLLBACK_DISABLED(
+        "rollback_disabled", path( "disabled/rollback.gif" ) ),
     // relationship types actions
     ADD_ENABLED( "add_enabled", path( "enabled/add.gif" ) ), ADD_DISABLED(
         "add_disabled", path( "disabled/add.gif" ) ), ADD_INCOMING(

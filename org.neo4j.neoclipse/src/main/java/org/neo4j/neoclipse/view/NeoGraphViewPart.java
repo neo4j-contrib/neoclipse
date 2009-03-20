@@ -61,7 +61,9 @@ import org.neo4j.neoclipse.action.browse.ShowReferenceNodeAction;
 import org.neo4j.neoclipse.action.context.AddIncomingNodeAction;
 import org.neo4j.neoclipse.action.context.AddOutgoingNodeAction;
 import org.neo4j.neoclipse.action.context.AddRelationshipAction;
+import org.neo4j.neoclipse.action.context.CommitAction;
 import org.neo4j.neoclipse.action.context.DeleteAction;
+import org.neo4j.neoclipse.action.context.RollbackAction;
 import org.neo4j.neoclipse.action.decorate.node.ShowNodeColorsAction;
 import org.neo4j.neoclipse.action.decorate.node.ShowNodeIconsAction;
 import org.neo4j.neoclipse.action.decorate.node.ShowNodeIdsAction;
@@ -142,6 +144,8 @@ public class NeoGraphViewPart extends ViewPart implements
     private AddIncomingNodeAction addIncomingAction;
     private List<InputChangeListener> listeners = new ArrayList<InputChangeListener>();
     private Node previousInputNode = null;
+    private CommitAction commitAction;
+    private RollbackAction rollbackAction;
 
     /**
      * Creates the view.
@@ -298,13 +302,11 @@ public class NeoGraphViewPart extends ViewPart implements
 
         createContextMenu();
 
-        // platform actions
-        tm.add( deleteAction );
+        contributeTransactionActions( tm );
 
-        // separator
-        {
-            tm.add( new Separator() );
-        }
+        nodeSpaceActions( tm );
+
+        mm.add( new Separator() );
 
         // navigation actions
         contributeNavigationActions( tm );
@@ -315,20 +317,35 @@ public class NeoGraphViewPart extends ViewPart implements
         // layout actions
         contributeLayoutActions( tm, mm );
         // separator
-        {
-            mm.add( new Separator() );
-        }
+        mm.add( new Separator() );
         // label settings actions
         contributeLabelActions( mm );
         // separator
-        {
-            mm.add( new Separator() );
-        }
+        mm.add( new Separator() );
         // platform actions
         contributePlatformActions( mm );
         // printing
         getViewSite().getActionBars().setGlobalActionHandler(
             ActionFactory.PRINT.getId(), new PrintGraphAction( this ) );
+    }
+
+    private void nodeSpaceActions( IToolBarManager tm )
+    {
+        tm.add( deleteAction );
+        tm.add( new Separator() );
+    }
+
+    /**
+     * Add commit and rollback actions.
+     * @param tm
+     */
+    private void contributeTransactionActions( IToolBarManager tm )
+    {
+        commitAction = new CommitAction( this );
+        tm.add( commitAction );
+        rollbackAction = new RollbackAction( this );
+        tm.add( rollbackAction );
+        tm.add( new Separator() );
     }
 
     /**
@@ -729,15 +746,19 @@ public class NeoGraphViewPart extends ViewPart implements
      */
     private void refreshViewer()
     {
-        disableDelete();
-        viewer.refresh();
-        refreshStatusBar();
+        refresh( false );
     }
 
     public void refresh( boolean updateLabels )
     {
         disableDelete();
         viewer.refresh( updateLabels );
+        if ( viewer.getGraphControl().getNodes().size() == 0 )
+        {
+            // will take care of if the input node
+            // gets deleted or disappears in a rollback
+            showSomeNode();
+        }
         refreshStatusBar();
     }
 
@@ -830,7 +851,23 @@ public class NeoGraphViewPart extends ViewPart implements
             {
                 showSomeNode();
             }
+            else if ( event.getStatus() == NeoServiceStatus.ROLLBACK )
+            {
+                refreshPreserveLayout();
+                setDirty( false );
+            }
+            else if ( event.getStatus() == NeoServiceStatus.COMMIT )
+            {
+                setDirty( false );
+            }
         }
+    }
+
+    public void setDirty( boolean dirty )
+    {
+        // this.dirty = dirty;
+        commitAction.setEnabled( dirty );
+        rollbackAction.setEnabled( dirty );
     }
 
     /**
@@ -934,6 +971,7 @@ public class NeoGraphViewPart extends ViewPart implements
         public void handleStateChanged( ChangeEvent event )
         {
             refresh( event.getSource(), true );
+            setDirty( true );
         }
     }
 
