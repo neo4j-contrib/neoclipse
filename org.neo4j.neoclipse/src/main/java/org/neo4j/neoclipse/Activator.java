@@ -21,7 +21,6 @@ import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.neo4j.api.core.NeoService;
 import org.neo4j.api.core.Node;
-import org.neo4j.api.core.Transaction;
 import org.neo4j.neoclipse.neo.NeoServiceManager;
 import org.neo4j.neoclipse.preference.NeoPreferences;
 import org.osgi.framework.BundleContext;
@@ -121,7 +120,7 @@ public class Activator extends AbstractUIPlugin
                     "Database location problem",
                     "Please make sure that the database location is correctly set. "
                         + "To create an empty database, point the location to an empty directory." );
-            showPreferenceDialog();
+            showPreferenceDialog( true );
             ns = sm.getNeoService();
             if ( ns == null )
             {
@@ -149,39 +148,19 @@ public class Activator extends AbstractUIPlugin
 
     /**
      * Show the Neo4j preference page.
+     * @param filtered
+     *            only show Neo4j properties when true
      * @return
      */
-    public int showPreferenceDialog()
+    public int showPreferenceDialog( final boolean filtered )
     {
         PreferenceDialog pref = PreferencesUtil.createPreferenceDialogOn( null,
             "org.neo4j.neoclipse.preference.NeoPreferencePage",
-            new String[] {}, null );
+            (filtered ? new String[] {} : null), null );
         if ( pref != null )
         {
             return pref.open();
         }
         return 1;
-    }
-
-    /**
-     * Start a new neo4j transaction. Returns <code>null</code> on failure,
-     * after showing appropriate error messages.
-     * @return the transaction
-     */
-    private Transaction beginNeoTxSafely()
-    {
-        NeoService ns = getNeoServiceSafely();
-        if ( ns == null )
-        {
-            return null;
-        }
-        final Transaction tx = ns.beginTx();
-        if ( tx == null )
-        {
-            MessageDialog.openError( null, "Error message",
-                "Could not start a Neo transaction." );
-            return null;
-        }
-        return tx;
     }
 }

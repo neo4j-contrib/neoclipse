@@ -13,8 +13,8 @@
  */
 package org.neo4j.neoclipse.property;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.draw2d.ChangeEvent;
 import org.eclipse.draw2d.ChangeListener;
@@ -22,7 +22,9 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
@@ -78,7 +80,7 @@ public class NeoPropertySheetPage extends PropertySheetPage implements
     private RenameAction renameAction;
     private PasteAction pasteAction;
     private PropertyContainer containerSelection;
-    private Set<ChangeListener> listeners = new HashSet<ChangeListener>();
+    private List<ChangeListener> listeners = new ArrayList<ChangeListener>();
 
     public NeoPropertySheetPage()
     {
@@ -126,6 +128,12 @@ public class NeoPropertySheetPage extends PropertySheetPage implements
         getSite().getPage().addSelectionListener( NeoGraphViewPart.ID, this );
         PlatformUI.getWorkbench().getHelpSystem().setHelp( parent,
             HelpContextConstants.NEO_PROPERTY_SHEET_PAGE );
+        Control control = getControl();
+        if (control instanceof Tree)
+        {
+            Tree tree = (Tree) control;
+            tree.getColumn( 0 ).setWidth( 300 );
+        }
     }
 
     /**
@@ -281,9 +289,9 @@ public class NeoPropertySheetPage extends PropertySheetPage implements
     @Override
     public void selectionChanged( IWorkbenchPart part, ISelection selection )
     {
-        super.selectionChanged( part, selection );
         if ( part instanceof NeoGraphViewPart )
         {
+            super.selectionChanged( part, selection );
             if ( !(selection instanceof IStructuredSelection) )
             {
                 containerSelection = null;

@@ -19,10 +19,18 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.application.WorkbenchAdvisor;
+import org.eclipse.ui.application.WorkbenchWindowAdvisor;
 import org.neo4j.neoclipse.perspective.NeoPerspectiveFactory;
 
 public class Application extends WorkbenchAdvisor implements IApplication
 {
+    @Override
+    public WorkbenchWindowAdvisor createWorkbenchWindowAdvisor(
+        IWorkbenchWindowConfigurer configurer )
+    {
+        return new ApplicationWindowAdvisor( configurer );
+    }
+
     public Object start( IApplicationContext context ) throws Exception
     {
         Display display = PlatformUI.createDisplay();

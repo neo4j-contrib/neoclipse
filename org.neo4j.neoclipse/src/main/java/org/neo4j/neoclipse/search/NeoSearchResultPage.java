@@ -197,7 +197,7 @@ public class NeoSearchResultPage extends Page implements ISearchResultPage
                 .getSelection();
 
             Object s = sel.getFirstElement();
-            if ( (s != null) && (s instanceof Node) )
+            if ( s instanceof Node )
             {
                 // get the graph viewer
                 NeoGraphViewPart gv = (NeoGraphViewPart) PlatformUI

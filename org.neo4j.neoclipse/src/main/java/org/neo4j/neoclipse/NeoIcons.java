@@ -26,10 +26,20 @@ import org.eclipse.ui.PlatformUI;
  */
 public enum NeoIcons
 {
-    NEO( "small", path( "obj16/neo-16.png" ) ),
+    NEO( "small", path( "enabled/neo.gif" ) ),
     NEO_ROOT( "root", path( "enabled/home.gif" ) ),
     HELP( "help", shared( ISharedImages.IMG_LCL_LINKTO_HELP ) ),
-    PREFERENCES( "preferences", path( "obj16/preferences.gif" ) ),
+    PREFERENCES_ENABLED( "preferences_enabled",
+        path( "enabled/preferences.gif" ) ),
+    PREFERENCES_DISABLED( "preferences_disabled",
+        path( "disabled/preferences.gif" ) ),
+    PROPERTIES_ENABLED( "properties_enabled", path( "enabled/properties.gif" ) ),
+    PROPERTIES_DISABLED( "properties_disabled",
+        path( "disabled/properties.gif" ) ),
+    GRAPH( "graph", path( "obj16/neo-16.png" ) ),
+    HELP_VIEW( "help_view", path( "obj16/help_view.gif" ) ),
+    SEARCH_ENABLED( "search_enabled", path( "enabled/search.gif" ) ),
+    SEARCH_DISABLED( "search_disabled", path( "disabled/search.gif" ) ),
     // navigation
     HOME( "home", path( "enabled/home.gif" ) ),
     BACK_ENABLED( "back_enabled", shared( ISharedImages.IMG_TOOL_BACK ) ),
@@ -53,34 +63,46 @@ public enum NeoIcons
     // edit actions
     DELETE_ENABLED( "delete_enabled", path( "enabled/delete.gif" ) ),
     DELETE_DISABLED( "delete_disabled", path( "disabled/delete.gif" ) ),
-    COPY_ENABLED( "copy_enabled", path( "enabled/copy.gif" ) ), COPY_DISABLED(
-        "copy_disabled", path( "disabled/copy.gif" ) ), NEW_ENABLED(
-        "new_enabled", path( "enabled/new.gif" ) ), NEW_DISABLED(
-        "new_disabled", path( "disabled/new.gif" ) ), RENAME( "rename",
-        path( "obj16/change.gif" ) ), PASTE_ENABLED( "paste_enabled",
-        path( "enabled/paste.gif" ) ), PASTE_DISABLED( "paste_disabled",
-        path( "disabled/paste.gif" ) ), CHECKED( "checked",
-        path( "obj16/box_checked.gif" ) ), UNCHECKED( "unchecked",
-        path( "obj16/box_unchecked.gif" ) ), COMMIT_ENABLED( "commit_enabled",
-        path( "enabled/commit.gif" ) ), COMMIT_DISABLED( "commit_disabled",
-        path( "disabled/commit.gif" ) ), ROLLBACK_ENABLED( "rollback_enabled",
-        path( "enabled/rollback.gif" ) ), ROLLBACK_DISABLED(
-        "rollback_disabled", path( "disabled/rollback.gif" ) ),
+    COPY_ENABLED( "copy_enabled", path( "enabled/copy.gif" ) ),
+    COPY_DISABLED( "copy_disabled", path( "disabled/copy.gif" ) ),
+    NEW_ENABLED( "new_enabled", path( "enabled/new.gif" ) ),
+    NEW_DISABLED( "new_disabled", path( "disabled/new.gif" ) ),
+    RENAME( "rename", path( "obj16/change.gif" ) ),
+    PASTE_ENABLED( "paste_enabled", path( "enabled/paste.gif" ) ),
+    PASTE_DISABLED( "paste_disabled", path( "disabled/paste.gif" ) ),
+    CHECKED( "checked", path( "obj16/box_checked.gif" ) ),
+    UNCHECKED( "unchecked", path( "obj16/box_unchecked.gif" ) ),
+    COMMIT_ENABLED( "commit_enabled", path( "enabled/commit.gif" ) ),
+    COMMIT_DISABLED( "commit_disabled", path( "disabled/commit.gif" ) ),
+    ROLLBACK_ENABLED( "rollback_enabled", path( "enabled/rollback.gif" ) ),
+    ROLLBACK_DISABLED( "rollback_disabled", path( "disabled/rollback.gif" ) ),
     // relationship types actions
-    ADD_ENABLED( "add_enabled", path( "enabled/add.gif" ) ), ADD_DISABLED(
-        "add_disabled", path( "disabled/add.gif" ) ), ADD_INCOMING(
-        "add_incoming", path( "obj16/add_incoming.gif" ) ), ADD_OUTGOING(
-        "add_outgoing", path( "obj16/add_outgoing.gif" ) ), HIGHLIGHT(
-        "highlight", path( "obj16/highlight.gif" ) ), HIGHLIGHT_INCOMING(
-        "highlight_incoming", path( "obj16/highlight_incoming.gif" ) ),
-    HIGHLIGHT_OUTGOING( "highlight_outgoing",
-        path( "obj16/highlight_outgoing.gif" ) ), INCOMING( "incoming",
+    ADD_ENABLED( "add_enabled", path( "enabled/add-relationship.gif" ) ),
+    ADD_DISABLED( "add_disabled", path( "disabled/add-relationship.gif" ) ),
+    ADD_INCOMING_ENABLED( "add_incoming_enabled",
+        path( "enabled/add-relationship-incoming.gif" ) ),
+    ADD_INCOMING_DISABLED( "add_incoming_disabled",
+        path( "disabled/add-relationship-incoming.gif" ) ),
+    ADD_OUTGOING_ENABLED( "add_outgoing_enabled",
+        path( "enabled/add-relationship-outgoing.gif" ) ),
+    ADD_OUTGOING_DISABLED( "add_outgoing_disabled",
+        path( "disabled/add-relationship-outgoing.gif" ) ),
+    HIGHLIGHT_ENABLED( "highlight_enabled", path( "enabled/highlight.gif" ) ),
+    HIGHLIGHT_DISABLED( "highlight_disabled", path( "disabled/highlight.gif" ) ),
+    HIGHLIGHT_INCOMING_ENABLED( "highlight_incoming_enabled",
+        path( "enabled/highlight-incoming.gif" ) ),
+    HIGHLIGHT_INCOMING_DISABLED( "highlight_incoming_disabled",
+        path( "disabled/highlight-incoming.gif" ) ),
+    HIGHLIGHT_OUTGOING_ENABLED( "highlight_outgoing_enabled",
+        path( "enabled/highlight-outgoing.gif" ) ),
+    HIGHLIGHT_OUTGOING_DISABLED( "highlight_outgoing_disabled",
+        path( "disabled/highlight-outgoing.gif" ) ), INCOMING( "incoming",
         path( "obj16/incoming.gif" ) ), OUTGOING( "outgoing",
         path( "obj16/outgoing.gif" ) ), CLEAR_ENABLED( "clear_enabled",
         path( "enabled/clear.gif" ) ), CLEAR_DISABLED( "clear_disabled",
-        path( "disabled/clear.gif" ) ), ICON_INCOMING( "icon_in",
-        path( "obj16/icon_incoming.gif" ) ), ICON_OUTGOING( "icon_out",
-        path( "obj16/icon_outgoing.gif" ) ),
+        path( "disabled/clear.gif" ) ), ICON_INCOMING( "icon_in_enabled",
+        path( "enabled/icon-incoming.gif" ) ),
+    ICON_OUTGOING( "icon_out_enabled", path( "enabled/icon-outgoing.gif" ) ),
     // types
     TYPE_BOOLEAN( "boolean", path( "types/type-boolean.gif" ) ), TYPE_BYTE(
         "byte", path( "types/type-byte.gif" ) ), TYPE_CHAR( "char",
@@ -100,7 +122,9 @@ public enum NeoIcons
         path( "types/type-longs.gif" ) ), TYPE_SHORTS( "shorts",
         path( "types/type-shorts.gif" ) ), TYPE_STRINGS( "strings",
         path( "types/type-strings.gif" ) ), TYPE_ID( "id",
-        path( "obj16/key.gif" ) ), TYPES( "types", path( "types/types.gif" ) );
+        path( "obj16/key.gif" ) ), TYPES( "types", path( "types/types.gif" ) ),
+    NEW_TYPE_ENABLED( "new_type_enabled", path( "enabled/add-type.gif" ) ),
+    NEW_TYPE_DISABLED( "new_type_disabled", path( "disabled/add-type.gif" ) );
 
     private static final String ICON_LOCATION = "icons/";
     private static ImageRegistry reg = null;

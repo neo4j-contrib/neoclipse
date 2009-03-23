@@ -11,7 +11,7 @@
             allowMultiple="false"
             category="org.neo4j.neoclipse"
             class="org.neo4j.neoclipse.view.NeoGraphViewPart"
-            icon="icons/obj16/neo-16.png"
+            icon="icons/enabled/neo.gif"
             id="org.neo4j.neoclipse.view.NeoGraphViewPart"
             name="Database graph">
       </view>
@@ -41,7 +41,7 @@
          point="org.eclipse.ui.perspectives">
       <perspective
             class="org.neo4j.neoclipse.perspective.NeoPerspectiveFactory"
-            icon="icons/obj16/neo-16.png"
+            icon="icons/enabled/neo.gif"
             id="org.neo4j.neoclipse.NeoPerspective"
             name="Neo4j">
       </perspective>
@@ -99,7 +99,7 @@
           point="org.eclipse.search.searchPages">
        <page
              class="org.neo4j.neoclipse.search.NeoSearchPage"
-             icon="icons/obj16/neo-16.png"
+             icon="icons/enabled/neo.gif"
              id="org.neo4j.neoclipse.search.NeoSearchPage"
              label="Neo4j Search">
        </page>
@@ -108,7 +108,7 @@
           point="org.eclipse.search.searchResultViewPages">
        <viewPage
              class="org.neo4j.neoclipse.search.NeoSearchResultPage"
-             icon="icons/obj16/neo-16.png"
+             icon="icons/enabled/neo.gif"
              id="org.neo4j.neoclipse.search.NeoSearchResultPage"
              label="Neo4j Search Result"
              searchResultClass="org.neo4j.neoclipse.search.NeoSearchResult">

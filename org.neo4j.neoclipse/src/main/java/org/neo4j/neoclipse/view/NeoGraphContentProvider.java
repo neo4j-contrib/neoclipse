@@ -46,13 +46,13 @@ public class NeoGraphContentProvider implements
      * Limit the number of nodes returned.
      */
     private static final int MAXIMUM_NODES_RETURNED = 500;
-    private RelationshipTypesProvider relTypesProvider = RelationshipTypesProviderWrapper
+    private final RelationshipTypesProvider relTypesProvider = RelationshipTypesProviderWrapper
         .getInstance();
     /**
      * The view.
      */
     protected NeoGraphViewPart view;
-    private Set<RelationshipType> relTypes = new HashSet<RelationshipType>();
+    private final Set<RelationshipType> relTypes = new HashSet<RelationshipType>();
 
     /**
      * The constructor.
@@ -71,7 +71,7 @@ public class NeoGraphContentProvider implements
         Node end = (Node) dest;
         List<Relationship> rels = new ArrayList<Relationship>();
         Iterable<Relationship> rs = start.getRelationships( Direction.OUTGOING );
-        if ( relTypes.size() > 0 )
+        if ( !relTypes.isEmpty() )
         {
             for ( Relationship r : rs )
             {

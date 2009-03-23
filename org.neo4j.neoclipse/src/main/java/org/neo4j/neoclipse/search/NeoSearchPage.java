@@ -39,6 +39,7 @@ import org.neo4j.neoclipse.view.NeoGraphViewPart;
  */
 public class NeoSearchPage extends DialogPage implements ISearchPage
 {
+    public static final String ID = "org.neo4j.neoclipse.search.NeoSearchPage";
     /**
      * The input field for the search expression.
      */

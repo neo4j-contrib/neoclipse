@@ -28,7 +28,7 @@ import org.neo4j.api.core.RelationshipType;
 public class RelationshipTypeControl implements
     Comparable<RelationshipTypeControl>
 {
-    private List<IPropertyChangeListener> listeners = new ArrayList<IPropertyChangeListener>();
+    private final List<IPropertyChangeListener> listeners = new ArrayList<IPropertyChangeListener>();
 
     private final RelationshipType relType;
     private boolean in = true;

@@ -31,7 +31,7 @@ public class BrowserHistory
     /**
      * A list of browser states.
      */
-    private List<BrowserState> states = new LinkedList<BrowserState>();
+    private final List<BrowserState> states = new LinkedList<BrowserState>();
     /**
      * Position of last added item.
      */
@@ -45,14 +45,14 @@ public class BrowserHistory
         /**
          * Id of current node in state.
          */
-        private long id;
+        private final long id;
 
         /**
          * Create a state.
          * @param node
          *            the starting point of this state
          */
-        public BrowserState( Node node )
+        public BrowserState( final Node node )
         {
             id = node.getId();
         }
@@ -143,7 +143,7 @@ public class BrowserHistory
      *            position in state list
      * @return node at the position or null
      */
-    private Node getNode( int pos )
+    private Node getNode( final int pos )
     {
         return states.get( pos ).getNode();
     }
@@ -171,7 +171,7 @@ public class BrowserHistory
      * @param node
      *            starting point of state
      */
-    public void add( Node node )
+    public void add( final Node node )
     {
         if ( node == null )
         {

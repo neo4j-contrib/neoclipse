@@ -25,10 +25,12 @@ public class RelationshipTypeEditingSupport extends EditingSupport
     {
         HEADING, IN, OUT
     }
+
     private final ColumnType column;
     private final CellEditor editor;
 
-    public RelationshipTypeEditingSupport( ColumnViewer viewer, ColumnType column )
+    public RelationshipTypeEditingSupport( ColumnViewer viewer,
+        ColumnType column )
     {
         super( viewer );
         this.column = column;

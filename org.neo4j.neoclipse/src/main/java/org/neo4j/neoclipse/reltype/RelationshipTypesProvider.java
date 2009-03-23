@@ -83,10 +83,10 @@ public class RelationshipTypesProvider implements IContentProvider,
     }
 
     private boolean viewAll = true;
-    private Set<RelationshipType> fakeTypes = new HashSet<RelationshipType>();
+    private final Set<RelationshipType> fakeTypes = new HashSet<RelationshipType>();
     private Set<RelationshipType> currentRelTypes = Collections.emptySet();
-    private Map<RelationshipType,RelationshipTypeControl> currentRelTypeCtrls = new HashMap<RelationshipType,RelationshipTypeControl>();
-    private List<IPropertyChangeListener> listeners = new ArrayList<IPropertyChangeListener>();
+    private final Map<RelationshipType,RelationshipTypeControl> currentRelTypeCtrls = new HashMap<RelationshipType,RelationshipTypeControl>();
+    private final List<IPropertyChangeListener> listeners = new ArrayList<IPropertyChangeListener>();
 
     /**
      * Factory method that creates relationship type items for the table view.
@@ -230,7 +230,7 @@ public class RelationshipTypesProvider implements IContentProvider,
             }
         }
     }
-    
+
     public void refresh()
     {
         fakeTypes.clear();

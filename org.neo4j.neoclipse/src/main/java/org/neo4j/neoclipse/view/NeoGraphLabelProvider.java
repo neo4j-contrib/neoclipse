@@ -107,18 +107,18 @@ public class NeoGraphLabelProvider extends LabelProvider implements
     /**
      * Settings for {@link SimpleGraphDecorator}
      */
-    private Settings settings = new Settings();
+    private final Settings settings = new Settings();
     /**
      * Marked relationships.
      */
-    private Set<Relationship> markedRels = new HashSet<Relationship>();
+    private final Set<Relationship> markedRels = new HashSet<Relationship>();
     /**
      * Marked nodes.
      */
-    private Set<Node> markedNodes = new HashSet<Node>();
+    private final Set<Node> markedNodes = new HashSet<Node>();
     private static final Image CHECKED = NeoIcons.CHECKED.image();
     private static final Image UNCHECKED = NeoIcons.UNCHECKED.image();
-    private Node referenceNode = null;
+    private final Node referenceNode;
     private Node inputNode = null;
 
     public NeoGraphLabelProvider()
@@ -155,7 +155,7 @@ public class NeoGraphLabelProvider extends LabelProvider implements
      * @param node
      * @return
      */
-    private boolean isInputNode( Node node )
+    private boolean isInputNode( final Node node )
     {
         if ( inputNode == null )
         {
@@ -167,7 +167,7 @@ public class NeoGraphLabelProvider extends LabelProvider implements
     /**
      * Handle change of node in graph view.
      */
-    public void inputChange( Node node )
+    public void inputChange( final Node node )
     {
         inputNode = node;
     }
@@ -177,7 +177,7 @@ public class NeoGraphLabelProvider extends LabelProvider implements
      * @param rels
      *            relationships to mark
      */
-    public void addMarkedRels( Collection<Relationship> rels )
+    public void addMarkedRels( final Collection<Relationship> rels )
     {
         markedRels.addAll( rels );
     }
@@ -195,7 +195,7 @@ public class NeoGraphLabelProvider extends LabelProvider implements
      * @param nodes
      *            nodes to mark
      */
-    public void addMarkedNodes( Collection<Node> nodes )
+    public void addMarkedNodes( final Collection<Node> nodes )
     {
         markedNodes.addAll( nodes );
     }
@@ -211,12 +211,12 @@ public class NeoGraphLabelProvider extends LabelProvider implements
     /**
      * Returns the icon for an element.
      */
-    public Image getImage( Object element )
+    public Image getImage( final Object element )
     {
         if ( element instanceof Node )
         {
             Node node = (Node) element;
-            if ( showNodeIcons && settings.getNodeIconLocation() != "" )
+            if ( showNodeIcons && !"".equals( settings.getNodeIconLocation() ) )
             {
                 return graphDecorator.getNodeImageFromProperty( node,
                     isReferenceNode( node ) );
@@ -235,38 +235,39 @@ public class NeoGraphLabelProvider extends LabelProvider implements
      */
     public String getText( Object element )
     {
-        String text = "";
         if ( element instanceof Node )
         {
+            StringBuilder str = new StringBuilder( 48 );
             Node node = (Node) element;
             if ( !showNodeNames || settings.getNodePropertyNames().size() == 0 )
             {
                 // don't look for the default property
-                text = graphDecorator
-                    .getNodeText( node, isReferenceNode( node ) );
+                str.append( graphDecorator.getNodeText( node,
+                    isReferenceNode( node ) ) );
             }
             else
             {
                 // show the default property
-                text = graphDecorator.getNodeTextFromProperty( node,
-                    isReferenceNode( node ) );
+                str.append( graphDecorator.getNodeTextFromProperty( node,
+                    isReferenceNode( node ) ) );
             }
             if ( showNodeIds )
             {
-                text += " " + String.valueOf( node.getId() );
+                str.append( ' ' ).append( node.getId() );
             }
-            return text;
+            return str.toString();
         }
         else if ( element instanceof Relationship )
         {
+            StringBuilder str = new StringBuilder( 48 );
             Relationship rel = (Relationship) element;
             if ( showRelationshipTypes )
             {
-                text += graphDecorator.getRelationshipTypeText( rel );
+                str.append( graphDecorator.getRelationshipTypeText( rel ) );
             }
             if ( showRelationshipIds )
             {
-                text += " " + String.valueOf( rel.getId() );
+                str.append( ' ' ).append( rel.getId() );
             }
             if ( showRelationshipNames )
             {
@@ -274,14 +275,14 @@ public class NeoGraphLabelProvider extends LabelProvider implements
                     .getRelationshipNameTextFromProperty( rel );
                 if ( names != null )
                 {
-                    if ( !"".equals( text ) )
+                    if ( str.length() > 0 )
                     {
-                        text += ", ";
+                        str.append( ", " );
                     }
-                    text += names;
+                    str.append( names );
                 }
             }
-            return text;
+            return str.toString();
         }
         return element.toString();
     }

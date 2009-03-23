@@ -22,7 +22,14 @@ import org.neo4j.neoclipse.NeoIcons;
 public enum Actions
 {
     // platform
-    PREFERENCES( "Preferences", NeoIcons.PREFERENCES ),
+    PREFERENCES( "Preferences", NeoIcons.PREFERENCES_ENABLED,
+        NeoIcons.PREFERENCES_DISABLED ),
+    PROPERTIES( "Properties view", NeoIcons.PROPERTIES_ENABLED,
+        NeoIcons.PROPERTIES_DISABLED ),
+    GRAPH_VIEW( "Graph view", NeoIcons.GRAPH ),
+    RELTYPES_VIEW( "Relationship types view", NeoIcons.TYPES ),
+    HELP_VIEW( "Help view", NeoIcons.HELP_VIEW ),
+    SEARCH( "Search", NeoIcons.SEARCH_ENABLED, NeoIcons.SEARCH_DISABLED ),
     // add rel
     ADD_RELATIONSHIP(
         "Create relationship",
@@ -34,25 +41,27 @@ public enum Actions
     ADD_INCOMING_NODE( "Create node as start node",
         "Create a node with a relationship; "
             + "the new node is the start node of the relationship(s).",
-        NeoIcons.ADD_INCOMING ),
+        NeoIcons.ADD_INCOMING_ENABLED, NeoIcons.ADD_INCOMING_DISABLED ),
     ADD_OUTGOING_NODE( "Create node as end node",
         "Create a node with a relationship; "
             + "the new node is the end node of the relationship(s).",
-        NeoIcons.ADD_OUTGOING ),
+        NeoIcons.ADD_OUTGOING_ENABLED, NeoIcons.ADD_OUTGOING_DISABLED ),
     // add reltype
     NEW_RELATIONSHIP_TYPE( "Create relationship type",
-        "Create a new relationship type.", NeoIcons.NEW_ENABLED,
-        NeoIcons.NEW_DISABLED ),
+        "Create a new relationship type.", NeoIcons.NEW_TYPE_ENABLED,
+        NeoIcons.NEW_TYPE_DISABLED ),
     // highlight
     HIGHLIGHT_RELATIONSHIPS( "Highlight relationships",
-        "Highlight all relationships of the selected types.",
-        NeoIcons.HIGHLIGHT ),
+        "Highlight relationships of the selected types.",
+        NeoIcons.HIGHLIGHT_ENABLED, NeoIcons.HIGHLIGHT_DISABLED ),
     HIGHLIGHT_INCOMING( "Highlight end nodes",
         "Highlight end nodes for relationships of the selected types.",
-        NeoIcons.HIGHLIGHT_INCOMING ),
+        NeoIcons.HIGHLIGHT_INCOMING_ENABLED,
+        NeoIcons.HIGHLIGHT_INCOMING_DISABLED ),
     HIGHLIGHT_OUTGOING( "Highlight start nodes",
         "Highlight start nodes for relationships of the selected types.",
-        NeoIcons.HIGHLIGHT_OUTGOING ),
+        NeoIcons.HIGHLIGHT_OUTGOING_ENABLED,
+        NeoIcons.HIGHLIGHT_OUTGOING_DISABLED ),
     HIGHLIGHT_CLEAR( "Remove highlighting",
         "Remove all curent highlighting of nodes and relationships.",
         NeoIcons.CLEAR_ENABLED, NeoIcons.CLEAR_DISABLED ),

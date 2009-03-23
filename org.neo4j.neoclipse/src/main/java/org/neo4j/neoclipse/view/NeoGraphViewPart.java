@@ -36,8 +36,9 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.ISelectionListener;
-import org.eclipse.ui.IViewReference;
+import org.eclipse.ui.IWindowListener;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.part.ViewPart;
@@ -103,6 +104,7 @@ public class NeoGraphViewPart extends ViewPart implements
      * The Eclipse view ID.
      */
     public static final String ID = "org.neo4j.neoclipse.view.NeoGraphViewPart";
+
     /**
      * Max number of guesses to find a better starting point.
      */
@@ -111,6 +113,7 @@ public class NeoGraphViewPart extends ViewPart implements
      * The property sheet page.
      */
     protected NeoPropertySheetPage propertySheetPage;
+
     /**
      * The graph.
      */
@@ -137,12 +140,12 @@ public class NeoGraphViewPart extends ViewPart implements
     private int traversalDepth = 1;
     private DeleteAction deleteAction;
     private AddRelationshipAction addRelationshipAction;
-    private List<Node> currentSelectedNodes = new ArrayList<Node>();
-    private List<Relationship> currentSelectedRels = new ArrayList<Relationship>();
+    private final List<Node> currentSelectedNodes = new ArrayList<Node>();
+    private final List<Relationship> currentSelectedRels = new ArrayList<Relationship>();
     private RelationshipTypeView relTypeView;
     private AddOutgoingNodeAction addOutgoingAction;
     private AddIncomingNodeAction addIncomingAction;
-    private List<InputChangeListener> listeners = new ArrayList<InputChangeListener>();
+    private final List<InputChangeListener> listeners = new ArrayList<InputChangeListener>();
     private Node previousInputNode = null;
     private CommitAction commitAction;
     private RollbackAction rollbackAction;
@@ -169,20 +172,69 @@ public class NeoGraphViewPart extends ViewPart implements
             new RelTypeSelectionChangeHandler() );
 
         makeContributions();
+
         NeoServiceManager sm = Activator.getDefault().getNeoServiceManager();
         sm.addServiceEventListener( new NeoGraphServiceEventListener() );
         getSite().setSelectionProvider( viewer );
+
         Activator.getDefault().getPluginPreferences()
             .addPropertyChangeListener( new PreferenceChangeHandler() );
+
         showSomeNode();
+
         PlatformUI.getWorkbench().getHelpSystem().setHelp( viewer.getControl(),
             HelpContextConstants.NEO_GRAPH_VIEW_PART );
-        for ( IViewReference view : getSite().getPage().getViewReferences() )
+
+        PlatformUI.getWorkbench().addWindowListener( new WindowListener() );
+    }
+
+    public RelationshipTypeView getRelTypeView()
+    {
+        return relTypeView;
+    }
+
+    private void setRelTypeView( RelationshipTypeView relTypeView )
+    {
+        this.relTypeView = relTypeView;
+    }
+
+    /**
+     * Listen to window changes.
+     */
+    private class WindowListener implements IWindowListener
+    {
+        /**
+         * Make sure to open the help view after this view opened itself.
+         */
+        public void windowOpened( IWorkbenchWindow window )
         {
-            if ( RelationshipTypeView.ID.equals( view.getId() ) )
+            // TODO add preference for showing help at startup
+            try
             {
-                relTypeView = (RelationshipTypeView) view.getView( false );
+                PlatformUI.getWorkbench().getHelpSystem().displayHelp(
+                    HelpContextConstants.NEO_GRAPH_VIEW_PART );
+                NeoGraphViewPart.this.setFocus();
+
             }
+            catch ( Throwable t )
+            {
+                t.printStackTrace();
+            }
+        }
+
+        public void windowActivated( IWorkbenchWindow window )
+        {
+            // do nothing
+        }
+
+        public void windowClosed( IWorkbenchWindow window )
+        {
+            // do nothing
+        }
+
+        public void windowDeactivated( IWorkbenchWindow window )
+        {
+            // do nothing
         }
     }
 
@@ -246,10 +298,10 @@ public class NeoGraphViewPart extends ViewPart implements
         }
 
         int selectedRelTypeCount = -1;
-        if ( relTypeView != null )
+        if ( getRelTypeView() != null )
         {
-            selectedRelTypeCount = relTypeView.getCurrentSelectedRelTypes()
-                .size();
+            selectedRelTypeCount = getRelTypeView()
+                .getCurrentSelectedRelTypes().size();
         }
         if ( addRelationshipAction != null )
         {
@@ -355,16 +407,16 @@ public class NeoGraphViewPart extends ViewPart implements
      */
     private void contributePlatformActions( IMenuManager mm )
     {
-        Action preferenesAction = new Action()
+        Action preferencesAction = new Action()
         {
             @Override
             public void run()
             {
-                Activator.getDefault().showPreferenceDialog();
+                Activator.getDefault().showPreferenceDialog( true );
             }
         };
-        Actions.PREFERENCES.initialize( preferenesAction );
-        mm.add( preferenesAction );
+        Actions.PREFERENCES.initialize( preferencesAction );
+        mm.add( preferencesAction );
     }
 
     /**
@@ -515,12 +567,15 @@ public class NeoGraphViewPart extends ViewPart implements
      */
     public void refreshStatusBar()
     {
+        StringBuilder str = new StringBuilder( 64 );
+        str.append( "Traversal depth: " ).append( traversalDepth );
+        str.append( "   Nodes: " ).append(
+            viewer.getGraphControl().getNodes().size() );
+        str.append( "   Relationships: " ).append(
+            viewer.getGraphControl().getConnections().size() );
+
         getViewSite().getActionBars().getStatusLineManager().setMessage(
-            "Traversal depth: " + String.valueOf( traversalDepth )
-                + "   Nodes: "
-                + String.valueOf( viewer.getGraphControl().getNodes().size() )
-                + "   Relationships: "
-                + viewer.getGraphControl().getConnections().size() );
+            str.toString() );
     }
 
     /**
@@ -672,7 +727,7 @@ public class NeoGraphViewPart extends ViewPart implements
         if ( ns != null )
         {
             Node node = ns.getNodeById( nodeId );
-            viewer.setInput( node );
+            setInput( node );
         }
     }
 
@@ -681,7 +736,7 @@ public class NeoGraphViewPart extends ViewPart implements
      */
     public void showNode( Node node )
     {
-        viewer.setInput( node );
+        setInput( node );
     }
 
     /**
@@ -945,7 +1000,7 @@ public class NeoGraphViewPart extends ViewPart implements
         {
             if ( part instanceof RelationshipTypeView )
             {
-                relTypeView = (RelationshipTypeView) part;
+                setRelTypeView( (RelationshipTypeView) part );
             }
         }
     }
@@ -973,11 +1028,6 @@ public class NeoGraphViewPart extends ViewPart implements
             refresh( event.getSource(), true );
             setDirty( true );
         }
-    }
-
-    public RelationshipTypeView getRelTypeView()
-    {
-        return relTypeView;
     }
 
     /**
