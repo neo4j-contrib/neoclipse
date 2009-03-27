@@ -23,8 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.jface.util.IPropertyChangeListener;
-import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
@@ -32,6 +30,9 @@ import org.neo4j.api.core.EmbeddedNeo;
 import org.neo4j.api.core.NeoService;
 import org.neo4j.api.core.RelationshipType;
 import org.neo4j.neoclipse.Activator;
+import org.neo4j.neoclipse.event.NeoclipseEvent;
+import org.neo4j.neoclipse.event.NeoclipseEventListener;
+import org.neo4j.neoclipse.event.NeoclipseListenerList;
 import org.neo4j.neoclipse.view.NeoGraphLabelProviderWrapper;
 
 /**
@@ -40,7 +41,7 @@ import org.neo4j.neoclipse.view.NeoGraphLabelProviderWrapper;
  * @author anders
  */
 public class RelationshipTypesProvider implements IContentProvider,
-    IStructuredContentProvider, IPropertyChangeListener, Comparator<String>
+    IStructuredContentProvider, Comparator<String>
 {
     /**
      * Class used to create relationship types dynamically.
@@ -82,11 +83,21 @@ public class RelationshipTypesProvider implements IContentProvider,
         }
     }
 
+    private class ReltypeCtrlChangeListener implements NeoclipseEventListener
+    {
+        public void stateChanged( NeoclipseEvent event )
+        {
+            notifyFilterListeners( event );
+        }
+    }
+
     private boolean viewAll = true;
     private final Set<RelationshipType> fakeTypes = new HashSet<RelationshipType>();
     private Set<RelationshipType> currentRelTypes = Collections.emptySet();
     private final Map<RelationshipType,RelationshipTypeControl> currentRelTypeCtrls = new HashMap<RelationshipType,RelationshipTypeControl>();
-    private final List<IPropertyChangeListener> listeners = new ArrayList<IPropertyChangeListener>();
+    private final NeoclipseListenerList filterListeners = new NeoclipseListenerList();
+    private final NeoclipseListenerList typesListeners = new NeoclipseListenerList();
+    private final ReltypeCtrlChangeListener reltypeCtrlChangeListener = new ReltypeCtrlChangeListener();
 
     /**
      * Factory method that creates relationship type items for the table view.
@@ -99,7 +110,7 @@ public class RelationshipTypesProvider implements IContentProvider,
     {
         RelationshipTypeControl relTypeCtrl = new RelationshipTypeControl(
             relType );
-        relTypeCtrl.addChangeListener( this );
+        relTypeCtrl.addChangeListener( reltypeCtrlChangeListener );
         return relTypeCtrl;
     }
 
@@ -134,7 +145,7 @@ public class RelationshipTypesProvider implements IContentProvider,
     }
 
     /**
-     * Get all realtionship types in the database.
+     * Get all relationship types in the database.
      * @return
      */
     public Set<RelationshipType> getRelationshipTypesFromNeo()
@@ -158,6 +169,15 @@ public class RelationshipTypesProvider implements IContentProvider,
     }
 
     /**
+     * Get all relationship types in the database and additional "fake" types.
+     * @return
+     */
+    public Set<RelationshipType> getCurrentRelationshipTypes()
+    {
+        return currentRelTypes;
+    }
+
+    /**
      * Add a "fake" relationship type. It will be persisted to the database upon
      * usage (creating a relationship of this type).
      * @param name
@@ -167,10 +187,11 @@ public class RelationshipTypesProvider implements IContentProvider,
     {
         RelationshipType relType = new RelationshipTypeImpl( name );
         fakeTypes.add( relType );
+        notifyTypesListeners( new NeoclipseEvent( relType ) );
     }
 
     /**
-     * Get the table items correspnding to a collection of relationship types.
+     * Get the table items corresponding to a collection of relationship types.
      * @param relTypes
      *            the relationship types to select
      * @return the relationship type controls that are used in the table
@@ -264,33 +285,39 @@ public class RelationshipTypesProvider implements IContentProvider,
     }
 
     /**
-     * Recieceve and forward to own listeners. This class acts as listener for
-     * all relationship type controls in the table.
+     * Notify listeners something changed in the relationship type filters.
+     * @param event
      */
-    public void propertyChange( PropertyChangeEvent event )
+    private void notifyFilterListeners( NeoclipseEvent event )
     {
-        notifyListeners( event );
+        filterListeners.notifyListeners( event );
+    }
+
+    /**
+     * Add listener to relationship types filter changes.
+     * @param newListener
+     */
+    public void addFilterStatusListener( NeoclipseEventListener newListener )
+    {
+        filterListeners.add( newListener );
+    }
+
+    /**
+     * Add listener to relationship type (e.g. addition) changes.
+     * @param newListener
+     */
+    public void addTypeChangeListener( NeoclipseEventListener newListener )
+    {
+        typesListeners.add( newListener );
     }
 
     /**
      * Notify listeners something changed in the relationship types.
      * @param event
      */
-    private void notifyListeners( PropertyChangeEvent event )
+    private void notifyTypesListeners( NeoclipseEvent event )
     {
-        for ( IPropertyChangeListener listener : listeners )
-        {
-            listener.propertyChange( event );
-        }
-    }
-
-    /**
-     * Add listener to relationship types changes.
-     * @param newListener
-     */
-    public void addChangeListener( IPropertyChangeListener newListener )
-    {
-        listeners.add( newListener );
+        typesListeners.notifyListeners( event );
     }
 
     /**

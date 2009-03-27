@@ -13,12 +13,11 @@
  */
 package org.neo4j.neoclipse.reltype;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.eclipse.jface.util.IPropertyChangeListener;
 import org.neo4j.api.core.Direction;
 import org.neo4j.api.core.RelationshipType;
+import org.neo4j.neoclipse.event.NeoclipseEvent;
+import org.neo4j.neoclipse.event.NeoclipseEventListener;
+import org.neo4j.neoclipse.event.NeoclipseListenerList;
 
 /**
  * This is a single item in the relationship type view, wrapping a relationship
@@ -28,7 +27,7 @@ import org.neo4j.api.core.RelationshipType;
 public class RelationshipTypeControl implements
     Comparable<RelationshipTypeControl>
 {
-    private final List<IPropertyChangeListener> listeners = new ArrayList<IPropertyChangeListener>();
+    private final NeoclipseListenerList listeners = new NeoclipseListenerList();
 
     private final RelationshipType relType;
     private boolean in = true;
@@ -126,17 +125,15 @@ public class RelationshipTypeControl implements
      */
     private void notifyListeners()
     {
-        for ( IPropertyChangeListener listener : listeners )
-        {
-            listener.propertyChange( null );
-        }
+        NeoclipseEvent event = new NeoclipseEvent( this );
+        listeners.notifyListeners( event );
     }
 
     /**
      * Add a new listener to changes.
      * @param newListener
      */
-    public void addChangeListener( IPropertyChangeListener newListener )
+    public void addChangeListener( NeoclipseEventListener newListener )
     {
         listeners.add( newListener );
     }

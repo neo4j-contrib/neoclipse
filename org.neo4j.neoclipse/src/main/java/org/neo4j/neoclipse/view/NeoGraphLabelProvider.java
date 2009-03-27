@@ -458,16 +458,25 @@ public class NeoGraphLabelProvider extends LabelProvider implements
 
     public Color getColor( Object o )
     {
-        Relationship rel = (Relationship) o;
-        if ( !showRelationshipColors || !(o instanceof Relationship) )
+        if ( o instanceof Relationship )
         {
-            return graphDecorator.getRelationshipColor();
+            Relationship rel = (Relationship) o;
+            if ( !showRelationshipColors || !(o instanceof Relationship) )
+            {
+                return graphDecorator.getRelationshipColor();
+            }
+            if ( markedRels.contains( rel ) )
+            {
+                return graphDecorator.getMarkedRelationshipColor( rel );
+            }
+            return graphDecorator.getRelationshipColor( rel );
         }
-        if ( markedRels.contains( rel ) )
+        else if ( o instanceof RelationshipType )
         {
-            return graphDecorator.getMarkedRelationshipColor( rel );
+            RelationshipType relType = (RelationshipType) o;
+            return graphDecorator.getRelationshipColor( relType );
         }
-        return graphDecorator.getRelationshipColor( rel );
+        return null;
     }
 
     public int getConnectionStyle( Object rel )

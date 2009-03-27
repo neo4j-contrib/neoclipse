@@ -21,12 +21,6 @@ import org.eclipse.core.runtime.Preferences.IPropertyChangeListener;
 import org.eclipse.core.runtime.Preferences.PropertyChangeEvent;
 import org.eclipse.draw2d.ChangeEvent;
 import org.eclipse.draw2d.ChangeListener;
-import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.GroupMarker;
-import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.action.IToolBarManager;
-import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
@@ -34,13 +28,11 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWindowListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.views.properties.IPropertySheetPage;
 import org.eclipse.zest.core.viewers.AbstractZoomableViewer;
@@ -53,36 +45,9 @@ import org.neo4j.api.core.Node;
 import org.neo4j.api.core.NotFoundException;
 import org.neo4j.api.core.Relationship;
 import org.neo4j.neoclipse.Activator;
-import org.neo4j.neoclipse.action.Actions;
-import org.neo4j.neoclipse.action.PrintGraphAction;
-import org.neo4j.neoclipse.action.browse.GoBackAction;
-import org.neo4j.neoclipse.action.browse.GoForwardAction;
-import org.neo4j.neoclipse.action.browse.RefreshAction;
-import org.neo4j.neoclipse.action.browse.ShowReferenceNodeAction;
-import org.neo4j.neoclipse.action.context.AddIncomingNodeAction;
-import org.neo4j.neoclipse.action.context.AddOutgoingNodeAction;
-import org.neo4j.neoclipse.action.context.AddRelationshipAction;
-import org.neo4j.neoclipse.action.context.CommitAction;
-import org.neo4j.neoclipse.action.context.DeleteAction;
-import org.neo4j.neoclipse.action.context.RollbackAction;
-import org.neo4j.neoclipse.action.decorate.node.ShowNodeColorsAction;
-import org.neo4j.neoclipse.action.decorate.node.ShowNodeIconsAction;
-import org.neo4j.neoclipse.action.decorate.node.ShowNodeIdsAction;
-import org.neo4j.neoclipse.action.decorate.node.ShowNodeLabelAction;
-import org.neo4j.neoclipse.action.decorate.rel.ShowRelationshipColorsAction;
-import org.neo4j.neoclipse.action.decorate.rel.ShowRelationshipDirectionsAction;
-import org.neo4j.neoclipse.action.decorate.rel.ShowRelationshipIdsAction;
-import org.neo4j.neoclipse.action.decorate.rel.ShowRelationshipLabelAction;
-import org.neo4j.neoclipse.action.decorate.rel.ShowRelationshipTypesAction;
-import org.neo4j.neoclipse.action.layout.ShowGridLayoutAction;
-import org.neo4j.neoclipse.action.layout.ShowHorizontalShiftLayoutAction;
-import org.neo4j.neoclipse.action.layout.ShowHorizontalTreeLayoutAction;
-import org.neo4j.neoclipse.action.layout.ShowRadialLayoutAction;
-import org.neo4j.neoclipse.action.layout.ShowSpringLayoutAction;
-import org.neo4j.neoclipse.action.layout.ShowTreeLayoutAction;
-import org.neo4j.neoclipse.action.view.DecreaseTraversalDepthAction;
-import org.neo4j.neoclipse.action.view.IncreaseTraversalDepthAction;
-import org.neo4j.neoclipse.action.view.ZoomAction;
+import org.neo4j.neoclipse.event.NeoclipseEvent;
+import org.neo4j.neoclipse.event.NeoclipseEventListener;
+import org.neo4j.neoclipse.event.NeoclipseListenerList;
 import org.neo4j.neoclipse.help.HelpContextConstants;
 import org.neo4j.neoclipse.neo.NeoServiceEvent;
 import org.neo4j.neoclipse.neo.NeoServiceEventListener;
@@ -104,7 +69,6 @@ public class NeoGraphViewPart extends ViewPart implements
      * The Eclipse view ID.
      */
     public static final String ID = "org.neo4j.neoclipse.view.NeoGraphViewPart";
-
     /**
      * Max number of guesses to find a better starting point.
      */
@@ -123,32 +87,17 @@ public class NeoGraphViewPart extends ViewPart implements
      */
     private BrowserHistory browserHistory = null;
     /**
-     * The go back action.
-     */
-    GoBackAction backAction = new GoBackAction( this );
-    /**
-     * The go forward action.
-     */
-    GoForwardAction forwardAction = new GoForwardAction( this );
-    /**
-     * The decrease traversal depth action.
-     */
-    protected DecreaseTraversalDepthAction decAction;
-    /**
      * The depth how deep we should traverse into the network.
      */
     private int traversalDepth = 1;
-    private DeleteAction deleteAction;
-    private AddRelationshipAction addRelationshipAction;
     private final List<Node> currentSelectedNodes = new ArrayList<Node>();
     private final List<Relationship> currentSelectedRels = new ArrayList<Relationship>();
     private RelationshipTypeView relTypeView;
-    private AddOutgoingNodeAction addOutgoingAction;
-    private AddIncomingNodeAction addIncomingAction;
     private final List<InputChangeListener> listeners = new ArrayList<InputChangeListener>();
     private Node previousInputNode = null;
-    private CommitAction commitAction;
-    private RollbackAction rollbackAction;
+
+    private final NeoclipseListenerList relColorChange = new NeoclipseListenerList();
+    private NeoGraphMenu menu;
 
     /**
      * Creates the view.
@@ -171,7 +120,7 @@ public class NeoGraphViewPart extends ViewPart implements
         getSite().getPage().addSelectionListener( RelationshipTypeView.ID,
             new RelTypeSelectionChangeHandler() );
 
-        makeContributions();
+        menu = new NeoGraphMenu( this );
 
         NeoServiceManager sm = Activator.getDefault().getNeoServiceManager();
         sm.addServiceEventListener( new NeoGraphServiceEventListener() );
@@ -214,12 +163,12 @@ public class NeoGraphViewPart extends ViewPart implements
                 PlatformUI.getWorkbench().getHelpSystem().displayHelp(
                     HelpContextConstants.NEO_GRAPH_VIEW_PART );
                 NeoGraphViewPart.this.setFocus();
-
             }
             catch ( Throwable t )
             {
                 t.printStackTrace();
             }
+            menu.loadDynamicMenus();
         }
 
         public void windowActivated( IWorkbenchWindow window )
@@ -248,6 +197,15 @@ public class NeoGraphViewPart extends ViewPart implements
     }
 
     /**
+     * Add listener for changes in the relationship colors setting.
+     * @param listener
+     */
+    public void addRelColorChangeListener( NeoclipseEventListener listener )
+    {
+        relColorChange.add( listener );
+    }
+
+    /**
      * Notify listeners of new input node.
      * @param node
      */
@@ -267,21 +225,18 @@ public class NeoGraphViewPart extends ViewPart implements
     }
 
     /**
-     * Create a context menu.
+     * Show or hide relationship colors.
+     * @param state
+     *            set true to display
      */
-    private void createContextMenu()
+    public void setShowRelationshipColors( boolean state )
     {
-        MenuManager menuMgr = new MenuManager();
-        deleteAction = new DeleteAction( this );
-        menuMgr.add( deleteAction );
-        addRelationshipAction = new AddRelationshipAction( this );
-        menuMgr.add( addRelationshipAction );
-        addOutgoingAction = new AddOutgoingNodeAction( this );
-        menuMgr.add( addOutgoingAction );
-        addIncomingAction = new AddIncomingNodeAction( this );
-        menuMgr.add( addIncomingAction );
-        Menu menu = menuMgr.createContextMenu( viewer.getControl() );
-        viewer.getControl().setMenu( menu );
+        getLabelProvider().setShowRelationshipColors( state );
+        relColorChange.notifyListeners( new NeoclipseEvent( Boolean
+            .valueOf( state ) ) );
+        // TODO use listeners for those?
+        refreshPreserveLayout();
+        // loadDynamicMenus(); //fixed
     }
 
     /**
@@ -291,30 +246,12 @@ public class NeoGraphViewPart extends ViewPart implements
     {
         int selectedNodeCount = currentSelectedNodes.size();
         int selectedRelationshipCount = currentSelectedRels.size();
-        if ( deleteAction != null )
-        {
-            deleteAction.setEnabled( selectedNodeCount > 0
-                || selectedRelationshipCount > 0 );
-        }
+        menu.setEnableDeleteAction( selectedNodeCount > 0
+            || selectedRelationshipCount > 0 );
 
-        int selectedRelTypeCount = -1;
-        if ( getRelTypeView() != null )
-        {
-            selectedRelTypeCount = getRelTypeView()
-                .getCurrentSelectedRelTypes().size();
-        }
-        if ( addRelationshipAction != null )
-        {
-            addRelationshipAction.setEnabled( selectedNodeCount == 2
-                && selectedRelTypeCount == 1 );
-        }
-        if ( addOutgoingAction != null && addIncomingAction != null )
-        {
-            boolean enabled = selectedNodeCount > 0
-                && selectedRelTypeCount == 1;
-            addOutgoingAction.setEnabled( enabled );
-            addIncomingAction.setEnabled( enabled );
-        }
+        boolean rel = selectedNodeCount == 2;
+        boolean outIn = selectedNodeCount > 0;
+        menu.setEnabledRelActions( rel, outIn, outIn );
     }
 
     /**
@@ -342,225 +279,6 @@ public class NeoGraphViewPart extends ViewPart implements
      * @SuppressWarnings( "restriction" ) public void addCurrentNode() {
      * viewer.addNode( getCurrentNode() ); }
      */
-
-    /**
-     * Initializes menus, tool bars etc.
-     */
-    protected void makeContributions()
-    {
-        // initialize actions
-        IToolBarManager tm = getViewSite().getActionBars().getToolBarManager();
-        IMenuManager mm = getViewSite().getActionBars().getMenuManager();
-
-        createContextMenu();
-
-        contributeTransactionActions( tm );
-
-        nodeSpaceActions( tm );
-
-        mm.add( new Separator() );
-
-        // navigation actions
-        contributeNavigationActions( tm );
-        // recursion level actions
-        contributeRecursionLevelActions( tm );
-        // zoom actions
-        contributeZoomActions( tm );
-        // layout actions
-        contributeLayoutActions( tm, mm );
-        // separator
-        mm.add( new Separator() );
-        // label settings actions
-        contributeLabelActions( mm );
-        // separator
-        mm.add( new Separator() );
-        // platform actions
-        contributePlatformActions( mm );
-        // printing
-        getViewSite().getActionBars().setGlobalActionHandler(
-            ActionFactory.PRINT.getId(), new PrintGraphAction( this ) );
-    }
-
-    private void nodeSpaceActions( IToolBarManager tm )
-    {
-        tm.add( deleteAction );
-        tm.add( new Separator() );
-    }
-
-    /**
-     * Add commit and rollback actions.
-     * @param tm
-     */
-    private void contributeTransactionActions( IToolBarManager tm )
-    {
-        commitAction = new CommitAction( this );
-        tm.add( commitAction );
-        rollbackAction = new RollbackAction( this );
-        tm.add( rollbackAction );
-        tm.add( new Separator() );
-    }
-
-    /**
-     * Add platform actions like showing the preference page.
-     * @param mm
-     *            current menu manager
-     */
-    private void contributePlatformActions( IMenuManager mm )
-    {
-        Action preferencesAction = new Action()
-        {
-            @Override
-            public void run()
-            {
-                Activator.getDefault().showPreferenceDialog( true );
-            }
-        };
-        Actions.PREFERENCES.initialize( preferencesAction );
-        mm.add( preferencesAction );
-    }
-
-    /**
-     * Add label actions to menu.
-     * @param mm
-     *            current menu manager
-     */
-    private void contributeLabelActions( IMenuManager mm )
-    {
-        {
-            String labelsGroupName = "labels";
-            GroupMarker labelsGroup = new GroupMarker( labelsGroupName );
-            mm.add( labelsGroup );
-            // relationship types actions
-            mm.appendToGroup( labelsGroupName, new ShowRelationshipTypesAction(
-                this ) );
-            // relationship types actions
-            mm.appendToGroup( labelsGroupName, new ShowRelationshipLabelAction(
-                this ) );
-            // relationship id's actions
-            mm.appendToGroup( labelsGroupName, new ShowRelationshipIdsAction(
-                this ) );
-            // relationship types actions
-            mm.appendToGroup( labelsGroupName,
-                new ShowRelationshipColorsAction( this ) );
-            // relationship directions actions
-            mm.appendToGroup( labelsGroupName,
-                new ShowRelationshipDirectionsAction( this ) );
-            // separator
-            {
-                mm.add( new Separator() );
-            }
-            // names actions
-            mm.appendToGroup( labelsGroupName, new ShowNodeLabelAction( this ) );
-            // relationship id's actions
-            mm.appendToGroup( labelsGroupName, new ShowNodeIdsAction( this ) );
-            // node colors actions
-            mm
-                .appendToGroup( labelsGroupName,
-                    new ShowNodeColorsAction( this ) );
-            // node icons actions
-            mm.appendToGroup( labelsGroupName, new ShowNodeIconsAction( this ) );
-        }
-    }
-
-    /**
-     * Add layout actions to the menu and toolbar.
-     * @param tm
-     *            current tool bar manager
-     * @param mm
-     *            current menu manager
-     */
-    private void contributeLayoutActions( IToolBarManager tm, IMenuManager mm )
-    {
-        {
-            String groupName = "layout";
-            GroupMarker layoutGroup = new GroupMarker( groupName );
-            tm.add( layoutGroup );
-            mm.add( layoutGroup );
-            // spring layout
-            ShowSpringLayoutAction springLayoutAction = new ShowSpringLayoutAction(
-                this );
-            tm.appendToGroup( groupName, springLayoutAction );
-            mm.appendToGroup( groupName, springLayoutAction );
-            // tree layout
-            ShowTreeLayoutAction treeLayoutAction = new ShowTreeLayoutAction(
-                this );
-            tm.appendToGroup( groupName, treeLayoutAction );
-            mm.appendToGroup( groupName, treeLayoutAction );
-            // radial layout
-            ShowRadialLayoutAction radialLayoutAction = new ShowRadialLayoutAction(
-                this );
-            tm.appendToGroup( groupName, radialLayoutAction );
-            mm.appendToGroup( groupName, radialLayoutAction );
-            // grid layout
-            ShowGridLayoutAction gridLayoutAction = new ShowGridLayoutAction(
-                this );
-            tm.appendToGroup( groupName, gridLayoutAction );
-            mm.appendToGroup( groupName, gridLayoutAction );
-            // horizontal tree layout
-            ShowHorizontalTreeLayoutAction horizontalTreeLayoutAction = new ShowHorizontalTreeLayoutAction(
-                this );
-            mm.appendToGroup( groupName, horizontalTreeLayoutAction );
-            // horizontal shift layout
-            ShowHorizontalShiftLayoutAction horizontalShiftLayoutAction = new ShowHorizontalShiftLayoutAction(
-                this );
-            mm.appendToGroup( groupName, horizontalShiftLayoutAction );
-        }
-    }
-
-    /**
-     * Add zoom actions to the tool bar.
-     * @param tm
-     *            current tool bar manager
-     */
-    private void contributeZoomActions( IToolBarManager tm )
-    {
-        {
-            ZoomAction zoomAction = new ZoomAction( this );
-            tm.add( zoomAction );
-            tm.add( new Separator() );
-        }
-    }
-
-    /**
-     * Add traversal depth actions to the tool bar.
-     * @param tm
-     *            current tool bar manager
-     */
-    private void contributeRecursionLevelActions( IToolBarManager tm )
-    {
-        {
-            IncreaseTraversalDepthAction incAction = new IncreaseTraversalDepthAction(
-                this );
-            tm.add( incAction );
-
-            decAction = new DecreaseTraversalDepthAction( this );
-            tm.add( decAction );
-
-            tm.add( new Separator() );
-        }
-    }
-
-    /**
-     * Add standard actions to the tool bar. (home , refresh)
-     * @param tm
-     *            current tool bar manager
-     */
-    private void contributeNavigationActions( IToolBarManager tm )
-    {
-        {
-            tm.add( backAction );
-            tm.add( forwardAction );
-
-            ShowReferenceNodeAction refNodeAction = new ShowReferenceNodeAction(
-                this );
-            tm.add( refNodeAction );
-
-            RefreshAction refreshAction = new RefreshAction( this );
-            tm.add( refreshAction );
-
-            tm.add( new Separator() );
-        }
-    }
 
     /**
      * Updates the content of the status bar.
@@ -757,7 +475,7 @@ public class NeoGraphViewPart extends ViewPart implements
         viewer.applyLayout();
         if ( traversalDepth > 0 )
         {
-            decAction.setEnabled( true );
+            menu.setEnabledDecAction( true );
         }
     }
 
@@ -774,7 +492,7 @@ public class NeoGraphViewPart extends ViewPart implements
 
             if ( traversalDepth < 1 )
             {
-                decAction.setEnabled( false );
+                menu.setEnabledDecAction( false );
             }
         }
     }
@@ -875,8 +593,8 @@ public class NeoGraphViewPart extends ViewPart implements
      */
     private void updateNavStatus()
     {
-        backAction.setEnabled( getBrowserHistory().hasPrevious() );
-        forwardAction.setEnabled( getBrowserHistory().hasNext() );
+        menu.setEnabledBackAction( getBrowserHistory().hasPrevious() );
+        menu.setEnabledForwardAction( getBrowserHistory().hasNext() );
     }
 
     /**
@@ -895,6 +613,7 @@ public class NeoGraphViewPart extends ViewPart implements
                 // throw away old relationship colors
                 NeoGraphLabelProviderWrapper.getInstance()
                     .refreshRelationshipColors();
+                menu.clearImages();
                 // when called during shutdown the content provider may already
                 // have been disposed
                 if ( getViewer().getContentProvider() != null )
@@ -920,9 +639,8 @@ public class NeoGraphViewPart extends ViewPart implements
 
     public void setDirty( boolean dirty )
     {
-        // this.dirty = dirty;
-        commitAction.setEnabled( dirty );
-        rollbackAction.setEnabled( dirty );
+        menu.setEnabledCommitAction( dirty );
+        menu.setEnabledRollbackAction( dirty );
     }
 
     /**

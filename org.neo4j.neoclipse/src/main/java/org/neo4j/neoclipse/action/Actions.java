@@ -159,7 +159,7 @@ public enum Actions
             action.setDisabledImageDescriptor( disabledIcon.descriptor() );
         }
     }
-
+    
     /**
      * Get label of action.
      * @return
@@ -167,5 +167,14 @@ public enum Actions
     public String label()
     {
         return label;
+    }
+
+    /**
+     * Icon if this action.
+     * @return icon or null
+     */
+    public NeoIcons icon()
+    {
+        return icon;
     }
 }

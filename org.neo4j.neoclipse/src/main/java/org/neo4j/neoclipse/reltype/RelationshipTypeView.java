@@ -32,10 +32,7 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
-import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.util.IPropertyChangeListener;
-import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
@@ -60,7 +57,10 @@ import org.neo4j.api.core.Relationship;
 import org.neo4j.api.core.RelationshipType;
 import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.action.Actions;
+import org.neo4j.neoclipse.action.reltype.NewRelationshipTypeAction;
 import org.neo4j.neoclipse.decorate.UserIcons;
+import org.neo4j.neoclipse.event.NeoclipseEvent;
+import org.neo4j.neoclipse.event.NeoclipseEventListener;
 import org.neo4j.neoclipse.help.HelpContextConstants;
 import org.neo4j.neoclipse.neo.NeoServiceEvent;
 import org.neo4j.neoclipse.neo.NeoServiceEventListener;
@@ -79,9 +79,6 @@ public class RelationshipTypeView extends ViewPart implements
     ISelectionListener
 {
     public final static String ID = "org.neo4j.neoclipse.reltype.RelationshipTypeView";
-    private static final String NEW_RELTYPE_DIALOG_TEXT = "Please enter the name of the new relationships type";
-    private static final String NEW_RELTYPE_DIALOG_TITLE = "New relationship type entry";
-    protected static final int OK = 0;
     private TableViewer viewer;
     private Action markIncomingAction;
     private Action markOutgoingAction;
@@ -131,6 +128,8 @@ public class RelationshipTypeView extends ViewPart implements
             graphView = (NeoGraphViewPart) PlatformUI.getWorkbench()
                 .getActiveWorkbenchWindow().getActivePage().findView(
                     NeoGraphViewPart.ID );
+            graphView
+                .addRelColorChangeListener( new RelationshipColorChangeHandler() );
         }
         return graphView;
     }
@@ -143,7 +142,8 @@ public class RelationshipTypeView extends ViewPart implements
         viewer = new TableViewer( parent, SWT.MULTI | SWT.V_SCROLL );
         provider = RelationshipTypesProviderWrapper.getInstance();
         viewer.setContentProvider( provider );
-        provider.addChangeListener( new ProviderChangeHandler() );
+        provider.addFilterStatusListener( new ProviderFilterChangeHandler() );
+        provider.addTypeChangeListener( new ProviderTypesChangeHandler() );
         NeoGraphLabelProvider labelProvider = NeoGraphLabelProviderWrapper
             .getInstance();
         labelProvider.createTableColumns( viewer );
@@ -323,21 +323,7 @@ public class RelationshipTypeView extends ViewPart implements
      */
     private void makeRelationshipTypeActions()
     {
-        newAction = new Action()
-        {
-            public void run()
-            {
-                InputDialog input = new InputDialog( null,
-                    NEW_RELTYPE_DIALOG_TITLE, NEW_RELTYPE_DIALOG_TEXT, null,
-                    null );
-                if ( input.open() == OK && input.getReturnCode() == OK )
-                {
-                    provider.addFakeType( input.getValue() );
-                    viewer.refresh();
-                }
-            }
-        };
-        Actions.NEW_RELATIONSHIP_TYPE.initialize( newAction );
+        newAction = new NewRelationshipTypeAction( provider );
 
         addIncomingIcon = new Action()
         {
@@ -716,12 +702,15 @@ public class RelationshipTypeView extends ViewPart implements
         getGraphView().updateMenuState();
     }
 
-    private class ProviderChangeHandler implements IPropertyChangeListener
+    /**
+     * Respond to changes in the relationship type provider filtering.
+     */
+    private class ProviderFilterChangeHandler implements NeoclipseEventListener
     {
         /**
          * Respond to changes in the underlying relationship type provider.
          */
-        public void propertyChange( PropertyChangeEvent event )
+        public void stateChanged( NeoclipseEvent event )
         {
             if ( getGraphView() != null )
             {
@@ -730,6 +719,23 @@ public class RelationshipTypeView extends ViewPart implements
         }
     }
 
+    /**
+     * Respond to changes in the relationship type provider types.
+     */
+    private class ProviderTypesChangeHandler implements NeoclipseEventListener
+    {
+        /**
+         * Respond to changes in the underlying relationship type provider.
+         */
+        public void stateChanged( NeoclipseEvent event )
+        {
+            viewer.refresh();
+        }
+    }
+
+    /**
+     * Handle change in the Neo service.
+     */
     private class ServiceChangeHandler implements NeoServiceEventListener
     {
         public void serviceChanged( NeoServiceEvent event )
@@ -747,6 +753,18 @@ public class RelationshipTypeView extends ViewPart implements
                 provider.refresh();
                 viewer.refresh( true );
             }
+        }
+    }
+
+    /**
+     * Handle change in the relationship color settings.
+     */
+    private class RelationshipColorChangeHandler implements
+        NeoclipseEventListener
+    {
+        public void stateChanged( NeoclipseEvent event )
+        {
+            viewer.refresh( true );
         }
     }
 }

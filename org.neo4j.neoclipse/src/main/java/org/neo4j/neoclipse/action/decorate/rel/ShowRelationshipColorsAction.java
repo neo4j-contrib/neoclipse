@@ -43,7 +43,6 @@ public class ShowRelationshipColorsAction extends AbstractGraphAction
      */
     public void run()
     {
-        graphView.getLabelProvider().setShowRelationshipColors( isChecked() );
-        graphView.refreshPreserveLayout();
+        graphView.setShowRelationshipColors( isChecked() );
     }
 }

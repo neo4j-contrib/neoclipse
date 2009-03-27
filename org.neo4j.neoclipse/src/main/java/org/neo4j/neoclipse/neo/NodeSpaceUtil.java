@@ -15,6 +15,7 @@ package org.neo4j.neoclipse.neo;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.jface.dialogs.InputDialog;
@@ -108,20 +109,20 @@ public class NodeSpaceUtil
         {
             return;
         }
-        Node createNode = null;
+        Node newInputNode = null;
         try
         {
             if ( destNodes == null )
             {
                 destNodes = new ArrayList<Node>();
-                createNode = ns.createNode();
-                destNodes.add( createNode );
+                destNodes.add( ns.createNode() );
+                newInputNode = sourceNodes.get( 0 );
             }
             else if ( sourceNodes == null )
             {
                 sourceNodes = new ArrayList<Node>();
-                createNode = ns.createNode();
-                sourceNodes.add( createNode );
+                sourceNodes.add( ns.createNode() );
+                newInputNode = destNodes.get( 0 );
             }
             for ( Node source : sourceNodes )
             {
@@ -138,9 +139,9 @@ public class NodeSpaceUtil
         if ( graphView != null )
         {
             graphView.setDirty( true );
-            if ( createNode != null )
+            if ( newInputNode != null )
             {
-                graphView.setInput( createNode );
+                graphView.setInput( newInputNode );
             }
             else
             {
@@ -166,8 +167,12 @@ public class NodeSpaceUtil
 
         try
         {
-            for ( PropertyContainer container : containers )
+            Node inputNode = graphView.getCurrentNode();
+            Node newInputNode = null;
+            Iterator<? extends PropertyContainer> iter = containers.iterator();
+            while ( iter.hasNext() )
             {
+                PropertyContainer container = iter.next();
                 if ( container instanceof Node )
                 {
                     Node node = (Node) container;
@@ -182,10 +187,16 @@ public class NodeSpaceUtil
                             return;
                         }
                     }
+                    if ( node.equals( inputNode ) && node.hasRelationship() )
+                    {
+                        newInputNode = node.getRelationships().iterator()
+                            .next().getOtherNode( node );
+                    }
                     for ( Relationship rel : node.getRelationships() )
                     {
                         rel.delete();
                     }
+                    iter.remove(); // remove from list to not mess up the list
                     node.delete();
                 }
                 else if ( container instanceof Relationship )
@@ -193,6 +204,10 @@ public class NodeSpaceUtil
                     ((Relationship) container).delete();
                 }
                 graphView.setDirty( true );
+                if ( newInputNode != null )
+                {
+                    graphView.setInput( newInputNode );
+                }
             }
         }
         catch ( Exception e )
@@ -222,6 +237,21 @@ public class NodeSpaceUtil
         createRelationship( source, dest, relType, graphView );
     }
 
+    public static void addRelationshipAction( RelationshipType relType,
+        NeoGraphViewPart graphView )
+    {
+        List<Node> currentSelectedNodes = graphView.getCurrentSelectedNodes();
+        if ( currentSelectedNodes.size() != 2 )
+        {
+            MessageDialog.openWarning( null, ADDING_REL_WARNING_LABEL,
+                ADDING_REL_WARNING_MESSAGE );
+            return;
+        }
+        Node source = currentSelectedNodes.get( 0 );
+        Node dest = currentSelectedNodes.get( 1 );
+        createRelationship( source, dest, relType, graphView );
+    }
+
     public static void addOutgoingNodeAction( List<RelationshipType> relTypes,
         NeoGraphViewPart graphView )
     {
@@ -238,6 +268,17 @@ public class NodeSpaceUtil
         createRelationship( currentSelectedNodes, null, relType, graphView );
     }
 
+    public static void addOutgoingNodeAction( RelationshipType relType,
+        NeoGraphViewPart graphView )
+    {
+        List<Node> currentSelectedNodes = graphView.getCurrentSelectedNodes();
+        if ( !isOneOrMoreNodesSelected( currentSelectedNodes ) )
+        {
+            return;
+        }
+        createRelationship( currentSelectedNodes, null, relType, graphView );
+    }
+
     public static void addIncomingNodeAction( List<RelationshipType> relTypes,
         NeoGraphViewPart graphView )
     {
@@ -251,6 +292,17 @@ public class NodeSpaceUtil
             return;
         }
         RelationshipType relType = relTypes.get( 0 );
+        createRelationship( null, currentSelectedNodes, relType, graphView );
+    }
+
+    public static void addIncomingNodeAction( RelationshipType relType,
+        NeoGraphViewPart graphView )
+    {
+        List<Node> currentSelectedNodes = graphView.getCurrentSelectedNodes();
+        if ( !isOneOrMoreNodesSelected( currentSelectedNodes ) )
+        {
+            return;
+        }
         createRelationship( null, currentSelectedNodes, relType, graphView );
     }
 

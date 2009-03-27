@@ -22,9 +22,7 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
@@ -128,12 +126,6 @@ public class NeoPropertySheetPage extends PropertySheetPage implements
         getSite().getPage().addSelectionListener( NeoGraphViewPart.ID, this );
         PlatformUI.getWorkbench().getHelpSystem().setHelp( parent,
             HelpContextConstants.NEO_PROPERTY_SHEET_PAGE );
-        Control control = getControl();
-        if (control instanceof Tree)
-        {
-            Tree tree = (Tree) control;
-            tree.getColumn( 0 ).setWidth( 300 );
-        }
     }
 
     /**
