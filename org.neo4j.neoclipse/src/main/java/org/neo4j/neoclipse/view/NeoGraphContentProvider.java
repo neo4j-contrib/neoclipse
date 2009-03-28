@@ -110,26 +110,33 @@ public class NeoGraphContentProvider implements
             return new Node[] { node };
         }
 
-        Object[] relDirListArray = relTypesProvider
-            .getFilteredRelTypesDirections().toArray();
-
-        if ( relDirListArray.length == 0 )
+        List<Object> relDirList;
+        try
         {
-            List<Object> relDirList = new ArrayList<Object>();
+            relDirList = relTypesProvider.getFilteredRelTypesDirections();
+        }
+        catch ( NotFoundException nfe )
+        {
+            // (no relationship types found by the provider)
+            // we'll end up here when the reltypes are not initialized,
+            // and we don't want them to initialize first
+            // (traversal gives better coloring!)
+            relDirList = new ArrayList<Object>();
             for ( RelationshipType relType : RelationshipTypesProviderWrapper
                 .getInstance().getRelationshipTypesFromNeo() )
             {
                 relDirList.add( relType );
                 relDirList.add( Direction.BOTH );
             }
-            if ( relDirList.isEmpty() )
-            {
-                // if there are no relationship types,
-                // there can't be any relationships ...
-                return new Node[] { node };
-            }
-            relDirListArray = relDirList.toArray();
         }
+        if ( relDirList.isEmpty() )
+        {
+            // if there are no relationship types,
+            // there can't be any relationships ...
+            return new Node[] { node };
+        }
+
+        Object[] relDirListArray = relDirList.toArray();
 
         relTypes.clear();
         for ( Object o : relDirListArray )

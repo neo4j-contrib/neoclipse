@@ -57,8 +57,11 @@ public class RelationshipTypeControl implements
      */
     public void setIn( boolean in )
     {
-        this.in = in;
-        notifyListeners();
+        if ( this.in != in )
+        {
+            this.in = in;
+            notifyListeners();
+        }
     }
 
     /**
@@ -76,8 +79,11 @@ public class RelationshipTypeControl implements
      */
     public void setOut( boolean out )
     {
-        this.out = out;
-        notifyListeners();
+        if ( this.out != out )
+        {
+            this.out = out;
+            notifyListeners();
+        }
     }
 
     /**

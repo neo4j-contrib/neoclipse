@@ -25,6 +25,7 @@ import org.eclipse.core.runtime.ListenerList;
 public class NeoclipseListenerList implements Iterable<NeoclipseEventListener>
 {
     private ListenerList list = new ListenerList( ListenerList.IDENTITY );
+    private boolean inhibit = false;
 
     /**
      * Add an event listener.
@@ -41,10 +42,24 @@ public class NeoclipseListenerList implements Iterable<NeoclipseEventListener>
      */
     public void notifyListeners( NeoclipseEvent event )
     {
+        if ( inhibit )
+        {
+            return;
+        }
         for ( NeoclipseEventListener listener : this )
         {
             listener.stateChanged( event );
         }
+    }
+
+    /**
+     * Set the inhibit status. True means all notifications are inhibited until
+     * the status is flipped back to false.
+     * @param inhibit
+     */
+    public void setInhibit( boolean inhibit )
+    {
+        this.inhibit = inhibit;
     }
 
     /**

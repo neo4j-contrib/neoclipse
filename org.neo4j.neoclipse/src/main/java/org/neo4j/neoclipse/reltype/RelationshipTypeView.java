@@ -79,27 +79,36 @@ public class RelationshipTypeView extends ViewPart implements
     ISelectionListener
 {
     public final static String ID = "org.neo4j.neoclipse.reltype.RelationshipTypeView";
+    private static final Separator SEPARATOR = new Separator();
+    private static final String[] EXT_FILTER;
+    private static final String[] EXT_FILTER_NAMES;
+    private final NeoGraphLabelProvider graphLabelProvider = NeoGraphLabelProviderWrapper
+        .getInstance();
+
     private TableViewer viewer;
+    private RelationshipTypesProvider provider;
+    private NeoGraphViewPart graphView = null;
+
     private Action markIncomingAction;
     private Action markOutgoingAction;
     private Action clearMarkedAction;
     private Action markRelationshipAction;
-    private RelationshipTypesProvider provider;
-    private NeoGraphViewPart graphView = null;
-    private final NeoGraphLabelProvider graphLabelProvider = NeoGraphLabelProviderWrapper
-        .getInstance();
     private Action newAction;
     private Action addRelationship;
     private Action addOutgoingNode;
     private Action addIncomingNode;
-    public List<RelationshipType> currentSelectedRelTypes = new ArrayList<RelationshipType>();
     private Action addIncomingIcon;
     private Action addOutgoingIcon;
-    private static final String[] EXT_FILTER;
-    private static final String[] EXT_FILTER_NAMES;
+    private Action filterNone;
+    private Action filterAll;
+    private Action filterOutgoing;
+    private Action filterIncoming;
+
+    private final List<RelationshipType> currentSelectedRelTypes = new ArrayList<RelationshipType>();
 
     static
     {
+        // build filters for file selection dialog.
         StringBuilder str = new StringBuilder( 128 );
         for ( String ext : UserIcons.EXTENSIONS )
         {
@@ -116,11 +125,19 @@ public class RelationshipTypeView extends ViewPart implements
     {
     }
 
-    private void setGraphView( NeoGraphViewPart graphView )
+    /**
+     * Set the current graph view.
+     * @param graphView
+     */
+    private void setGraphView( final NeoGraphViewPart graphView )
     {
         this.graphView = graphView;
     }
 
+    /**
+     * Get the current graph view.
+     * @return
+     */
     private NeoGraphViewPart getGraphView()
     {
         if ( graphView == null )
@@ -137,7 +154,7 @@ public class RelationshipTypeView extends ViewPart implements
     /**
      * Initialization of the workbench part.
      */
-    public void createPartControl( Composite parent )
+    public void createPartControl( final Composite parent )
     {
         viewer = new TableViewer( parent, SWT.MULTI | SWT.V_SCROLL );
         provider = RelationshipTypesProviderWrapper.getInstance();
@@ -216,16 +233,10 @@ public class RelationshipTypeView extends ViewPart implements
      */
     private void fillLocalPullDown( IMenuManager manager )
     {
-        manager.add( markRelationshipAction );
-        manager.add( markIncomingAction );
-        manager.add( markOutgoingAction );
-        manager.add( clearMarkedAction );
-        manager.add( new Separator() );
-        manager.add( addRelationship );
-        manager.add( addOutgoingNode );
-        manager.add( addIncomingNode );
-        manager.add( new Separator() );
-        manager.add( newAction );
+        manager.add( filterNone );
+        manager.add( filterIncoming );
+        manager.add( filterOutgoing );
+        manager.add( filterAll );
     }
 
     /**
@@ -239,11 +250,11 @@ public class RelationshipTypeView extends ViewPart implements
         manager.add( markIncomingAction );
         manager.add( markOutgoingAction );
         manager.add( clearMarkedAction );
-        manager.add( new Separator() );
+        manager.add( SEPARATOR );
         manager.add( addRelationship );
         manager.add( addOutgoingNode );
         manager.add( addIncomingNode );
-        manager.add( new Separator() );
+        manager.add( SEPARATOR );
         manager.add( newAction );
     }
 
@@ -254,16 +265,6 @@ public class RelationshipTypeView extends ViewPart implements
      */
     private void fillContextMenu( IMenuManager manager )
     {
-        // manager.add( markOutgoingAction );
-        // manager.add( markIncomingAction );
-        // manager.add( markRelationshipAction );
-        // manager.add( new Separator() );
-        // manager.add( addRelationship );
-        // manager.add( addOutgoingNode );
-        // manager.add( addIncomingNode );
-        // manager.add( new Separator() );
-        // manager.add( newAction );
-        // manager.add( new Separator() );
         manager.add( addIncomingIcon );
         manager.add( addOutgoingIcon );
         // Other plug-ins can contribute there actions here
@@ -280,6 +281,57 @@ public class RelationshipTypeView extends ViewPart implements
         makeRelationshipTypeActions();
 
         makeAddActions();
+
+        makeFilterActions();
+    }
+
+    /**
+     * Create actions to filter on relationship directions.
+     */
+    private void makeFilterActions()
+    {
+        filterNone = new Action()
+        {
+            public void run()
+            {
+                provider.setAllFilters( false, false );
+                viewer.refresh();
+            }
+        };
+        Actions.FILTER_NONE.initialize( filterNone );
+
+        filterAll = new Action()
+        {
+            public void run()
+            {
+                provider.setAllFilters( true, true );
+                viewer.refresh();
+                getGraphView().refresh();
+            }
+        };
+        Actions.FILTER_ALL.initialize( filterAll );
+
+        filterOutgoing = new Action()
+        {
+            public void run()
+            {
+                provider.setAllFilters( false, true );
+                viewer.refresh();
+                getGraphView().refresh();
+            }
+        };
+        Actions.FILTER_OUTGOING.initialize( filterOutgoing );
+
+        filterIncoming = new Action()
+        {
+            public void run()
+            {
+                provider.setAllFilters( true, false );
+                viewer.refresh();
+                getGraphView().refresh();
+            }
+        };
+        Actions.FILTER_INCOMING.initialize( filterIncoming );
     }
 
     /**
@@ -344,6 +396,11 @@ public class RelationshipTypeView extends ViewPart implements
         Actions.ADD_OUTGOING_ICON.initialize( addOutgoingIcon );
     }
 
+    /**
+     * Copy icon file for current selected relationship types.
+     * @param direction
+     *            direction of relationships
+     */
     private void copyIcon( final Direction direction )
     {
         File dest = getIconLocation();
@@ -427,6 +484,10 @@ public class RelationshipTypeView extends ViewPart implements
         getGraphView().refreshPreserveLayout();
     }
 
+    /**
+     * Get icons location from the settings.
+     * @return
+     */
     private File getIconLocation()
     {
         String location = Activator.getDefault().getPreferenceStore()

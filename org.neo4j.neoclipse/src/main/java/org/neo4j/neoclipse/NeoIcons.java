@@ -99,10 +99,13 @@ public enum NeoIcons
         path( "disabled/highlight-outgoing.gif" ) ), INCOMING( "incoming",
         path( "obj16/incoming.gif" ) ), OUTGOING( "outgoing",
         path( "obj16/outgoing.gif" ) ), CLEAR_ENABLED( "clear_enabled",
-        path( "enabled/clear.gif" ) ), CLEAR_DISABLED( "clear_disabled",
-        path( "disabled/clear.gif" ) ), ICON_INCOMING( "icon_in_enabled",
-        path( "enabled/icon-incoming.gif" ) ),
+        path( "enabled/clear.gif" ) ),
+    CLEAR_DISABLED( "clear_disabled", path( "disabled/clear.gif" ) ),
+    ICON_INCOMING( "icon_in_enabled", path( "enabled/icon-incoming.gif" ) ),
     ICON_OUTGOING( "icon_out_enabled", path( "enabled/icon-outgoing.gif" ) ),
+    // filter
+    FILTER_ENABLED( "filter_enabled", path( "enabled/filter.gif" ) ),
+    FILTER_DISABLED( "filter_disabled", path( "disabled/filter.gif" ) ),
     // types
     TYPE_BOOLEAN( "boolean", path( "types/type-boolean.gif" ) ), TYPE_BYTE(
         "byte", path( "types/type-byte.gif" ) ), TYPE_CHAR( "char",

@@ -28,6 +28,7 @@ import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.neo4j.api.core.EmbeddedNeo;
 import org.neo4j.api.core.NeoService;
+import org.neo4j.api.core.NotFoundException;
 import org.neo4j.api.core.RelationshipType;
 import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.event.NeoclipseEvent;
@@ -219,6 +220,10 @@ public class RelationshipTypesProvider implements IContentProvider,
      */
     public List<Object> getFilteredRelTypesDirections()
     {
+        if ( currentRelTypeCtrls.isEmpty() )
+        {
+            throw new NotFoundException();
+        }
         List<Object> relDirList = new ArrayList<Object>();
         for ( RelationshipTypeControl relTypeCtrl : currentRelTypeCtrls
             .values() )
@@ -241,6 +246,7 @@ public class RelationshipTypesProvider implements IContentProvider,
      */
     public void setAllFilters( boolean in, boolean out )
     {
+        filterListeners.setInhibit( true );
         for ( RelationshipType relType : currentRelTypeCtrls.keySet() )
         {
             RelationshipTypeControl relTypeCtrl = currentRelTypeCtrls
@@ -251,6 +257,8 @@ public class RelationshipTypesProvider implements IContentProvider,
                 relTypeCtrl.setOut( out );
             }
         }
+        filterListeners.setInhibit( false );
+        notifyFilterListeners( new NeoclipseEvent( this ) );
     }
 
     public void refresh()
