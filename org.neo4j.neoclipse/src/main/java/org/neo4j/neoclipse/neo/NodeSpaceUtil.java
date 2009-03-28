@@ -110,18 +110,21 @@ public class NodeSpaceUtil
             return;
         }
         Node newInputNode = null;
+        Node createNode = null;
         try
         {
             if ( destNodes == null )
             {
                 destNodes = new ArrayList<Node>();
-                destNodes.add( ns.createNode() );
+                createNode = ns.createNode();
+                destNodes.add( createNode );
                 newInputNode = sourceNodes.get( 0 );
             }
             else if ( sourceNodes == null )
             {
                 sourceNodes = new ArrayList<Node>();
-                sourceNodes.add( ns.createNode() );
+                createNode = ns.createNode();
+                sourceNodes.add( createNode );
                 newInputNode = destNodes.get( 0 );
             }
             for ( Node source : sourceNodes )
@@ -139,7 +142,11 @@ public class NodeSpaceUtil
         if ( graphView != null )
         {
             graphView.setDirty( true );
-            if ( newInputNode != null )
+            if ( destNodes.size() > 1 || sourceNodes.size() > 1 )
+            {
+                graphView.setInput( createNode );
+            }
+            else if ( newInputNode != null )
             {
                 graphView.setInput( newInputNode );
             }
@@ -150,12 +157,25 @@ public class NodeSpaceUtil
         }
     }
 
+    /**
+     * Ask the user to confirm delete.
+     * @param count
+     *            numbe rof items to delete
+     * @return true on yes to delete
+     */
     public static boolean confirmDelete( int count )
     {
         return MessageDialog.openConfirm( null, CONFIRM_DELETE_TITLE,
             "Do you really want to delete the selected " + count + " items?" );
     }
 
+    /**
+     * Delete nodes and relationships from database.
+     * @param containers
+     *            node and relationships
+     * @param graphView
+     *            the current graph view
+     */
     public static void deletePropertyContainers(
         final List<? extends PropertyContainer> containers,
         final NeoGraphViewPart graphView )
@@ -217,26 +237,30 @@ public class NodeSpaceUtil
         }
     }
 
+    /**
+     * Add a relationship between two nodes.
+     * @param relTypes
+     *            relationships types to use (should only be one item)
+     * @param graphView
+     *            the current graph view
+     */
     public static void addRelationshipAction( List<RelationshipType> relTypes,
         NeoGraphViewPart graphView )
     {
-        List<Node> currentSelectedNodes = graphView.getCurrentSelectedNodes();
-        if ( currentSelectedNodes.size() != 2 )
-        {
-            MessageDialog.openWarning( null, ADDING_REL_WARNING_LABEL,
-                ADDING_REL_WARNING_MESSAGE );
-            return;
-        }
         if ( !isOneRelTypeSelected( relTypes ) )
         {
             return;
         }
-        RelationshipType relType = relTypes.get( 0 );
-        Node source = currentSelectedNodes.get( 0 );
-        Node dest = currentSelectedNodes.get( 1 );
-        createRelationship( source, dest, relType, graphView );
+        addRelationshipAction( relTypes.get( 0 ), graphView );
     }
 
+    /**
+     * Add relationship between the selected two nodes.
+     * @param relTypes
+     *            relationships types to use (should only be one item)
+     * @param graphView
+     *            the current graph view
+     */
     public static void addRelationshipAction( RelationshipType relType,
         NeoGraphViewPart graphView )
     {
@@ -252,6 +276,12 @@ public class NodeSpaceUtil
         createRelationship( source, dest, relType, graphView );
     }
 
+    /**
+     * Add outgoing relationships pointing to a new node.
+     * @param relTypes
+     *            relationships types to use (should only be one item)
+     * @param graphView
+     */
     public static void addOutgoingNodeAction( List<RelationshipType> relTypes,
         NeoGraphViewPart graphView )
     {
@@ -259,15 +289,16 @@ public class NodeSpaceUtil
         {
             return;
         }
-        List<Node> currentSelectedNodes = graphView.getCurrentSelectedNodes();
-        if ( !isOneOrMoreNodesSelected( currentSelectedNodes ) )
-        {
-            return;
-        }
-        RelationshipType relType = relTypes.get( 0 );
-        createRelationship( currentSelectedNodes, null, relType, graphView );
+        addOutgoingNodeAction( relTypes.get( 0 ), graphView );
     }
 
+    /**
+     * Add outgoing relationships pointing to a new node.
+     * @param relType
+     *            relationship type to use
+     * @param graphView
+     *            the current graph view
+     */
     public static void addOutgoingNodeAction( RelationshipType relType,
         NeoGraphViewPart graphView )
     {
@@ -279,6 +310,12 @@ public class NodeSpaceUtil
         createRelationship( currentSelectedNodes, null, relType, graphView );
     }
 
+    /**
+     * Add incoming relationships coming from a new node.
+     * @param relTypes
+     *            relationship types to use
+     * @param graphView
+     */
     public static void addIncomingNodeAction( List<RelationshipType> relTypes,
         NeoGraphViewPart graphView )
     {
@@ -286,15 +323,15 @@ public class NodeSpaceUtil
         {
             return;
         }
-        List<Node> currentSelectedNodes = graphView.getCurrentSelectedNodes();
-        if ( !isOneOrMoreNodesSelected( currentSelectedNodes ) )
-        {
-            return;
-        }
-        RelationshipType relType = relTypes.get( 0 );
-        createRelationship( null, currentSelectedNodes, relType, graphView );
+        addIncomingNodeAction( relTypes.get( 0 ), graphView );
     }
 
+    /**
+     * Add incoming relationships coming from a new node.
+     * @param relTypes
+     *            relationships types to use (should only be one item)
+     * @param graphView
+     */
     public static void addIncomingNodeAction( RelationshipType relType,
         NeoGraphViewPart graphView )
     {
@@ -366,6 +403,14 @@ public class NodeSpaceUtil
         propertySheet.refresh();
     }
 
+    /**
+     * Add a property to Node/Relationship. The user will be asked for
+     * confirmation if the key already exists.
+     * @param container
+     * @param key
+     * @param propertyHandler
+     * @param propertySheet
+     */
     public static void addProperty( final PropertyContainer container,
         final String key, final PropertyHandler propertyHandler,
         final NeoPropertySheetPage propertySheet )
@@ -398,11 +443,16 @@ public class NodeSpaceUtil
                 "Error parsing the input value, no changes will be performed." );
             return;
         }
-        container.setProperty( key, val );
-        propertySheet.fireChangeEvent( container, key );
-        propertySheet.refresh();
+        setProperty( container, key, val, propertySheet );
     }
 
+    /**
+     * Set a property value, no questions asked.
+     * @param container
+     * @param key
+     * @param value
+     * @param propertySheet
+     */
     public static void setProperty( PropertyContainer container,
         final String key, final Object value,
         final NeoPropertySheetPage propertySheet )
@@ -413,12 +463,24 @@ public class NodeSpaceUtil
         }
         catch ( Exception e )
         {
+            MessageDialog.openError( null, "Error", "Error in Neo service: "
+                + e.getMessage() );
             e.printStackTrace();
         }
         propertySheet.fireChangeEvent( container, key );
         propertySheet.refresh();
     }
 
+    /**
+     * Rename a property key on Node/Relationship.
+     * @param container
+     *            Node/Relationship
+     * @param key
+     *            old key
+     * @param newKey
+     *            new key
+     * @param propertySheet
+     */
     public static void renameProperty( PropertyContainer container, String key,
         String newKey, final NeoPropertySheetPage propertySheet )
     {

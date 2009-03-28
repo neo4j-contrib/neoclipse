@@ -47,7 +47,7 @@ public enum Actions
             + "the new node is the end node of the relationship(s).",
         NeoIcons.ADD_OUTGOING_ENABLED, NeoIcons.ADD_OUTGOING_DISABLED ),
     // add reltype
-    NEW_RELATIONSHIP_TYPE( "Create relationship type",
+    NEW_RELATIONSHIP_TYPE( "Create new relationship type",
         "Create a new relationship type.", NeoIcons.NEW_TYPE_ENABLED,
         NeoIcons.NEW_TYPE_DISABLED ),
     // highlight
@@ -159,7 +159,7 @@ public enum Actions
             action.setDisabledImageDescriptor( disabledIcon.descriptor() );
         }
     }
-    
+
     /**
      * Get label of action.
      * @return

@@ -183,11 +183,12 @@ public class RelationshipTypesProvider implements IContentProvider,
      * @param name
      *            the name of the relationship type
      */
-    public void addFakeType( final String name )
+    public RelationshipType addFakeType( final String name )
     {
         RelationshipType relType = new RelationshipTypeImpl( name );
         fakeTypes.add( relType );
         notifyTypesListeners( new NeoclipseEvent( relType ) );
+        return relType;
     }
 
     /**

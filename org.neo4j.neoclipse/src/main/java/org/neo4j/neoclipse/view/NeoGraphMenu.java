@@ -61,12 +61,14 @@ import org.neo4j.neoclipse.action.layout.ShowRadialLayoutAction;
 import org.neo4j.neoclipse.action.layout.ShowSpringLayoutAction;
 import org.neo4j.neoclipse.action.layout.ShowTreeLayoutAction;
 import org.neo4j.neoclipse.action.reltype.NewRelationshipTypeAction;
+import org.neo4j.neoclipse.action.reltype.NewRelationshipTypeAction.NodeSpaceAction;
 import org.neo4j.neoclipse.action.view.DecreaseTraversalDepthAction;
 import org.neo4j.neoclipse.action.view.IncreaseTraversalDepthAction;
 import org.neo4j.neoclipse.action.view.ZoomAction;
 import org.neo4j.neoclipse.event.NeoclipseEvent;
 import org.neo4j.neoclipse.event.NeoclipseEventListener;
 import org.neo4j.neoclipse.neo.NodeSpaceUtil;
+import org.neo4j.neoclipse.reltype.RelationshipTypesProvider;
 import org.neo4j.neoclipse.reltype.RelationshipTypesProviderWrapper;
 
 /**
@@ -84,6 +86,11 @@ public class NeoGraphMenu
         private final Action addOut;
         private final Action addIn;
 
+        /**
+         * Create normal actions from relationship type.
+         * @param relType
+         *            relationship type to use
+         */
         public ActionSet( final RelationshipType relType )
         {
             final String name = relType.name();
@@ -139,6 +146,22 @@ public class NeoGraphMenu
         }
 
         /**
+         * Create a "create relationship type" action set. The actions will
+         * first create a relationship type, then use it in an action.
+         * @param relTypesProvider
+         *            relationship types provider to use
+         */
+        public ActionSet( final RelationshipTypesProvider relTypesProvider )
+        {
+            addRel = new NewRelationshipTypeAction( relTypesProvider,
+                NodeSpaceAction.RELATIONSHIP, graphView );
+            addOut = new NewRelationshipTypeAction( relTypesProvider,
+                NodeSpaceAction.OUTGOING_NODE, graphView );
+            addIn = new NewRelationshipTypeAction( relTypesProvider,
+                NodeSpaceAction.INCOMING_NODE, graphView );
+        }
+
+        /**
          * Add action set as last item in menu managers.
          */
         public void addLast()
@@ -148,6 +171,11 @@ public class NeoGraphMenu
             addInNodeMenuMgr.add( addIn );
         }
 
+        /**
+         * Add action set at the specified position.
+         * @param index
+         *            position of addition
+         */
         public void addAt( int index )
         {
             addRelMenuMgr.insert( index, new ActionContributionItem( addRel ) );
@@ -157,6 +185,15 @@ public class NeoGraphMenu
                 .insert( index, new ActionContributionItem( addIn ) );
         }
 
+        /**
+         * Enable the different actions in the set.
+         * @param rel
+         *            enable create relationship
+         * @param out
+         *            enable create outgoing relationships and node
+         * @param in
+         *            enable create incoming relationships and node
+         */
         public void setEnabled( boolean rel, boolean out, boolean in )
         {
             addRel.setEnabled( rel );
@@ -165,6 +202,9 @@ public class NeoGraphMenu
         }
     }
 
+    /**
+     * A map to keep the actions sorted by relationship type name.
+     */
     private final SortedMap<String,ActionSet> actionMap = new TreeMap<String,ActionSet>();
 
     /**
@@ -174,6 +214,8 @@ public class NeoGraphMenu
 
     private final NeoGraphViewPart graphView;
     private final GraphViewer graphViewer;
+
+    private final ActionSet addNewActionSet;
 
     /**
      * The go back action.
@@ -188,11 +230,20 @@ public class NeoGraphMenu
      * The decrease traversal depth action.
      */
     private final DecreaseTraversalDepthAction decAction;
+    /**
+     * The increase traversal depth action.
+     */
     private final IncreaseTraversalDepthAction incAction;
-    private final DeleteAction deleteAction;
-    private final CommitAction commitAction;
 
+    private final ShowReferenceNodeAction refNodeAction;
+    private final RefreshAction refreshAction;
+
+    private final DeleteAction deleteAction;
+
+    private final CommitAction commitAction;
     private final RollbackAction rollbackAction;
+
+    // menu managers
     private final MenuManager addRelMenuMgr = new MenuManager(
         Actions.ADD_RELATIONSHIP.label(), Actions.ADD_RELATIONSHIP.icon()
             .descriptor(), "addRelSubmenu" );
@@ -203,15 +254,34 @@ public class NeoGraphMenu
         Actions.ADD_INCOMING_NODE.label(), Actions.ADD_INCOMING_NODE.icon()
             .descriptor(), "addInNodeSubmenu" );
 
+    /**
+     * Colored images for the different relationship types.
+     */
     private final Map<RelationshipType,ImageDescriptor> relTypeImages = new HashMap<RelationshipType,ImageDescriptor>();
+    /**
+     * Default image when color is off.
+     */
     private final static ImageDescriptor RELTYPES_DEFAULT_IMG;
-    private final ShowReferenceNodeAction refNodeAction;
-    private final RefreshAction refreshAction;
-    private final NewRelationshipTypeAction newRelTypeAction;
+    /**
+     * Separator in menus.
+     */
+    private static final Separator SEPARATOR = new Separator();
 
+    /**
+     * Keep state of relationship colors.
+     */
     private boolean showRelationshipColors = ShowRelationshipColorsAction.DEFAULT_STATE;
+    /**
+     * Enabled state of add relationship actions.
+     */
     private boolean addState = false;
+    /**
+     * Enabled state of add outgoing relationships actions.
+     */
     private boolean outState = false;
+    /**
+     * Enabled state of add incoming relationships actions.
+     */
     private boolean inState = false;
 
     static
@@ -227,10 +297,15 @@ public class NeoGraphMenu
         RELTYPES_DEFAULT_IMG = ImageDescriptor.createFromImage( image );
     }
 
+    /**
+     * Create a menu for the given Neo graph view.
+     * @param graphView
+     *            graph view to create menu parts for
+     */
     public NeoGraphMenu( final NeoGraphViewPart graphView )
     {
         this.graphView = graphView;
-        this.graphViewer = graphView.getViewer();
+        graphViewer = graphView.getViewer();
         deleteAction = new DeleteAction( graphView );
         backAction = new GoBackAction( graphView );
         forwardAction = new GoForwardAction( graphView );
@@ -240,63 +315,107 @@ public class NeoGraphMenu
         rollbackAction = new RollbackAction( graphView );
         refNodeAction = new ShowReferenceNodeAction( graphView );
         refreshAction = new RefreshAction( graphView );
-        newRelTypeAction = new NewRelationshipTypeAction(
-            RelationshipTypesProviderWrapper.getInstance() );
+        RelationshipTypesProvider relTypesProvider = RelationshipTypesProviderWrapper
+            .getInstance();
+        addNewActionSet = new ActionSet( relTypesProvider );
         makeContributions();
         registerChangeHandlers();
     }
 
-    public void setEnableDeleteAction( boolean enabled )
+    /**
+     * Enable delete actions.
+     * @param enabled
+     */
+    public void setEnableDeleteAction( final boolean enabled )
     {
         deleteAction.setEnabled( enabled );
     }
 
-    public void setEnabledRelActions( boolean add, boolean out, boolean in )
+    /**
+     * Enable relatinship actions.
+     * @param add
+     *            enable add relationship
+     * @param out
+     *            enable add outgoing reltionships
+     * @param in
+     *            enable add incoming relationships
+     */
+    public void setEnabledRelActions( final boolean add, final boolean out,
+        final boolean in )
     {
+        // preserve state for use on newly created actions sets
         this.addState = add;
         this.outState = out;
         this.inState = in;
+        addNewActionSet.setEnabled( add, out, in );
+
         for ( ActionSet actionSet : actionMap.values() )
         {
             actionSet.setEnabled( add, out, in );
         }
     }
 
+    /**
+     * Enable decrement traversal depth action.
+     * @param enabled
+     */
     public void setEnabledDecAction( boolean enabled )
     {
         decAction.setEnabled( enabled );
     }
 
+    /**
+     * Enable go back action.
+     * @param enabled
+     */
     public void setEnabledBackAction( boolean enabled )
     {
         backAction.setEnabled( enabled );
     }
 
+    /**
+     * Enable go forward action.
+     * @param enabled
+     */
     public void setEnabledForwardAction( boolean enabled )
     {
         forwardAction.setEnabled( enabled );
     }
 
+    /**
+     * Enable commit action.
+     * @param enabled
+     */
     public void setEnabledCommitAction( boolean enabled )
     {
         commitAction.setEnabled( enabled );
     }
 
+    /**
+     * Enable roll back action.
+     * @param enabled
+     */
     public void setEnabledRollbackAction( boolean enabled )
     {
         rollbackAction.setEnabled( enabled );
     }
 
+    /**
+     * Clear images created for the relationship types.
+     */
+    public void clearImages()
+    {
+        relTypeImages.clear();
+    }
+
+    /**
+     * Register listeners.
+     */
     private void registerChangeHandlers()
     {
         RelationshipTypesProviderWrapper.getInstance().addTypeChangeListener(
             new RelTypesChangeHandler() );
         graphView.addRelColorChangeListener( new RelTypesColorChangeHandler() );
-    }
-
-    public void clearImages()
-    {
-        relTypeImages.clear();
     }
 
     /**
@@ -309,14 +428,17 @@ public class NeoGraphMenu
             .getToolBarManager();
         IMenuManager mm = graphView.getViewSite().getActionBars()
             .getMenuManager();
+        MenuManager cm = new MenuManager();
+        Menu menu = cm.createContextMenu( graphViewer.getControl() );
+        graphViewer.getControl().setMenu( menu );
 
-        createContextMenu();
+        contributeContextActions( cm );
 
         contributeTransactionActions( tm );
 
         nodeSpaceActions( tm );
 
-        mm.add( new Separator() );
+        mm.add( SEPARATOR );
 
         // navigation actions
         contributeNavigationActions( tm );
@@ -327,11 +449,11 @@ public class NeoGraphMenu
         // layout actions
         contributeLayoutActions( tm, mm );
         // separator
-        mm.add( new Separator() );
+        mm.add( SEPARATOR );
         // label settings actions
         contributeLabelActions( mm );
         // separator
-        mm.add( new Separator() );
+        mm.add( SEPARATOR );
         // platform actions
         contributePlatformActions( mm );
         // printing
@@ -339,25 +461,29 @@ public class NeoGraphMenu
             ActionFactory.PRINT.getId(), new PrintGraphAction( graphView ) );
     }
 
+    /**
+     * Add node space actions to the tool bar.
+     * @param tm
+     *            current tool bar manager
+     */
     private void nodeSpaceActions( IToolBarManager tm )
     {
         tm.add( deleteAction );
-        tm.add( new Separator() );
+        tm.add( SEPARATOR );
     }
 
     /**
      * Create a context menu.
+     * @param cm
+     *            context menu
      */
-    private void createContextMenu()
+    private void contributeContextActions( MenuManager cm )
     {
-        MenuManager menuMgr = new MenuManager();
-        menuMgr.add( addRelMenuMgr );
-        menuMgr.add( addOutNodeMenuMgr );
-        menuMgr.add( addInNodeMenuMgr );
-        menuMgr.add( newRelTypeAction );
-        menuMgr.add( deleteAction );
-        Menu menu = menuMgr.createContextMenu( graphViewer.getControl() );
-        graphViewer.getControl().setMenu( menu );
+        cm.add( addRelMenuMgr );
+        cm.add( addOutNodeMenuMgr );
+        cm.add( addInNodeMenuMgr );
+        cm.add( SEPARATOR );
+        cm.add( deleteAction );
     }
 
     /**
@@ -368,7 +494,7 @@ public class NeoGraphMenu
     {
         tm.add( commitAction );
         tm.add( rollbackAction );
-        tm.add( new Separator() );
+        tm.add( SEPARATOR );
     }
 
     /**
@@ -386,7 +512,7 @@ public class NeoGraphMenu
 
             tm.add( refreshAction );
 
-            tm.add( new Separator() );
+            tm.add( SEPARATOR );
         }
     }
 
@@ -402,7 +528,7 @@ public class NeoGraphMenu
 
             tm.add( decAction );
 
-            tm.add( new Separator() );
+            tm.add( SEPARATOR );
         }
     }
 
@@ -416,7 +542,7 @@ public class NeoGraphMenu
         {
             ZoomAction zoomAction = new ZoomAction( graphView );
             tm.add( zoomAction );
-            tm.add( new Separator() );
+            tm.add( SEPARATOR );
         }
     }
 
@@ -493,7 +619,7 @@ public class NeoGraphMenu
                 new ShowRelationshipDirectionsAction( graphView ) );
             // separator
             {
-                mm.add( new Separator() );
+                mm.add( SEPARATOR );
             }
             // names actions
             mm.appendToGroup( labelsGroupName, new ShowNodeLabelAction(
@@ -543,21 +669,29 @@ public class NeoGraphMenu
         {
             actionMap.put( relType.name(), new ActionSet( relType ) );
         }
+        addNewActionSet.addLast();
         for ( ActionSet actionSet : actionMap.values() )
         {
             actionSet.addLast();
         }
     }
 
+    /**
+     * Add a new relationship type to the menus.
+     * @param relType
+     */
     private void addRelType( RelationshipType relType )
     {
         final ActionSet actionSet = new ActionSet( relType );
         actionSet.setEnabled( addState, outState, inState );
         final String name = relType.name();
         actionMap.put( name, actionSet );
-        actionSet.addAt( actionMap.headMap( name ).size() );
+        actionSet.addAt( actionMap.headMap( name ).size() + 1 );
     }
 
+    /**
+     * Handle new relationship type created.
+     */
     private class RelTypesChangeHandler implements NeoclipseEventListener
     {
         public void stateChanged( NeoclipseEvent event )
@@ -569,15 +703,21 @@ public class NeoGraphMenu
         }
     }
 
+    /**
+     * Handle change in color setting.
+     */
     private class RelTypesColorChangeHandler implements NeoclipseEventListener
     {
         public void stateChanged( NeoclipseEvent event )
         {
             if ( event.getSource() instanceof Boolean )
             {
-                showRelationshipColors = Boolean.TRUE
-                    .equals( event.getSource() );
-                loadDynamicMenus();
+                boolean newSetting = Boolean.TRUE.equals( event.getSource() );
+                if ( newSetting != showRelationshipColors )
+                {
+                    showRelationshipColors = newSetting;
+                    loadDynamicMenus();
+                }
             }
         }
     }

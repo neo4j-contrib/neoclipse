@@ -137,12 +137,20 @@ public class NeoGraphViewPart extends ViewPart implements
         PlatformUI.getWorkbench().addWindowListener( new WindowListener() );
     }
 
+    /**
+     * Get current relationship type view.
+     * @return
+     */
     public RelationshipTypeView getRelTypeView()
     {
         return relTypeView;
     }
 
-    private void setRelTypeView( RelationshipTypeView relTypeView )
+    /**
+     * Set the current relationship type view.
+     * @param relTypeView
+     */
+    private void setRelTypeView( final RelationshipTypeView relTypeView )
     {
         this.relTypeView = relTypeView;
     }
@@ -153,7 +161,8 @@ public class NeoGraphViewPart extends ViewPart implements
     private class WindowListener implements IWindowListener
     {
         /**
-         * Make sure to open the help view after this view opened itself.
+         * Make sure to open the help view after this view opened itself. Load
+         * the dynamic menus (we don't want to load them earlier).
          */
         public void windowOpened( IWorkbenchWindow window )
         {
@@ -234,9 +243,7 @@ public class NeoGraphViewPart extends ViewPart implements
         getLabelProvider().setShowRelationshipColors( state );
         relColorChange.notifyListeners( new NeoclipseEvent( Boolean
             .valueOf( state ) ) );
-        // TODO use listeners for those?
         refreshPreserveLayout();
-        // loadDynamicMenus(); //fixed
     }
 
     /**
@@ -535,6 +542,11 @@ public class NeoGraphViewPart extends ViewPart implements
         refreshStatusBar();
     }
 
+    /**
+     * Refresh the graph view.
+     * @param element
+     * @param updateLabels
+     */
     public void refresh( Object element, boolean updateLabels )
     {
         disableDelete();
@@ -542,6 +554,10 @@ public class NeoGraphViewPart extends ViewPart implements
         refreshStatusBar();
     }
 
+    /**
+     * Disable the delete action. (we need this in some places to avoid ending
+     * up in an inconsistent state due to bugs in the underlying frameworks)
+     */
     private void disableDelete()
     {
         currentSelectedNodes.clear();
@@ -637,6 +653,10 @@ public class NeoGraphViewPart extends ViewPart implements
         }
     }
 
+    /**
+     * Update UI according to the state of the database.
+     * @param dirty
+     */
     public void setDirty( boolean dirty )
     {
         menu.setEnabledCommitAction( dirty );
@@ -672,7 +692,6 @@ public class NeoGraphViewPart extends ViewPart implements
 
     /**
      * Class to handle changes in selection of this view.
-     * @author Anders Nawroth
      */
     private class SelectionChangeHandler implements ISelectionListener
     {
@@ -723,11 +742,19 @@ public class NeoGraphViewPart extends ViewPart implements
         }
     }
 
+    /**
+     * Get current selected nodes.
+     * @return
+     */
     public List<Node> getCurrentSelectedNodes()
     {
         return currentSelectedNodes;
     }
 
+    /**
+     * Get current selected relationships.
+     * @return
+     */
     public List<Relationship> getCurrentSelectedRels()
     {
         return currentSelectedRels;

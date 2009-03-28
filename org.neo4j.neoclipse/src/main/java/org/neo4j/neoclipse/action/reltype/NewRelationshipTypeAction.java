@@ -14,26 +14,60 @@
 package org.neo4j.neoclipse.action.reltype;
 
 import org.eclipse.jface.dialogs.InputDialog;
+import org.neo4j.api.core.RelationshipType;
 import org.neo4j.neoclipse.action.AbstractBaseAction;
 import org.neo4j.neoclipse.action.Actions;
+import org.neo4j.neoclipse.neo.NodeSpaceUtil;
 import org.neo4j.neoclipse.reltype.RelationshipTypesProvider;
+import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**
  * Action to create a new RelationshipType. The new type will be persisted upon
- * use in a relationship.
+ * use in a relationship. By using a different constructor you can also ad an
+ * extra action that changes the node space, using the new relationship type.
  * @author Anders Nawroth
  */
 public class NewRelationshipTypeAction extends AbstractBaseAction
 {
-    private static final String NEW_RELTYPE_DIALOG_TEXT = "Please enter the name of the new relationships type";
+    /**
+     * Node space actions. NONE: do nothing, RELATIONSHIP: add a relationship
+     * between two nodes, OUTGOING_NODE: add a new node as end node,
+     * INCOMING_NODE: add a new node as start node.
+     */
+    public enum NodeSpaceAction
+    {
+        NONE, RELATIONSHIP, OUTGOING_NODE, INCOMING_NODE
+    }
+
+    private static final String NEW_RELTYPE_DIALOG_TEXT = "Please enter the name of the new relationship type";
     private static final String NEW_RELTYPE_DIALOG_TITLE = "New relationship type entry";
     protected static final int OK = 0;
     private RelationshipTypesProvider provider;
+    private NodeSpaceAction extraAction = NodeSpaceAction.NONE;
+    private NeoGraphViewPart graphView;
 
-    public NewRelationshipTypeAction( RelationshipTypesProvider provider )
+    /**
+     * Create new relationship type the standard way.
+     * @param provider
+     */
+    public NewRelationshipTypeAction( final RelationshipTypesProvider provider )
     {
         super( Actions.NEW_RELATIONSHIP_TYPE );
         this.provider = provider;
+    }
+
+    /**
+     * Create a relationship and add an node space action as well.
+     * @param provider
+     * @param nodeSpaceAction
+     * @param graphView
+     */
+    public NewRelationshipTypeAction( final RelationshipTypesProvider provider,
+        final NodeSpaceAction nodeSpaceAction, final NeoGraphViewPart graphView )
+    {
+        this( provider );
+        this.extraAction = nodeSpaceAction;
+        this.graphView = graphView;
     }
 
     @Override
@@ -43,7 +77,21 @@ public class NewRelationshipTypeAction extends AbstractBaseAction
             NEW_RELTYPE_DIALOG_TEXT, null, null );
         if ( input.open() == OK && input.getReturnCode() == OK )
         {
-            provider.addFakeType( input.getValue() );
+            RelationshipType relType = provider.addFakeType( input.getValue() );
+            switch ( extraAction )
+            {
+                case NONE:
+                    return;
+                case RELATIONSHIP:
+                    NodeSpaceUtil.addRelationshipAction( relType, graphView );
+                    break;
+                case OUTGOING_NODE:
+                    NodeSpaceUtil.addOutgoingNodeAction( relType, graphView );
+                    break;
+                case INCOMING_NODE:
+                    NodeSpaceUtil.addIncomingNodeAction( relType, graphView );
+                    break;
+            }
         }
     }
 }
