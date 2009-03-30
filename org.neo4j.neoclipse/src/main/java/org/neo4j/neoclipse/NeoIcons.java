@@ -36,7 +36,8 @@ public enum NeoIcons
     PROPERTIES_ENABLED( "properties_enabled", path( "enabled/properties.gif" ) ),
     PROPERTIES_DISABLED( "properties_disabled",
         path( "disabled/properties.gif" ) ),
-    GRAPH( "graph", path( "obj16/neo-16.png" ) ),
+    GRAPH_ENABLED( "graph_enabled", path( "enabled/neo.gif" ) ),
+    GRAPH_DISABLED( "graph_disabled", path( "disabled/neo.gif" ) ),
     HELP_VIEW( "help_view", path( "obj16/help_view.gif" ) ),
     SEARCH_ENABLED( "search_enabled", path( "enabled/search.gif" ) ),
     SEARCH_DISABLED( "search_disabled", path( "disabled/search.gif" ) ),
@@ -99,10 +100,10 @@ public enum NeoIcons
         path( "disabled/highlight-outgoing.gif" ) ), INCOMING( "incoming",
         path( "obj16/incoming.gif" ) ), OUTGOING( "outgoing",
         path( "obj16/outgoing.gif" ) ), CLEAR_ENABLED( "clear_enabled",
-        path( "enabled/clear.gif" ) ),
-    CLEAR_DISABLED( "clear_disabled", path( "disabled/clear.gif" ) ),
-    ICON_INCOMING( "icon_in_enabled", path( "enabled/icon-incoming.gif" ) ),
-    ICON_OUTGOING( "icon_out_enabled", path( "enabled/icon-outgoing.gif" ) ),
+        path( "enabled/clear.gif" ) ), CLEAR_DISABLED( "clear_disabled",
+        path( "disabled/clear.gif" ) ), ICON_INCOMING( "icon_in_enabled",
+        path( "enabled/icon-incoming.gif" ) ), ICON_OUTGOING(
+        "icon_out_enabled", path( "enabled/icon-outgoing.gif" ) ),
     // filter
     FILTER_ENABLED( "filter_enabled", path( "enabled/filter.gif" ) ),
     FILTER_DISABLED( "filter_disabled", path( "disabled/filter.gif" ) ),
@@ -125,9 +126,11 @@ public enum NeoIcons
         path( "types/type-longs.gif" ) ), TYPE_SHORTS( "shorts",
         path( "types/type-shorts.gif" ) ), TYPE_STRINGS( "strings",
         path( "types/type-strings.gif" ) ), TYPE_ID( "id",
-        path( "obj16/key.gif" ) ), TYPES( "types", path( "types/types.gif" ) ),
-    NEW_TYPE_ENABLED( "new_type_enabled", path( "enabled/add-type.gif" ) ),
-    NEW_TYPE_DISABLED( "new_type_disabled", path( "disabled/add-type.gif" ) );
+        path( "obj16/key.gif" ) ), TYPES_ENABLED( "types_enabled",
+        path( "enabled/types.gif" ) ), TYPES_DISABLED( "types_disabled",
+        path( "disabled/types.gif" ) ), NEW_TYPE_ENABLED( "new_type_enabled",
+        path( "enabled/add-type.gif" ) ), NEW_TYPE_DISABLED(
+        "new_type_disabled", path( "disabled/add-type.gif" ) );
 
     private static final String ICON_LOCATION = "icons/";
     private static ImageRegistry reg = null;

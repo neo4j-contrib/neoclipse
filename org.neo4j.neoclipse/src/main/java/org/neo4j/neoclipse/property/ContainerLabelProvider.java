@@ -25,7 +25,7 @@ public class ContainerLabelProvider implements ILabelProvider
     {
         if ( value instanceof RelationshipType )
         {
-            return NeoIcons.TYPES.image();
+            return NeoIcons.TYPES_ENABLED.image();
         }
         return NeoIcons.TYPE_ID.image();
     }

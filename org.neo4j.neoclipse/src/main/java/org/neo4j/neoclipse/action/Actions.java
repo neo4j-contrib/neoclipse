@@ -26,8 +26,9 @@ public enum Actions
         NeoIcons.PREFERENCES_DISABLED ),
     PROPERTIES( "Properties view", NeoIcons.PROPERTIES_ENABLED,
         NeoIcons.PROPERTIES_DISABLED ),
-    GRAPH_VIEW( "Graph view", NeoIcons.GRAPH ),
-    RELTYPES_VIEW( "Relationship types view", NeoIcons.TYPES ),
+    GRAPH_VIEW( "Graph view", NeoIcons.GRAPH_ENABLED, NeoIcons.GRAPH_DISABLED ),
+    RELTYPES_VIEW( "Relationship types view", NeoIcons.TYPES_ENABLED,
+        NeoIcons.TYPES_DISABLED ),
     HELP_VIEW( "Help view", NeoIcons.HELP_VIEW ),
     SEARCH( "Search", NeoIcons.SEARCH_ENABLED, NeoIcons.SEARCH_DISABLED ),
     // add rel
