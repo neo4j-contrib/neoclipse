@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?eclipse version="3.2"?>
+<?eclipse version="3.4"?>
 <plugin>
    <extension
          point="org.eclipse.ui.views">
@@ -28,6 +28,9 @@
       <initializer
             class="org.neo4j.neoclipse.preference.NeoPreferenceInitializer">
       </initializer>
+      <initializer
+            class="org.neo4j.neoclipse.preference.NeoDecoratorPreferenceInitializer">
+      </initializer>
    </extension>
    <extension
          point="org.eclipse.ui.preferencePages">
@@ -35,6 +38,12 @@
             class="org.neo4j.neoclipse.preference.NeoPreferencePage"
             id="org.neo4j.neoclipse.preference.NeoPreferencePage"
             name="Neo4j">
+      </page>
+      <page
+            class="org.neo4j.neoclipse.preference.NeoDecoratorPreferencePage"
+            id="org.neo4j.neoclipse.preference.NeoDecoratorPreferencePage"
+            name="Graph Decorations"
+            category="org.neo4j.neoclipse.preference.NeoPreferencePage">
       </page>
    </extension>
    <extension

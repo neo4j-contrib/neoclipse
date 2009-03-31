@@ -30,9 +30,5 @@ public class NeoPreferenceInitializer extends AbstractPreferenceInitializer
     {
         IPreferenceStore pref = Activator.getDefault().getPreferenceStore();
         pref.setDefault( NeoPreferences.DATABASE_LOCATION, "" );
-        pref.setDefault( NeoPreferences.NODE_PROPERTY_NAMES, "" );
-        pref.setDefault( NeoPreferences.RELATIONSHIP_PROPERTY_NAMES, "" );
-        pref.setDefault( NeoPreferences.NODE_ICON_LOCATION, "" );
-        pref.setDefault( NeoPreferences.NODE_ICON_PROPERTY_NAMES, "" );
     }
 }

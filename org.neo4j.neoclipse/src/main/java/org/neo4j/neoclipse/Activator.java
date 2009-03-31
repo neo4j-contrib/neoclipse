@@ -163,4 +163,22 @@ public class Activator extends AbstractUIPlugin
         }
         return 1;
     }
+
+    /**
+     * Show the Neo4j Decorator preference page.
+     * @param filtered
+     *            only show Neo4j properties when true
+     * @return
+     */
+    public int showDecoratorPreferenceDialog( final boolean filtered )
+    {
+        PreferenceDialog pref = PreferencesUtil.createPreferenceDialogOn( null,
+            "org.neo4j.neoclipse.preference.NeoDecoratorPreferencePage",
+            (filtered ? new String[] {} : null), null );
+        if ( pref != null )
+        {
+            return pref.open();
+        }
+        return 1;
+    }
 }

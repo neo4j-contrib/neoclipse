@@ -51,7 +51,7 @@ import org.neo4j.neoclipse.action.decorate.rel.ShowRelationshipLabelAction;
 import org.neo4j.neoclipse.action.decorate.rel.ShowRelationshipTypesAction;
 import org.neo4j.neoclipse.decorate.SimpleGraphDecorator;
 import org.neo4j.neoclipse.decorate.SimpleGraphDecorator.Settings;
-import org.neo4j.neoclipse.preference.NeoPreferences;
+import org.neo4j.neoclipse.preference.NeoDecoratorPreferences;
 import org.neo4j.neoclipse.reltype.RelationshipTypeControl;
 import org.neo4j.neoclipse.reltype.RelationshipTypeEditingSupport;
 
@@ -311,9 +311,9 @@ public class NeoGraphLabelProvider extends LabelProvider implements
 
     private final void refreshNodeIconLocation()
     {
-        settings
-            .setNodeIconLocation( Activator.getDefault().getPreferenceStore()
-                .getString( NeoPreferences.NODE_ICON_LOCATION ) );
+        settings.setNodeIconLocation( Activator.getDefault()
+            .getPreferenceStore().getString(
+                NeoDecoratorPreferences.NODE_ICON_LOCATION ) );
     }
 
     /**
@@ -328,8 +328,8 @@ public class NeoGraphLabelProvider extends LabelProvider implements
     private final void refreshNodePropertyNames()
     {
         settings.setNodePropertyNames( Activator.getDefault()
-            .getPreferenceStore()
-            .getString( NeoPreferences.NODE_PROPERTY_NAMES ) );
+            .getPreferenceStore().getString(
+                NeoDecoratorPreferences.NODE_PROPERTY_NAMES ) );
     }
 
     /**
@@ -346,7 +346,7 @@ public class NeoGraphLabelProvider extends LabelProvider implements
     {
         settings.setRelPropertyNames( Activator.getDefault()
             .getPreferenceStore().getString(
-                NeoPreferences.RELATIONSHIP_PROPERTY_NAMES ) );
+                NeoDecoratorPreferences.RELATIONSHIP_PROPERTY_NAMES ) );
     }
 
     /**
@@ -363,7 +363,7 @@ public class NeoGraphLabelProvider extends LabelProvider implements
     {
         settings.setNodeIconPropertyNames( Activator.getDefault()
             .getPreferenceStore().getString(
-                NeoPreferences.NODE_ICON_PROPERTY_NAMES ) );
+                NeoDecoratorPreferences.NODE_ICON_PROPERTY_NAMES ) );
     }
 
     /**
@@ -639,22 +639,24 @@ public class NeoGraphLabelProvider extends LabelProvider implements
     public boolean propertyChanged( PropertyChangeEvent event )
     {
         String property = event.getProperty();
-        if ( NeoPreferences.NODE_PROPERTY_NAMES.equals( property ) )
+        if ( NeoDecoratorPreferences.NODE_PROPERTY_NAMES.equals( property ) )
         {
             readNodePropertyNames();
             return true;
         }
-        else if ( NeoPreferences.RELATIONSHIP_PROPERTY_NAMES.equals( property ) )
+        else if ( NeoDecoratorPreferences.RELATIONSHIP_PROPERTY_NAMES
+            .equals( property ) )
         {
             readRelPropertyNames();
             return true;
         }
-        else if ( NeoPreferences.NODE_ICON_LOCATION.equals( property ) )
+        else if ( NeoDecoratorPreferences.NODE_ICON_LOCATION.equals( property ) )
         {
             readNodeIconLocation();
             return true;
         }
-        else if ( NeoPreferences.NODE_ICON_PROPERTY_NAMES.equals( property ) )
+        else if ( NeoDecoratorPreferences.NODE_ICON_PROPERTY_NAMES
+            .equals( property ) )
         {
             readNodeIconPropertyNames();
             return true;

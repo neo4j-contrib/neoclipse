@@ -13,22 +13,28 @@
  */
 package org.neo4j.neoclipse.preference;
 
+import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
+import org.eclipse.jface.preference.IPreferenceStore;
+import org.neo4j.neoclipse.Activator;
+
 /**
- * Defines the preferences of the neo plugin.
+ * Initializes neo preferences with their default values.
  * @author Peter H&auml;nsgen
+ * @author Anders Nawroth
  */
-public final class NeoPreferences
+public class NeoDecoratorPreferenceInitializer extends
+    AbstractPreferenceInitializer
 {
     /**
-     * Preventing instantiation.
+     * Initializes the neo preferences.
      */
-    private NeoPreferences()
+    public void initializeDefaultPreferences()
     {
-        // preventing instantiation
+        IPreferenceStore pref = Activator.getDefault().getPreferenceStore();
+        pref.setDefault( NeoDecoratorPreferences.NODE_PROPERTY_NAMES, "" );
+        pref.setDefault( NeoDecoratorPreferences.RELATIONSHIP_PROPERTY_NAMES,
+            "" );
+        pref.setDefault( NeoDecoratorPreferences.NODE_ICON_LOCATION, "" );
+        pref.setDefault( NeoDecoratorPreferences.NODE_ICON_PROPERTY_NAMES, "" );
     }
-
-    /**
-     * The location of the neo database in the file system.
-     */
-    public static final String DATABASE_LOCATION = "databaseLocation";
 }

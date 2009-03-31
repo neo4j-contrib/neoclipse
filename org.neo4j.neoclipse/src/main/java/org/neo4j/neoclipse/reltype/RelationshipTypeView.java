@@ -66,7 +66,7 @@ import org.neo4j.neoclipse.neo.NeoServiceEvent;
 import org.neo4j.neoclipse.neo.NeoServiceEventListener;
 import org.neo4j.neoclipse.neo.NeoServiceStatus;
 import org.neo4j.neoclipse.neo.NodeSpaceUtil;
-import org.neo4j.neoclipse.preference.NeoPreferences;
+import org.neo4j.neoclipse.preference.NeoDecoratorPreferences;
 import org.neo4j.neoclipse.view.NeoGraphLabelProvider;
 import org.neo4j.neoclipse.view.NeoGraphLabelProviderWrapper;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
@@ -409,7 +409,7 @@ public class RelationshipTypeView extends ViewPart implements
             MessageDialog
                 .openInformation( null, "Icon location problem",
                     "Please make sure that the node icon location is correctly set." );
-            Activator.getDefault().showPreferenceDialog( true );
+            Activator.getDefault().showDecoratorPreferenceDialog( true );
             dest = getIconLocation();
             if ( !dest.exists() || !dest.isDirectory() )
             {
@@ -491,7 +491,7 @@ public class RelationshipTypeView extends ViewPart implements
     private File getIconLocation()
     {
         String location = Activator.getDefault().getPreferenceStore()
-            .getString( NeoPreferences.NODE_ICON_LOCATION );
+            .getString( NeoDecoratorPreferences.NODE_ICON_LOCATION );
         File dest = new File( location );
         return dest;
     }
