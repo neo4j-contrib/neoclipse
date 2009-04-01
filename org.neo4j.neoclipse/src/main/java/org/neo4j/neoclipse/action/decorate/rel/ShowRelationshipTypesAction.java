@@ -27,7 +27,7 @@ public class ShowRelationshipTypesAction extends AbstractGraphAction
     /**
      * Default state for this view menu alternative.
      */
-    public static final boolean DEFAULT_STATE = false;
+    public static final boolean DEFAULT_STATE = true;
 
     /**
      * The constructor.
@@ -43,7 +43,8 @@ public class ShowRelationshipTypesAction extends AbstractGraphAction
      */
     public void run()
     {
-        graphView.getLabelProvider().setShowRelationshipTypes( isChecked() );
+        graphView.getLabelProvider().getViewSettings()
+            .setShowRelationshipTypes( isChecked() );
         graphView.refreshPreserveLayout();
     }
 }

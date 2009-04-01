@@ -49,10 +49,12 @@ import org.neo4j.neoclipse.action.decorate.node.ShowNodeColorsAction;
 import org.neo4j.neoclipse.action.decorate.node.ShowNodeIconsAction;
 import org.neo4j.neoclipse.action.decorate.node.ShowNodeIdsAction;
 import org.neo4j.neoclipse.action.decorate.node.ShowNodeLabelAction;
+import org.neo4j.neoclipse.action.decorate.node.ShowNodePropertiesAction;
 import org.neo4j.neoclipse.action.decorate.rel.ShowRelationshipColorsAction;
 import org.neo4j.neoclipse.action.decorate.rel.ShowRelationshipDirectionsAction;
 import org.neo4j.neoclipse.action.decorate.rel.ShowRelationshipIdsAction;
 import org.neo4j.neoclipse.action.decorate.rel.ShowRelationshipLabelAction;
+import org.neo4j.neoclipse.action.decorate.rel.ShowRelationshipPropertiesAction;
 import org.neo4j.neoclipse.action.decorate.rel.ShowRelationshipTypesAction;
 import org.neo4j.neoclipse.action.layout.ShowGridLayoutAction;
 import org.neo4j.neoclipse.action.layout.ShowHorizontalShiftLayoutAction;
@@ -602,16 +604,19 @@ public class NeoGraphMenu
             String labelsGroupName = "labels";
             GroupMarker labelsGroup = new GroupMarker( labelsGroupName );
             mm.add( labelsGroup );
+            // relationship properties actions
+            mm.appendToGroup( labelsGroupName,
+                new ShowRelationshipPropertiesAction( graphView ) );
             // relationship types actions
             mm.appendToGroup( labelsGroupName, new ShowRelationshipTypesAction(
-                graphView ) );
-            // relationship types actions
-            mm.appendToGroup( labelsGroupName, new ShowRelationshipLabelAction(
                 graphView ) );
             // relationship id's actions
             mm.appendToGroup( labelsGroupName, new ShowRelationshipIdsAction(
                 graphView ) );
-            // relationship types actions
+            // relationship labels actions
+            mm.appendToGroup( labelsGroupName, new ShowRelationshipLabelAction(
+                graphView ) );
+            // relationship colors actions
             mm.appendToGroup( labelsGroupName,
                 new ShowRelationshipColorsAction( graphView ) );
             // relationship directions actions
@@ -621,12 +626,15 @@ public class NeoGraphMenu
             {
                 mm.add( SEPARATOR );
             }
-            // names actions
-            mm.appendToGroup( labelsGroupName, new ShowNodeLabelAction(
+            // properties action
+            mm.appendToGroup( labelsGroupName, new ShowNodePropertiesAction(
                 graphView ) );
             // relationship id's actions
             mm.appendToGroup( labelsGroupName,
                 new ShowNodeIdsAction( graphView ) );
+            // names actions
+            mm.appendToGroup( labelsGroupName, new ShowNodeLabelAction(
+                graphView ) );
             // node colors actions
             mm.appendToGroup( labelsGroupName, new ShowNodeColorsAction(
                 graphView ) );
@@ -648,7 +656,7 @@ public class NeoGraphMenu
             @Override
             public void run()
             {
-                Activator.getDefault().showPreferenceDialog( true );
+                Activator.getDefault().showPreferenceDialog( false );
             }
         };
         Actions.PREFERENCES.initialize( preferencesAction );

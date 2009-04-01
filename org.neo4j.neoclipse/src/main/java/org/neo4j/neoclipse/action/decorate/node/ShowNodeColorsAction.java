@@ -43,7 +43,8 @@ public class ShowNodeColorsAction extends AbstractGraphAction
      */
     public void run()
     {
-        graphView.getLabelProvider().setShowNodeColors( isChecked() );
+        graphView.getLabelProvider().getViewSettings().setShowNodeColors(
+            isChecked() );
         graphView.refreshPreserveLayout();
     }
 }

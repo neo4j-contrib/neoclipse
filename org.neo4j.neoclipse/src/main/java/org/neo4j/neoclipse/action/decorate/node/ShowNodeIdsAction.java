@@ -43,7 +43,8 @@ public class ShowNodeIdsAction extends AbstractGraphAction
      */
     public void run()
     {
-        graphView.getLabelProvider().setShowNodeIds( isChecked() );
+        graphView.getLabelProvider().getViewSettings().setShowNodeIds(
+            isChecked() );
         graphView.refreshPreserveLayout();
     }
 }

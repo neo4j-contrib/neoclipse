@@ -43,7 +43,8 @@ public class ShowRelationshipDirectionsAction extends AbstractGraphAction
      */
     public void run()
     {
-        graphView.getLabelProvider().setShowArrows( isChecked() );
+        graphView.getLabelProvider().getViewSettings().setShowArrows(
+            isChecked() );
         graphView.refreshPreserveLayout();
     }
 }

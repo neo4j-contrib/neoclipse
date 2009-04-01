@@ -40,17 +40,9 @@ import org.neo4j.api.core.Relationship;
 import org.neo4j.api.core.RelationshipType;
 import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.NeoIcons;
-import org.neo4j.neoclipse.action.decorate.node.ShowNodeColorsAction;
-import org.neo4j.neoclipse.action.decorate.node.ShowNodeIconsAction;
-import org.neo4j.neoclipse.action.decorate.node.ShowNodeIdsAction;
-import org.neo4j.neoclipse.action.decorate.node.ShowNodeLabelAction;
-import org.neo4j.neoclipse.action.decorate.rel.ShowRelationshipColorsAction;
-import org.neo4j.neoclipse.action.decorate.rel.ShowRelationshipDirectionsAction;
-import org.neo4j.neoclipse.action.decorate.rel.ShowRelationshipIdsAction;
-import org.neo4j.neoclipse.action.decorate.rel.ShowRelationshipLabelAction;
-import org.neo4j.neoclipse.action.decorate.rel.ShowRelationshipTypesAction;
 import org.neo4j.neoclipse.decorate.SimpleGraphDecorator;
 import org.neo4j.neoclipse.decorate.SimpleGraphDecorator.Settings;
+import org.neo4j.neoclipse.decorate.SimpleGraphDecorator.ViewSettings;
 import org.neo4j.neoclipse.preference.NeoDecoratorPreferences;
 import org.neo4j.neoclipse.reltype.RelationshipTypeControl;
 import org.neo4j.neoclipse.reltype.RelationshipTypeEditingSupport;
@@ -65,42 +57,6 @@ public class NeoGraphLabelProvider extends LabelProvider implements
     ITableLabelProvider, ITableColorProvider, InputChangeListener
 {
     /**
-     * Keep track of relationship types display on/off.
-     */
-    private boolean showRelationshipTypes = ShowRelationshipTypesAction.DEFAULT_STATE;
-    /**
-     * Keep track of relationship names display on/off.
-     */
-    private boolean showRelationshipNames = ShowRelationshipLabelAction.DEFAULT_STATE;
-    /**
-     * Keep track of relationship id's display on/off.
-     */
-    private boolean showRelationshipIds = ShowRelationshipIdsAction.DEFAULT_STATE;
-    /**
-     * Keep track of relationship colors display on/off.
-     */
-    private boolean showRelationshipColors = ShowRelationshipColorsAction.DEFAULT_STATE;
-    /**
-     * Keep track of arrows display on/off.
-     */
-    private boolean showArrows = ShowRelationshipDirectionsAction.DEFAULT_STATE;
-    /**
-     * Keep track of node id's display on/off.
-     */
-    private boolean showNodeIds = ShowNodeIdsAction.DEFAULT_STATE;
-    /**
-     * Keep track of node names display on/off.
-     */
-    private boolean showNodeNames = ShowNodeLabelAction.DEFAULT_STATE;
-    /**
-     * Keep track of node icons display on/off.
-     */
-    private boolean showNodeIcons = ShowNodeIconsAction.DEFAULT_STATE;
-    /**
-     * Keep track of node colors display on/off.
-     */
-    private boolean showNodeColors = ShowNodeColorsAction.DEFAULT_STATE;
-    /**
      * Handler for node/relationship decoration..
      */
     private SimpleGraphDecorator graphDecorator;
@@ -108,6 +64,11 @@ public class NeoGraphLabelProvider extends LabelProvider implements
      * Settings for {@link SimpleGraphDecorator}
      */
     private final Settings settings = new Settings();
+    /**
+     * View settings for {@link SimpleGraphDecorator}
+     */
+    private final ViewSettings viewSettings = new ViewSettings();
+
     /**
      * Marked relationships.
      */
@@ -134,6 +95,14 @@ public class NeoGraphLabelProvider extends LabelProvider implements
             Direction.OUTGOING ) );
         // refresh relationship colors
         refreshGraphDecorator();
+    }
+
+    /**
+     * Get the current view settings.
+     */
+    public ViewSettings getViewSettings()
+    {
+        return viewSettings;
     }
 
     /**
@@ -216,7 +185,8 @@ public class NeoGraphLabelProvider extends LabelProvider implements
         if ( element instanceof Node )
         {
             Node node = (Node) element;
-            if ( showNodeIcons && !"".equals( settings.getNodeIconLocation() ) )
+            if ( viewSettings.isShowNodeIcons()
+                && !"".equals( settings.getNodeIconLocation() ) )
             {
                 return graphDecorator.getNodeImageFromProperty( node,
                     isReferenceNode( node ) );
@@ -237,52 +207,13 @@ public class NeoGraphLabelProvider extends LabelProvider implements
     {
         if ( element instanceof Node )
         {
-            StringBuilder str = new StringBuilder( 48 );
             Node node = (Node) element;
-            if ( !showNodeNames || settings.getNodePropertyNames().size() == 0 )
-            {
-                // don't look for the default property
-                str.append( graphDecorator.getNodeText( node,
-                    isReferenceNode( node ) ) );
-            }
-            else
-            {
-                // show the default property
-                str.append( graphDecorator.getNodeTextFromProperty( node,
-                    isReferenceNode( node ) ) );
-            }
-            if ( showNodeIds )
-            {
-                str.append( ' ' ).append( node.getId() );
-            }
-            return str.toString();
+            return graphDecorator.getNodeText( node, isReferenceNode( node ) );
         }
         else if ( element instanceof Relationship )
         {
-            StringBuilder str = new StringBuilder( 48 );
             Relationship rel = (Relationship) element;
-            if ( showRelationshipTypes )
-            {
-                str.append( graphDecorator.getRelationshipTypeText( rel ) );
-            }
-            if ( showRelationshipIds )
-            {
-                str.append( ' ' ).append( rel.getId() );
-            }
-            if ( showRelationshipNames )
-            {
-                String names = graphDecorator
-                    .getRelationshipNameTextFromProperty( rel );
-                if ( names != null )
-                {
-                    if ( str.length() > 0 )
-                    {
-                        str.append( ", " );
-                    }
-                    str.append( names );
-                }
-            }
-            return str.toString();
+            return graphDecorator.getRelationshipText( rel );
         }
         return element.toString();
     }
@@ -297,7 +228,7 @@ public class NeoGraphLabelProvider extends LabelProvider implements
 
     private final void refreshGraphDecorator()
     {
-        graphDecorator = new SimpleGraphDecorator( settings );
+        graphDecorator = new SimpleGraphDecorator( settings, viewSettings );
     }
 
     /**
@@ -366,102 +297,13 @@ public class NeoGraphLabelProvider extends LabelProvider implements
                 NeoDecoratorPreferences.NODE_ICON_PROPERTY_NAMES ) );
     }
 
-    /**
-     * Show or hide relationship types.
-     * @param state
-     *            set true to display
-     */
-    public void setShowRelationshipTypes( boolean state )
-    {
-        showRelationshipTypes = state;
-    }
-
-    /**
-     * Show or hide relationship names.
-     * @param state
-     *            set true to display
-     */
-    public void setShowRelationshipNames( boolean state )
-    {
-        showRelationshipNames = state;
-    }
-
-    /**
-     * Show or hide relationship id's.
-     * @param state
-     *            set true to display
-     */
-    public void setShowRelationshipIds( boolean state )
-    {
-        showRelationshipIds = state;
-    }
-
-    /**
-     * Show or hide relationship colors.
-     * @param state
-     *            set true to display
-     */
-    public void setShowRelationshipColors( boolean state )
-    {
-        showRelationshipColors = state;
-    }
-
-    /**
-     * Show or hide arrows.
-     * @param state
-     *            set true to display
-     */
-    public void setShowArrows( boolean state )
-    {
-        showArrows = state;
-    }
-
-    /**
-     * Show or hide node id's.
-     * @param state
-     *            set true to display
-     */
-    public void setShowNodeIds( boolean state )
-    {
-        showNodeIds = state;
-    }
-
-    /**
-     * Show or hide names.
-     * @param state
-     *            set true to display
-     */
-    public void setShowNodeNames( boolean state )
-    {
-        showNodeNames = state;
-    }
-
-    /**
-     * Show or hide node icons.
-     * @param state
-     *            set true to display
-     */
-    public void setShowNodeIcons( boolean state )
-    {
-        showNodeIcons = state;
-    }
-
-    /**
-     * Show or hide node colors.
-     * @param state
-     *            set true to display
-     */
-    public void setShowNodeColors( boolean state )
-    {
-        showNodeColors = state;
-    }
-
     public Color getColor( Object o )
     {
         if ( o instanceof Relationship )
         {
             Relationship rel = (Relationship) o;
-            if ( !showRelationshipColors || !(o instanceof Relationship) )
+            if ( !viewSettings.isShowRelationshipColors()
+                || !(o instanceof Relationship) )
             {
                 return graphDecorator.getRelationshipColor();
             }
@@ -482,7 +324,7 @@ public class NeoGraphLabelProvider extends LabelProvider implements
     public int getConnectionStyle( Object rel )
     {
         int style = 0;
-        if ( showArrows )
+        if ( viewSettings.isShowArrows() )
         {
             style |= ZestStyles.CONNECTIONS_DIRECTED;
         }
@@ -519,7 +361,7 @@ public class NeoGraphLabelProvider extends LabelProvider implements
 
     public Color getBackground( Object element )
     {
-        if ( element instanceof Node && showNodeColors )
+        if ( element instanceof Node && viewSettings.isShowNodeColors() )
         {
             if ( markedNodes.contains( element ) )
             {
@@ -576,7 +418,7 @@ public class NeoGraphLabelProvider extends LabelProvider implements
 
     public Color getForeground( Object element, int index )
     {
-        if ( !showRelationshipColors || index != 0
+        if ( !viewSettings.isShowRelationshipColors() || index != 0
             || !(element instanceof RelationshipTypeControl) )
         {
             return graphDecorator.getRelationshipColor();

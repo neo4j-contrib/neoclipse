@@ -228,7 +228,7 @@ public class NeoGraphViewPart extends ViewPart implements
      */
     public void setShowRelationshipColors( boolean state )
     {
-        getLabelProvider().setShowRelationshipColors( state );
+        getLabelProvider().getViewSettings().setShowRelationshipColors( state );
         relColorChange.notifyListeners( new NeoclipseEvent( Boolean
             .valueOf( state ) ) );
         refreshPreserveLayout();

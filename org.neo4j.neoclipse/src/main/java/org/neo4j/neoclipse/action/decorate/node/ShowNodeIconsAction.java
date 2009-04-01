@@ -43,7 +43,8 @@ public class ShowNodeIconsAction extends AbstractGraphAction
      */
     public void run()
     {
-        graphView.getLabelProvider().setShowNodeIcons( isChecked() );
+        graphView.getLabelProvider().getViewSettings().setShowNodeIcons(
+            isChecked() );
         graphView.refreshPreserveLayout();
     }
 }

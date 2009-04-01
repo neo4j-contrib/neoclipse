@@ -96,11 +96,13 @@ public enum Actions
     NODE_ICONS( "Node icons" ),
     NODE_ID( "Node id" ),
     NODE_LABELS( "Node labels" ),
+    NODE_PROPERTIES( "Node properties mode" ),
     // view rels settings
     RELATIONSHIP_COLORS( "Relationship colors" ), RELATIONSHIP_DIRECTIONS(
         "Relationship directions" ),
     RELATIONSHIP_ID( "Relationship id" ),
     RELATIONSHIP_LABELS( "Relationship labels" ),
+    RELATIONSHIP_PROPERTIES( "Relationship properties mode" ),
     RELATIONSHIP_TYPES( "Relationship types" ),
     // layout
     GRID_LAYOUT( "Grid layout", "Grid layout", NeoIcons.GRID ),

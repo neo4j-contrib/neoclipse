@@ -16,6 +16,8 @@ package org.neo4j.neoclipse.decorate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
@@ -27,6 +29,17 @@ import org.neo4j.api.core.PropertyContainer;
 import org.neo4j.api.core.Relationship;
 import org.neo4j.api.core.RelationshipType;
 import org.neo4j.neoclipse.NeoIcons;
+import org.neo4j.neoclipse.action.decorate.node.ShowNodeColorsAction;
+import org.neo4j.neoclipse.action.decorate.node.ShowNodeIconsAction;
+import org.neo4j.neoclipse.action.decorate.node.ShowNodeIdsAction;
+import org.neo4j.neoclipse.action.decorate.node.ShowNodeLabelAction;
+import org.neo4j.neoclipse.action.decorate.node.ShowNodePropertiesAction;
+import org.neo4j.neoclipse.action.decorate.rel.ShowRelationshipColorsAction;
+import org.neo4j.neoclipse.action.decorate.rel.ShowRelationshipDirectionsAction;
+import org.neo4j.neoclipse.action.decorate.rel.ShowRelationshipIdsAction;
+import org.neo4j.neoclipse.action.decorate.rel.ShowRelationshipLabelAction;
+import org.neo4j.neoclipse.action.decorate.rel.ShowRelationshipPropertiesAction;
+import org.neo4j.neoclipse.action.decorate.rel.ShowRelationshipTypesAction;
 import org.neo4j.neoclipse.property.PropertyTransform;
 
 public class SimpleGraphDecorator
@@ -83,6 +96,10 @@ public class SimpleGraphDecorator
      * Settings for this decorator.
      */
     private final Settings settings;
+    /**
+     * View settings for this decorator.
+     */
+    private final ViewSettings viewSettings;
 
     public static class Settings
     {
@@ -180,17 +197,177 @@ public class SimpleGraphDecorator
         }
     }
 
-    public SimpleGraphDecorator( Settings settings )
+    public static class ViewSettings
+    {
+        /**
+         * Keep track of relationship types display on/off.
+         */
+        private boolean showRelationshipTypes = ShowRelationshipTypesAction.DEFAULT_STATE;
+        /**
+         * Keep track of relationship names display on/off.
+         */
+        private boolean showRelationshipNames = ShowRelationshipLabelAction.DEFAULT_STATE;
+        /**
+         * Keep track of relationship properties display on/off.
+         */
+        private boolean showRelationshipProperties = ShowRelationshipPropertiesAction.DEFAULT_STATE;
+        /**
+         * Keep track of relationship id's display on/off.
+         */
+        private boolean showRelationshipIds = ShowRelationshipIdsAction.DEFAULT_STATE;
+        /**
+         * Keep track of relationship colors display on/off.
+         */
+        private boolean showRelationshipColors = ShowRelationshipColorsAction.DEFAULT_STATE;
+        /**
+         * Keep track of arrows display on/off.
+         */
+        private boolean showArrows = ShowRelationshipDirectionsAction.DEFAULT_STATE;
+        /**
+         * Keep track of node id's display on/off.
+         */
+        private boolean showNodeIds = ShowNodeIdsAction.DEFAULT_STATE;
+        /**
+         * Keep track of node names display on/off.
+         */
+        private boolean showNodeNames = ShowNodeLabelAction.DEFAULT_STATE;
+        /**
+         * Keep track of node properties display on/off.
+         */
+        private boolean showNodeProperties = ShowNodePropertiesAction.DEFAULT_STATE;
+        /**
+         * Keep track of node icons display on/off.
+         */
+        private boolean showNodeIcons = ShowNodeIconsAction.DEFAULT_STATE;
+        /**
+         * Keep track of node colors display on/off.
+         */
+        private boolean showNodeColors = ShowNodeColorsAction.DEFAULT_STATE;
+
+        public boolean isShowRelationshipTypes()
+        {
+            return showRelationshipTypes;
+        }
+
+        public void setShowRelationshipTypes( boolean showRelationshipTypes )
+        {
+            this.showRelationshipTypes = showRelationshipTypes;
+        }
+
+        public boolean isShowRelationshipNames()
+        {
+            return showRelationshipNames;
+        }
+
+        public void setShowRelationshipNames( boolean showRelationshipNames )
+        {
+            this.showRelationshipNames = showRelationshipNames;
+        }
+
+        public boolean isShowRelationshipProperties()
+        {
+            return showRelationshipProperties;
+        }
+
+        public void setShowRelationshipProperties(
+            boolean showRelationshipProperties )
+        {
+            this.showRelationshipProperties = showRelationshipProperties;
+        }
+
+        public boolean isShowRelationshipIds()
+        {
+            return showRelationshipIds;
+        }
+
+        public void setShowRelationshipIds( boolean showRelationshipIds )
+        {
+            this.showRelationshipIds = showRelationshipIds;
+        }
+
+        public boolean isShowRelationshipColors()
+        {
+            return showRelationshipColors;
+        }
+
+        public void setShowRelationshipColors( boolean showRelationshipColors )
+        {
+            this.showRelationshipColors = showRelationshipColors;
+        }
+
+        public boolean isShowArrows()
+        {
+            return showArrows;
+        }
+
+        public void setShowArrows( boolean showArrows )
+        {
+            this.showArrows = showArrows;
+        }
+
+        public boolean isShowNodeIds()
+        {
+            return showNodeIds;
+        }
+
+        public void setShowNodeIds( boolean showNodeIds )
+        {
+            this.showNodeIds = showNodeIds;
+        }
+
+        public boolean isShowNodeNames()
+        {
+            return showNodeNames;
+        }
+
+        public void setShowNodeNames( boolean showNodeNames )
+        {
+            this.showNodeNames = showNodeNames;
+        }
+
+        public boolean isShowNodeProperties()
+        {
+            return showNodeProperties;
+        }
+
+        public void setShowNodeProperties( boolean showNodeProperties )
+        {
+            this.showNodeProperties = showNodeProperties;
+        }
+
+        public boolean isShowNodeIcons()
+        {
+            return showNodeIcons;
+        }
+
+        public void setShowNodeIcons( boolean showNodeIcons )
+        {
+            this.showNodeIcons = showNodeIcons;
+        }
+
+        public boolean isShowNodeColors()
+        {
+            return showNodeColors;
+        }
+
+        public void setShowNodeColors( boolean showNodeColors )
+        {
+            this.showNodeColors = showNodeColors;
+        }
+    }
+
+    public SimpleGraphDecorator( Settings settings, ViewSettings viewSettings )
     {
         if ( settings.getDirections() == null )
         {
             throw new IllegalArgumentException( "Null directions list given." );
         }
-        if ( settings.getDirections().size() == 0 )
+        if ( settings.getDirections().isEmpty() )
         {
             throw new IllegalArgumentException( "Empty directions list given." );
         }
         this.settings = settings;
+        this.viewSettings = viewSettings;
         final float[] saturations = new float[6];
         final float[] brightnesses = new float[6];
         saturations[RELATIONSHIP] = 0.8f;
@@ -308,7 +485,7 @@ public class SimpleGraphDecorator
         return colorMapper.getColor( relType, RELATIONSHIP );
     }
 
-    public String getNodeText( final Node node, final boolean isReferenceNode )
+    private String getSimpleNodeText( final Node node, final boolean isReferenceNode )
     {
         if ( isReferenceNode )
         {
@@ -320,25 +497,58 @@ public class SimpleGraphDecorator
         }
     }
 
-    public String getNodeTextFromProperty( final Node node,
+    public String getNodeText( final Node node,
         final boolean isReferenceNode )
     {
-        String propertyValue = readProperties( node, settings
-            .getNodePropertyNames() );
-        if ( propertyValue != null )
+        StringBuilder str = new StringBuilder( 48 );
+        if ( viewSettings.isShowNodeProperties() )
         {
-            return (String) propertyValue;
+            return readAllProperties( node, viewSettings.isShowNodeIds() );
         }
-        return getNodeText( node, isReferenceNode );
+        else
+        {
+            if ( viewSettings.isShowNodeNames()
+                && !settings.getNodePropertyNames().isEmpty() )
+            {
+                String propertyValue = readProperties( node, settings
+                    .getNodePropertyNames() );
+                if ( propertyValue == null )
+                {
+                    propertyValue = getSimpleNodeText( node, isReferenceNode );
+                }
+                if ( propertyValue != null )
+                {
+                    if ( str.length() > 0 )
+                    {
+                        str.append( ", " );
+                    }
+                    str.append( propertyValue );
+                }
+            }
+            else
+            {
+                // don't look for the default property
+                str.append( getSimpleNodeText( node, isReferenceNode ) );
+            }
+            if ( viewSettings.isShowNodeIds() )
+            {
+                if ( str.length() > 0 )
+                {
+                    str.append( ", " );
+                }
+                str.append( node.getId() );
+            }
+        }
+        return str.toString();
     }
 
-    private String readProperties( final PropertyContainer primitive,
+    private String readProperties( final PropertyContainer container,
         final List<String> propertyNames )
     {
         List<String> values = new ArrayList<String>();
         for ( String propertyName : propertyNames )
         {
-            Object propertyValue = primitive.getProperty( propertyName, "" );
+            Object propertyValue = container.getProperty( propertyName, "" );
             if ( propertyValue instanceof String )
             {
                 if ( "".equals( propertyValue ) )
@@ -364,14 +574,100 @@ public class SimpleGraphDecorator
         return null;
     }
 
-    public String getRelationshipTypeText( final Relationship rel )
+    private String readAllProperties( final PropertyContainer container,
+        final boolean includeId )
     {
-        return rel.getType().name();
+        SortedSet<String> values = new TreeSet<String>();
+        Iterable<String> allProperties = container.getPropertyKeys();
+        for ( String propertyName : allProperties )
+        {
+            Object propertyValue = container.getProperty( propertyName, "" );
+            if ( propertyValue instanceof String )
+            {
+                values.add( propertyName + ": " + propertyValue );
+            }
+            else
+            {
+                // get a proper String from other types
+                String render = PropertyTransform.getHandler( propertyValue )
+                    .render( propertyValue );
+                values.add( propertyName + ": " + render );
+            }
+        }
+        StringBuilder str = new StringBuilder( 128 );
+        if ( includeId )
+        {
+            if ( container instanceof Node )
+            {
+                str.append( "id: " ).append( ((Node) container).getId() )
+                    .append( '\n' );
+            }
+            else if ( container instanceof Relationship )
+            {
+                str.append( "id: " )
+                    .append( ((Relationship) container).getId() ).append( '\n' );
+            }
+        }
+        if ( values.size() > 0 )
+        {
+            for ( String value : values )
+            {
+                str.append( value ).append( '\n' );
+            }
+        }
+        if ( str.length() > 1 )
+        {
+            return str.substring( 0, str.length() - 1 );
+        }
+        return "";
     }
 
-    public String getRelationshipNameTextFromProperty( final Relationship rel )
+    public String getRelationshipText( final Relationship rel )
     {
-        return readProperties( rel, settings.getRelPropertyNames() );
+        StringBuilder str = new StringBuilder( 48 );
+        if ( viewSettings.isShowRelationshipTypes() )
+        {
+            str.append( rel.getType().name() );
+        }
+        if ( viewSettings.isShowRelationshipProperties() )
+        {
+            if ( viewSettings.isShowRelationshipTypes() )
+            {
+                str.append( '\n' );
+            }
+            String propertyValue = readAllProperties( rel, viewSettings
+                .isShowRelationshipIds() );
+            if ( propertyValue != null )
+            {
+                str.append( propertyValue );
+            }
+        }
+        else
+        {
+            if ( viewSettings.isShowRelationshipIds() )
+            {
+                if ( str.length() > 0 )
+                {
+                    str.append( ", " );
+                }
+                str.append( rel.getId() );
+            }
+            if ( viewSettings.isShowRelationshipNames()
+                && !settings.getRelPropertyNames().isEmpty() )
+            {
+                String propertyValue = readProperties( rel, settings
+                    .getRelPropertyNames() );
+                if ( propertyValue != null )
+                {
+                    if ( str.length() > 0 )
+                    {
+                        str.append( ", " );
+                    }
+                    str.append( propertyValue );
+                }
+            }
+        }
+        return str.toString();
     }
 
     public Image getNodeImage( final Node node, final boolean isReferenceNode )
