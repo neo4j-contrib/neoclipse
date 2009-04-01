@@ -161,22 +161,10 @@ public class NeoGraphViewPart extends ViewPart implements
     private class WindowListener implements IWindowListener
     {
         /**
-         * Make sure to open the help view after this view opened itself. Load
-         * the dynamic menus (we don't want to load them earlier).
+         * Load the dynamic menus (we don't want to load them earlier).
          */
         public void windowOpened( IWorkbenchWindow window )
         {
-            // TODO add preference for showing help at startup
-            try
-            {
-                PlatformUI.getWorkbench().getHelpSystem().displayHelp(
-                    HelpContextConstants.NEO_GRAPH_VIEW_PART );
-                NeoGraphViewPart.this.setFocus();
-            }
-            catch ( Throwable t )
-            {
-                t.printStackTrace();
-            }
             menu.loadDynamicMenus();
         }
 

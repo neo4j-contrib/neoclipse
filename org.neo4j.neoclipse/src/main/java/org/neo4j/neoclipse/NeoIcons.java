@@ -39,6 +39,10 @@ public enum NeoIcons
     GRAPH_ENABLED( "graph_enabled", path( "enabled/neo.gif" ) ),
     GRAPH_DISABLED( "graph_disabled", path( "disabled/neo.gif" ) ),
     HELP_VIEW( "help_view", path( "obj16/help_view.gif" ) ),
+    HELP_WINDOW_ENABLED( "help_window_enabled",
+        path( "enabled/help_window.gif" ) ),
+    HELP_WINDOW_DISABLED( "help_window_disabled",
+        path( "disabled/help_window.gif" ) ),
     SEARCH_ENABLED( "search_enabled", path( "enabled/search.gif" ) ),
     SEARCH_DISABLED( "search_disabled", path( "disabled/search.gif" ) ),
     // navigation

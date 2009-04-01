@@ -27,8 +27,8 @@ import org.eclipse.ui.application.ActionBarAdvisor;
 import org.eclipse.ui.application.IActionBarConfigurer;
 import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.application.WorkbenchWindowAdvisor;
+import org.eclipse.ui.help.IWorkbenchHelpSystem;
 import org.neo4j.neoclipse.action.Actions;
-import org.neo4j.neoclipse.help.HelpContextConstants;
 import org.neo4j.neoclipse.reltype.RelationshipTypeView;
 import org.neo4j.neoclipse.search.NeoSearchPage;
 
@@ -79,7 +79,8 @@ public class ApplicationWindowAdvisor extends WorkbenchWindowAdvisor
         private Action preferencesAction;
         private Action propertiesAction;
         private Action reltypesAction;
-        private Action helpAction;
+        private Action helpViewAction;
+        private Action helpWindowAction;
         private Action searchAction;
 
         public ApplicationActionBarAdvisor( IActionBarConfigurer configurer )
@@ -147,16 +148,36 @@ public class ApplicationWindowAdvisor extends WorkbenchWindowAdvisor
             };
             Actions.SEARCH.initialize( searchAction );
 
-            helpAction = new Action()
+            helpViewAction = new Action()
             {
                 @Override
                 public void run()
                 {
-                    PlatformUI.getWorkbench().getHelpSystem().displayHelp(
-                        HelpContextConstants.NEO_GRAPH_VIEW_PART );
+                    try
+                    {
+                        final IWorkbenchHelpSystem helpSystem = PlatformUI
+                            .getWorkbench().getHelpSystem();
+                        helpSystem.displayDynamicHelp();
+                    }
+                    catch ( Throwable e )
+                    {
+                        e.printStackTrace();
+                    }
                 }
             };
-            Actions.HELP_VIEW.initialize( helpAction );
+            Actions.HELP_VIEW.initialize( helpViewAction );
+
+            helpWindowAction = new Action()
+            {
+                @Override
+                public void run()
+                {
+                    final IWorkbenchHelpSystem helpSystem = PlatformUI
+                        .getWorkbench().getHelpSystem();
+                    helpSystem.displayHelp();
+                }
+            };
+            Actions.HELP_WINDOW.initialize( helpWindowAction );
         }
 
         @Override
@@ -169,7 +190,8 @@ public class ApplicationWindowAdvisor extends WorkbenchWindowAdvisor
             views.add( propertiesAction );
             views.add( reltypesAction );
             views.add( searchAction );
-            views.add( helpAction );
+            views.add( helpViewAction );
+            views.add( helpWindowAction );
             coolBar.add( new ToolBarContributionItem( views, "views" ) );
         }
     }

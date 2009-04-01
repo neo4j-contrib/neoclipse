@@ -30,6 +30,8 @@ public enum Actions
     RELTYPES_VIEW( "Relationship types view", NeoIcons.TYPES_ENABLED,
         NeoIcons.TYPES_DISABLED ),
     HELP_VIEW( "Help view", NeoIcons.HELP_VIEW ),
+    HELP_WINDOW( "Help window", NeoIcons.HELP_WINDOW_ENABLED,
+        NeoIcons.HELP_WINDOW_DISABLED ),
     SEARCH( "Search", NeoIcons.SEARCH_ENABLED, NeoIcons.SEARCH_DISABLED ),
     // add rel
     ADD_RELATIONSHIP(

@@ -20,6 +20,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.application.WorkbenchAdvisor;
 import org.eclipse.ui.application.WorkbenchWindowAdvisor;
+import org.eclipse.ui.help.IWorkbenchHelpSystem;
 import org.neo4j.neoclipse.perspective.NeoPerspectiveFactory;
 
 public class Application extends WorkbenchAdvisor implements IApplication
@@ -62,5 +63,15 @@ public class Application extends WorkbenchAdvisor implements IApplication
         wwc.setShowFastViewBars( false );
         wwc.setShowStatusLine( true );
         wwc.setShowCoolBar( true );
+    }
+
+    @Override
+    public void postStartup()
+    {
+        super.postStartup();
+        // TODO add preference for showing help at startup
+        final IWorkbenchHelpSystem helpSystem = PlatformUI.getWorkbench()
+            .getHelpSystem();
+        helpSystem.displayDynamicHelp();
     }
 }
