@@ -49,7 +49,7 @@ public class NeoServiceManager
     /**
      * Starts the neo service.
      */
-    public void startNeoService()
+    public void startNeoService() throws RuntimeException
     {
         if ( neo == null )
         {
@@ -60,16 +60,9 @@ public class NeoServiceManager
             {
                 return;
             }
-            // seems to be a valid directory
-            try
-            {
-                neo = new EmbeddedNeo( location );
-                tx = neo.beginTx();
-            }
-            catch ( Exception e )
-            {
-                throw new RuntimeException( e );
-            }
+            // seems to be a valid directory, try starting neo
+            neo = new EmbeddedNeo( location );
+            tx = neo.beginTx();
             // notify listeners
             fireServiceChangedEvent( NeoServiceStatus.STARTED );
         }
@@ -79,7 +72,7 @@ public class NeoServiceManager
      * Returns the neo service or null, if it could not be started (due to
      * configuration problems).
      */
-    public NeoService getNeoService()
+    public NeoService getNeoService() throws RuntimeException
     {
         if ( neo == null )
         {

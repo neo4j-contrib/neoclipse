@@ -64,7 +64,8 @@ public class Activator extends AbstractUIPlugin
                     {
                         // restart neo with the new location
                         neoManager.stopNeoService();
-                        neoManager.startNeoService();
+                        // start the service using new location
+                        getNeoServiceSafely();
                     }
                 }
             } );
@@ -111,7 +112,26 @@ public class Activator extends AbstractUIPlugin
                 "The Neo service manager is not available." );
             return null;
         }
-        NeoService ns = sm.getNeoService();
+        NeoService ns = null;
+        try
+        {
+            ns = sm.getNeoService();
+        }
+        catch ( RuntimeException rte )
+        {
+            MessageDialog.openInformation( null, "Database problem",
+                "The database seem to be in use. "
+                    + "Please make sure that it is not in use or "
+                    + "change to another database location." );
+            try
+            {
+                ns = sm.getNeoService();
+            }
+            catch ( RuntimeException rte2 )
+            {
+                // just continue
+            }
+        }
         if ( ns == null )
         {
             MessageDialog
@@ -121,7 +141,14 @@ public class Activator extends AbstractUIPlugin
                     "Please make sure that the database location is correctly set. "
                         + "To create an empty database, point the location to an empty directory." );
             showPreferenceDialog( true );
-            ns = sm.getNeoService();
+            try
+            {
+                ns = sm.getNeoService();
+            }
+            catch ( RuntimeException rte )
+            {
+                // just continue
+            }
             if ( ns == null )
             {
                 MessageDialog.openError( null, "Error message",
