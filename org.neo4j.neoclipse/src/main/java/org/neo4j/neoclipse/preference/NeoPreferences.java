@@ -31,4 +31,8 @@ public final class NeoPreferences
      * The location of the neo database in the file system.
      */
     public static final String DATABASE_LOCATION = "databaseLocation";
+    /**
+     * Show the help view when the application starts.
+     */
+    public static final String HELP_ON_START = "helpOnStart";
 }

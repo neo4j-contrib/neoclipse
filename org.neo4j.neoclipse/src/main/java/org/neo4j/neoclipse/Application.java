@@ -22,6 +22,8 @@ import org.eclipse.ui.application.WorkbenchAdvisor;
 import org.eclipse.ui.application.WorkbenchWindowAdvisor;
 import org.eclipse.ui.help.IWorkbenchHelpSystem;
 import org.neo4j.neoclipse.perspective.NeoPerspectiveFactory;
+import org.neo4j.neoclipse.preference.NeoPreferences;
+import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 public class Application extends WorkbenchAdvisor implements IApplication
 {
@@ -69,9 +71,22 @@ public class Application extends WorkbenchAdvisor implements IApplication
     public void postStartup()
     {
         super.postStartup();
-        // TODO add preference for showing help at startup
-        final IWorkbenchHelpSystem helpSystem = PlatformUI.getWorkbench()
-            .getHelpSystem();
-        helpSystem.displayDynamicHelp();
+        // show help on startup if the user wants it
+        boolean showHelp = Activator.getDefault().getPreferenceStore()
+            .getBoolean( NeoPreferences.HELP_ON_START );
+        if ( showHelp )
+        {
+            IWorkbenchHelpSystem helpSystem = PlatformUI.getWorkbench()
+                .getHelpSystem();
+            helpSystem.displayDynamicHelp();
+
+            NeoGraphViewPart graphView = (NeoGraphViewPart) PlatformUI
+                .getWorkbench().getActiveWorkbenchWindow().getActivePage()
+                .findView( NeoGraphViewPart.ID );
+            if ( graphView != null )
+            {
+                graphView.setFocus();
+            }
+        }
     }
 }

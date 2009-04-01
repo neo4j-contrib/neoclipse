@@ -13,6 +13,7 @@
  */
 package org.neo4j.neoclipse.preference;
 
+import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.DirectoryFieldEditor;
 
 /**
@@ -22,6 +23,7 @@ import org.eclipse.jface.preference.DirectoryFieldEditor;
  */
 public class NeoPreferencePage extends AbstractPreferencePage
 {
+    private static final String HELP_ON_START_LABEL = "Show help view on startup";
     // database location
     private static final String NEO_DATABASE_LOCATION_LABEL = "Database location:";
     private static final String NEO_DATABASE_LOCATION_ERROR = "The database location is invalid.";
@@ -38,5 +40,10 @@ public class NeoPreferencePage extends AbstractPreferencePage
         locationField.setEmptyStringAllowed( false );
         locationField.setErrorMessage( NEO_DATABASE_LOCATION_ERROR );
         addField( locationField );
+        // show help view on startup
+        BooleanFieldEditor helpOnStart = new BooleanFieldEditor(
+            NeoPreferences.HELP_ON_START, HELP_ON_START_LABEL,
+            getFieldEditorParent() );
+        addField( helpOnStart );
     }
 }

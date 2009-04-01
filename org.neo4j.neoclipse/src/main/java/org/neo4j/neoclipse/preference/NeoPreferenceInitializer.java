@@ -30,5 +30,6 @@ public class NeoPreferenceInitializer extends AbstractPreferenceInitializer
     {
         IPreferenceStore pref = Activator.getDefault().getPreferenceStore();
         pref.setDefault( NeoPreferences.DATABASE_LOCATION, "" );
+        pref.setDefault( NeoPreferences.HELP_ON_START, true );
     }
 }
