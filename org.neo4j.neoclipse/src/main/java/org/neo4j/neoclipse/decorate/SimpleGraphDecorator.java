@@ -240,6 +240,9 @@ public class SimpleGraphDecorator
          */
         private final IPreferenceStore preferenceStore;
 
+        /**
+         * Create instance, load values from preference store.
+         */
         public ViewSettings()
         {
             preferenceStore = Activator.getDefault().getPreferenceStore();
@@ -407,7 +410,8 @@ public class SimpleGraphDecorator
         }
     }
 
-    public SimpleGraphDecorator( Settings settings, ViewSettings viewSettings )
+    public SimpleGraphDecorator( final Settings settings,
+        final ViewSettings viewSettings )
     {
         if ( settings.getDirections() == null )
         {
@@ -449,12 +453,13 @@ public class SimpleGraphDecorator
     }
 
     /**
+     * Get color of node.
      * @param node
      * @param marked
-     *            TODO
+     *            true if the node is marked
      * @return
      */
-    private Color getNodeColor( final Node node, boolean marked )
+    private Color getNodeColor( final Node node, final boolean marked )
     {
         Relationship randomRel = null;
         Direction randomDir = null;
@@ -486,8 +491,16 @@ public class SimpleGraphDecorator
         return getNodeColor();
     }
 
+    /**
+     * Get color connected to relationship type depending on direction and if
+     * it's marked or not.
+     * @param type
+     * @param direction
+     * @param marked
+     * @return
+     */
     private Color getColorFromDirection( final RelationshipType type,
-        final Direction direction, boolean marked )
+        final Direction direction, final boolean marked )
     {
         switch ( direction )
         {
@@ -692,6 +705,10 @@ public class SimpleGraphDecorator
             {
                 str.append( propertyValue );
             }
+            if ( str.length() > 0 && str.charAt( str.length() - 1 ) == '\n' )
+            {
+                return str.substring( 0, str.length() - 1 );
+            }
         }
         else
         {
@@ -768,7 +785,7 @@ public class SimpleGraphDecorator
         return getNodeImage( node, isReferenceNode );
     }
 
-    public Color getRelationshipHighlightColor( Relationship rel )
+    public Color getRelationshipHighlightColor( final Relationship rel )
     {
         return HIGHLIGHTED_RELATIONSHIP_COLOR;
     }
@@ -792,17 +809,17 @@ public class SimpleGraphDecorator
         return colorMapper.getKeys();
     }
 
-    public Color getMarkedRelationshipColor( Relationship rel )
+    public Color getMarkedRelationshipColor( final Relationship rel )
     {
         return colorMapper.getColor( rel.getType(), RELATIONSHIP_MARKED );
     }
 
-    public int getMarkedRelationshipStyle( Object rel )
+    public int getMarkedRelationshipStyle( final Object rel )
     {
         return 0;
     }
 
-    public Color getMarkedNodeColor( Node element )
+    public Color getMarkedNodeColor( final Node element )
     {
         return getNodeColor( element, true );
     }
