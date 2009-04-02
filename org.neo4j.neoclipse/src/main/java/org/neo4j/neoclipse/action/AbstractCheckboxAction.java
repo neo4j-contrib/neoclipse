@@ -11,34 +11,17 @@
  * OF ANY KIND, either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-package org.neo4j.neoclipse.action.decorate.rel;
+package org.neo4j.neoclipse.action;
 
-import org.neo4j.neoclipse.action.AbstractCheckboxAction;
-import org.neo4j.neoclipse.action.Actions;
+import org.eclipse.jface.action.Action;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
-/**
- * This action handles the relationship name setting.
- * @author Anders Nawroth
- */
-public class ShowRelationshipLabelAction extends AbstractCheckboxAction
+public abstract class AbstractCheckboxAction extends AbstractGraphAction
 {
-    /**
-     * The constructor.
-     */
-    public ShowRelationshipLabelAction( final NeoGraphViewPart view,
-        final boolean checked )
+    public AbstractCheckboxAction( Actions action, boolean checked,
+        NeoGraphViewPart neoGraphViewPart )
     {
-        super( Actions.RELATIONSHIP_LABELS, checked, view );
-    }
-
-    /**
-     * Executes the action.
-     */
-    public void run()
-    {
-        graphView.getLabelProvider().getViewSettings()
-            .setShowRelationshipNames( isChecked() );
-        graphView.refreshPreserveLayout();
+        super( action, Action.AS_CHECK_BOX, neoGraphViewPart );
+        setChecked( checked );
     }
 }

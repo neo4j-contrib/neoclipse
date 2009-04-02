@@ -36,5 +36,18 @@ public class NeoDecoratorPreferenceInitializer extends
             "" );
         pref.setDefault( NeoDecoratorPreferences.NODE_ICON_LOCATION, "" );
         pref.setDefault( NeoDecoratorPreferences.NODE_ICON_PROPERTY_NAMES, "" );
+        // view menu settings
+        pref.setDefault( NeoDecoratorPreferences.SHOW_RELATIONSHIP_TYPES, true );
+        pref.setDefault( NeoDecoratorPreferences.SHOW_NODE_COLORS, true );
+        pref.setDefault( NeoDecoratorPreferences.SHOW_NODE_NAMES, true );
+        pref.setDefault( NeoDecoratorPreferences.SHOW_RELATIONSHIP_NAMES, true );
+        pref.setDefault( NeoDecoratorPreferences.SHOW_RELATIONSHIP_PROPERTIES, true );
+        pref.setDefault( NeoDecoratorPreferences.SHOW_RELATIONSHIP_COLORS, true );
+        pref.setDefault( NeoDecoratorPreferences.SHOW_RELATIONSHIP_IDS, true );
+        pref.setDefault( NeoDecoratorPreferences.SHOW_ARROWS, true );
+        pref.setDefault( NeoDecoratorPreferences.SHOW_NODE_PROPERTIES, true );
+        pref.setDefault( NeoDecoratorPreferences.SHOW_NODE_ICONS, true );
+        pref.setDefault( NeoDecoratorPreferences.SHOW_NODE_IDS, true );
+        
     }
 }

@@ -19,6 +19,7 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.RGB;
@@ -28,18 +29,9 @@ import org.neo4j.api.core.Node;
 import org.neo4j.api.core.PropertyContainer;
 import org.neo4j.api.core.Relationship;
 import org.neo4j.api.core.RelationshipType;
+import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.NeoIcons;
-import org.neo4j.neoclipse.action.decorate.node.ShowNodeColorsAction;
-import org.neo4j.neoclipse.action.decorate.node.ShowNodeIconsAction;
-import org.neo4j.neoclipse.action.decorate.node.ShowNodeIdsAction;
-import org.neo4j.neoclipse.action.decorate.node.ShowNodeLabelAction;
-import org.neo4j.neoclipse.action.decorate.node.ShowNodePropertiesAction;
-import org.neo4j.neoclipse.action.decorate.rel.ShowRelationshipColorsAction;
-import org.neo4j.neoclipse.action.decorate.rel.ShowRelationshipDirectionsAction;
-import org.neo4j.neoclipse.action.decorate.rel.ShowRelationshipIdsAction;
-import org.neo4j.neoclipse.action.decorate.rel.ShowRelationshipLabelAction;
-import org.neo4j.neoclipse.action.decorate.rel.ShowRelationshipPropertiesAction;
-import org.neo4j.neoclipse.action.decorate.rel.ShowRelationshipTypesAction;
+import org.neo4j.neoclipse.preference.NeoDecoratorPreferences;
 import org.neo4j.neoclipse.property.PropertyTransform;
 
 public class SimpleGraphDecorator
@@ -202,47 +194,78 @@ public class SimpleGraphDecorator
         /**
          * Keep track of relationship types display on/off.
          */
-        private boolean showRelationshipTypes = ShowRelationshipTypesAction.DEFAULT_STATE;
+        private boolean showRelationshipTypes;
         /**
          * Keep track of relationship names display on/off.
          */
-        private boolean showRelationshipNames = ShowRelationshipLabelAction.DEFAULT_STATE;
+        private boolean showRelationshipNames;
         /**
          * Keep track of relationship properties display on/off.
          */
-        private boolean showRelationshipProperties = ShowRelationshipPropertiesAction.DEFAULT_STATE;
+        private boolean showRelationshipProperties;
         /**
          * Keep track of relationship id's display on/off.
          */
-        private boolean showRelationshipIds = ShowRelationshipIdsAction.DEFAULT_STATE;
+        private boolean showRelationshipIds;
         /**
          * Keep track of relationship colors display on/off.
          */
-        private boolean showRelationshipColors = ShowRelationshipColorsAction.DEFAULT_STATE;
+        private boolean showRelationshipColors;
         /**
          * Keep track of arrows display on/off.
          */
-        private boolean showArrows = ShowRelationshipDirectionsAction.DEFAULT_STATE;
+        private boolean showArrows;
         /**
          * Keep track of node id's display on/off.
          */
-        private boolean showNodeIds = ShowNodeIdsAction.DEFAULT_STATE;
+        private boolean showNodeIds;
         /**
          * Keep track of node names display on/off.
          */
-        private boolean showNodeNames = ShowNodeLabelAction.DEFAULT_STATE;
+        private boolean showNodeNames;
         /**
          * Keep track of node properties display on/off.
          */
-        private boolean showNodeProperties = ShowNodePropertiesAction.DEFAULT_STATE;
+        private boolean showNodeProperties;
         /**
          * Keep track of node icons display on/off.
          */
-        private boolean showNodeIcons = ShowNodeIconsAction.DEFAULT_STATE;
+        private boolean showNodeIcons;
         /**
          * Keep track of node colors display on/off.
          */
-        private boolean showNodeColors = ShowNodeColorsAction.DEFAULT_STATE;
+        private boolean showNodeColors;
+        /**
+         * Current preference store.
+         */
+        private final IPreferenceStore preferenceStore;
+
+        public ViewSettings()
+        {
+            preferenceStore = Activator.getDefault().getPreferenceStore();
+            showRelationshipTypes = preferenceStore
+                .getBoolean( NeoDecoratorPreferences.SHOW_RELATIONSHIP_TYPES );
+            showRelationshipNames = preferenceStore
+                .getBoolean( NeoDecoratorPreferences.SHOW_RELATIONSHIP_NAMES );
+            showRelationshipProperties = preferenceStore
+                .getBoolean( NeoDecoratorPreferences.SHOW_RELATIONSHIP_PROPERTIES );
+            showRelationshipIds = preferenceStore
+                .getBoolean( NeoDecoratorPreferences.SHOW_RELATIONSHIP_IDS );
+            showRelationshipColors = preferenceStore
+                .getBoolean( NeoDecoratorPreferences.SHOW_RELATIONSHIP_COLORS );
+            showArrows = preferenceStore
+                .getBoolean( NeoDecoratorPreferences.SHOW_ARROWS );
+            showNodeIds = preferenceStore
+                .getBoolean( NeoDecoratorPreferences.SHOW_NODE_IDS );
+            showNodeNames = preferenceStore
+                .getBoolean( NeoDecoratorPreferences.SHOW_NODE_NAMES );
+            showNodeProperties = preferenceStore
+                .getBoolean( NeoDecoratorPreferences.SHOW_NODE_PROPERTIES );
+            showNodeIcons = preferenceStore
+                .getBoolean( NeoDecoratorPreferences.SHOW_NODE_ICONS );
+            showNodeColors = preferenceStore
+                .getBoolean( NeoDecoratorPreferences.SHOW_NODE_COLORS );
+        }
 
         public boolean isShowRelationshipTypes()
         {
@@ -252,6 +275,9 @@ public class SimpleGraphDecorator
         public void setShowRelationshipTypes( boolean showRelationshipTypes )
         {
             this.showRelationshipTypes = showRelationshipTypes;
+            preferenceStore.setValue(
+                NeoDecoratorPreferences.SHOW_RELATIONSHIP_TYPES,
+                showRelationshipTypes );
         }
 
         public boolean isShowRelationshipNames()
@@ -262,6 +288,9 @@ public class SimpleGraphDecorator
         public void setShowRelationshipNames( boolean showRelationshipNames )
         {
             this.showRelationshipNames = showRelationshipNames;
+            preferenceStore.setValue(
+                NeoDecoratorPreferences.SHOW_RELATIONSHIP_NAMES,
+                showRelationshipNames );
         }
 
         public boolean isShowRelationshipProperties()
@@ -273,6 +302,9 @@ public class SimpleGraphDecorator
             boolean showRelationshipProperties )
         {
             this.showRelationshipProperties = showRelationshipProperties;
+            preferenceStore.setValue(
+                NeoDecoratorPreferences.SHOW_RELATIONSHIP_PROPERTIES,
+                showRelationshipProperties );
         }
 
         public boolean isShowRelationshipIds()
@@ -283,6 +315,9 @@ public class SimpleGraphDecorator
         public void setShowRelationshipIds( boolean showRelationshipIds )
         {
             this.showRelationshipIds = showRelationshipIds;
+            preferenceStore.setValue(
+                NeoDecoratorPreferences.SHOW_RELATIONSHIP_IDS,
+                showRelationshipIds );
         }
 
         public boolean isShowRelationshipColors()
@@ -293,6 +328,9 @@ public class SimpleGraphDecorator
         public void setShowRelationshipColors( boolean showRelationshipColors )
         {
             this.showRelationshipColors = showRelationshipColors;
+            preferenceStore.setValue(
+                NeoDecoratorPreferences.SHOW_RELATIONSHIP_COLORS,
+                showRelationshipColors );
         }
 
         public boolean isShowArrows()
@@ -303,6 +341,8 @@ public class SimpleGraphDecorator
         public void setShowArrows( boolean showArrows )
         {
             this.showArrows = showArrows;
+            preferenceStore.setValue( NeoDecoratorPreferences.SHOW_ARROWS,
+                showArrows );
         }
 
         public boolean isShowNodeIds()
@@ -313,6 +353,8 @@ public class SimpleGraphDecorator
         public void setShowNodeIds( boolean showNodeIds )
         {
             this.showNodeIds = showNodeIds;
+            preferenceStore.setValue( NeoDecoratorPreferences.SHOW_NODE_IDS,
+                showNodeIds );
         }
 
         public boolean isShowNodeNames()
@@ -323,6 +365,8 @@ public class SimpleGraphDecorator
         public void setShowNodeNames( boolean showNodeNames )
         {
             this.showNodeNames = showNodeNames;
+            preferenceStore.setValue( NeoDecoratorPreferences.SHOW_NODE_NAMES,
+                showNodeNames );
         }
 
         public boolean isShowNodeProperties()
@@ -333,6 +377,9 @@ public class SimpleGraphDecorator
         public void setShowNodeProperties( boolean showNodeProperties )
         {
             this.showNodeProperties = showNodeProperties;
+            preferenceStore.setValue(
+                NeoDecoratorPreferences.SHOW_NODE_PROPERTIES,
+                showNodeProperties );
         }
 
         public boolean isShowNodeIcons()
@@ -343,6 +390,8 @@ public class SimpleGraphDecorator
         public void setShowNodeIcons( boolean showNodeIcons )
         {
             this.showNodeIcons = showNodeIcons;
+            preferenceStore.setValue( NeoDecoratorPreferences.SHOW_NODE_ICONS,
+                showNodeIcons );
         }
 
         public boolean isShowNodeColors()
@@ -353,6 +402,8 @@ public class SimpleGraphDecorator
         public void setShowNodeColors( boolean showNodeColors )
         {
             this.showNodeColors = showNodeColors;
+            preferenceStore.setValue( NeoDecoratorPreferences.SHOW_NODE_COLORS,
+                showNodeColors );
         }
     }
 
@@ -485,7 +536,8 @@ public class SimpleGraphDecorator
         return colorMapper.getColor( relType, RELATIONSHIP );
     }
 
-    private String getSimpleNodeText( final Node node, final boolean isReferenceNode )
+    private String getSimpleNodeText( final Node node,
+        final boolean isReferenceNode )
     {
         if ( isReferenceNode )
         {
@@ -497,8 +549,7 @@ public class SimpleGraphDecorator
         }
     }
 
-    public String getNodeText( final Node node,
-        final boolean isReferenceNode )
+    public String getNodeText( final Node node, final boolean isReferenceNode )
     {
         StringBuilder str = new StringBuilder( 48 );
         if ( viewSettings.isShowNodeProperties() )

@@ -13,6 +13,7 @@
  */
 package org.neo4j.neoclipse.preference;
 
+
 /**
  * Defines the preferences of the neo plugin.
  * @author Peter H&auml;nsgen
@@ -45,4 +46,49 @@ public final class NeoDecoratorPreferences
      * The property to use for icon names.
      */
     public static final String NODE_ICON_PROPERTY_NAMES = "nodeIconPropertyNames";
+    // view settings, not exposed on the preference page
+    /**
+     * Keep track of relationship types display on/off.
+     */
+    public static final String SHOW_RELATIONSHIP_TYPES = "showRelationshipTypes";
+    /**
+     * Keep track of relationship names display on/off.
+     */
+    public static final String SHOW_RELATIONSHIP_NAMES = "showRelationshipNames";
+    /**
+     * Keep track of relationship properties display on/off.
+     */
+    public static final String SHOW_RELATIONSHIP_PROPERTIES = "showRelationshipProperties";
+    /**
+     * Keep track of relationship id's display on/off.
+     */
+    public static final String SHOW_RELATIONSHIP_IDS = "showRelationshipIds";
+    /**
+     * Keep track of relationship colors display on/off.
+     */
+    public static final String SHOW_RELATIONSHIP_COLORS = "showRelationshipColors";
+    /**
+     * Keep track of arrows display on/off.
+     */
+    public static final String SHOW_ARROWS = "showArrows";
+    /**
+     * Keep track of node id's display on/off.
+     */
+    public static final String SHOW_NODE_IDS = "showNodeIds";
+    /**
+     * Keep track of node names display on/off.
+     */
+    public static final String SHOW_NODE_NAMES = "showNodeNames";
+    /**
+     * Keep track of node properties display on/off.
+     */
+    public static final String SHOW_NODE_PROPERTIES = "showNodeProperties";
+    /**
+     * Keep track of node icons display on/off.
+     */
+    public static final String SHOW_NODE_ICONS = "showNodeIcons";
+    /**
+     * Keep track of node colors display on/off.
+     */
+    public static final String SHOW_NODE_COLORS = "showNodeColors";    
 }

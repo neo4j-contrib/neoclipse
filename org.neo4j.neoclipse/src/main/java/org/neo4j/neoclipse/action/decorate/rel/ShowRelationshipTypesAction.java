@@ -13,8 +13,7 @@
  */
 package org.neo4j.neoclipse.action.decorate.rel;
 
-import org.eclipse.jface.action.Action;
-import org.neo4j.neoclipse.action.AbstractGraphAction;
+import org.neo4j.neoclipse.action.AbstractCheckboxAction;
 import org.neo4j.neoclipse.action.Actions;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
@@ -22,20 +21,15 @@ import org.neo4j.neoclipse.view.NeoGraphViewPart;
  * This action handles the relationship type setting.
  * @author Anders Nawroth
  */
-public class ShowRelationshipTypesAction extends AbstractGraphAction
+public class ShowRelationshipTypesAction extends AbstractCheckboxAction
 {
-    /**
-     * Default state for this view menu alternative.
-     */
-    public static final boolean DEFAULT_STATE = true;
-
     /**
      * The constructor.
      */
-    public ShowRelationshipTypesAction( NeoGraphViewPart view )
+    public ShowRelationshipTypesAction( final NeoGraphViewPart view,
+        final boolean checked )
     {
-        super( Actions.RELATIONSHIP_TYPES, Action.AS_CHECK_BOX, view );
-        setChecked( DEFAULT_STATE );
+        super( Actions.RELATIONSHIP_TYPES, checked, view );
     }
 
     /**

@@ -13,8 +13,7 @@
  */
 package org.neo4j.neoclipse.action.decorate.node;
 
-import org.eclipse.jface.action.Action;
-import org.neo4j.neoclipse.action.AbstractGraphAction;
+import org.neo4j.neoclipse.action.AbstractCheckboxAction;
 import org.neo4j.neoclipse.action.Actions;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
@@ -22,20 +21,15 @@ import org.neo4j.neoclipse.view.NeoGraphViewPart;
  * This action handles the node colors setting.
  * @author Anders Nawroth
  */
-public class ShowNodeColorsAction extends AbstractGraphAction
+public class ShowNodeColorsAction extends AbstractCheckboxAction
 {
-    /**
-     * Default state for this view menu alternative.
-     */
-    public static final boolean DEFAULT_STATE = true;
-
     /**
      * The constructor.
      */
-    public ShowNodeColorsAction( NeoGraphViewPart view )
+    public ShowNodeColorsAction( final NeoGraphViewPart view,
+        final boolean checked )
     {
-        super( Actions.NODE_COLORS, Action.AS_CHECK_BOX, view );
-        setChecked( DEFAULT_STATE );
+        super( Actions.NODE_COLORS, checked, view );
     }
 
     /**
