@@ -109,7 +109,8 @@ public class NeoGraphMenu
                         relType );
                     GC gc = new GC( image );
                     gc.setBackground( color );
-                    gc.fillRectangle( image.getBounds() );
+                    gc.fillRectangle( RELTYPE_POSITION, RELTYPE_POSITION,
+                        RELTYPE_DOT_SIZE, RELTYPE_DOT_SIZE );
                     gc.dispose();
                     imgDesc = ImageDescriptor.createFromImage( image );
                     relTypeImages.put( relType, imgDesc );
@@ -211,9 +212,17 @@ public class NeoGraphMenu
     private final SortedMap<String,ActionSet> actionMap = new TreeMap<String,ActionSet>();
 
     /**
-     * Size of colored squares for reltypes.
+     * Size of colored squares for relationship types.
      */
-    private static final int RELTYPE_IMG_SIZE = 6;
+    private static final int RELTYPE_IMG_SIZE = 16;
+    /**
+     * Size of the dot that represents the relationship type.
+     */
+    private static final int RELTYPE_DOT_SIZE = 6;
+    /**
+     * Position of dot.
+     */
+    private static final int RELTYPE_POSITION = (RELTYPE_IMG_SIZE - RELTYPE_DOT_SIZE) / 2;
 
     private final NeoGraphViewPart graphView;
     private final GraphViewer graphViewer;
