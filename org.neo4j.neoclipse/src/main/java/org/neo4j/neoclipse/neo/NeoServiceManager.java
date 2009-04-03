@@ -90,7 +90,7 @@ public class NeoServiceManager
         {
             try
             {
-                tx.success();
+                tx.failure();
                 tx.finish();
             }
             catch ( Exception e )

@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.Preferences.IPropertyChangeListener;
 import org.eclipse.core.runtime.Preferences.PropertyChangeEvent;
 import org.eclipse.draw2d.ChangeEvent;
 import org.eclipse.draw2d.ChangeListener;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
@@ -29,9 +30,7 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.ISelectionListener;
-import org.eclipse.ui.IWindowListener;
 import org.eclipse.ui.IWorkbenchPart;
-import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.views.properties.IPropertySheetPage;
@@ -53,6 +52,7 @@ import org.neo4j.neoclipse.neo.NeoServiceEvent;
 import org.neo4j.neoclipse.neo.NeoServiceEventListener;
 import org.neo4j.neoclipse.neo.NeoServiceManager;
 import org.neo4j.neoclipse.neo.NeoServiceStatus;
+import org.neo4j.neoclipse.preference.NeoPreferences;
 import org.neo4j.neoclipse.property.NeoPropertySheetPage;
 import org.neo4j.neoclipse.reltype.RelationshipTypeView;
 
@@ -98,6 +98,10 @@ public class NeoGraphViewPart extends ViewPart implements
 
     private final NeoclipseListenerList relColorChange = new NeoclipseListenerList();
     private NeoGraphMenu menu;
+    /**
+     * Keep track of the current database state.
+     */
+    private boolean dirty = false;
 
     /**
      * Creates the view.
@@ -133,8 +137,6 @@ public class NeoGraphViewPart extends ViewPart implements
 
         PlatformUI.getWorkbench().getHelpSystem().setHelp( viewer.getControl(),
             HelpContextConstants.NEO_GRAPH_VIEW_PART );
-
-        PlatformUI.getWorkbench().addWindowListener( new WindowListener() );
     }
 
     /**
@@ -153,35 +155,6 @@ public class NeoGraphViewPart extends ViewPart implements
     private void setRelTypeView( final RelationshipTypeView relTypeView )
     {
         this.relTypeView = relTypeView;
-    }
-
-    /**
-     * Listen to window changes.
-     */
-    private class WindowListener implements IWindowListener
-    {
-        /**
-         * Load the dynamic menus (we don't want to load them earlier).
-         */
-        public void windowOpened( IWorkbenchWindow window )
-        {
-            menu.loadDynamicMenus();
-        }
-
-        public void windowActivated( IWorkbenchWindow window )
-        {
-            // do nothing
-        }
-
-        public void windowClosed( IWorkbenchWindow window )
-        {
-            // do nothing
-        }
-
-        public void windowDeactivated( IWorkbenchWindow window )
-        {
-            // do nothing
-        }
     }
 
     /**
@@ -341,11 +314,37 @@ public class NeoGraphViewPart extends ViewPart implements
      */
     public void dispose()
     {
+        cleanTransactionBeforeShutdown();
         if ( propertySheetPage != null )
         {
             propertySheetPage.dispose();
         }
         super.dispose();
+    }
+
+    /**
+     * Make sure the transaction is clean before Neo is to be
+     * shutdown/restarted.
+     */
+    private void cleanTransactionBeforeShutdown()
+    {
+        if ( !dirty )
+        {
+            return; // no need to do anything
+        }
+        NeoServiceManager sm = Activator.getDefault().getNeoServiceManager();
+        if ( MessageDialog
+            .openQuestion(
+                null,
+                "Database changed",
+                "There are changes that are not commited to the database. Do you want to commit (save) them?" ) )
+        {
+            sm.commit();
+        }
+        else
+        {
+            sm.rollback();
+        }
     }
 
     /**
@@ -614,10 +613,6 @@ public class NeoGraphViewPart extends ViewPart implements
         {
             if ( event.getStatus() == NeoServiceStatus.STOPPED )
             {
-                // throw away old relationship colors
-                NeoGraphLabelProviderWrapper.getInstance()
-                    .refreshRelationshipColors();
-                menu.clearImages();
                 // when called during shutdown the content provider may already
                 // have been disposed
                 if ( getViewer().getContentProvider() != null )
@@ -627,6 +622,8 @@ public class NeoGraphViewPart extends ViewPart implements
             }
             else if ( event.getStatus() == NeoServiceStatus.STARTED )
             {
+                // throw away old relationship colors
+                getLabelProvider().refreshRelationshipColors();
                 showSomeNode();
             }
             else if ( event.getStatus() == NeoServiceStatus.ROLLBACK )
@@ -647,6 +644,7 @@ public class NeoGraphViewPart extends ViewPart implements
      */
     public void setDirty( boolean dirty )
     {
+        this.dirty = dirty;
         menu.setEnabledCommitAction( dirty );
         menu.setEnabledRollbackAction( dirty );
     }
@@ -773,10 +771,20 @@ public class NeoGraphViewPart extends ViewPart implements
          */
         public void propertyChange( PropertyChangeEvent event )
         {
-            if ( NeoGraphLabelProviderWrapper.getInstance().propertyChanged(
-                event ) )
+            String property = event.getProperty();
+            if ( NeoPreferences.DATABASE_LOCATION.equals( property ) )
             {
-                refresh( true );
+                // handle change in database location
+                cleanTransactionBeforeShutdown();
+                Activator.getDefault().restartNeo();
+            }
+            else
+            {
+                if ( NeoGraphLabelProviderWrapper.getInstance()
+                    .propertyChanged( event ) )
+                {
+                    refresh( true );
+                }
             }
         }
     }

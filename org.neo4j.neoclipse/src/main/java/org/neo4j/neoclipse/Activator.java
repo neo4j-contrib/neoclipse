@@ -13,8 +13,6 @@
  */
 package org.neo4j.neoclipse;
 
-import org.eclipse.core.runtime.Preferences.IPropertyChangeListener;
-import org.eclipse.core.runtime.Preferences.PropertyChangeEvent;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.PreferenceDialog;
 import org.eclipse.ui.dialogs.PreferencesUtil;
@@ -22,7 +20,6 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.neo4j.api.core.NeoService;
 import org.neo4j.api.core.Node;
 import org.neo4j.neoclipse.neo.NeoServiceManager;
-import org.neo4j.neoclipse.preference.NeoPreferences;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -51,24 +48,6 @@ public class Activator extends AbstractUIPlugin
         super.start( context );
         PLUGIN = this;
         neoManager = new NeoServiceManager();
-        PLUGIN.getPluginPreferences().addPropertyChangeListener(
-            new IPropertyChangeListener()
-            {
-                /**
-                 * Handles neo property change events
-                 */
-                public void propertyChange( PropertyChangeEvent event )
-                {
-                    String property = event.getProperty();
-                    if ( NeoPreferences.DATABASE_LOCATION.equals( property ) )
-                    {
-                        // restart neo with the new location
-                        neoManager.stopNeoService();
-                        // start the service using new location
-                        getNeoServiceSafely();
-                    }
-                }
-            } );
     }
 
     /**
@@ -207,5 +186,15 @@ public class Activator extends AbstractUIPlugin
             return pref.open();
         }
         return 1;
+    }
+
+    /**
+     * Restart the Neo service from a new location.
+     */
+    public void restartNeo()
+    {
+        neoManager.stopNeoService();
+        // start the service using new location
+        getNeoServiceSafely();
     }
 }

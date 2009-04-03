@@ -99,6 +99,7 @@ public class RelationshipTypesProvider implements IContentProvider,
     private final NeoclipseListenerList filterListeners = new NeoclipseListenerList();
     private final NeoclipseListenerList typesListeners = new NeoclipseListenerList();
     private final ReltypeCtrlChangeListener reltypeCtrlChangeListener = new ReltypeCtrlChangeListener();
+    private final NeoclipseListenerList refreshListeners = new NeoclipseListenerList();
 
     /**
      * Factory method that creates relationship type items for the table view.
@@ -133,6 +134,7 @@ public class RelationshipTypesProvider implements IContentProvider,
                 .getRelationshipTypes();
             currentRelTypes.addAll( fakeTypes );
         }
+        refreshListeners.notifyListeners( new NeoclipseEvent( this ) );
         for ( RelationshipType relType : currentRelTypes )
         {
             // only add if it's not already there
@@ -327,6 +329,15 @@ public class RelationshipTypesProvider implements IContentProvider,
     private void notifyTypesListeners( NeoclipseEvent event )
     {
         typesListeners.notifyListeners( event );
+    }
+
+    /**
+     * Add listener to complete refresh events.
+     * @param newListener
+     */
+    public void addTypeRefreshListener( NeoclipseEventListener newListener )
+    {
+        refreshListeners.add( newListener );
     }
 
     /**

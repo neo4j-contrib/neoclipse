@@ -415,11 +415,16 @@ public class NeoGraphMenu
     }
 
     /**
-     * Clear images created for the relationship types.
+     * Handle chanes in the type list.
      */
-    public void clearImages()
+    private class RelTypeRefreshHandler implements NeoclipseEventListener
     {
-        relTypeImages.clear();
+        public void stateChanged( NeoclipseEvent event )
+        {
+            actionMap.clear();
+            relTypeImages.clear();
+            loadDynamicMenus();
+        }
     }
 
     /**
@@ -427,8 +432,10 @@ public class NeoGraphMenu
      */
     private void registerChangeHandlers()
     {
-        RelationshipTypesProviderWrapper.getInstance().addTypeChangeListener(
-            new RelTypesChangeHandler() );
+        final RelationshipTypesProvider typeProvider = RelationshipTypesProviderWrapper
+            .getInstance();
+        typeProvider.addTypeChangeListener( new RelTypesChangeHandler() );
+        typeProvider.addTypeRefreshListener( new RelTypeRefreshHandler() );
         graphView.addRelColorChangeListener( new RelTypesColorChangeHandler() );
     }
 
@@ -693,7 +700,7 @@ public class NeoGraphMenu
     /**
      * Refresh all relationship types in the menus.
      */
-    public void loadDynamicMenus()
+    private void loadDynamicMenus()
     {
         addRelMenuMgr.removeAll();
         addOutNodeMenuMgr.removeAll();
