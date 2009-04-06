@@ -92,15 +92,13 @@ public enum Actions
     COMMIT( "Commit", NeoIcons.COMMIT_ENABLED, NeoIcons.COMMIT_DISABLED ),
     ROLLBACK( "Rollback", NeoIcons.ROLLBACK_ENABLED, NeoIcons.ROLLBACK_DISABLED ),
     // view node settings
-    NODE_COLORS( "Node colors" ),
-    NODE_ICONS( "Node icons" ),
+    NODE_COLORS( "Node colors" ), NODE_ICONS( "Node icons" ),
     NODE_ID( "Node id" ),
     NODE_LABELS( "Node labels" ),
     NODE_PROPERTIES( "Node properties mode" ),
-    // view rels settings
+    // view relationships settings
     RELATIONSHIP_COLORS( "Relationship colors" ), RELATIONSHIP_DIRECTIONS(
-        "Relationship directions" ),
-    RELATIONSHIP_ID( "Relationship id" ),
+        "Relationship directions" ), RELATIONSHIP_ID( "Relationship id" ),
     RELATIONSHIP_LABELS( "Relationship labels" ),
     RELATIONSHIP_PROPERTIES( "Relationship properties mode" ),
     RELATIONSHIP_TYPES( "Relationship types" ),
@@ -121,7 +119,7 @@ public enum Actions
     COPY( "Copy", NeoIcons.COPY_ENABLED, NeoIcons.COPY_DISABLED ), REMOVE(
         "Remove", NeoIcons.DELETE_ENABLED, NeoIcons.DELETE_DISABLED ), PASTE(
         "Paste", NeoIcons.PASTE_ENABLED, NeoIcons.PASTE_DISABLED ), RENAME(
-        "Rename", NeoIcons.RENAME );
+        "Rename", NeoIcons.RENAME_ENABLED, NeoIcons.RENAME_DISABLED );
 
     private final String label;
     private final String tooltip;
