@@ -35,18 +35,18 @@ public enum Actions
     SEARCH( "Search", NeoIcons.SEARCH_ENABLED, NeoIcons.SEARCH_DISABLED ),
     // add rel
     ADD_RELATIONSHIP(
-        "Create relationship",
+        "Create relationship between two existing nodes",
         "Create a directed relationship from the first selected node to the second.",
         NeoIcons.ADD_ENABLED, NeoIcons.ADD_DISABLED ),
     ADD_INCOMING_ICON( "Set end node icon for type", NeoIcons.ICON_INCOMING ),
     ADD_OUTGOING_ICON( "Set start node icon for type", NeoIcons.ICON_OUTGOING ),
     // add node
-    ADD_INCOMING_NODE( "Create node as start node",
-        "Create a node with a relationship; "
+    ADD_INCOMING_NODE( "Create new node as start node",
+        "Create a new node with a relationship; "
             + "the new node is the start node of the relationship(s).",
         NeoIcons.ADD_INCOMING_ENABLED, NeoIcons.ADD_INCOMING_DISABLED ),
-    ADD_OUTGOING_NODE( "Create node as end node",
-        "Create a node with a relationship; "
+    ADD_OUTGOING_NODE( "Create new node as end node",
+        "Create a new node with a relationship; "
             + "the new node is the end node of the relationship(s).",
         NeoIcons.ADD_OUTGOING_ENABLED, NeoIcons.ADD_OUTGOING_DISABLED ),
     // add reltype
@@ -95,12 +95,12 @@ public enum Actions
     NODE_COLORS( "Node colors" ), NODE_ICONS( "Node icons" ),
     NODE_ID( "Node id" ),
     NODE_LABELS( "Node labels" ),
-    NODE_PROPERTIES( "Node properties mode" ),
+    NODE_EXPANDED( "Expanded node mode" ),
     // view relationships settings
     RELATIONSHIP_COLORS( "Relationship colors" ), RELATIONSHIP_DIRECTIONS(
         "Relationship directions" ), RELATIONSHIP_ID( "Relationship id" ),
     RELATIONSHIP_LABELS( "Relationship labels" ),
-    RELATIONSHIP_PROPERTIES( "Relationship properties mode" ),
+    RELATIONSHIP_EXPANDED( "Expanded relationship mode" ),
     RELATIONSHIP_TYPES( "Relationship types" ),
     // layout
     GRID_LAYOUT( "Grid layout", "Grid layout", NeoIcons.GRID ),

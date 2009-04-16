@@ -620,15 +620,16 @@ public class NeoGraphMenu
     private void contributeLabelActions( IMenuManager mm )
     {
         {
-            String labelsGroupName = "labels";
-            GroupMarker labelsGroup = new GroupMarker( labelsGroupName );
-            mm.add( labelsGroup );
+            String relationshipGroupName = "relationship-labels";
+            GroupMarker relationshipGroup = new GroupMarker(
+                relationshipGroupName );
+            mm.add( relationshipGroup );
 
             ViewSettings viewSettings = graphView.getLabelProvider()
                 .getViewSettings();
 
             // relationship properties actions
-            mm.appendToGroup( labelsGroupName,
+            mm.appendToGroup( relationshipGroupName,
                 new ShowRelationshipPropertiesAction( graphView, viewSettings
                     .isShowRelationshipProperties() ) );
             // separator
@@ -636,44 +637,50 @@ public class NeoGraphMenu
                 mm.add( SEPARATOR );
             }
             // relationship types actions
-            mm.appendToGroup( labelsGroupName, new ShowRelationshipTypesAction(
-                graphView, viewSettings.isShowRelationshipTypes() ) );
+            mm.appendToGroup( relationshipGroupName,
+                new ShowRelationshipTypesAction( graphView, viewSettings
+                    .isShowRelationshipTypes() ) );
             // relationship id's actions
-            mm.appendToGroup( labelsGroupName, new ShowRelationshipIdsAction(
-                graphView, viewSettings.isShowRelationshipIds() ) );
+            mm.appendToGroup( relationshipGroupName,
+                new ShowRelationshipIdsAction( graphView, viewSettings
+                    .isShowRelationshipIds() ) );
             // relationship labels actions
-            mm.appendToGroup( labelsGroupName, new ShowRelationshipLabelAction(
-                graphView, viewSettings.isShowRelationshipNames() ) );
+            mm.appendToGroup( relationshipGroupName,
+                new ShowRelationshipLabelAction( graphView, viewSettings
+                    .isShowRelationshipNames() ) );
             // relationship colors actions
-            mm.appendToGroup( labelsGroupName,
+            mm.appendToGroup( relationshipGroupName,
                 new ShowRelationshipColorsAction( graphView, viewSettings
                     .isShowRelationshipColors() ) );
             // relationship directions actions
-            mm.appendToGroup( labelsGroupName,
+            mm.appendToGroup( relationshipGroupName,
                 new ShowRelationshipDirectionsAction( graphView, viewSettings
                     .isShowArrows() ) );
             // separator
             {
                 mm.add( SEPARATOR );
             }
+            String nodeGroupName = "node-labels";
+            GroupMarker nodeGroup = new GroupMarker( nodeGroupName );
+            mm.add( nodeGroup );
             // properties action
-            mm.appendToGroup( labelsGroupName, new ShowNodePropertiesAction(
+            mm.appendToGroup( nodeGroupName, new ShowNodePropertiesAction(
                 graphView, viewSettings.isShowNodeProperties() ) );
             // separator
             {
                 mm.add( SEPARATOR );
             }
             // relationship id's actions
-            mm.appendToGroup( labelsGroupName, new ShowNodeIdsAction(
-                graphView, viewSettings.isShowNodeIds() ) );
+            mm.appendToGroup( nodeGroupName, new ShowNodeIdsAction( graphView,
+                viewSettings.isShowNodeIds() ) );
             // names actions
-            mm.appendToGroup( labelsGroupName, new ShowNodeLabelAction(
+            mm.appendToGroup( nodeGroupName, new ShowNodeLabelAction(
                 graphView, viewSettings.isShowNodeNames() ) );
             // node colors actions
-            mm.appendToGroup( labelsGroupName, new ShowNodeColorsAction(
+            mm.appendToGroup( nodeGroupName, new ShowNodeColorsAction(
                 graphView, viewSettings.isShowNodeColors() ) );
             // node icons actions
-            mm.appendToGroup( labelsGroupName, new ShowNodeIconsAction(
+            mm.appendToGroup( nodeGroupName, new ShowNodeIconsAction(
                 graphView, viewSettings.isShowNodeIcons() ) );
         }
     }

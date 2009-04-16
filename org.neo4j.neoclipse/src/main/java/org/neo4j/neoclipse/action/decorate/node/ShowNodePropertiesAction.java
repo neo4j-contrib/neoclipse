@@ -29,7 +29,7 @@ public class ShowNodePropertiesAction extends AbstractCheckboxAction
     public ShowNodePropertiesAction( final NeoGraphViewPart view,
         final boolean checked )
     {
-        super( Actions.NODE_PROPERTIES, checked, view );
+        super( Actions.NODE_EXPANDED, checked, view );
     }
 
     /**
