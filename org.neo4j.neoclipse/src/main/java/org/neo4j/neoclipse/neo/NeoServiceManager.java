@@ -16,15 +16,18 @@ package org.neo4j.neoclipse.neo;
 import org.eclipse.core.runtime.ISafeRunnable;
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.core.runtime.SafeRunner;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.neo4j.api.core.EmbeddedNeo;
 import org.neo4j.api.core.NeoService;
 import org.neo4j.api.core.Transaction;
 import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.preference.NeoPreferences;
+import org.neo4j.remote.RemoteNeo;
 
 /**
  * This manager controls the neo service.
  * @author Peter H&auml;nsgen
+ * @author Anders Nawroth
  */
 public class NeoServiceManager
 {
@@ -51,17 +54,42 @@ public class NeoServiceManager
      */
     public void startNeoService() throws RuntimeException
     {
+        System.out.println( "checking service ..." );
         if ( neo == null )
         {
-            // determine the neo directory from the preferences
-            String location = Activator.getDefault().getPreferenceStore()
-                .getString( NeoPreferences.DATABASE_LOCATION );
-            if ( (location == null) || (location.trim().length() == 0) )
+            System.out.println( "starting neo" );
+            final IPreferenceStore preferenceStore = Activator.getDefault()
+                .getPreferenceStore();
+            // try the resource URI first
+            String resourceUri = preferenceStore
+                .getString( NeoPreferences.DATABASE_RESOURCE_URI );
+            if ( (resourceUri != null) && (resourceUri.trim().length() != 0) )
             {
-                return;
+                // let's try the resource URI
+                try
+                {
+                    System.out.println( "trying remote neo" );
+                    neo = new RemoteNeo( resourceUri );
+                    System.out.println( "connected to remote neo" );
+                }
+                catch ( Exception e )
+                {
+                    e.printStackTrace();
+                }
             }
-            // seems to be a valid directory, try starting neo
-            neo = new EmbeddedNeo( location );
+            else
+            {
+                // determine the neo directory from the preferences
+                String location = preferenceStore
+                    .getString( NeoPreferences.DATABASE_LOCATION );
+                if ( (location == null) || (location.trim().length() == 0) )
+                {
+                    return;
+                }
+                // seems to be a valid directory, try starting neo
+                neo = new EmbeddedNeo( location );
+                System.out.println( "connected to embedded neo" );
+            }
             tx = neo.beginTx();
             // notify listeners
             fireServiceChangedEvent( NeoServiceStatus.STARTED );
@@ -163,7 +191,7 @@ public class NeoServiceManager
                 final NeoServiceEventListener l = (NeoServiceEventListener) changeListeners[i];
                 ISafeRunnable job = new ISafeRunnable()
                 {
-                    public void handleException( Throwable exception )
+                    public void handleException( final Throwable exception )
                     {
                         // do nothing
                     }

@@ -106,7 +106,8 @@ public class NeoGraphViewPart extends ViewPart implements
     /**
      * Creates the view.
      */
-    public void createPartControl( Composite parent )
+    @Override
+    public void createPartControl( final Composite parent )
     {
         viewer = new GraphViewer( parent, SWT.NONE );
         viewer.setUseHashlookup( true );
@@ -161,7 +162,7 @@ public class NeoGraphViewPart extends ViewPart implements
      * Add listener for input changes.
      * @param listener
      */
-    public void addListener( InputChangeListener listener )
+    public void addListener( final InputChangeListener listener )
     {
         listeners.add( listener );
     }
@@ -170,7 +171,7 @@ public class NeoGraphViewPart extends ViewPart implements
      * Add listener for changes in the relationship colors setting.
      * @param listener
      */
-    public void addRelColorChangeListener( NeoclipseEventListener listener )
+    public void addRelColorChangeListener( final NeoclipseEventListener listener )
     {
         relColorChange.add( listener );
     }
@@ -179,7 +180,7 @@ public class NeoGraphViewPart extends ViewPart implements
      * Notify listeners of new input node.
      * @param node
      */
-    private void notifyListeners( Node node )
+    private void notifyListeners( final Node node )
     {
         for ( InputChangeListener listener : listeners )
         {
@@ -199,7 +200,7 @@ public class NeoGraphViewPart extends ViewPart implements
      * @param state
      *            set true to display
      */
-    public void setShowRelationshipColors( boolean state )
+    public void setShowRelationshipColors( final boolean state )
     {
         getLabelProvider().getViewSettings().setShowRelationshipColors( state );
         relColorChange.notifyListeners( new NeoclipseEvent( Boolean
@@ -283,8 +284,9 @@ public class NeoGraphViewPart extends ViewPart implements
     /**
      * This is how the framework determines which interfaces we implement.
      */
+    @Override
     @SuppressWarnings( "unchecked" )
-    public Object getAdapter( Class key )
+    public Object getAdapter( final Class key )
     {
         if ( key.equals( IPropertySheetPage.class ) )
         {
@@ -312,6 +314,7 @@ public class NeoGraphViewPart extends ViewPart implements
     /**
      * Cleans up.
      */
+    @Override
     public void dispose()
     {
         cleanTransactionBeforeShutdown();
@@ -350,6 +353,7 @@ public class NeoGraphViewPart extends ViewPart implements
     /**
      * Sets the focus.
      */
+    @Override
     public void setFocus()
     {
         viewer.getControl().setFocus();
@@ -433,7 +437,7 @@ public class NeoGraphViewPart extends ViewPart implements
     /**
      * Focuses the view on the node with the given id.
      */
-    public void showNode( long nodeId )
+    public void showNode( final long nodeId )
     {
         NeoService ns = Activator.getDefault().getNeoServiceSafely();
         if ( ns != null )
@@ -446,7 +450,7 @@ public class NeoGraphViewPart extends ViewPart implements
     /**
      * Focuses the view on the given node.
      */
-    public void showNode( Node node )
+    public void showNode( final Node node )
     {
         setInput( node );
     }
@@ -516,7 +520,7 @@ public class NeoGraphViewPart extends ViewPart implements
         refresh( false );
     }
 
-    public void refresh( boolean updateLabels )
+    public void refresh( final boolean updateLabels )
     {
         disableDelete();
         viewer.refresh( updateLabels );
@@ -534,7 +538,7 @@ public class NeoGraphViewPart extends ViewPart implements
      * @param element
      * @param updateLabels
      */
-    public void refresh( Object element, boolean updateLabels )
+    public void refresh( final Object element, final boolean updateLabels )
     {
         disableDelete();
         viewer.refresh( element, updateLabels );
@@ -579,7 +583,7 @@ public class NeoGraphViewPart extends ViewPart implements
      * @param node
      *            the node to use as input/start
      */
-    public void setInput( Node node )
+    public void setInput( final Node node )
     {
         viewer.setInput( node );
         if ( node != null )
@@ -609,7 +613,7 @@ public class NeoGraphViewPart extends ViewPart implements
         /**
          * Refreshes the input source of the view.
          */
-        public void serviceChanged( NeoServiceEvent event )
+        public void serviceChanged( final NeoServiceEvent event )
         {
             if ( event.getStatus() == NeoServiceStatus.STOPPED )
             {
@@ -642,7 +646,7 @@ public class NeoGraphViewPart extends ViewPart implements
      * Update UI according to the state of the database.
      * @param dirty
      */
-    public void setDirty( boolean dirty )
+    public void setDirty( final boolean dirty )
     {
         this.dirty = dirty;
         menu.setEnabledCommitAction( dirty );
@@ -657,7 +661,7 @@ public class NeoGraphViewPart extends ViewPart implements
         /**
          * Sets the selected node as input for the viewer.
          */
-        public void doubleClick( DoubleClickEvent event )
+        public void doubleClick( final DoubleClickEvent event )
         {
             StructuredSelection sel = (StructuredSelection) event
                 .getSelection();
@@ -684,7 +688,8 @@ public class NeoGraphViewPart extends ViewPart implements
         /**
          * Handles selection, making the context menu look right.
          */
-        public void selectionChanged( IWorkbenchPart part, ISelection selection )
+        public void selectionChanged( final IWorkbenchPart part,
+            final ISelection selection )
         {
             currentSelectedNodes.clear();
             currentSelectedRels.clear();
@@ -719,7 +724,8 @@ public class NeoGraphViewPart extends ViewPart implements
         /**
          * Handles selection, just updating the relTypeView reference.
          */
-        public void selectionChanged( IWorkbenchPart part, ISelection selection )
+        public void selectionChanged( final IWorkbenchPart part,
+            final ISelection selection )
         {
             if ( part instanceof RelationshipTypeView )
             {
@@ -754,7 +760,7 @@ public class NeoGraphViewPart extends ViewPart implements
         /**
          * Handle change in properties.
          */
-        public void handleStateChanged( ChangeEvent event )
+        public void handleStateChanged( final ChangeEvent event )
         {
             refresh( event.getSource(), true );
             setDirty( true );
@@ -769,7 +775,7 @@ public class NeoGraphViewPart extends ViewPart implements
         /**
          * Forward event, then refresh view.
          */
-        public void propertyChange( PropertyChangeEvent event )
+        public void propertyChange( final PropertyChangeEvent event )
         {
             String property = event.getProperty();
             if ( NeoPreferences.DATABASE_LOCATION.equals( property ) )

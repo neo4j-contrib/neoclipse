@@ -7,9 +7,10 @@ Bundle-Activator: org.neo4j.neoclipse.Activator
 Bundle-Vendor: Neo4j.org
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Bundle-ClassPath: lib/jta-spec1_0_1.jar,
+Bundle-ClassPath: lib/jta-1.1.jar,
  .,
- lib/neo-1.0-b7.jar
+ lib/neo-1.0-b8.jar,
+ lib/remote-neo-0.1.jar
 Import-Package: org.eclipse.core.commands.common,
  org.eclipse.core.runtime,
  org.eclipse.core.runtime.preferences,

@@ -32,6 +32,10 @@ public final class NeoPreferences
      */
     public static final String DATABASE_LOCATION = "databaseLocation";
     /**
+     * Database resource URI using RemoteNeo.
+     */
+    public static final String DATABASE_RESOURCE_URI = "databaseResourceUri";
+    /**
      * Show the help view when the application starts.
      */
     public static final String HELP_ON_START = "helpOnStart";

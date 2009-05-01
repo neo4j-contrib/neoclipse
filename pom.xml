@@ -3,13 +3,13 @@
 	<parent>
 		<groupId>org.neo4j</groupId>
 		<artifactId>parent-pom</artifactId>
-		<version>2</version>
+		<version>3</version>
 	</parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.neo4j</groupId>
   <artifactId>neoclipse</artifactId>
   <name>Neoclipse Project</name>
-  <version>1.0</version>
+  <version>1.1</version>
   <packaging>pom</packaging>
   <modules>
     <module>org.neo4j.neoclipse</module>

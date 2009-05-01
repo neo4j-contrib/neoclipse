@@ -26,10 +26,12 @@ public class NeoPreferenceInitializer extends AbstractPreferenceInitializer
     /**
      * Initializes the neo preferences.
      */
+    @Override
     public void initializeDefaultPreferences()
     {
         IPreferenceStore pref = Activator.getDefault().getPreferenceStore();
         pref.setDefault( NeoPreferences.DATABASE_LOCATION, "" );
+        pref.setDefault( NeoPreferences.DATABASE_RESOURCE_URI, "" );
         pref.setDefault( NeoPreferences.HELP_ON_START, true );
     }
 }

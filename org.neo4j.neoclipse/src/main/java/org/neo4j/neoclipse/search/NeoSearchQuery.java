@@ -27,7 +27,6 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.search.ui.ISearchQuery;
 import org.eclipse.search.ui.ISearchResult;
 import org.neo4j.api.core.Direction;
-import org.neo4j.api.core.EmbeddedNeo;
 import org.neo4j.api.core.NeoService;
 import org.neo4j.api.core.Node;
 import org.neo4j.api.core.Relationship;
@@ -38,6 +37,7 @@ import org.neo4j.api.core.TraversalPosition;
 import org.neo4j.api.core.Traverser;
 import org.neo4j.api.core.Traverser.Order;
 import org.neo4j.neoclipse.Activator;
+import org.neo4j.neoclipse.reltype.RelationshipTypesProviderWrapper;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**
@@ -170,9 +170,9 @@ public class NeoSearchQuery implements ISearchQuery
         // monitor.beginTask( "Neo4j search operation started.",
         // IProgressMonitor.UNKNOWN );
         final List<Object> relDirList = new ArrayList<Object>();
-        @SuppressWarnings( "deprecation" )
-        Iterable<RelationshipType> relationshipTypes = ((EmbeddedNeo) neoService)
-            .getRelationshipTypes();
+
+        Iterable<RelationshipType> relationshipTypes = RelationshipTypesProviderWrapper
+            .getInstance().getRelationshipTypesFromNeo();
         for ( RelationshipType relType : relationshipTypes )
         {
             relDirList.add( relType );

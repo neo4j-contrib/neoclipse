@@ -21,9 +21,8 @@ import java.util.Set;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.zest.core.viewers.IGraphContentProvider;
 import org.neo4j.api.core.Direction;
-import org.neo4j.api.core.EmbeddedNeo;
-import org.neo4j.api.core.NeoService;
 import org.neo4j.api.core.Node;
+import org.neo4j.api.core.NotFoundException;
 import org.neo4j.api.core.Relationship;
 import org.neo4j.api.core.RelationshipType;
 import org.neo4j.api.core.ReturnableEvaluator;
@@ -31,7 +30,8 @@ import org.neo4j.api.core.StopEvaluator;
 import org.neo4j.api.core.TraversalPosition;
 import org.neo4j.api.core.Traverser;
 import org.neo4j.api.core.Traverser.Order;
-import org.neo4j.neoclipse.Activator;
+import org.neo4j.neoclipse.reltype.RelationshipTypesProvider;
+import org.neo4j.neoclipse.reltype.RelationshipTypesProviderWrapper;
 
 /**
  * Get content through relations. TODO: view.addCurrentNode(); calls has to be
@@ -49,17 +49,17 @@ public class NeoGraphRelationshipContentProvider implements
     /**
      * The constructor.
      */
-    public NeoGraphRelationshipContentProvider( NeoGraphViewPart view )
+    public NeoGraphRelationshipContentProvider( final NeoGraphViewPart view )
     {
         this.view = view;
     }
 
-    public Object getDestination( Object rel )
+    public Object getDestination( final Object rel )
     {
         return ((Relationship) rel).getEndNode();
     }
 
-    public Object[] getElements( Object input )
+    public Object[] getElements( final Object input )
     {
         final int depth = view.getTraversalDepth() - 1;
         if ( depth == -1 )
@@ -67,20 +67,26 @@ public class NeoGraphRelationshipContentProvider implements
             // view.addCurrentNode();
             return EMPTY_REL_ARRAY;
         }
-        List<Object> relDirList = new ArrayList<Object>();
-        final NeoService neoService = Activator.getDefault()
-            .getNeoServiceSafely();
-        if ( neoService == null )
+        List<Object> relDirList;
+        try
         {
-            return EMPTY_REL_ARRAY;
+            RelationshipTypesProvider relTypesProvider = RelationshipTypesProviderWrapper
+                .getInstance();
+            relDirList = relTypesProvider.getFilteredRelTypesDirections();
         }
-        @SuppressWarnings( "deprecation" )
-        Iterable<RelationshipType> relationshipTypes = ((EmbeddedNeo) neoService)
-            .getRelationshipTypes();
-        for ( RelationshipType relType : relationshipTypes )
+        catch ( NotFoundException nfe )
         {
-            relDirList.add( relType );
-            relDirList.add( Direction.BOTH );
+            // (no relationship types found by the provider)
+            // we'll end up here when the reltypes are not initialized,
+            // and we don't want them to initialize first
+            // (traversal gives better coloring!)
+            relDirList = new ArrayList<Object>();
+            for ( RelationshipType relType : RelationshipTypesProviderWrapper
+                .getInstance().getRelationshipTypesFromNeo() )
+            {
+                relDirList.add( relType );
+                relDirList.add( Direction.BOTH );
+            }
         }
         if ( relDirList.isEmpty() )
         {
@@ -93,7 +99,7 @@ public class NeoGraphRelationshipContentProvider implements
         Traverser trav = node.traverse( Order.BREADTH_FIRST,
             new StopEvaluator()
             {
-                public boolean isStopNode( TraversalPosition currentPos )
+                public boolean isStopNode( final TraversalPosition currentPos )
                 {
                     return currentPos.depth() >= depth;
                 }
@@ -125,7 +131,7 @@ public class NeoGraphRelationshipContentProvider implements
         return rels.toArray( EMPTY_REL_ARRAY );
     }
 
-    public Object getSource( Object rel )
+    public Object getSource( final Object rel )
     {
         return ((Relationship) rel).getStartNode();
     }
@@ -135,7 +141,8 @@ public class NeoGraphRelationshipContentProvider implements
         // TODO Auto-generated method stub
     }
 
-    public void inputChanged( Viewer viewer, Object oldInput, Object newInput )
+    public void inputChanged( final Viewer viewer, final Object oldInput,
+        final Object newInput )
     {
         // TODO Auto-generated method stub
     }

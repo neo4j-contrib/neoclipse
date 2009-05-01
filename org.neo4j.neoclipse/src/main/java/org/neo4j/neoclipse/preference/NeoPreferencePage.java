@@ -15,6 +15,7 @@ package org.neo4j.neoclipse.preference;
 
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.DirectoryFieldEditor;
+import org.eclipse.jface.preference.StringFieldEditor;
 
 /**
  * The page for neo preferences.
@@ -27,10 +28,13 @@ public class NeoPreferencePage extends AbstractPreferencePage
     // database location
     private static final String NEO_DATABASE_LOCATION_LABEL = "Database location:";
     private static final String NEO_DATABASE_LOCATION_ERROR = "The database location is invalid.";
+    // resource uri
+    private static final String DATABASE_RESOURCE_URI_LABEL = "Database resource URI:";
 
     /**
      * Initializes the several input fields.
      */
+    @Override
     protected void createFieldEditors()
     {
         // database location
@@ -40,6 +44,12 @@ public class NeoPreferencePage extends AbstractPreferencePage
         locationField.setEmptyStringAllowed( false );
         locationField.setErrorMessage( NEO_DATABASE_LOCATION_ERROR );
         addField( locationField );
+        // database resource uri
+        StringFieldEditor resourceUriField = new StringFieldEditor(
+            NeoPreferences.DATABASE_RESOURCE_URI, DATABASE_RESOURCE_URI_LABEL,
+            getFieldEditorParent() );
+        resourceUriField.setEmptyStringAllowed( true );
+        addField( resourceUriField, "highly experimental" );
         // show help view on startup
         BooleanFieldEditor helpOnStart = new BooleanFieldEditor(
             NeoPreferences.HELP_ON_START, HELP_ON_START_LABEL,

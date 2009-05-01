@@ -57,7 +57,7 @@ public class NeoGraphContentProvider implements
     /**
      * The constructor.
      */
-    public NeoGraphContentProvider( NeoGraphViewPart view )
+    public NeoGraphContentProvider( final NeoGraphViewPart view )
     {
         this.view = view;
     }
@@ -65,17 +65,17 @@ public class NeoGraphContentProvider implements
     /**
      * Returns the relationships between the given nodes.
      */
-    public Object[] getRelationships( Object source, Object dest )
+    public Object[] getRelationships( final Object source, final Object dest )
     {
         Node start = (Node) source;
         Node end = (Node) dest;
         List<Relationship> rels = new ArrayList<Relationship>();
-        Iterable<Relationship> rs = start.getRelationships( Direction.OUTGOING );
         if ( !relTypes.isEmpty() )
         {
-            for ( Relationship r : rs )
+            for ( RelationshipType relType : relTypes )
             {
-                if ( relTypes.contains( r.getType() ) )
+                for ( Relationship r : start.getRelationships( relType,
+                    Direction.OUTGOING ) )
                 {
                     if ( r.getEndNode().equals( end ) )
                     {
@@ -86,7 +86,7 @@ public class NeoGraphContentProvider implements
         }
         else
         {
-            for ( Relationship r : rs )
+            for ( Relationship r : start.getRelationships( Direction.OUTGOING ) )
             {
                 if ( r.getEndNode().equals( end ) )
                 {
@@ -100,7 +100,7 @@ public class NeoGraphContentProvider implements
     /**
      * Returns all nodes the given node is connected with.
      */
-    public Object[] getElements( Object inputElement )
+    public Object[] getElements( final Object inputElement )
     {
         Node node = (Node) inputElement;
         final NeoService neoService = Activator.getDefault()
@@ -154,7 +154,8 @@ public class NeoGraphContentProvider implements
             Traverser trav = node.traverse( Order.BREADTH_FIRST,
                 new StopEvaluator()
                 {
-                    public boolean isStopNode( TraversalPosition currentPos )
+                    public boolean isStopNode(
+                        final TraversalPosition currentPos )
                     {
                         return currentPos.depth() >= depth;
                     }
@@ -182,7 +183,8 @@ public class NeoGraphContentProvider implements
     {
     }
 
-    public void inputChanged( Viewer viewer, Object oldInput, Object newInput )
+    public void inputChanged( final Viewer viewer, final Object oldInput,
+        final Object newInput )
     {
     }
 }
