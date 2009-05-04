@@ -180,6 +180,7 @@ public class NeoGraphLabelProvider extends LabelProvider implements
     /**
      * Returns the icon for an element.
      */
+    @Override
     public Image getImage( final Object element )
     {
         if ( element instanceof Node )
@@ -203,7 +204,8 @@ public class NeoGraphLabelProvider extends LabelProvider implements
     /**
      * Returns the text for an element.
      */
-    public String getText( Object element )
+    @Override
+    public String getText( final Object element )
     {
         if ( element instanceof Node )
         {
@@ -214,6 +216,11 @@ public class NeoGraphLabelProvider extends LabelProvider implements
         {
             Relationship rel = (Relationship) element;
             return graphDecorator.getRelationshipText( rel );
+        }
+        else if ( element instanceof RelationshipTypeControl )
+        {
+            RelationshipTypeControl typeControl = (RelationshipTypeControl) element;
+            return typeControl.getRelType().name();
         }
         return element.toString();
     }
@@ -297,7 +304,7 @@ public class NeoGraphLabelProvider extends LabelProvider implements
                 NeoDecoratorPreferences.NODE_ICON_PROPERTY_NAMES ) );
     }
 
-    public Color getColor( Object o )
+    public Color getColor( final Object o )
     {
         if ( o instanceof Relationship )
         {
@@ -321,7 +328,7 @@ public class NeoGraphLabelProvider extends LabelProvider implements
         return null;
     }
 
-    public int getConnectionStyle( Object rel )
+    public int getConnectionStyle( final Object rel )
     {
         int style = 0;
         if ( viewSettings.isShowArrows() )
@@ -335,13 +342,13 @@ public class NeoGraphLabelProvider extends LabelProvider implements
         return style;
     }
 
-    public Color getHighlightColor( Object rel )
+    public Color getHighlightColor( final Object rel )
     {
         return graphDecorator
             .getRelationshipHighlightColor( (Relationship) rel );
     }
 
-    public int getLineWidth( Object rel )
+    public int getLineWidth( final Object rel )
     {
         if ( rel instanceof Relationship && markedRels.contains( rel ) )
         {
@@ -353,13 +360,13 @@ public class NeoGraphLabelProvider extends LabelProvider implements
         }
     }
 
-    public IFigure getTooltip( Object entity )
+    public IFigure getTooltip( final Object entity )
     {
         // got this working only for rels. use a Label (draw2d).
         return null;
     }
 
-    public Color getBackground( Object element )
+    public Color getBackground( final Object element )
     {
         if ( element instanceof Node && viewSettings.isShowNodeColors() )
         {
@@ -372,7 +379,7 @@ public class NeoGraphLabelProvider extends LabelProvider implements
         return null;
     }
 
-    public Color getForeground( Object element )
+    public Color getForeground( final Object element )
     {
         if ( element instanceof Node )
         {
@@ -383,7 +390,7 @@ public class NeoGraphLabelProvider extends LabelProvider implements
         return null;
     }
 
-    public Image getColumnImage( Object element, int index )
+    public Image getColumnImage( final Object element, final int index )
     {
         if ( element instanceof RelationshipTypeControl )
         {
@@ -400,7 +407,7 @@ public class NeoGraphLabelProvider extends LabelProvider implements
         return null;
     }
 
-    public String getColumnText( Object element, int index )
+    public String getColumnText( final Object element, final int index )
     {
         if ( index == 0 && element instanceof RelationshipTypeControl )
         {
@@ -410,13 +417,13 @@ public class NeoGraphLabelProvider extends LabelProvider implements
         return null;
     }
 
-    public Color getBackground( Object element, int index )
+    public Color getBackground( final Object element, final int index )
     {
         // TODO Auto-generated method stub
         return null;
     }
 
-    public Color getForeground( Object element, int index )
+    public Color getForeground( final Object element, final int index )
     {
         if ( !viewSettings.isShowRelationshipColors() || index != 0
             || !(element instanceof RelationshipTypeControl) )
@@ -440,7 +447,7 @@ public class NeoGraphLabelProvider extends LabelProvider implements
      * Create the table columns of the Relationship types view.
      * @param tableViewer
      */
-    public void createTableColumns( TableViewer tableViewer )
+    public void createTableColumns( final TableViewer tableViewer )
     {
         Table table = tableViewer.getTable();
 
@@ -478,7 +485,7 @@ public class NeoGraphLabelProvider extends LabelProvider implements
         table.setLinesVisible( true );
     }
 
-    public boolean propertyChanged( PropertyChangeEvent event )
+    public boolean propertyChanged( final PropertyChangeEvent event )
     {
         String property = event.getProperty();
         if ( NeoDecoratorPreferences.NODE_PROPERTY_NAMES.equals( property ) )

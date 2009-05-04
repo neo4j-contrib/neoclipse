@@ -13,7 +13,6 @@
  */
 package org.neo4j.neoclipse.view;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedMap;
@@ -71,6 +70,8 @@ import org.neo4j.neoclipse.decorate.SimpleGraphDecorator.ViewSettings;
 import org.neo4j.neoclipse.event.NeoclipseEvent;
 import org.neo4j.neoclipse.event.NeoclipseEventListener;
 import org.neo4j.neoclipse.neo.NodeSpaceUtil;
+import org.neo4j.neoclipse.reltype.RelationshipTypeHashMap;
+import org.neo4j.neoclipse.reltype.RelationshipTypeSorter;
 import org.neo4j.neoclipse.reltype.RelationshipTypesProvider;
 import org.neo4j.neoclipse.reltype.RelationshipTypesProviderWrapper;
 
@@ -180,7 +181,7 @@ public class NeoGraphMenu
          * @param index
          *            position of addition
          */
-        public void addAt( int index )
+        public void addAt( final int index )
         {
             addRelMenuMgr.insert( index, new ActionContributionItem( addRel ) );
             addOutNodeMenuMgr.insert( index,
@@ -198,7 +199,8 @@ public class NeoGraphMenu
          * @param in
          *            enable create incoming relationships and node
          */
-        public void setEnabled( boolean rel, boolean out, boolean in )
+        public void setEnabled( final boolean rel, final boolean out,
+            final boolean in )
         {
             addRel.setEnabled( rel );
             addOut.setEnabled( out );
@@ -209,7 +211,8 @@ public class NeoGraphMenu
     /**
      * A map to keep the actions sorted by relationship type name.
      */
-    private final SortedMap<String,ActionSet> actionMap = new TreeMap<String,ActionSet>();
+    private final SortedMap<String,ActionSet> actionMap = new TreeMap<String,ActionSet>(
+        new RelationshipTypeSorter() );
 
     /**
      * Size of colored squares for relationship types.
@@ -269,7 +272,7 @@ public class NeoGraphMenu
     /**
      * Colored images for the different relationship types.
      */
-    private final Map<RelationshipType,ImageDescriptor> relTypeImages = new HashMap<RelationshipType,ImageDescriptor>();
+    private final Map<RelationshipType,ImageDescriptor> relTypeImages = new RelationshipTypeHashMap<ImageDescriptor>();
     /**
      * Default image when color is off.
      */
@@ -373,7 +376,7 @@ public class NeoGraphMenu
      * Enable decrement traversal depth action.
      * @param enabled
      */
-    public void setEnabledDecAction( boolean enabled )
+    public void setEnabledDecAction( final boolean enabled )
     {
         decAction.setEnabled( enabled );
     }
@@ -382,7 +385,7 @@ public class NeoGraphMenu
      * Enable go back action.
      * @param enabled
      */
-    public void setEnabledBackAction( boolean enabled )
+    public void setEnabledBackAction( final boolean enabled )
     {
         backAction.setEnabled( enabled );
     }
@@ -391,7 +394,7 @@ public class NeoGraphMenu
      * Enable go forward action.
      * @param enabled
      */
-    public void setEnabledForwardAction( boolean enabled )
+    public void setEnabledForwardAction( final boolean enabled )
     {
         forwardAction.setEnabled( enabled );
     }
@@ -400,7 +403,7 @@ public class NeoGraphMenu
      * Enable commit action.
      * @param enabled
      */
-    public void setEnabledCommitAction( boolean enabled )
+    public void setEnabledCommitAction( final boolean enabled )
     {
         commitAction.setEnabled( enabled );
     }
@@ -409,7 +412,7 @@ public class NeoGraphMenu
      * Enable roll back action.
      * @param enabled
      */
-    public void setEnabledRollbackAction( boolean enabled )
+    public void setEnabledRollbackAction( final boolean enabled )
     {
         rollbackAction.setEnabled( enabled );
     }
@@ -419,7 +422,7 @@ public class NeoGraphMenu
      */
     private class RelTypeRefreshHandler implements NeoclipseEventListener
     {
-        public void stateChanged( NeoclipseEvent event )
+        public void stateChanged( final NeoclipseEvent event )
         {
             actionMap.clear();
             relTypeImages.clear();
@@ -487,7 +490,7 @@ public class NeoGraphMenu
      * @param tm
      *            current tool bar manager
      */
-    private void nodeSpaceActions( IToolBarManager tm )
+    private void nodeSpaceActions( final IToolBarManager tm )
     {
         tm.add( deleteAction );
         tm.add( SEPARATOR );
@@ -498,7 +501,7 @@ public class NeoGraphMenu
      * @param cm
      *            context menu
      */
-    private void contributeContextActions( MenuManager cm )
+    private void contributeContextActions( final MenuManager cm )
     {
         cm.add( addRelMenuMgr );
         cm.add( addOutNodeMenuMgr );
@@ -511,7 +514,7 @@ public class NeoGraphMenu
      * Add commit and rollback actions.
      * @param tm
      */
-    private void contributeTransactionActions( IToolBarManager tm )
+    private void contributeTransactionActions( final IToolBarManager tm )
     {
         tm.add( commitAction );
         tm.add( rollbackAction );
@@ -523,7 +526,7 @@ public class NeoGraphMenu
      * @param tm
      *            current tool bar manager
      */
-    private void contributeNavigationActions( IToolBarManager tm )
+    private void contributeNavigationActions( final IToolBarManager tm )
     {
         {
             tm.add( backAction );
@@ -542,7 +545,7 @@ public class NeoGraphMenu
      * @param tm
      *            current tool bar manager
      */
-    private void contributeRecursionLevelActions( IToolBarManager tm )
+    private void contributeRecursionLevelActions( final IToolBarManager tm )
     {
         {
             tm.add( incAction );
@@ -558,7 +561,7 @@ public class NeoGraphMenu
      * @param tm
      *            current tool bar manager
      */
-    private void contributeZoomActions( IToolBarManager tm )
+    private void contributeZoomActions( final IToolBarManager tm )
     {
         {
             ZoomAction zoomAction = new ZoomAction( graphView );
@@ -574,7 +577,8 @@ public class NeoGraphMenu
      * @param mm
      *            current menu manager
      */
-    private void contributeLayoutActions( IToolBarManager tm, IMenuManager mm )
+    private void contributeLayoutActions( final IToolBarManager tm,
+        final IMenuManager mm )
     {
         {
             String groupName = "layout";
@@ -617,7 +621,7 @@ public class NeoGraphMenu
      * @param mm
      *            current menu manager
      */
-    private void contributeLabelActions( IMenuManager mm )
+    private void contributeLabelActions( final IMenuManager mm )
     {
         {
             String relationshipGroupName = "relationship-labels";
@@ -690,7 +694,7 @@ public class NeoGraphMenu
      * @param mm
      *            current menu manager
      */
-    private void contributePlatformActions( IMenuManager mm )
+    private void contributePlatformActions( final IMenuManager mm )
     {
         Action preferencesAction = new Action()
         {
@@ -729,7 +733,7 @@ public class NeoGraphMenu
      * Add a new relationship type to the menus.
      * @param relType
      */
-    private void addRelType( RelationshipType relType )
+    private void addRelType( final RelationshipType relType )
     {
         final ActionSet actionSet = new ActionSet( relType );
         actionSet.setEnabled( addState, outState, inState );
@@ -743,7 +747,7 @@ public class NeoGraphMenu
      */
     private class RelTypesChangeHandler implements NeoclipseEventListener
     {
-        public void stateChanged( NeoclipseEvent event )
+        public void stateChanged( final NeoclipseEvent event )
         {
             if ( event.getSource() instanceof RelationshipType )
             {
@@ -757,7 +761,7 @@ public class NeoGraphMenu
      */
     private class RelTypesColorChangeHandler implements NeoclipseEventListener
     {
-        public void stateChanged( NeoclipseEvent event )
+        public void stateChanged( final NeoclipseEvent event )
         {
             if ( event.getSource() instanceof Boolean )
             {

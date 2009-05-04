@@ -24,8 +24,7 @@ import org.neo4j.neoclipse.event.NeoclipseListenerList;
  * type.
  * @author anders
  */
-public class RelationshipTypeControl implements
-    Comparable<RelationshipTypeControl>
+public class RelationshipTypeControl
 {
     private final NeoclipseListenerList listeners = new NeoclipseListenerList();
 
@@ -37,7 +36,7 @@ public class RelationshipTypeControl implements
      * Wrap a relationship type for display in the table viewer.
      * @param relType
      */
-    RelationshipTypeControl( RelationshipType relType )
+    RelationshipTypeControl( final RelationshipType relType )
     {
         this.relType = relType;
     }
@@ -55,7 +54,7 @@ public class RelationshipTypeControl implements
      * Set if incoming relationships are selected.
      * @param in
      */
-    public void setIn( boolean in )
+    public void setIn( final boolean in )
     {
         if ( this.in != in )
         {
@@ -77,7 +76,7 @@ public class RelationshipTypeControl implements
      * Set if outgoing relationships are selected.
      * @param in
      */
-    public void setOut( boolean out )
+    public void setOut( final boolean out )
     {
         if ( this.out != out )
         {
@@ -139,7 +138,7 @@ public class RelationshipTypeControl implements
      * Add a new listener to changes.
      * @param newListener
      */
-    public void addChangeListener( NeoclipseEventListener newListener )
+    public void addChangeListener( final NeoclipseEventListener newListener )
     {
         listeners.add( newListener );
     }
@@ -151,7 +150,7 @@ public class RelationshipTypeControl implements
     }
 
     @Override
-    public boolean equals( Object obj )
+    public boolean equals( final Object obj )
     {
         if ( this == obj )
         {
@@ -159,8 +158,8 @@ public class RelationshipTypeControl implements
         }
         if ( obj instanceof RelationshipTypeControl )
         {
-            return this.getRelType().equals(
-                ((RelationshipTypeControl) obj).getRelType() );
+            return this.getRelType().name().equals(
+                ((RelationshipTypeControl) obj).getRelType().name() );
         }
         return false;
     }
@@ -168,11 +167,6 @@ public class RelationshipTypeControl implements
     @Override
     public int hashCode()
     {
-        return this.getRelType().hashCode();
-    }
-
-    public int compareTo( RelationshipTypeControl other )
-    {
-        return relType.name().compareTo( other.relType.name() );
+        return this.getRelType().name().hashCode();
     }
 }

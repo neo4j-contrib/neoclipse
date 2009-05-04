@@ -154,6 +154,7 @@ public class RelationshipTypeView extends ViewPart implements
     /**
      * Initialization of the workbench part.
      */
+    @Override
     public void createPartControl( final Composite parent )
     {
         viewer = new TableViewer( parent, SWT.MULTI | SWT.V_SCROLL );
@@ -165,7 +166,8 @@ public class RelationshipTypeView extends ViewPart implements
             .getInstance();
         labelProvider.createTableColumns( viewer );
         viewer.setLabelProvider( labelProvider );
-        viewer.setComparator( new ViewerComparator( provider ) );
+        viewer.setComparator( new ViewerComparator(
+            new RelationshipTypeSorter() ) );
         viewer.setInput( getViewSite() );
 
         Activator.getDefault().getNeoServiceManager().addServiceEventListener(
@@ -190,7 +192,7 @@ public class RelationshipTypeView extends ViewPart implements
     {
         viewer.addDoubleClickListener( new IDoubleClickListener()
         {
-            public void doubleClick( DoubleClickEvent event )
+            public void doubleClick( final DoubleClickEvent event )
             {
                 markRelationshipAction.run();
             }
@@ -206,7 +208,7 @@ public class RelationshipTypeView extends ViewPart implements
         menuMgr.setRemoveAllWhenShown( true );
         menuMgr.addMenuListener( new IMenuListener()
         {
-            public void menuAboutToShow( IMenuManager manager )
+            public void menuAboutToShow( final IMenuManager manager )
             {
                 RelationshipTypeView.this.fillContextMenu( manager );
             }
@@ -231,7 +233,7 @@ public class RelationshipTypeView extends ViewPart implements
      * @param manager
      *            the pul down menu manager
      */
-    private void fillLocalPullDown( IMenuManager manager )
+    private void fillLocalPullDown( final IMenuManager manager )
     {
         manager.add( filterNone );
         manager.add( filterIncoming );
@@ -244,7 +246,7 @@ public class RelationshipTypeView extends ViewPart implements
      * @param manager
      *            the tool bar manager
      */
-    private void fillLocalToolBar( IToolBarManager manager )
+    private void fillLocalToolBar( final IToolBarManager manager )
     {
         manager.add( markRelationshipAction );
         manager.add( markIncomingAction );
@@ -263,7 +265,7 @@ public class RelationshipTypeView extends ViewPart implements
      * @param manager
      *            contect menu manager
      */
-    private void fillContextMenu( IMenuManager manager )
+    private void fillContextMenu( final IMenuManager manager )
     {
         manager.add( addIncomingIcon );
         manager.add( addOutgoingIcon );
@@ -292,6 +294,7 @@ public class RelationshipTypeView extends ViewPart implements
     {
         filterNone = new Action()
         {
+            @Override
             public void run()
             {
                 provider.setAllFilters( false, false );
@@ -302,6 +305,7 @@ public class RelationshipTypeView extends ViewPart implements
 
         filterAll = new Action()
         {
+            @Override
             public void run()
             {
                 provider.setAllFilters( true, true );
@@ -313,6 +317,7 @@ public class RelationshipTypeView extends ViewPart implements
 
         filterOutgoing = new Action()
         {
+            @Override
             public void run()
             {
                 provider.setAllFilters( false, true );
@@ -324,6 +329,7 @@ public class RelationshipTypeView extends ViewPart implements
 
         filterIncoming = new Action()
         {
+            @Override
             public void run()
             {
                 provider.setAllFilters( true, false );
@@ -341,6 +347,7 @@ public class RelationshipTypeView extends ViewPart implements
     {
         addRelationship = new Action()
         {
+            @Override
             public void run()
             {
                 NodeSpaceUtil.addRelationshipAction(
@@ -351,6 +358,7 @@ public class RelationshipTypeView extends ViewPart implements
 
         addOutgoingNode = new Action()
         {
+            @Override
             public void run()
             {
                 NodeSpaceUtil.addOutgoingNodeAction(
@@ -361,6 +369,7 @@ public class RelationshipTypeView extends ViewPart implements
 
         addIncomingNode = new Action()
         {
+            @Override
             public void run()
             {
                 NodeSpaceUtil.addIncomingNodeAction(
@@ -379,6 +388,7 @@ public class RelationshipTypeView extends ViewPart implements
 
         addIncomingIcon = new Action()
         {
+            @Override
             public void run()
             {
                 copyIcon( Direction.INCOMING );
@@ -388,6 +398,7 @@ public class RelationshipTypeView extends ViewPart implements
 
         addOutgoingIcon = new Action()
         {
+            @Override
             public void run()
             {
                 copyIcon( Direction.OUTGOING );
@@ -503,6 +514,7 @@ public class RelationshipTypeView extends ViewPart implements
     {
         markRelationshipAction = new Action()
         {
+            @Override
             public void run()
             {
                 List<RelationshipType> relTypes = getCurrentSelectedRelTypes();
@@ -518,6 +530,7 @@ public class RelationshipTypeView extends ViewPart implements
 
         markIncomingAction = new Action()
         {
+            @Override
             public void run()
             {
                 List<RelationshipType> relTypes = getCurrentSelectedRelTypes();
@@ -533,6 +546,7 @@ public class RelationshipTypeView extends ViewPart implements
 
         markOutgoingAction = new Action()
         {
+            @Override
             public void run()
             {
                 List<RelationshipType> relTypes = getCurrentSelectedRelTypes();
@@ -548,6 +562,7 @@ public class RelationshipTypeView extends ViewPart implements
 
         clearMarkedAction = new Action()
         {
+            @Override
             public void run()
             {
                 graphLabelProvider.clearMarkedNodes();
@@ -565,7 +580,7 @@ public class RelationshipTypeView extends ViewPart implements
      * Enable or disable highlighting actions.
      * @param enabled
      */
-    private void setEnableHighlightingActions( boolean enabled )
+    private void setEnableHighlightingActions( final boolean enabled )
     {
         markIncomingAction.setEnabled( enabled );
         markOutgoingAction.setEnabled( enabled );
@@ -576,7 +591,7 @@ public class RelationshipTypeView extends ViewPart implements
      * Enable or disable addition of a relationship.
      * @param enabled
      */
-    private void setEnableAddRelationship( boolean enabled )
+    private void setEnableAddRelationship( final boolean enabled )
     {
         addRelationship.setEnabled( enabled );
     }
@@ -585,7 +600,7 @@ public class RelationshipTypeView extends ViewPart implements
      * Enable or disable setting of relationship type-dependent icons.
      * @param enabled
      */
-    private void setEnableSetIcon( boolean enabled )
+    private void setEnableSetIcon( final boolean enabled )
     {
         addIncomingIcon.setEnabled( enabled );
         addOutgoingIcon.setEnabled( enabled );
@@ -595,7 +610,7 @@ public class RelationshipTypeView extends ViewPart implements
      * Enable or disable to add a node.
      * @param enabled
      */
-    private void setEnableAddNode( boolean enabled )
+    private void setEnableAddNode( final boolean enabled )
     {
         addOutgoingNode.setEnabled( enabled );
         addIncomingNode.setEnabled( enabled );
@@ -605,7 +620,7 @@ public class RelationshipTypeView extends ViewPart implements
      * Enable or disable all add actions.
      * @param enabled
      */
-    private void setEnableAddActions( boolean enabled )
+    private void setEnableAddActions( final boolean enabled )
     {
         setEnableAddNode( enabled );
         setEnableAddRelationship( enabled );
@@ -637,7 +652,7 @@ public class RelationshipTypeView extends ViewPart implements
      * Highlight a relationship type.
      * @param relType
      */
-    private void highlightRelationshipType( RelationshipType relType )
+    private void highlightRelationshipType( final RelationshipType relType )
     {
         if ( getGraphView() == null )
         {
@@ -668,7 +683,8 @@ public class RelationshipTypeView extends ViewPart implements
      * @param direction
      *            direction in which nodes should be highlighted
      */
-    private void highlightNodes( RelationshipType relType, Direction direction )
+    private void highlightNodes( final RelationshipType relType,
+        final Direction direction )
     {
         if ( getGraphView() == null )
         {
@@ -695,6 +711,7 @@ public class RelationshipTypeView extends ViewPart implements
     /**
      * Passing the focus request to the viewer's control.
      */
+    @Override
     public void setFocus()
     {
         viewer.getControl().setFocus();
@@ -703,7 +720,8 @@ public class RelationshipTypeView extends ViewPart implements
     /**
      * Keep track of the graph view selections.
      */
-    public void selectionChanged( IWorkbenchPart part, ISelection selection )
+    public void selectionChanged( final IWorkbenchPart part,
+        final ISelection selection )
     {
         if ( !(selection instanceof IStructuredSelection) )
         {
@@ -771,7 +789,7 @@ public class RelationshipTypeView extends ViewPart implements
         /**
          * Respond to changes in the underlying relationship type provider.
          */
-        public void stateChanged( NeoclipseEvent event )
+        public void stateChanged( final NeoclipseEvent event )
         {
             if ( getGraphView() != null )
             {
@@ -788,7 +806,7 @@ public class RelationshipTypeView extends ViewPart implements
         /**
          * Respond to changes in the underlying relationship type provider.
          */
-        public void stateChanged( NeoclipseEvent event )
+        public void stateChanged( final NeoclipseEvent event )
         {
             viewer.refresh();
         }
@@ -799,7 +817,7 @@ public class RelationshipTypeView extends ViewPart implements
      */
     private class ServiceChangeHandler implements NeoServiceEventListener
     {
-        public void serviceChanged( NeoServiceEvent event )
+        public void serviceChanged( final NeoServiceEvent event )
         {
             if ( event.getStatus() == NeoServiceStatus.STOPPED )
             {
@@ -823,7 +841,7 @@ public class RelationshipTypeView extends ViewPart implements
     private class RelationshipColorChangeHandler implements
         NeoclipseEventListener
     {
-        public void stateChanged( NeoclipseEvent event )
+        public void stateChanged( final NeoclipseEvent event )
         {
             viewer.refresh( true );
         }

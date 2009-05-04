@@ -70,9 +70,9 @@ public class NeoGraphViewPart extends ViewPart implements
      */
     public static final String ID = "org.neo4j.neoclipse.view.NeoGraphViewPart";
     /**
-     * Max number of guesses to find a better starting point.
+     * Max number of nodes to try to find a better starting point.
      */
-    private static final int MAX_ID_GUESSES = 1000;
+    private static final int MAX_NODE_TRIES = 1000;
     /**
      * The property sheet page.
      */
@@ -408,25 +408,21 @@ public class NeoGraphViewPart extends ViewPart implements
             if ( !node.hasRelationship() )
             {
                 // so, find a more friendly node if possible!
-                Node betterNode;
-                for ( long id = 0; id < MAX_ID_GUESSES; id++ )
+                int tries = 0;
+                for ( Node candidateNode : ns.getAllNodes() )
                 {
-                    try
+                    if ( node.equals( candidateNode ) )
                     {
-                        betterNode = ns.getNodeById( id );
-                        if ( node.equals( betterNode ) )
-                        {
-                            continue;
-                        }
-                        if ( betterNode.hasRelationship() )
-                        {
-                            node = betterNode;
-                            break;
-                        }
+                        continue;
                     }
-                    catch ( NotFoundException e )
+                    if ( candidateNode.hasRelationship() )
                     {
-                        // really nothing to do in here
+                        node = candidateNode;
+                        break;
+                    }
+                    if ( tries++ > MAX_NODE_TRIES )
+                    {
+                        break;
                     }
                 }
             }
