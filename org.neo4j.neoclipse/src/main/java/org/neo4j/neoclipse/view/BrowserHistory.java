@@ -58,15 +58,6 @@ public class BrowserHistory
         }
 
         /**
-         * Only instantiate with node info.
-         */
-        protected BrowserState()
-        {
-            throw new IllegalArgumentException(
-                "Must be invoked with a Node as argument." );
-        }
-
-        /**
          * Get starting node of this state.
          * @return starting node or null if it doesn't exist any more
          */
@@ -188,7 +179,6 @@ public class BrowserHistory
             position++;
             return;
         }
-
         BrowserState state = new BrowserState( node );
         // clear rest of list before adding
         position++;

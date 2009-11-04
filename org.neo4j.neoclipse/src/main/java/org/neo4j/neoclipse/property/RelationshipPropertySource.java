@@ -30,8 +30,8 @@ public class RelationshipPropertySource extends PropertySource
     private static final String RELATIONSHIP_ID = "Id";
     private static final String RELATIONSHIP_TYPE = "Type";
 
-    public RelationshipPropertySource( Relationship rs,
-        NeoPropertySheetPage propertySheet )
+    public RelationshipPropertySource( final Relationship rs,
+        final NeoPropertySheetPage propertySheet )
     {
         super( rs, propertySheet );
     }
@@ -48,7 +48,7 @@ public class RelationshipPropertySource extends PropertySource
     }
 
     @Override
-    protected Object getValue( Object id )
+    protected Object getValue( final Object id )
     {
         if ( id == ID_KEY )
         {
@@ -56,7 +56,7 @@ public class RelationshipPropertySource extends PropertySource
         }
         else if ( id == RELATIONSHIP_TYPE_KEY )
         {
-            return ((Relationship) container).getType();
+            return ((Relationship) container).getType().name();
         }
         else
         {
@@ -65,7 +65,7 @@ public class RelationshipPropertySource extends PropertySource
     }
 
     @Override
-    protected boolean isSet( Object id )
+    protected boolean isSet( final Object id )
     {
         if ( id == ID_KEY )
         {

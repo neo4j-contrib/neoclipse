@@ -9,9 +9,9 @@ Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ClassPath: lib/jta-1.1.jar,
  .,
- lib/neo-1.0-b9.jar,
- lib/remote-neo-0.2.jar,
- lib/index-util-0.7.jar,
+ lib/neo-1.0-b10.jar,
+ lib/remote-neo-0.3.jar,
+ lib/index-util-0.8.jar,
  lib/lucene-core-2.4.0.jar
 Import-Package: org.eclipse.core.commands.common,
  org.eclipse.core.runtime,
