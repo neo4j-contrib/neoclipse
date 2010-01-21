@@ -29,12 +29,15 @@ import org.neo4j.api.core.Direction;
 import org.neo4j.api.core.NeoService;
 import org.neo4j.api.core.Node;
 import org.neo4j.api.core.Relationship;
+import org.neo4j.api.core.Transaction;
 import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**
  * This class represents a search query for Neo objects.
+ * 
  * @author Peter H&auml;nsgen
+ * @author Anders Nawroth
  */
 public class NeoSearchQuery implements ISearchQuery
 {
@@ -52,11 +55,11 @@ public class NeoSearchQuery implements ISearchQuery
 
     /**
      * The constructor.
-     * @param graphView
-     *            the current graph view
+     * 
+     * @param graphView the current graph view
      */
     public NeoSearchQuery( final NeoSearchExpression expression,
-        final NeoGraphViewPart graphView )
+            final NeoGraphViewPart graphView )
     {
         this.expression = expression;
 
@@ -108,29 +111,38 @@ public class NeoSearchQuery implements ISearchQuery
      * Executes the search.
      */
     public IStatus run( final IProgressMonitor monitor )
-        throws OperationCanceledException
+            throws OperationCanceledException
     {
         neoService = Activator.getDefault().getNeoServiceSafely();
         if ( neoService == null )
         {
             return new Status( IStatus.ERROR, Activator.PLUGIN_ID,
-                "There is no active Neo4j service." );
+                    "There is no active Neo4j service." );
         }
 
         // TODO here we should do some real search using Neo's index service
         // for now simply navigate along the graph
 
-        Iterable<Node> matches = getMatchingNodes( monitor );
-        result.setMatches( matches );
+        // make sure we're in a transaction when performing search
+        Transaction tx = neoService.beginTx();
+        try
+        {
+            Iterable<Node> matches = getMatchingNodes( monitor );
+            result.setMatches( matches );
 
-        if ( monitor.isCanceled() )
-        {
-            return new Status( IStatus.CANCEL, Activator.PLUGIN_ID,
-                "Cancelled." );
+            if ( monitor.isCanceled() )
+            {
+                return new Status( IStatus.CANCEL, Activator.PLUGIN_ID,
+                        "Cancelled." );
+            }
+            else
+            {
+                return new Status( IStatus.OK, Activator.PLUGIN_ID, "OK" );
+            }
         }
-        else
+        finally
         {
-            return new Status( IStatus.OK, Activator.PLUGIN_ID, "OK" );
+            tx.finish();
         }
     }
 
@@ -187,7 +199,7 @@ public class NeoSearchQuery implements ISearchQuery
      * Finds all nodes matching the search criteria.
      */
     protected Iterable<Node> getMatchingNodesByRecursion( final Node node,
-        final IProgressMonitor monitor )
+            final IProgressMonitor monitor )
     {
         // TODO the Neo traverser API is not sufficient as it does not allow to
         // find ALL connected
@@ -224,7 +236,7 @@ public class NeoSearchQuery implements ISearchQuery
      * nodes.
      */
     protected void checkNode( final Node node, final Set<Node> visitedNodes,
-        final List<Node> matches, final IProgressMonitor monitor )
+            final List<Node> matches, final IProgressMonitor monitor )
     {
         if ( monitor.isCanceled() )
         {
