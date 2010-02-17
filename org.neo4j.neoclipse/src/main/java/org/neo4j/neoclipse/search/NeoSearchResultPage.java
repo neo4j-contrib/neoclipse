@@ -28,7 +28,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.Page;
-import org.neo4j.api.core.Node;
+import org.neo4j.graphdb.Node;
 import org.neo4j.neoclipse.view.NeoGraphLabelProviderWrapper;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
@@ -43,7 +43,6 @@ public class NeoSearchResultPage extends Page implements ISearchResultPage
      * The id of this page.
      */
     private String id;
-
     /**
      * The list of found nodes.
      */
@@ -52,6 +51,7 @@ public class NeoSearchResultPage extends Page implements ISearchResultPage
     /**
      * Creates the control
      */
+    @Override
     public void createControl( final Composite parent )
     {
         viewer = new TreeViewer( parent, SWT.NONE );
@@ -66,6 +66,7 @@ public class NeoSearchResultPage extends Page implements ISearchResultPage
     /**
      * Returns the control.
      */
+    @Override
     public Control getControl()
     {
         return viewer.getControl();
@@ -74,6 +75,7 @@ public class NeoSearchResultPage extends Page implements ISearchResultPage
     /**
      * Sets the focus.
      */
+    @Override
     public void setFocus()
     {
         if ( viewer != null )
@@ -121,7 +123,6 @@ public class NeoSearchResultPage extends Page implements ISearchResultPage
     public void setInput( final ISearchResult result, final Object uiState )
     {
         setInput( result );
-
         if ( result != null )
         {
             // observe changes in the result and update the view accordingly
@@ -153,7 +154,7 @@ public class NeoSearchResultPage extends Page implements ISearchResultPage
     /**
      * Sets the view.
      */
-    public void setViewPart( ISearchResultViewPart part )
+    public void setViewPart( final ISearchResultViewPart part )
     {
         // does nothing
     }
@@ -169,7 +170,7 @@ public class NeoSearchResultPage extends Page implements ISearchResultPage
     /**
      * Not supported.
      */
-    public void restoreState( IMemento memento )
+    public void restoreState( final IMemento memento )
     {
         // not supported
     }
@@ -177,7 +178,7 @@ public class NeoSearchResultPage extends Page implements ISearchResultPage
     /**
      * Not supported.
      */
-    public void saveState( IMemento memento )
+    public void saveState( final IMemento memento )
     {
         // not supported
     }
@@ -191,11 +192,10 @@ public class NeoSearchResultPage extends Page implements ISearchResultPage
         /**
          * Sets the selected node as input for the graph viewer.
          */
-        public void doubleClick( DoubleClickEvent event )
+        public void doubleClick( final DoubleClickEvent event )
         {
             StructuredSelection sel = (StructuredSelection) event
                 .getSelection();
-
             Object s = sel.getFirstElement();
             if ( s instanceof Node )
             {
@@ -203,7 +203,6 @@ public class NeoSearchResultPage extends Page implements ISearchResultPage
                 NeoGraphViewPart gv = (NeoGraphViewPart) PlatformUI
                     .getWorkbench().getActiveWorkbenchWindow().getActivePage()
                     .findView( NeoGraphViewPart.ID );
-
                 // TODO if it does not exist yet - create one? how?
                 if ( gv != null )
                 {

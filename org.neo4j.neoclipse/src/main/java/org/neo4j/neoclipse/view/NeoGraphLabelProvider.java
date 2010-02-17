@@ -34,10 +34,10 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.zest.core.viewers.IConnectionStyleProvider;
 import org.eclipse.zest.core.widgets.ZestStyles;
-import org.neo4j.api.core.Direction;
-import org.neo4j.api.core.Node;
-import org.neo4j.api.core.Relationship;
-import org.neo4j.api.core.RelationshipType;
+import org.neo4j.graphdb.Direction;
+import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.Relationship;
+import org.neo4j.graphdb.RelationshipType;
 import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.NeoIcons;
 import org.neo4j.neoclipse.decorate.SimpleGraphDecorator;
@@ -68,7 +68,6 @@ public class NeoGraphLabelProvider extends LabelProvider implements
      * View settings for {@link SimpleGraphDecorator}
      */
     private final ViewSettings viewSettings = new ViewSettings();
-
     /**
      * Marked relationships.
      */
@@ -450,7 +449,6 @@ public class NeoGraphLabelProvider extends LabelProvider implements
     public void createTableColumns( final TableViewer tableViewer )
     {
         Table table = tableViewer.getTable();
-
         TableViewerColumn column = new TableViewerColumn( tableViewer, SWT.LEFT );
         TableColumn col = column.getColumn();
         col.setText( "Relationship type" );
@@ -458,7 +456,6 @@ public class NeoGraphLabelProvider extends LabelProvider implements
         col.setResizable( true );
         column.setEditingSupport( new RelationshipTypeEditingSupport(
             tableViewer, RelationshipTypeEditingSupport.ColumnType.HEADING ) );
-
         column = new TableViewerColumn( tableViewer, SWT.LEFT );
         col = column.getColumn();
         col.setText( "In" );
@@ -469,7 +466,6 @@ public class NeoGraphLabelProvider extends LabelProvider implements
         col.setResizable( true );
         column.setEditingSupport( new RelationshipTypeEditingSupport(
             tableViewer, RelationshipTypeEditingSupport.ColumnType.IN ) );
-
         column = new TableViewerColumn( tableViewer, SWT.LEFT );
         col = column.getColumn();
         col.setText( "Out" );
@@ -480,7 +476,6 @@ public class NeoGraphLabelProvider extends LabelProvider implements
         col.setResizable( true );
         column.setEditingSupport( new RelationshipTypeEditingSupport(
             tableViewer, RelationshipTypeEditingSupport.ColumnType.OUT ) );
-
         table.setHeaderVisible( true );
         table.setLinesVisible( true );
     }

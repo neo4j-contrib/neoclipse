@@ -20,11 +20,11 @@ import java.util.List;
 
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.neo4j.api.core.NeoService;
-import org.neo4j.api.core.Node;
-import org.neo4j.api.core.PropertyContainer;
-import org.neo4j.api.core.Relationship;
-import org.neo4j.api.core.RelationshipType;
+import org.neo4j.graphdb.GraphDatabaseService;
+import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.PropertyContainer;
+import org.neo4j.graphdb.Relationship;
+import org.neo4j.graphdb.RelationshipType;
 import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.property.NeoPropertySheetPage;
 import org.neo4j.neoclipse.property.PropertyTransform.PropertyHandler;
@@ -60,8 +60,8 @@ public class NodeSpaceUtil
      * @param graphView
      *            current database graph view
      */
-    public static void createRelationship( Node source, Node dest,
-        RelationshipType relType, NeoGraphViewPart graphView )
+    public static void createRelationship( final Node source, final Node dest,
+        final RelationshipType relType, final NeoGraphViewPart graphView )
     {
         List<Node> sourceNodes = null;
         if ( source != null )
@@ -91,8 +91,8 @@ public class NodeSpaceUtil
      *            current database graph view
      */
     private static void createRelationship( List<Node> sourceNodes,
-        List<Node> destNodes, RelationshipType relType,
-        NeoGraphViewPart graphView )
+        List<Node> destNodes, final RelationshipType relType,
+        final NeoGraphViewPart graphView )
     {
         if ( relType == null )
         {
@@ -104,7 +104,7 @@ public class NodeSpaceUtil
             throw new IllegalArgumentException(
                 "Both soure and destination can not be null" );
         }
-        NeoService ns = Activator.getDefault().getNeoServiceSafely();
+        GraphDatabaseService ns = Activator.getDefault().getNeoServiceSafely();
         if ( ns == null )
         {
             return;
@@ -163,7 +163,7 @@ public class NodeSpaceUtil
      *            numbe rof items to delete
      * @return true on yes to delete
      */
-    public static boolean confirmDelete( int count )
+    public static boolean confirmDelete( final int count )
     {
         return MessageDialog.openConfirm( null, CONFIRM_DELETE_TITLE,
             "Do you really want to delete the selected " + count + " items?" );
@@ -184,7 +184,6 @@ public class NodeSpaceUtil
         {
             return;
         }
-
         try
         {
             Node inputNode = graphView.getCurrentNode();
@@ -244,8 +243,8 @@ public class NodeSpaceUtil
      * @param graphView
      *            the current graph view
      */
-    public static void addRelationshipAction( List<RelationshipType> relTypes,
-        NeoGraphViewPart graphView )
+    public static void addRelationshipAction(
+        final List<RelationshipType> relTypes, final NeoGraphViewPart graphView )
     {
         if ( !isOneRelTypeSelected( relTypes ) )
         {
@@ -261,8 +260,8 @@ public class NodeSpaceUtil
      * @param graphView
      *            the current graph view
      */
-    public static void addRelationshipAction( RelationshipType relType,
-        NeoGraphViewPart graphView )
+    public static void addRelationshipAction( final RelationshipType relType,
+        final NeoGraphViewPart graphView )
     {
         List<Node> currentSelectedNodes = graphView.getCurrentSelectedNodes();
         if ( currentSelectedNodes.size() != 2 )
@@ -282,8 +281,8 @@ public class NodeSpaceUtil
      *            relationships types to use (should only be one item)
      * @param graphView
      */
-    public static void addOutgoingNodeAction( List<RelationshipType> relTypes,
-        NeoGraphViewPart graphView )
+    public static void addOutgoingNodeAction(
+        final List<RelationshipType> relTypes, final NeoGraphViewPart graphView )
     {
         if ( !isOneRelTypeSelected( relTypes ) )
         {
@@ -299,8 +298,8 @@ public class NodeSpaceUtil
      * @param graphView
      *            the current graph view
      */
-    public static void addOutgoingNodeAction( RelationshipType relType,
-        NeoGraphViewPart graphView )
+    public static void addOutgoingNodeAction( final RelationshipType relType,
+        final NeoGraphViewPart graphView )
     {
         List<Node> currentSelectedNodes = graphView.getCurrentSelectedNodes();
         if ( !isOneOrMoreNodesSelected( currentSelectedNodes ) )
@@ -316,8 +315,8 @@ public class NodeSpaceUtil
      *            relationship types to use
      * @param graphView
      */
-    public static void addIncomingNodeAction( List<RelationshipType> relTypes,
-        NeoGraphViewPart graphView )
+    public static void addIncomingNodeAction(
+        final List<RelationshipType> relTypes, final NeoGraphViewPart graphView )
     {
         if ( !isOneRelTypeSelected( relTypes ) )
         {
@@ -332,8 +331,8 @@ public class NodeSpaceUtil
      *            relationships types to use (should only be one item)
      * @param graphView
      */
-    public static void addIncomingNodeAction( RelationshipType relType,
-        NeoGraphViewPart graphView )
+    public static void addIncomingNodeAction( final RelationshipType relType,
+        final NeoGraphViewPart graphView )
     {
         List<Node> currentSelectedNodes = graphView.getCurrentSelectedNodes();
         if ( !isOneOrMoreNodesSelected( currentSelectedNodes ) )
@@ -347,7 +346,8 @@ public class NodeSpaceUtil
      * Test precondition for operations.
      * @return
      */
-    private static boolean isOneRelTypeSelected( List<RelationshipType> relTypes )
+    private static boolean isOneRelTypeSelected(
+        final List<RelationshipType> relTypes )
     {
         if ( relTypes.size() != 1 )
         {
@@ -363,7 +363,7 @@ public class NodeSpaceUtil
      * @return
      */
     private static boolean isOneOrMoreNodesSelected(
-        List<Node> currentSelectedNodes )
+        final List<Node> currentSelectedNodes )
     {
         if ( currentSelectedNodes.size() < 1 )
         {
@@ -453,7 +453,7 @@ public class NodeSpaceUtil
      * @param value
      * @param propertySheet
      */
-    public static void setProperty( PropertyContainer container,
+    public static void setProperty( final PropertyContainer container,
         final String key, final Object value,
         final NeoPropertySheetPage propertySheet )
     {
@@ -481,8 +481,9 @@ public class NodeSpaceUtil
      *            new key
      * @param propertySheet
      */
-    public static void renameProperty( PropertyContainer container, String key,
-        String newKey, final NeoPropertySheetPage propertySheet )
+    public static void renameProperty( final PropertyContainer container,
+        final String key, final String newKey,
+        final NeoPropertySheetPage propertySheet )
     {
         try
         {

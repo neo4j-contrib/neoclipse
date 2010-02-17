@@ -16,12 +16,12 @@ package org.neo4j.neoclipse.property;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.swt.graphics.Image;
-import org.neo4j.api.core.RelationshipType;
+import org.neo4j.graphdb.RelationshipType;
 import org.neo4j.neoclipse.NeoIcons;
 
 public class ContainerLabelProvider implements ILabelProvider
 {
-    public Image getImage( Object value )
+    public Image getImage( final Object value )
     {
         if ( value instanceof RelationshipType )
         {
@@ -30,12 +30,12 @@ public class ContainerLabelProvider implements ILabelProvider
         return NeoIcons.TYPE_ID.image();
     }
 
-    public String getText( Object value )
+    public String getText( final Object value )
     {
         return value.toString();
     }
 
-    public void addListener( ILabelProviderListener arg0 )
+    public void addListener( final ILabelProviderListener arg0 )
     {
         // TODO Auto-generated method stub
     }
@@ -45,12 +45,12 @@ public class ContainerLabelProvider implements ILabelProvider
         // TODO Auto-generated method stub
     }
 
-    public boolean isLabelProperty( Object element, String property )
+    public boolean isLabelProperty( final Object element, final String property )
     {
         return false;
     }
 
-    public void removeListener( ILabelProviderListener arg0 )
+    public void removeListener( final ILabelProviderListener arg0 )
     {
         // TODO Auto-generated method stub
     }

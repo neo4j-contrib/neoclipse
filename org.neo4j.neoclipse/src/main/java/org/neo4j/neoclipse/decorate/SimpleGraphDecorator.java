@@ -24,11 +24,11 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
-import org.neo4j.api.core.Direction;
-import org.neo4j.api.core.Node;
-import org.neo4j.api.core.PropertyContainer;
-import org.neo4j.api.core.Relationship;
-import org.neo4j.api.core.RelationshipType;
+import org.neo4j.graphdb.Direction;
+import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.PropertyContainer;
+import org.neo4j.graphdb.Relationship;
+import org.neo4j.graphdb.RelationshipType;
 import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.NeoIcons;
 import org.neo4j.neoclipse.preference.NeoDecoratorPreferences;
@@ -42,7 +42,6 @@ public class SimpleGraphDecorator
     private static final int RELATIONSHIP_MARKED = 3;
     private static final int NODE_INCOMING_MARKED = 4;
     private static final int NODE_OUTGOING_MARKED = 5;
-
     /**
      * The icon for nodes.
      */
@@ -188,7 +187,6 @@ public class SimpleGraphDecorator
             return list;
         }
     }
-
     public static class ViewSettings
     {
         /**
@@ -744,7 +742,6 @@ public class SimpleGraphDecorator
     public Image getNodeImage( final Node node, final boolean isReferenceNode )
     {
         Image img;
-
         if ( isReferenceNode )
         {
             img = rootImage;
@@ -808,7 +805,6 @@ public class SimpleGraphDecorator
 
     public Set<RelationshipType> getRelationshipTypes()
     {
-
         return colorMapper.getKeys();
     }
 

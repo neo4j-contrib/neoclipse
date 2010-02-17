@@ -17,12 +17,12 @@ import org.eclipse.core.runtime.ISafeRunnable;
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.neo4j.api.core.EmbeddedNeo;
-import org.neo4j.api.core.NeoService;
-import org.neo4j.api.core.Transaction;
+import org.neo4j.graphdb.GraphDatabaseService;
+import org.neo4j.graphdb.Transaction;
+import org.neo4j.kernel.EmbeddedGraphDatabase;
 import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.preference.NeoPreferences;
-import org.neo4j.remote.RemoteNeo;
+import org.neo4j.remote.RemoteGraphDatabase;
 
 /**
  * This manager controls the neo service.
@@ -34,7 +34,7 @@ public class NeoServiceManager
     /**
      * The service instance.
      */
-    protected NeoService neo;
+    protected GraphDatabaseService neo;
     /**
      * The registered service change listeners.
      */
@@ -69,7 +69,7 @@ public class NeoServiceManager
                 try
                 {
                     System.out.println( "trying remote neo" );
-                    neo = new RemoteNeo( resourceUri );
+                    neo = new RemoteGraphDatabase( resourceUri );
                     System.out.println( "connected to remote neo" );
                 }
                 catch ( Exception e )
@@ -87,7 +87,7 @@ public class NeoServiceManager
                     return;
                 }
                 // seems to be a valid directory, try starting neo
-                neo = new EmbeddedNeo( location );
+                neo = new EmbeddedGraphDatabase( location );
                 System.out.println( "connected to embedded neo" );
             }
             tx = neo.beginTx();
@@ -97,10 +97,10 @@ public class NeoServiceManager
     }
 
     /**
-     * Returns the neo service or null, if it could not be started (due to
+     * Returns the graphdb service or null, if it could not be started (due to
      * configuration problems).
      */
-    public NeoService getNeoService() throws RuntimeException
+    public GraphDatabaseService getNeoService() throws RuntimeException
     {
         if ( neo == null )
         {

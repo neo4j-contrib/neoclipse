@@ -14,7 +14,7 @@
 package org.neo4j.neoclipse.action.reltype;
 
 import org.eclipse.jface.dialogs.InputDialog;
-import org.neo4j.api.core.RelationshipType;
+import org.neo4j.graphdb.RelationshipType;
 import org.neo4j.neoclipse.action.AbstractBaseAction;
 import org.neo4j.neoclipse.action.Actions;
 import org.neo4j.neoclipse.neo.NodeSpaceUtil;
@@ -42,7 +42,7 @@ public class NewRelationshipTypeAction extends AbstractBaseAction
     private static final String NEW_RELTYPE_DIALOG_TEXT = "Please enter the name of the new relationship type";
     private static final String NEW_RELTYPE_DIALOG_TITLE = "New relationship type entry";
     protected static final int OK = 0;
-    private RelationshipTypesProvider provider;
+    private final RelationshipTypesProvider provider;
     private NodeSpaceAction extraAction = NodeSpaceAction.NONE;
     private NeoGraphViewPart graphView;
 

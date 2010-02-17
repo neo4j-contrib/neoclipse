@@ -15,8 +15,8 @@ package org.neo4j.neoclipse.property;
 
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.eclipse.ui.views.properties.IPropertySourceProvider;
-import org.neo4j.api.core.Node;
-import org.neo4j.api.core.Relationship;
+import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.Relationship;
 
 /**
  * Resolves the properties for Neo nodes and relationships.
@@ -24,14 +24,15 @@ import org.neo4j.api.core.Relationship;
  */
 public class PropertySourceProvider implements IPropertySourceProvider
 {
-    private NeoPropertySheetPage propertySheet;
+    private final NeoPropertySheetPage propertySheet;
 
-    public PropertySourceProvider( NeoPropertySheetPage neoPropertySheetPage )
+    public PropertySourceProvider(
+        final NeoPropertySheetPage neoPropertySheetPage )
     {
         propertySheet = neoPropertySheetPage;
     }
 
-    public IPropertySource getPropertySource( Object source )
+    public IPropertySource getPropertySource( final Object source )
     {
         if ( source instanceof Node )
         {

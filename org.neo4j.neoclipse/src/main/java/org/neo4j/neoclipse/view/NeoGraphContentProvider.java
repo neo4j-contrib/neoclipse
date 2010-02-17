@@ -20,17 +20,17 @@ import java.util.Set;
 
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.zest.core.viewers.IGraphEntityRelationshipContentProvider;
-import org.neo4j.api.core.Direction;
-import org.neo4j.api.core.NeoService;
-import org.neo4j.api.core.Node;
-import org.neo4j.api.core.NotFoundException;
-import org.neo4j.api.core.Relationship;
-import org.neo4j.api.core.RelationshipType;
-import org.neo4j.api.core.ReturnableEvaluator;
-import org.neo4j.api.core.StopEvaluator;
-import org.neo4j.api.core.TraversalPosition;
-import org.neo4j.api.core.Traverser;
-import org.neo4j.api.core.Traverser.Order;
+import org.neo4j.graphdb.Direction;
+import org.neo4j.graphdb.GraphDatabaseService;
+import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.NotFoundException;
+import org.neo4j.graphdb.Relationship;
+import org.neo4j.graphdb.RelationshipType;
+import org.neo4j.graphdb.ReturnableEvaluator;
+import org.neo4j.graphdb.StopEvaluator;
+import org.neo4j.graphdb.TraversalPosition;
+import org.neo4j.graphdb.Traverser;
+import org.neo4j.graphdb.Traverser.Order;
 import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.reltype.RelationshipTypesProvider;
 import org.neo4j.neoclipse.reltype.RelationshipTypesProviderWrapper;
@@ -103,13 +103,12 @@ public class NeoGraphContentProvider implements
     public Object[] getElements( final Object inputElement )
     {
         Node node = (Node) inputElement;
-        final NeoService neoService = Activator.getDefault()
+        final GraphDatabaseService neoService = Activator.getDefault()
             .getNeoServiceSafely();
         if ( neoService == null )
         {
             return new Node[] { node };
         }
-
         List<Object> relDirList;
         try
         {
@@ -135,9 +134,7 @@ public class NeoGraphContentProvider implements
             // there can't be any relationships ...
             return new Node[] { node };
         }
-
         Object[] relDirListArray = relDirList.toArray();
-
         relTypes.clear();
         for ( Object o : relDirListArray )
         {
@@ -146,7 +143,6 @@ public class NeoGraphContentProvider implements
                 relTypes.add( (RelationshipType) o );
             }
         }
-
         final int depth = view.getTraversalDepth();
         List<Node> nodes = new ArrayList<Node>();
         try
@@ -168,7 +164,6 @@ public class NeoGraphContentProvider implements
                 }
                 nodes.add( currentNode );
             }
-
         }
         catch ( NotFoundException nfe )
         {

@@ -15,13 +15,13 @@ package examples.warehouse;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.neo4j.api.core.Direction;
-import org.neo4j.api.core.Node;
-import org.neo4j.api.core.Relationship;
-import org.neo4j.api.core.ReturnableEvaluator;
-import org.neo4j.api.core.StopEvaluator;
-import org.neo4j.api.core.Transaction;
-import org.neo4j.api.core.Traverser;
+import org.neo4j.graphdb.Direction;
+import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.Relationship;
+import org.neo4j.graphdb.ReturnableEvaluator;
+import org.neo4j.graphdb.StopEvaluator;
+import org.neo4j.graphdb.Transaction;
+import org.neo4j.graphdb.Traverser;
 
 import examples.NeoclipseExample;
 
@@ -76,7 +76,7 @@ public class Warehouse extends NeoclipseExample
         }
     }
 
-    private static Node createVehicle( String name, int cost )
+    private static Node createVehicle( final String name, final int cost )
     {
         Node vehicle = neo.createNode();
         vehicle.setProperty( "name", name );
@@ -86,8 +86,8 @@ public class Warehouse extends NeoclipseExample
         return vehicle;
     }
 
-    private static Node createPart( String name, int cost,
-        Object... nodesAndQuantities )
+    private static Node createPart( final String name, final int cost,
+        final Object... nodesAndQuantities )
     {
         Node part = neo.createNode();
         part.setProperty( "name", name );
@@ -96,12 +96,12 @@ public class Warehouse extends NeoclipseExample
         {
             ((Node) nodesAndQuantities[i]).createRelationshipTo( part,
                 WarehouseRels.COMPOSED_BY ).setProperty( "quantity",
-                (Integer) nodesAndQuantities[i + 1] );
+                nodesAndQuantities[i + 1] );
         }
         return part;
     }
 
-    private static Node createWarehouse( String name )
+    private static Node createWarehouse( final String name )
     {
         Node warehouse = neo.createNode();
         warehouse.setProperty( "name", name );
@@ -110,8 +110,8 @@ public class Warehouse extends NeoclipseExample
         return warehouse;
     }
 
-    private static void linkPartAndWarehouse( Node part, Node warehouse,
-        int quantity )
+    private static void linkPartAndWarehouse( final Node part,
+        final Node warehouse, final int quantity )
     {
         Relationship rel = part.createRelationshipTo( warehouse,
             WarehouseRels.STORED_IN );
@@ -197,7 +197,7 @@ public class Warehouse extends NeoclipseExample
         }
     }
 
-    private int getCost( Node part )
+    private int getCost( final Node part )
     {
         int sum = (Integer) part.getProperty( "cost", 0 );
         Traverser subParts = part.traverse( Traverser.Order.BREADTH_FIRST,

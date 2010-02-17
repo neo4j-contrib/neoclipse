@@ -51,10 +51,10 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.zest.core.viewers.GraphViewer;
-import org.neo4j.api.core.Direction;
-import org.neo4j.api.core.Node;
-import org.neo4j.api.core.Relationship;
-import org.neo4j.api.core.RelationshipType;
+import org.neo4j.graphdb.Direction;
+import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.Relationship;
+import org.neo4j.graphdb.RelationshipType;
 import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.action.Actions;
 import org.neo4j.neoclipse.action.reltype.NewRelationshipTypeAction;
@@ -84,11 +84,9 @@ public class RelationshipTypeView extends ViewPart implements
     private static final String[] EXT_FILTER_NAMES;
     private final NeoGraphLabelProvider graphLabelProvider = NeoGraphLabelProviderWrapper
         .getInstance();
-
     private TableViewer viewer;
     private RelationshipTypesProvider provider;
     private NeoGraphViewPart graphView = null;
-
     private Action markIncomingAction;
     private Action markOutgoingAction;
     private Action clearMarkedAction;
@@ -103,9 +101,7 @@ public class RelationshipTypeView extends ViewPart implements
     private Action filterAll;
     private Action filterOutgoing;
     private Action filterIncoming;
-
     private final List<RelationshipType> currentSelectedRelTypes = new ArrayList<RelationshipType>();
-
     static
     {
         // build filters for file selection dialog.
@@ -169,10 +165,8 @@ public class RelationshipTypeView extends ViewPart implements
         viewer.setComparator( new ViewerComparator(
             new RelationshipTypeSorter() ) );
         viewer.setInput( getViewSite() );
-
         Activator.getDefault().getNeoServiceManager().addServiceEventListener(
             new ServiceChangeHandler() );
-
         PlatformUI.getWorkbench().getHelpSystem().setHelp( viewer.getControl(),
             HelpContextConstants.NEO_RELATIONSHIP_TYPE_VIEW );
         makeActions();
@@ -180,7 +174,6 @@ public class RelationshipTypeView extends ViewPart implements
         hookDoubleClickAction();
         contributeToActionBars();
         getSite().getPage().addSelectionListener( NeoGraphViewPart.ID, this );
-
         getSite().setSelectionProvider( viewer );
         getSite().getPage().addSelectionListener( ID, this );
     }
@@ -279,11 +272,8 @@ public class RelationshipTypeView extends ViewPart implements
     private void makeActions()
     {
         makeHighlightingActions();
-
         makeRelationshipTypeActions();
-
         makeAddActions();
-
         makeFilterActions();
     }
 
@@ -302,7 +292,6 @@ public class RelationshipTypeView extends ViewPart implements
             }
         };
         Actions.FILTER_NONE.initialize( filterNone );
-
         filterAll = new Action()
         {
             @Override
@@ -314,7 +303,6 @@ public class RelationshipTypeView extends ViewPart implements
             }
         };
         Actions.FILTER_ALL.initialize( filterAll );
-
         filterOutgoing = new Action()
         {
             @Override
@@ -326,7 +314,6 @@ public class RelationshipTypeView extends ViewPart implements
             }
         };
         Actions.FILTER_OUTGOING.initialize( filterOutgoing );
-
         filterIncoming = new Action()
         {
             @Override
@@ -355,7 +342,6 @@ public class RelationshipTypeView extends ViewPart implements
             }
         };
         Actions.ADD_RELATIONSHIP.initialize( addRelationship );
-
         addOutgoingNode = new Action()
         {
             @Override
@@ -366,7 +352,6 @@ public class RelationshipTypeView extends ViewPart implements
             }
         };
         Actions.ADD_OUTGOING_NODE.initialize( addOutgoingNode );
-
         addIncomingNode = new Action()
         {
             @Override
@@ -385,7 +370,6 @@ public class RelationshipTypeView extends ViewPart implements
     private void makeRelationshipTypeActions()
     {
         newAction = new NewRelationshipTypeAction( provider );
-
         addIncomingIcon = new Action()
         {
             @Override
@@ -395,7 +379,6 @@ public class RelationshipTypeView extends ViewPart implements
             }
         };
         Actions.ADD_INCOMING_ICON.initialize( addIncomingIcon );
-
         addOutgoingIcon = new Action()
         {
             @Override
@@ -527,7 +510,6 @@ public class RelationshipTypeView extends ViewPart implements
             }
         };
         Actions.HIGHLIGHT_RELATIONSHIPS.initialize( markRelationshipAction );
-
         markIncomingAction = new Action()
         {
             @Override
@@ -543,7 +525,6 @@ public class RelationshipTypeView extends ViewPart implements
         };
         Actions.HIGHLIGHT_INCOMING.initialize( markIncomingAction );
         markIncomingAction.setEnabled( false );
-
         markOutgoingAction = new Action()
         {
             @Override
@@ -559,7 +540,6 @@ public class RelationshipTypeView extends ViewPart implements
         };
         Actions.HIGHLIGHT_OUTGOING.initialize( markOutgoingAction );
         markOutgoingAction.setEnabled( false );
-
         clearMarkedAction = new Action()
         {
             @Override
@@ -770,7 +750,6 @@ public class RelationshipTypeView extends ViewPart implements
                 }
             }
         }
-
         List<Node> currentSelectedNodes = getGraphView()
             .getCurrentSelectedNodes();
         setEnableAddRelationship( getCurrentSelectedRelTypes().size() == 1
@@ -797,7 +776,6 @@ public class RelationshipTypeView extends ViewPart implements
             }
         }
     }
-
     /**
      * Respond to changes in the relationship type provider types.
      */
@@ -811,7 +789,6 @@ public class RelationshipTypeView extends ViewPart implements
             viewer.refresh();
         }
     }
-
     /**
      * Handle change in the Neo service.
      */
@@ -834,7 +811,6 @@ public class RelationshipTypeView extends ViewPart implements
             }
         }
     }
-
     /**
      * Handle change in the relationship color settings.
      */

@@ -39,10 +39,10 @@ import org.eclipse.zest.core.viewers.GraphViewer;
 import org.eclipse.zest.core.viewers.IZoomableWorkbenchPart;
 import org.eclipse.zest.layouts.LayoutStyles;
 import org.eclipse.zest.layouts.algorithms.SpringLayoutAlgorithm;
-import org.neo4j.api.core.NeoService;
-import org.neo4j.api.core.Node;
-import org.neo4j.api.core.NotFoundException;
-import org.neo4j.api.core.Relationship;
+import org.neo4j.graphdb.GraphDatabaseService;
+import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.NotFoundException;
+import org.neo4j.graphdb.Relationship;
 import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.event.NeoclipseEvent;
 import org.neo4j.neoclipse.event.NeoclipseEventListener;
@@ -77,7 +77,6 @@ public class NeoGraphViewPart extends ViewPart implements
      * The property sheet page.
      */
     protected NeoPropertySheetPage propertySheetPage;
-
     /**
      * The graph.
      */
@@ -95,7 +94,6 @@ public class NeoGraphViewPart extends ViewPart implements
     private RelationshipTypeView relTypeView;
     private final List<InputChangeListener> listeners = new ArrayList<InputChangeListener>();
     private Node previousInputNode = null;
-
     private final NeoclipseListenerList relColorChange = new NeoclipseListenerList();
     private NeoGraphMenu menu;
     /**
@@ -119,23 +117,17 @@ public class NeoGraphViewPart extends ViewPart implements
             .getInstance();
         viewer.setLabelProvider( labelProvider );
         addListener( labelProvider );
-
         getSite().getPage().addSelectionListener( ID,
             new SelectionChangeHandler() );
         getSite().getPage().addSelectionListener( RelationshipTypeView.ID,
             new RelTypeSelectionChangeHandler() );
-
         menu = new NeoGraphMenu( this );
-
         NeoServiceManager sm = Activator.getDefault().getNeoServiceManager();
         sm.addServiceEventListener( new NeoGraphServiceEventListener() );
         getSite().setSelectionProvider( viewer );
-
         Activator.getDefault().getPluginPreferences()
             .addPropertyChangeListener( new PreferenceChangeHandler() );
-
         showSomeNode();
-
         PlatformUI.getWorkbench().getHelpSystem().setHelp( viewer.getControl(),
             HelpContextConstants.NEO_GRAPH_VIEW_PART );
     }
@@ -217,7 +209,6 @@ public class NeoGraphViewPart extends ViewPart implements
         int selectedRelationshipCount = currentSelectedRels.size();
         menu.setEnableDeleteAction( selectedNodeCount > 0
             || selectedRelationshipCount > 0 );
-
         boolean rel = selectedNodeCount == 2;
         boolean outIn = selectedNodeCount > 0;
         menu.setEnabledRelActions( rel, outIn, outIn );
@@ -248,7 +239,6 @@ public class NeoGraphViewPart extends ViewPart implements
      * @SuppressWarnings( "restriction" ) public void addCurrentNode() {
      * viewer.addNode( getCurrentNode() ); }
      */
-
     /**
      * Updates the content of the status bar.
      */
@@ -260,7 +250,6 @@ public class NeoGraphViewPart extends ViewPart implements
             viewer.getGraphControl().getNodes().size() );
         str.append( "   Relationships: " ).append(
             viewer.getGraphControl().getConnections().size() );
-
         getViewSite().getActionBars().getStatusLineManager().setMessage(
             str.toString() );
     }
@@ -401,7 +390,7 @@ public class NeoGraphViewPart extends ViewPart implements
      */
     public void showSomeNode()
     {
-        NeoService ns = Activator.getDefault().getNeoServiceSafely();
+        GraphDatabaseService ns = Activator.getDefault().getNeoServiceSafely();
         if ( ns != null )
         {
             Node node = ns.getReferenceNode();
@@ -435,7 +424,7 @@ public class NeoGraphViewPart extends ViewPart implements
      */
     public void showNode( final long nodeId )
     {
-        NeoService ns = Activator.getDefault().getNeoServiceSafely();
+        GraphDatabaseService ns = Activator.getDefault().getNeoServiceSafely();
         if ( ns != null )
         {
             Node node = ns.getNodeById( nodeId );
@@ -483,7 +472,6 @@ public class NeoGraphViewPart extends ViewPart implements
             traversalDepth--;
             refreshViewer();
             viewer.applyLayout();
-
             if ( traversalDepth < 1 )
             {
                 menu.setEnabledDecAction( false );
@@ -675,7 +663,6 @@ public class NeoGraphViewPart extends ViewPart implements
             }
         }
     }
-
     /**
      * Class to handle changes in selection of this view.
      */
@@ -711,7 +698,6 @@ public class NeoGraphViewPart extends ViewPart implements
             updateMenuState();
         }
     }
-
     /**
      * Class that handles changes in the relationship properties view.
      */
@@ -762,7 +748,6 @@ public class NeoGraphViewPart extends ViewPart implements
             setDirty( true );
         }
     }
-
     /**
      * Class that responds to changes in preferences.
      */

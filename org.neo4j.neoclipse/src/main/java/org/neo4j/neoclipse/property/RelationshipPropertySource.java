@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
-import org.neo4j.api.core.Relationship;
+import org.neo4j.graphdb.Relationship;
 
 /**
  * Resolves the properties for a Neo relationship.

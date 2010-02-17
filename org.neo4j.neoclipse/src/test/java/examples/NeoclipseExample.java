@@ -23,8 +23,8 @@ import java.nio.channels.FileChannel;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.neo4j.api.core.EmbeddedNeo;
-import org.neo4j.api.core.NeoService;
+import org.neo4j.graphdb.GraphDatabaseService;
+import org.neo4j.kernel.EmbeddedGraphDatabase;
 
 /**
  * Utility to set up a Neo4j instance for test cases. We use Junit4 to run the
@@ -50,7 +50,7 @@ public abstract class NeoclipseExample
     /**
      * Local Neo4j instance.
      */
-    protected static NeoService neo;
+    protected static GraphDatabaseService neo;
 
     @BeforeClass
     public static void startNeo()
@@ -60,7 +60,7 @@ public abstract class NeoclipseExample
         {
             deleteDir( file );
         }
-        neo = new EmbeddedNeo( file.getAbsolutePath() );
+        neo = new EmbeddedGraphDatabase( file.getAbsolutePath() );
     }
 
     /**
@@ -68,7 +68,7 @@ public abstract class NeoclipseExample
      * @param exampleDir
      *            subdirectory name of example
      */
-    protected static void copyIcons( String exampleDir )
+    protected static void copyIcons( final String exampleDir )
     {
         File dest = new File( ICON_LOCATION_DIR );
         if ( dest.exists() )
@@ -98,7 +98,7 @@ public abstract class NeoclipseExample
         System.out.println();
     }
 
-    private static boolean deleteDir( File directory )
+    private static boolean deleteDir( final File directory )
     {
         if ( directory.isDirectory() )
         {
@@ -114,7 +114,7 @@ public abstract class NeoclipseExample
         return directory.delete();
     }
 
-    private static void copyDir( String source, String dest )
+    private static void copyDir( final String source, final String dest )
     {
         File destination = new File( dest );
         if ( !destination.exists() )
@@ -131,9 +131,9 @@ public abstract class NeoclipseExample
             return;
         }
         String[] contents = directory.list();
-        for ( int i = 0; i < contents.length; i++ )
+        for ( String content : contents )
         {
-            File file = new File( source + File.separator + contents[i] );
+            File file = new File( source + File.separator + content );
             if ( !file.isFile() || !file.canRead() )
             {
                 continue;
@@ -151,13 +151,13 @@ public abstract class NeoclipseExample
             FileChannel out = null;
             try
             {
-                out = new FileOutputStream( dest + File.separator + contents[i] )
+                out = new FileOutputStream( dest + File.separator + content )
                     .getChannel();
             }
             catch ( FileNotFoundException e )
             {
                 System.err.println( "File not found: " + dest + File.separator
-                    + contents[i] );
+                    + content );
                 return;
             }
             try

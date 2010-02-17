@@ -19,8 +19,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.neo4j.api.core.DynamicRelationshipType;
-import org.neo4j.api.core.RelationshipType;
+import org.neo4j.graphdb.DynamicRelationshipType;
+import org.neo4j.graphdb.RelationshipType;
 
 /**
  * A HashMap<RelationshipType,T> implementation that will work correctly

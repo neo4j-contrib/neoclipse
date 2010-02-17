@@ -24,10 +24,10 @@ import java.util.Set;
 import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.neo4j.api.core.DynamicRelationshipType;
-import org.neo4j.api.core.NeoService;
-import org.neo4j.api.core.NotFoundException;
-import org.neo4j.api.core.RelationshipType;
+import org.neo4j.graphdb.DynamicRelationshipType;
+import org.neo4j.graphdb.GraphDatabaseService;
+import org.neo4j.graphdb.NotFoundException;
+import org.neo4j.graphdb.RelationshipType;
 import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.event.NeoclipseEvent;
 import org.neo4j.neoclipse.event.NeoclipseEventListener;
@@ -113,7 +113,7 @@ public class RelationshipTypesProvider implements IContentProvider,
     {
         Set<RelationshipType> relationshipTypes;
         relationshipTypes = new HashSet<RelationshipType>();
-        NeoService ns = Activator.getDefault().getNeoServiceSafely();
+        GraphDatabaseService ns = Activator.getDefault().getNeoServiceSafely();
         if ( ns == null )
         {
             // todo ?

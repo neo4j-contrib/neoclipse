@@ -15,13 +15,13 @@ package examples.roles;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.neo4j.api.core.Direction;
-import org.neo4j.api.core.Node;
-import org.neo4j.api.core.RelationshipType;
-import org.neo4j.api.core.ReturnableEvaluator;
-import org.neo4j.api.core.StopEvaluator;
-import org.neo4j.api.core.Transaction;
-import org.neo4j.api.core.Traverser;
+import org.neo4j.graphdb.Direction;
+import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.RelationshipType;
+import org.neo4j.graphdb.ReturnableEvaluator;
+import org.neo4j.graphdb.StopEvaluator;
+import org.neo4j.graphdb.Transaction;
+import org.neo4j.graphdb.Traverser;
 
 import examples.NeoclipseExample;
 
@@ -71,23 +71,25 @@ public class Roles extends NeoclipseExample
         }
     }
 
-    private static Node createTopLevelGroup( String name )
+    private static Node createTopLevelGroup( final String name )
     {
         return createNode( name, RoleRels.ROOT, neo.getReferenceNode() );
     }
 
-    private static Node createGroup( String name, Node... containedIn )
+    private static Node createGroup( final String name,
+        final Node... containedIn )
     {
         return createNode( name, RoleRels.PART_OF, containedIn );
     }
 
-    private static Node createUser( String name, Node... containedIn )
+    private static Node createUser( final String name,
+        final Node... containedIn )
     {
         return createNode( name, RoleRels.MEMBER_OF, containedIn );
     }
 
-    private static Node createNode( String name, RelationshipType relType,
-        Node... containedIn )
+    private static Node createNode( final String name,
+        final RelationshipType relType, final Node... containedIn )
     {
         Node node = neo.createNode();
         node.setProperty( "name", name );

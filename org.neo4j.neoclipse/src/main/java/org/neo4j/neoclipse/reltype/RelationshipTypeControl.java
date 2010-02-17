@@ -13,8 +13,8 @@
  */
 package org.neo4j.neoclipse.reltype;
 
-import org.neo4j.api.core.Direction;
-import org.neo4j.api.core.RelationshipType;
+import org.neo4j.graphdb.Direction;
+import org.neo4j.graphdb.RelationshipType;
 import org.neo4j.neoclipse.event.NeoclipseEvent;
 import org.neo4j.neoclipse.event.NeoclipseEventListener;
 import org.neo4j.neoclipse.event.NeoclipseListenerList;
@@ -27,7 +27,6 @@ import org.neo4j.neoclipse.event.NeoclipseListenerList;
 public class RelationshipTypeControl
 {
     private final NeoclipseListenerList listeners = new NeoclipseListenerList();
-
     private final RelationshipType relType;
     private boolean in = true;
     private boolean out = true;

@@ -23,7 +23,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.search.ui.ISearchQuery;
 import org.eclipse.search.ui.ISearchResult;
 import org.eclipse.search.ui.ISearchResultListener;
-import org.neo4j.api.core.Node;
+import org.neo4j.graphdb.Node;
 import org.neo4j.neoclipse.NeoIcons;
 
 /**
@@ -36,12 +36,10 @@ public class NeoSearchResult implements ISearchResult
      * The query to which this result belongs.
      */
     private final NeoSearchQuery query;
-
     /**
      * The found matches.
      */
     private Iterable<Node> matches;
-
     /**
      * The observers.
      */
@@ -53,12 +51,10 @@ public class NeoSearchResult implements ISearchResult
     public NeoSearchResult( final NeoSearchQuery query )
     {
         this.query = query;
-
         // we have to initialize an empty list, as the result will already be
         // shown before
         // the search is actually started
         this.matches = Collections.emptyList();
-
         listeners = new ArrayList<ISearchResultListener>();
     }
 
@@ -76,7 +72,6 @@ public class NeoSearchResult implements ISearchResult
     public void setMatches( final Iterable<Node> matches )
     {
         this.matches = matches;
-
         fireSearchResultEvent();
     }
 
@@ -138,14 +133,12 @@ public class NeoSearchResult implements ISearchResult
     protected void fireSearchResultEvent()
     {
         final NeoSearchResultEvent e = new NeoSearchResultEvent( this );
-
         for ( int i = 0; i < listeners.size(); i++ )
         {
             final ISearchResultListener l = listeners.get( i );
-
             ISafeRunnable job = new ISafeRunnable()
             {
-                public void handleException( Throwable exception )
+                public void handleException( final Throwable exception )
                 {
                     // already being logged in SafeRunner#run()
                 }
@@ -155,7 +148,6 @@ public class NeoSearchResult implements ISearchResult
                     l.searchResultChanged( e );
                 }
             };
-
             SafeRunner.run( job );
         }
     }

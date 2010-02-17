@@ -2,11 +2,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <version>0.4.0</version>
+  <version>0.4.1</version>
   <parent>
     <artifactId>neoclipse</artifactId>
     <groupId>org.neo4j</groupId>
-    <version>1.1</version>
+    <version>1.2</version>
   </parent>
   <groupId>org.neo4j</groupId>
   <artifactId>org.neo4j.neoclipse</artifactId>
@@ -14,25 +14,16 @@
   <name>Neoclipse Eclipse Plugin</name>
   <dependencies>
     <dependency>
-      <groupId>org.neo4j</groupId>
-      <artifactId>neo</artifactId>
-      <version>1.0-b10</version>
+    	<groupId>org.neo4j</groupId>
+    	<artifactId>neo4j-apoc</artifactId>
+    	<version>1.0</version>
+    	<type>pom</type>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.3.1</version>
+      <version>4.7</version>
       <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.neo4j</groupId>
-      <artifactId>remote-neo</artifactId>
-      <version>0.3</version>
-    </dependency>
-    <dependency>
-    	<groupId>org.neo4j</groupId>
-    	<artifactId>index-util</artifactId>
-    	<version>0.8</version>
     </dependency>
   </dependencies>
   <build>

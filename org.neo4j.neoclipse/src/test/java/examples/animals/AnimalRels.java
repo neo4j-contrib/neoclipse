@@ -13,7 +13,7 @@
  */
 package examples.animals;
 
-import org.neo4j.api.core.RelationshipType;
+import org.neo4j.graphdb.RelationshipType;
 
 /**
  * Animal relationship types.

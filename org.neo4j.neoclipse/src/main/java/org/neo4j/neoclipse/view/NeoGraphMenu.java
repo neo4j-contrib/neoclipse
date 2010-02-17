@@ -33,7 +33,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.zest.core.viewers.GraphViewer;
-import org.neo4j.api.core.RelationshipType;
+import org.neo4j.graphdb.RelationshipType;
 import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.action.Actions;
 import org.neo4j.neoclipse.action.PrintGraphAction;
@@ -213,7 +213,6 @@ public class NeoGraphMenu
      */
     private final SortedMap<String,ActionSet> actionMap = new TreeMap<String,ActionSet>(
         new RelationshipTypeSorter() );
-
     /**
      * Size of colored squares for relationship types.
      */
@@ -226,17 +225,13 @@ public class NeoGraphMenu
      * Position of dot.
      */
     private static final int RELTYPE_POSITION = (RELTYPE_IMG_SIZE - RELTYPE_DOT_SIZE) / 2;
-
     private final NeoGraphViewPart graphView;
     private final GraphViewer graphViewer;
-
     private final ActionSet addNewActionSet;
-
     /**
      * The go back action.
      */
     private final GoBackAction backAction;
-
     /**
      * The go forward action.
      */
@@ -249,15 +244,11 @@ public class NeoGraphMenu
      * The increase traversal depth action.
      */
     private final IncreaseTraversalDepthAction incAction;
-
     private final ShowReferenceNodeAction refNodeAction;
     private final RefreshAction refreshAction;
-
     private final DeleteAction deleteAction;
-
     private final CommitAction commitAction;
     private final RollbackAction rollbackAction;
-
     // menu managers
     private final MenuManager addRelMenuMgr = new MenuManager(
         Actions.ADD_RELATIONSHIP.label(), Actions.ADD_RELATIONSHIP.icon()
@@ -268,7 +259,6 @@ public class NeoGraphMenu
     private final MenuManager addInNodeMenuMgr = new MenuManager(
         Actions.ADD_INCOMING_NODE.label(), Actions.ADD_INCOMING_NODE.icon()
             .descriptor(), "addInNodeSubmenu" );
-
     /**
      * Colored images for the different relationship types.
      */
@@ -281,7 +271,6 @@ public class NeoGraphMenu
      * Separator in menus.
      */
     private static final Separator SEPARATOR = new Separator();
-
     /**
      * Keep state of relationship colors.
      */
@@ -298,7 +287,6 @@ public class NeoGraphMenu
      * Enabled state of add incoming relationships actions.
      */
     private boolean inState = false;
-
     static
     {
         // create gray default color
@@ -365,7 +353,6 @@ public class NeoGraphMenu
         this.outState = out;
         this.inState = in;
         addNewActionSet.setEnabled( add, out, in );
-
         for ( ActionSet actionSet : actionMap.values() )
         {
             actionSet.setEnabled( add, out, in );
@@ -455,15 +442,10 @@ public class NeoGraphMenu
         MenuManager cm = new MenuManager();
         Menu menu = cm.createContextMenu( graphViewer.getControl() );
         graphViewer.getControl().setMenu( menu );
-
         contributeContextActions( cm );
-
         contributeTransactionActions( tm );
-
         nodeSpaceActions( tm );
-
         mm.add( SEPARATOR );
-
         // navigation actions
         contributeNavigationActions( tm );
         // recursion level actions
@@ -531,11 +513,8 @@ public class NeoGraphMenu
         {
             tm.add( backAction );
             tm.add( forwardAction );
-
             tm.add( refNodeAction );
-
             tm.add( refreshAction );
-
             tm.add( SEPARATOR );
         }
     }
@@ -549,9 +528,7 @@ public class NeoGraphMenu
     {
         {
             tm.add( incAction );
-
             tm.add( decAction );
-
             tm.add( SEPARATOR );
         }
     }
@@ -628,10 +605,8 @@ public class NeoGraphMenu
             GroupMarker relationshipGroup = new GroupMarker(
                 relationshipGroupName );
             mm.add( relationshipGroup );
-
             ViewSettings viewSettings = graphView.getLabelProvider()
                 .getViewSettings();
-
             // relationship properties actions
             mm.appendToGroup( relationshipGroupName,
                 new ShowRelationshipPropertiesAction( graphView, viewSettings
@@ -755,7 +730,6 @@ public class NeoGraphMenu
             }
         }
     }
-
     /**
      * Handle change in color setting.
      */

@@ -16,7 +16,7 @@ package org.neo4j.neoclipse.property.action;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.views.properties.IPropertySheetEntry;
-import org.neo4j.api.core.PropertyContainer;
+import org.neo4j.graphdb.PropertyContainer;
 import org.neo4j.neoclipse.action.Actions;
 import org.neo4j.neoclipse.neo.NodeSpaceUtil;
 import org.neo4j.neoclipse.property.NeoPropertySheetPage;
@@ -30,8 +30,8 @@ public class RenameAction extends PropertyAction
     }
 
     @Override
-    protected void performOperation( PropertyContainer container,
-        IPropertySheetEntry entry )
+    protected void performOperation( final PropertyContainer container,
+        final IPropertySheetEntry entry )
     {
         String key = entry.getDisplayName();
         InputDialog input = new InputDialog( null, "New key entry",
@@ -40,7 +40,8 @@ public class RenameAction extends PropertyAction
         if ( input.open() == OK && input.getReturnCode() == OK )
         {
             String newKey = input.getValue();
-            NodeSpaceUtil.renameProperty( container, key, newKey, propertySheet );
+            NodeSpaceUtil
+                .renameProperty( container, key, newKey, propertySheet );
         }
     }
 }

@@ -15,13 +15,13 @@ package examples.vehicleAssembly;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.neo4j.api.core.Direction;
-import org.neo4j.api.core.Node;
-import org.neo4j.api.core.Relationship;
-import org.neo4j.api.core.ReturnableEvaluator;
-import org.neo4j.api.core.StopEvaluator;
-import org.neo4j.api.core.Transaction;
-import org.neo4j.api.core.Traverser;
+import org.neo4j.graphdb.Direction;
+import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.Relationship;
+import org.neo4j.graphdb.ReturnableEvaluator;
+import org.neo4j.graphdb.StopEvaluator;
+import org.neo4j.graphdb.Transaction;
+import org.neo4j.graphdb.Traverser;
 
 import examples.NeoclipseExample;
 
@@ -63,7 +63,7 @@ public class VehicleAssembly extends NeoclipseExample
         }
     }
 
-    private static Node createVehicle( String name, int cost )
+    private static Node createVehicle( final String name, final int cost )
     {
         Node vehicle = neo.createNode();
         vehicle.setProperty( "name", name );
@@ -73,8 +73,8 @@ public class VehicleAssembly extends NeoclipseExample
         return vehicle;
     }
 
-    private static Node createPart( String name, int cost,
-        Object... nodesAndQuantities )
+    private static Node createPart( final String name, final int cost,
+        final Object... nodesAndQuantities )
     {
         Node part = neo.createNode();
         part.setProperty( "name", name );
@@ -83,7 +83,7 @@ public class VehicleAssembly extends NeoclipseExample
         {
             ((Node) nodesAndQuantities[i]).createRelationshipTo( part,
                 VehicleRels.COMPOSED_BY ).setProperty( "quantity",
-                (Integer) nodesAndQuantities[i + 1] );
+                nodesAndQuantities[i + 1] );
         }
         return part;
     }
@@ -148,7 +148,7 @@ public class VehicleAssembly extends NeoclipseExample
         }
     }
 
-    private int getCost( Node part )
+    private int getCost( final Node part )
     {
         int sum = (Integer) part.getProperty( "cost", 0 );
         for ( Relationship rel : part.getRelationships( Direction.OUTGOING ) )

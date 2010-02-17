@@ -30,7 +30,7 @@ import org.eclipse.ui.views.properties.IPropertySourceProvider;
 import org.eclipse.ui.views.properties.PropertySheetEntry;
 import org.eclipse.ui.views.properties.PropertySheetPage;
 import org.eclipse.ui.views.properties.PropertySheetSorter;
-import org.neo4j.api.core.PropertyContainer;
+import org.neo4j.graphdb.PropertyContainer;
 import org.neo4j.neoclipse.NeoIcons;
 import org.neo4j.neoclipse.help.HelpContextConstants;
 import org.neo4j.neoclipse.property.action.CopyAction;
@@ -78,7 +78,7 @@ public class NeoPropertySheetPage extends PropertySheetPage implements
     private RenameAction renameAction;
     private PasteAction pasteAction;
     private PropertyContainer containerSelection;
-    private List<ChangeListener> listeners = new ArrayList<ChangeListener>();
+    private final List<ChangeListener> listeners = new ArrayList<ChangeListener>();
 
     public NeoPropertySheetPage()
     {
@@ -86,12 +86,12 @@ public class NeoPropertySheetPage extends PropertySheetPage implements
         setPropertySourceProvider( new PropertySourceProvider( this ) );
     }
 
-    public void addChangeListener( ChangeListener listener )
+    public void addChangeListener( final ChangeListener listener )
     {
         listeners.add( listener );
     }
 
-    public void fireChangeEvent( Object element, String key )
+    public void fireChangeEvent( final Object element, final String key )
     {
         // TODO make sure this key gets selected in the view
         ChangeEvent ce = new ChangeEvent( element, key );
@@ -247,7 +247,7 @@ public class NeoPropertySheetPage extends PropertySheetPage implements
     }
 
     @Override
-    public void handleEntrySelection( ISelection selection )
+    public void handleEntrySelection( final ISelection selection )
     {
         super.handleEntrySelection( selection );
         this.selection = selection;
@@ -279,7 +279,8 @@ public class NeoPropertySheetPage extends PropertySheetPage implements
     }
 
     @Override
-    public void selectionChanged( IWorkbenchPart part, ISelection selection )
+    public void selectionChanged( final IWorkbenchPart part,
+        final ISelection selection )
     {
         if ( part instanceof NeoGraphViewPart )
         {
@@ -301,7 +302,8 @@ public class NeoPropertySheetPage extends PropertySheetPage implements
     }
 
     @Override
-    public void setPropertySourceProvider( IPropertySourceProvider newProvider )
+    public void setPropertySourceProvider(
+        final IPropertySourceProvider newProvider )
     {
         super.setPropertySourceProvider( newProvider );
     }

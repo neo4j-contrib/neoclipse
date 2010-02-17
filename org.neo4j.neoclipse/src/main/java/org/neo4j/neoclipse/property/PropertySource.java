@@ -19,7 +19,7 @@ import java.util.List;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySource;
-import org.neo4j.api.core.PropertyContainer;
+import org.neo4j.graphdb.PropertyContainer;
 import org.neo4j.neoclipse.property.PropertyTransform.PropertyHandler;
 
 /**
@@ -41,8 +41,8 @@ public class PropertySource implements IPropertySource
      * The constructor.
      * @param propertySheet
      */
-    public PropertySource( PropertyContainer container,
-        NeoPropertySheetPage propertySheet )
+    public PropertySource( final PropertyContainer container,
+        final NeoPropertySheetPage propertySheet )
     {
         this.container = container;
         this.propertySheet = propertySheet;
@@ -63,7 +63,7 @@ public class PropertySource implements IPropertySource
         Iterable<String> keys = container.getPropertyKeys();
         for ( String key : keys )
         {
-            Object value = container.getProperty( (String) key );
+            Object value = container.getProperty( key );
             Class<?> c = value.getClass();
             descs
                 .add( new PropertyDescriptor( key, key, PROPERTIES_CATEGORY, c ) );
@@ -79,7 +79,7 @@ public class PropertySource implements IPropertySource
     /**
      * Returns the value of the given property.
      */
-    public Object getPropertyValue( Object id )
+    public Object getPropertyValue( final Object id )
     {
         return getValue( id );
     }
@@ -90,7 +90,7 @@ public class PropertySource implements IPropertySource
      *            id of the property
      * @return value of the property
      */
-    protected Object getValue( Object id )
+    protected Object getValue( final Object id )
     {
         return container.getProperty( (String) id );
     }
@@ -98,7 +98,7 @@ public class PropertySource implements IPropertySource
     /**
      * Checks if the property is set.
      */
-    public boolean isPropertySet( Object id )
+    public boolean isPropertySet( final Object id )
     {
         return isSet( id );
     }
@@ -109,7 +109,7 @@ public class PropertySource implements IPropertySource
      *            id of the property
      * @return true if set
      */
-    protected boolean isSet( Object id )
+    protected boolean isSet( final Object id )
     {
         return container.hasProperty( (String) id );
     }
@@ -117,14 +117,14 @@ public class PropertySource implements IPropertySource
     /**
      * Does nothing.
      */
-    public void resetPropertyValue( Object id )
+    public void resetPropertyValue( final Object id )
     {
     }
 
     /**
      * Sets property value.
      */
-    public void setPropertyValue( Object id, Object value )
+    public void setPropertyValue( final Object id, final Object value )
     {
         if ( container.hasProperty( (String) id ) )
         {

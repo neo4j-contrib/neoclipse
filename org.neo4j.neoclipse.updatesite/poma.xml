@@ -5,7 +5,7 @@
   <parent>
     <artifactId>neoclipse</artifactId>
     <groupId>org.neo4j</groupId>
-    <version>1.0</version>
+    <version>1.2</version>
   </parent>
   <groupId>org.neo4j</groupId>
   <artifactId>org.neo4j.neoclipse.updatesite.aggregator</artifactId>

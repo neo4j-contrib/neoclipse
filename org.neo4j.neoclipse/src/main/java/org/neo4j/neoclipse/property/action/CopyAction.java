@@ -22,7 +22,7 @@ import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.views.properties.IPropertySheetEntry;
-import org.neo4j.api.core.PropertyContainer;
+import org.neo4j.graphdb.PropertyContainer;
 import org.neo4j.neoclipse.action.Actions;
 import org.neo4j.neoclipse.property.NeoPropertySheetPage;
 
@@ -43,8 +43,8 @@ public class CopyAction extends PropertyAction
         shell = propertySheet.getControl().getShell();
     }
 
-    protected void performOperation( PropertyContainer container,
-        IPropertySheetEntry entry )
+    protected void performOperation( final PropertyContainer container,
+        final IPropertySheetEntry entry )
     {
         final String key = entry.getDisplayName();
         Object value = container.getProperty( key, null );
@@ -70,7 +70,7 @@ public class CopyAction extends PropertyAction
         }
     }
 
-    public void selectionChanged( IStructuredSelection sel )
+    public void selectionChanged( final IStructuredSelection sel )
     {
         setEnabled( !sel.isEmpty() );
     }

@@ -2,17 +2,18 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Neoclipse
 Bundle-SymbolicName: org.neo4j.neoclipse;singleton:=true
-Bundle-Version: 0.4.0
+Bundle-Version: 0.4.1
 Bundle-Activator: org.neo4j.neoclipse.Activator
 Bundle-Vendor: Neo4j.org
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Bundle-ClassPath: lib/jta-1.1.jar,
- .,
- lib/neo-1.0-b10.jar,
- lib/remote-neo-0.3.jar,
- lib/index-util-0.8.jar,
- lib/lucene-core-2.4.0.jar
+Bundle-ClassPath: .,
+ lib/geronimo-jta_1.1_spec-1.1.1.jar,
+ lib/lucene-core-2.9.1.jar,
+ lib/neo4j-commons-1.0.jar,
+ lib/neo4j-index-1.0.jar,
+ lib/neo4j-kernel-1.0.jar,
+ lib/neo4j-remote-graphdb.jar
 Import-Package: org.eclipse.core.commands.common,
  org.eclipse.core.runtime,
  org.eclipse.core.runtime.preferences,

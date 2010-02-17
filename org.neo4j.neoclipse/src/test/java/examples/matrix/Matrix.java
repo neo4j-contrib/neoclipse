@@ -15,15 +15,15 @@ package examples.matrix;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.neo4j.api.core.Direction;
-import org.neo4j.api.core.Node;
-import org.neo4j.api.core.Relationship;
-import org.neo4j.api.core.ReturnableEvaluator;
-import org.neo4j.api.core.StopEvaluator;
-import org.neo4j.api.core.Transaction;
-import org.neo4j.api.core.TraversalPosition;
-import org.neo4j.api.core.Traverser;
-import org.neo4j.api.core.Traverser.Order;
+import org.neo4j.graphdb.Direction;
+import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.Relationship;
+import org.neo4j.graphdb.ReturnableEvaluator;
+import org.neo4j.graphdb.StopEvaluator;
+import org.neo4j.graphdb.Transaction;
+import org.neo4j.graphdb.TraversalPosition;
+import org.neo4j.graphdb.Traverser;
+import org.neo4j.graphdb.Traverser.Order;
 
 import examples.NeoclipseExample;
 
@@ -119,13 +119,12 @@ public class Matrix extends NeoclipseExample
         }
     }
 
-    private static void printFriends( Node person )
+    private static void printFriends( final Node person )
     {
         System.out.println( person.getProperty( "name" ) + "'s friends:" );
         Traverser traverser = person.traverse( Order.BREADTH_FIRST,
-            StopEvaluator.END_OF_GRAPH,
-            ReturnableEvaluator.ALL_BUT_START_NODE, MyRelationshipTypes.KNOWS,
-            Direction.OUTGOING );
+            StopEvaluator.END_OF_GRAPH, ReturnableEvaluator.ALL_BUT_START_NODE,
+            MyRelationshipTypes.KNOWS, Direction.OUTGOING );
         for ( Node friend : traverser )
         {
             TraversalPosition position = traverser.currentPosition();
@@ -134,14 +133,14 @@ public class Matrix extends NeoclipseExample
         }
     }
 
-    private static void findHackers( Node startNode )
+    private static void findHackers( final Node startNode )
     {
         System.out.println( "Hackers:" );
         Traverser traverser = startNode.traverse( Order.BREADTH_FIRST,
             StopEvaluator.END_OF_GRAPH, new ReturnableEvaluator()
             {
                 public boolean isReturnableNode(
-                    TraversalPosition currentPosition )
+                    final TraversalPosition currentPosition )
                 {
                     Relationship rel = currentPosition
                         .lastRelationshipTraversed();

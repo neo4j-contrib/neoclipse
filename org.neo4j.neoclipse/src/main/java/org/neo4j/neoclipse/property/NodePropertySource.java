@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
-import org.neo4j.api.core.Node;
+import org.neo4j.graphdb.Node;
 
 /**
  * Resolves the properties for a Neo node.
@@ -32,7 +32,8 @@ public class NodePropertySource extends PropertySource
      * The constructor.
      * @param propertySheet
      */
-    public NodePropertySource( Node node, NeoPropertySheetPage propertySheet )
+    public NodePropertySource( final Node node,
+        final NeoPropertySheetPage propertySheet )
     {
         super( node, propertySheet );
     }
@@ -47,7 +48,7 @@ public class NodePropertySource extends PropertySource
     }
 
     @Override
-    protected Object getValue( Object id )
+    protected Object getValue( final Object id )
     {
         if ( id == ID_KEY )
         {
@@ -60,7 +61,7 @@ public class NodePropertySource extends PropertySource
     }
 
     @Override
-    protected boolean isSet( Object id )
+    protected boolean isSet( final Object id )
     {
         if ( id == ID_KEY )
         {

@@ -18,7 +18,7 @@ import java.util.List;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.neo4j.api.core.Node;
+import org.neo4j.graphdb.Node;
 
 /**
  * This is the content provider for populating the result list tree viewer.
@@ -44,11 +44,9 @@ public class NeoSearchResultContentProvider implements ITreeContentProvider
     {
         NeoSearchResult result = (NeoSearchResult) inputElement;
         Iterable<Node> matches = result.getMatches();
-
         // TODO make search results being added to the list
         // and the UI updated during the search.
         list.clear();
-
         // the actual search are not performed until
         // this iterator is performed.
         // so this should be run with frequent
@@ -57,7 +55,6 @@ public class NeoSearchResultContentProvider implements ITreeContentProvider
         {
             list.add( node );
         }
-
         return list.toArray();
     }
 
@@ -72,7 +69,7 @@ public class NeoSearchResultContentProvider implements ITreeContentProvider
     /**
      * Returns null, as there is no hierarchical structure.
      */
-    public Object getParent( Object element )
+    public Object getParent( final Object element )
     {
         return null;
     }
@@ -80,7 +77,7 @@ public class NeoSearchResultContentProvider implements ITreeContentProvider
     /**
      * Returns false, no hierarchical views supported.
      */
-    public boolean hasChildren( Object element )
+    public boolean hasChildren( final Object element )
     {
         return false;
     }

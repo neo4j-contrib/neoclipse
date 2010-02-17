@@ -13,7 +13,7 @@
  */
 package examples.roles;
 
-import org.neo4j.api.core.RelationshipType;
+import org.neo4j.graphdb.RelationshipType;
 
 /**
  * Role relationship types.

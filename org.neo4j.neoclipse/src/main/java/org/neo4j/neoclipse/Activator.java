@@ -17,8 +17,8 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.PreferenceDialog;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.neo4j.api.core.NeoService;
-import org.neo4j.api.core.Node;
+import org.neo4j.graphdb.GraphDatabaseService;
+import org.neo4j.graphdb.Node;
 import org.neo4j.neoclipse.neo.NeoServiceManager;
 import org.osgi.framework.BundleContext;
 
@@ -43,7 +43,8 @@ public class Activator extends AbstractUIPlugin
     /**
      * Starts up the plug-in and initializes the neo service.
      */
-    public void start( BundleContext context ) throws Exception
+    @Override
+    public void start( final BundleContext context ) throws Exception
     {
         super.start( context );
         PLUGIN = this;
@@ -53,7 +54,8 @@ public class Activator extends AbstractUIPlugin
     /**
      * Stops the plug-in and shuts down the neo service.
      */
-    public void stop( BundleContext context ) throws Exception
+    @Override
+    public void stop( final BundleContext context ) throws Exception
     {
         neoManager.stopNeoService();
         PLUGIN = null;
@@ -78,11 +80,11 @@ public class Activator extends AbstractUIPlugin
     }
 
     /**
-     * Get the current NeoService. Returns <code>null</code> on failure, after
-     * showing appropriate error messages.
+     * Get the current GraphDatabaseService. Returns <code>null</code> on
+     * failure, after showing appropriate error messages.
      * @return current neo service
      */
-    public NeoService getNeoServiceSafely()
+    public GraphDatabaseService getNeoServiceSafely()
     {
         NeoServiceManager sm = Activator.getDefault().getNeoServiceManager();
         if ( sm == null )
@@ -91,7 +93,7 @@ public class Activator extends AbstractUIPlugin
                 "The Neo service manager is not available." );
             return null;
         }
-        NeoService ns = null;
+        GraphDatabaseService ns = null;
         try
         {
             ns = sm.getNeoService();
@@ -144,7 +146,7 @@ public class Activator extends AbstractUIPlugin
      */
     public Node getReferenceNode()
     {
-        NeoService ns = getNeoServiceSafely();
+        GraphDatabaseService ns = getNeoServiceSafely();
         if ( ns == null )
         {
             return null;

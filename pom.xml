@@ -5,13 +5,13 @@
   <parent>
     <groupId>org.neo4j</groupId>
     <artifactId>parent-pom</artifactId>
-    <version>5</version>
+    <version>6</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.neo4j</groupId>
   <artifactId>neoclipse</artifactId>
   <name>Neoclipse Project</name>
-  <version>1.1</version>
+  <version>1.2</version>
   <packaging>pom</packaging>
   <modules>
     <module>org.neo4j.neoclipse</module>
