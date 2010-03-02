@@ -30,8 +30,8 @@ public class NeoPreferenceInitializer extends AbstractPreferenceInitializer
     public void initializeDefaultPreferences()
     {
         IPreferenceStore pref = Activator.getDefault().getPreferenceStore();
-        pref.setDefault( NeoPreferences.DATABASE_LOCATION, "" );
-        pref.setDefault( NeoPreferences.DATABASE_RESOURCE_URI, "" );
-        pref.setDefault( NeoPreferences.HELP_ON_START, true );
+        pref.setDefault( Neo4jPreferences.DATABASE_LOCATION, "" );
+        pref.setDefault( Neo4jPreferences.DATABASE_RESOURCE_URI, "" );
+        pref.setDefault( Neo4jPreferences.HELP_ON_START, true );
     }
 }

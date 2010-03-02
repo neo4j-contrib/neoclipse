@@ -19,18 +19,18 @@ import java.util.EventObject;
  * This class represents a change in the neo service.
  * @author Peter H&auml;nsgen
  */
-public class NeoServiceEvent extends EventObject
+public class GraphDbServiceEvent extends EventObject
 {
     private static final long serialVersionUID = 1L;
     /**
      * The status.
      */
-    protected final NeoServiceStatus status;
+    protected final GraphDbServiceStatus status;
 
     /**
      * The constructor.
      */
-    public NeoServiceEvent( final Object source, final NeoServiceStatus status )
+    public GraphDbServiceEvent( final Object source, final GraphDbServiceStatus status )
     {
         super( source );
         this.status = status;
@@ -39,7 +39,7 @@ public class NeoServiceEvent extends EventObject
     /**
      * Returns the service status.
      */
-    public NeoServiceStatus getStatus()
+    public GraphDbServiceStatus getStatus()
     {
         return status;
     }

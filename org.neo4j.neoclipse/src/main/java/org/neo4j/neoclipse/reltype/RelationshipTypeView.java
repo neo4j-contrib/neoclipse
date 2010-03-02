@@ -62,10 +62,10 @@ import org.neo4j.neoclipse.decorate.UserIcons;
 import org.neo4j.neoclipse.event.NeoclipseEvent;
 import org.neo4j.neoclipse.event.NeoclipseEventListener;
 import org.neo4j.neoclipse.help.HelpContextConstants;
-import org.neo4j.neoclipse.neo.NeoServiceEvent;
-import org.neo4j.neoclipse.neo.NeoServiceEventListener;
-import org.neo4j.neoclipse.neo.NeoServiceStatus;
-import org.neo4j.neoclipse.neo.NodeSpaceUtil;
+import org.neo4j.neoclipse.neo.GraphDbServiceEvent;
+import org.neo4j.neoclipse.neo.GraphDbServiceEventListener;
+import org.neo4j.neoclipse.neo.GraphDbServiceStatus;
+import org.neo4j.neoclipse.neo.GraphDbUtil;
 import org.neo4j.neoclipse.preference.NeoDecoratorPreferences;
 import org.neo4j.neoclipse.view.NeoGraphLabelProvider;
 import org.neo4j.neoclipse.view.NeoGraphLabelProviderWrapper;
@@ -73,17 +73,17 @@ import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**
  * View that shows the relationships of the database.
+ * 
  * @author anders
  */
 public class RelationshipTypeView extends ViewPart implements
-    ISelectionListener
+        ISelectionListener
 {
     public final static String ID = "org.neo4j.neoclipse.reltype.RelationshipTypeView";
     private static final Separator SEPARATOR = new Separator();
     private static final String[] EXT_FILTER;
     private static final String[] EXT_FILTER_NAMES;
-    private final NeoGraphLabelProvider graphLabelProvider = NeoGraphLabelProviderWrapper
-        .getInstance();
+    private final NeoGraphLabelProvider graphLabelProvider = NeoGraphLabelProviderWrapper.getInstance();
     private TableViewer viewer;
     private RelationshipTypesProvider provider;
     private NeoGraphViewPart graphView = null;
@@ -123,6 +123,7 @@ public class RelationshipTypeView extends ViewPart implements
 
     /**
      * Set the current graph view.
+     * 
      * @param graphView
      */
     private void setGraphView( final NeoGraphViewPart graphView )
@@ -132,17 +133,16 @@ public class RelationshipTypeView extends ViewPart implements
 
     /**
      * Get the current graph view.
+     * 
      * @return
      */
     private NeoGraphViewPart getGraphView()
     {
         if ( graphView == null )
         {
-            graphView = (NeoGraphViewPart) PlatformUI.getWorkbench()
-                .getActiveWorkbenchWindow().getActivePage().findView(
+            graphView = (NeoGraphViewPart) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(
                     NeoGraphViewPart.ID );
-            graphView
-                .addRelColorChangeListener( new RelationshipColorChangeHandler() );
+            graphView.addRelColorChangeListener( new RelationshipColorChangeHandler() );
         }
         return graphView;
     }
@@ -158,17 +158,16 @@ public class RelationshipTypeView extends ViewPart implements
         viewer.setContentProvider( provider );
         provider.addFilterStatusListener( new ProviderFilterChangeHandler() );
         provider.addTypeChangeListener( new ProviderTypesChangeHandler() );
-        NeoGraphLabelProvider labelProvider = NeoGraphLabelProviderWrapper
-            .getInstance();
+        NeoGraphLabelProvider labelProvider = NeoGraphLabelProviderWrapper.getInstance();
         labelProvider.createTableColumns( viewer );
         viewer.setLabelProvider( labelProvider );
         viewer.setComparator( new ViewerComparator(
-            new RelationshipTypeSorter() ) );
+                new RelationshipTypeSorter() ) );
         viewer.setInput( getViewSite() );
-        Activator.getDefault().getNeoServiceManager().addServiceEventListener(
-            new ServiceChangeHandler() );
+        Activator.getDefault().getGraphDbServiceManager().addServiceEventListener(
+                new ServiceChangeHandler() );
         PlatformUI.getWorkbench().getHelpSystem().setHelp( viewer.getControl(),
-            HelpContextConstants.NEO_RELATIONSHIP_TYPE_VIEW );
+                HelpContextConstants.NEO_RELATIONSHIP_TYPE_VIEW );
         makeActions();
         hookContextMenu();
         hookDoubleClickAction();
@@ -223,8 +222,8 @@ public class RelationshipTypeView extends ViewPart implements
 
     /**
      * Add actions to the local pull down menu.
-     * @param manager
-     *            the pul down menu manager
+     * 
+     * @param manager the pul down menu manager
      */
     private void fillLocalPullDown( final IMenuManager manager )
     {
@@ -236,8 +235,8 @@ public class RelationshipTypeView extends ViewPart implements
 
     /**
      * Add actions to the local tool bar menu.
-     * @param manager
-     *            the tool bar manager
+     * 
+     * @param manager the tool bar manager
      */
     private void fillLocalToolBar( final IToolBarManager manager )
     {
@@ -255,13 +254,13 @@ public class RelationshipTypeView extends ViewPart implements
 
     /**
      * Add actions to the context menu.
-     * @param manager
-     *            contect menu manager
+     * 
+     * @param manager contect menu manager
      */
     private void fillContextMenu( final IMenuManager manager )
     {
-        manager.add( addIncomingIcon );
         manager.add( addOutgoingIcon );
+        manager.add( addIncomingIcon );
         // Other plug-ins can contribute there actions here
         manager.add( new Separator( IWorkbenchActionConstants.MB_ADDITIONS ) );
     }
@@ -299,7 +298,7 @@ public class RelationshipTypeView extends ViewPart implements
             {
                 provider.setAllFilters( true, true );
                 viewer.refresh();
-                getGraphView().refresh();
+                getGraphView().refreshPreserveLayout();
             }
         };
         Actions.FILTER_ALL.initialize( filterAll );
@@ -310,7 +309,7 @@ public class RelationshipTypeView extends ViewPart implements
             {
                 provider.setAllFilters( false, true );
                 viewer.refresh();
-                getGraphView().refresh();
+                getGraphView().refreshPreserveLayout();
             }
         };
         Actions.FILTER_OUTGOING.initialize( filterOutgoing );
@@ -321,7 +320,7 @@ public class RelationshipTypeView extends ViewPart implements
             {
                 provider.setAllFilters( true, false );
                 viewer.refresh();
-                getGraphView().refresh();
+                getGraphView().refreshPreserveLayout();
             }
         };
         Actions.FILTER_INCOMING.initialize( filterIncoming );
@@ -337,8 +336,8 @@ public class RelationshipTypeView extends ViewPart implements
             @Override
             public void run()
             {
-                NodeSpaceUtil.addRelationshipAction(
-                    getCurrentSelectedRelTypes(), getGraphView() );
+                GraphDbUtil.addRelationshipAction(
+                        getCurrentSelectedRelTypes(), getGraphView() );
             }
         };
         Actions.ADD_RELATIONSHIP.initialize( addRelationship );
@@ -347,8 +346,8 @@ public class RelationshipTypeView extends ViewPart implements
             @Override
             public void run()
             {
-                NodeSpaceUtil.addOutgoingNodeAction(
-                    getCurrentSelectedRelTypes(), getGraphView() );
+                GraphDbUtil.addOutgoingNodeAction(
+                        getCurrentSelectedRelTypes(), getGraphView() );
             }
         };
         Actions.ADD_OUTGOING_NODE.initialize( addOutgoingNode );
@@ -357,8 +356,8 @@ public class RelationshipTypeView extends ViewPart implements
             @Override
             public void run()
             {
-                NodeSpaceUtil.addIncomingNodeAction(
-                    getCurrentSelectedRelTypes(), getGraphView() );
+                GraphDbUtil.addIncomingNodeAction(
+                        getCurrentSelectedRelTypes(), getGraphView() );
             }
         };
         Actions.ADD_INCOMING_NODE.initialize( addIncomingNode );
@@ -392,28 +391,27 @@ public class RelationshipTypeView extends ViewPart implements
 
     /**
      * Copy icon file for current selected relationship types.
-     * @param direction
-     *            direction of relationships
+     * 
+     * @param direction direction of relationships
      */
     private void copyIcon( final Direction direction )
     {
         File dest = getIconLocation();
         if ( !dest.exists() || !dest.isDirectory() )
         {
-            MessageDialog
-                .openInformation( null, "Icon location problem",
+            MessageDialog.openInformation( null, "Icon location problem",
                     "Please make sure that the node icon location is correctly set." );
             Activator.getDefault().showDecoratorPreferenceDialog( true );
             dest = getIconLocation();
             if ( !dest.exists() || !dest.isDirectory() )
             {
                 MessageDialog.openError( null, "Error message",
-                    "The icon location can not be found." );
+                        "The icon location can not be found." );
                 return;
             }
         }
-        FileDialog fd = new FileDialog( RelationshipTypeView.this.getSite()
-            .getShell(), SWT.OPEN );
+        FileDialog fd = new FileDialog(
+                RelationshipTypeView.this.getSite().getShell(), SWT.OPEN );
         fd.setFilterExtensions( EXT_FILTER );
         fd.setFilterNames( EXT_FILTER_NAMES );
         String src = fd.open();
@@ -425,7 +423,7 @@ public class RelationshipTypeView extends ViewPart implements
         if ( dot == -1 )
         {
             MessageDialog.openError( null, "Error message",
-                "Could not find a file extension on the icon image file." );
+                    "Could not find a file extension on the icon image file." );
             return;
         }
         String ext = src.substring( dot ); // includes dot
@@ -443,12 +441,12 @@ public class RelationshipTypeView extends ViewPart implements
         for ( RelationshipType relType : getCurrentSelectedRelTypes() )
         {
             String destFilename = UserIcons.createFilename( relType, direction )
-                + ext;
+                                  + ext;
             FileChannel out = null;
             try
             {
                 out = new FileOutputStream( dest.getAbsolutePath()
-                    + File.separator + destFilename ).getChannel();
+                                            + File.separator + destFilename ).getChannel();
             }
             catch ( FileNotFoundException e )
             {
@@ -480,12 +478,13 @@ public class RelationshipTypeView extends ViewPart implements
 
     /**
      * Get icons location from the settings.
+     * 
      * @return
      */
     private File getIconLocation()
     {
-        String location = Activator.getDefault().getPreferenceStore()
-            .getString( NeoDecoratorPreferences.NODE_ICON_LOCATION );
+        String location = Activator.getDefault().getPreferenceStore().getString(
+                NeoDecoratorPreferences.NODE_ICON_LOCATION );
         File dest = new File( location );
         return dest;
     }
@@ -558,6 +557,7 @@ public class RelationshipTypeView extends ViewPart implements
 
     /**
      * Enable or disable highlighting actions.
+     * 
      * @param enabled
      */
     private void setEnableHighlightingActions( final boolean enabled )
@@ -569,6 +569,7 @@ public class RelationshipTypeView extends ViewPart implements
 
     /**
      * Enable or disable addition of a relationship.
+     * 
      * @param enabled
      */
     private void setEnableAddRelationship( final boolean enabled )
@@ -578,6 +579,7 @@ public class RelationshipTypeView extends ViewPart implements
 
     /**
      * Enable or disable setting of relationship type-dependent icons.
+     * 
      * @param enabled
      */
     private void setEnableSetIcon( final boolean enabled )
@@ -588,6 +590,7 @@ public class RelationshipTypeView extends ViewPart implements
 
     /**
      * Enable or disable to add a node.
+     * 
      * @param enabled
      */
     private void setEnableAddNode( final boolean enabled )
@@ -598,6 +601,7 @@ public class RelationshipTypeView extends ViewPart implements
 
     /**
      * Enable or disable all add actions.
+     * 
      * @param enabled
      */
     private void setEnableAddActions( final boolean enabled )
@@ -608,6 +612,7 @@ public class RelationshipTypeView extends ViewPart implements
 
     /**
      * Get the currently first selected relationship type.
+     * 
      * @return
      */
     public RelationshipType getCurrentSelectedRelType()
@@ -621,6 +626,7 @@ public class RelationshipTypeView extends ViewPart implements
 
     /**
      * Get the currently selected relationship types.
+     * 
      * @return
      */
     public List<RelationshipType> getCurrentSelectedRelTypes()
@@ -630,6 +636,7 @@ public class RelationshipTypeView extends ViewPart implements
 
     /**
      * Highlight a relationship type.
+     * 
      * @param relType
      */
     private void highlightRelationshipType( final RelationshipType relType )
@@ -658,13 +665,12 @@ public class RelationshipTypeView extends ViewPart implements
 
     /**
      * Highlight nodes that are connected to a relationship type.
-     * @param relType
-     *            relationship type to use
-     * @param direction
-     *            direction in which nodes should be highlighted
+     * 
+     * @param relType relationship type to use
+     * @param direction direction in which nodes should be highlighted
      */
     private void highlightNodes( final RelationshipType relType,
-        final Direction direction )
+            final Direction direction )
     {
         if ( getGraphView() == null )
         {
@@ -701,9 +707,9 @@ public class RelationshipTypeView extends ViewPart implements
      * Keep track of the graph view selections.
      */
     public void selectionChanged( final IWorkbenchPart part,
-        final ISelection selection )
+            final ISelection selection )
     {
-        if ( !(selection instanceof IStructuredSelection) )
+        if ( !( selection instanceof IStructuredSelection ) )
         {
             return;
         }
@@ -712,8 +718,7 @@ public class RelationshipTypeView extends ViewPart implements
         if ( part instanceof NeoGraphViewPart )
         {
             setGraphView( (NeoGraphViewPart) part );
-            List<Relationship> currentSelectedRels = getGraphView()
-                .getCurrentSelectedRels();
+            List<Relationship> currentSelectedRels = getGraphView().getCurrentSelectedRels();
             Set<RelationshipType> relTypes = new HashSet<RelationshipType>();
             for ( Relationship rel : currentSelectedRels )
             {
@@ -721,10 +726,9 @@ public class RelationshipTypeView extends ViewPart implements
             }
             if ( !relTypes.isEmpty() )
             {
-                Collection<RelationshipTypeControl> relTypeCtrls = provider
-                    .getFilteredControls( relTypes );
-                viewer.setSelection( new StructuredSelection( relTypeCtrls
-                    .toArray() ) );
+                Collection<RelationshipTypeControl> relTypeCtrls = provider.getFilteredControls( relTypes );
+                viewer.setSelection( new StructuredSelection(
+                        relTypeCtrls.toArray() ) );
                 setEnableHighlightingActions( true );
             }
         }
@@ -739,23 +743,21 @@ public class RelationshipTypeView extends ViewPart implements
                 setEnableHighlightingActions( true );
             }
             currentSelectedRelTypes.clear();
-            Iterator<?> iter = ((IStructuredSelection) selection).iterator();
+            Iterator<?> iter = ( (IStructuredSelection) selection ).iterator();
             while ( iter.hasNext() )
             {
                 Object o = iter.next();
                 if ( o instanceof RelationshipTypeControl )
                 {
-                    currentSelectedRelTypes.add( ((RelationshipTypeControl) o)
-                        .getRelType() );
+                    currentSelectedRelTypes.add( ( (RelationshipTypeControl) o ).getRelType() );
                 }
             }
         }
-        List<Node> currentSelectedNodes = getGraphView()
-            .getCurrentSelectedNodes();
+        List<Node> currentSelectedNodes = getGraphView().getCurrentSelectedNodes();
         setEnableAddRelationship( getCurrentSelectedRelTypes().size() == 1
-            && currentSelectedNodes.size() == 2 );
+                                  && currentSelectedNodes.size() == 2 );
         setEnableAddNode( getCurrentSelectedRelTypes().size() == 1
-            && !currentSelectedNodes.isEmpty() );
+                          && !currentSelectedNodes.isEmpty() );
         setEnableSetIcon( !getCurrentSelectedRelTypes().isEmpty() );
         getGraphView().updateMenuState();
     }
@@ -776,6 +778,7 @@ public class RelationshipTypeView extends ViewPart implements
             }
         }
     }
+
     /**
      * Respond to changes in the relationship type provider types.
      */
@@ -789,33 +792,35 @@ public class RelationshipTypeView extends ViewPart implements
             viewer.refresh();
         }
     }
+
     /**
      * Handle change in the Neo service.
      */
-    private class ServiceChangeHandler implements NeoServiceEventListener
+    private class ServiceChangeHandler implements GraphDbServiceEventListener
     {
-        public void serviceChanged( final NeoServiceEvent event )
+        public void serviceChanged( final GraphDbServiceEvent event )
         {
-            if ( event.getStatus() == NeoServiceStatus.STOPPED )
+            if ( event.getStatus() == GraphDbServiceStatus.STOPPED )
             {
                 provider.refresh();
             }
-            else if ( event.getStatus() == NeoServiceStatus.STARTED )
+            else if ( event.getStatus() == GraphDbServiceStatus.STARTED )
             {
                 viewer.refresh( true );
             }
-            else if ( event.getStatus() == NeoServiceStatus.ROLLBACK )
+            else if ( event.getStatus() == GraphDbServiceStatus.ROLLBACK )
             {
                 provider.refresh();
                 viewer.refresh( true );
             }
         }
     }
+
     /**
      * Handle change in the relationship color settings.
      */
     private class RelationshipColorChangeHandler implements
-        NeoclipseEventListener
+            NeoclipseEventListener
     {
         public void stateChanged( final NeoclipseEvent event )
         {

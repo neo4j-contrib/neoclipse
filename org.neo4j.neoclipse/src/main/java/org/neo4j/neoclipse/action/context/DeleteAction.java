@@ -16,7 +16,7 @@ package org.neo4j.neoclipse.action.context;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.neo4j.neoclipse.action.AbstractGraphAction;
 import org.neo4j.neoclipse.action.Actions;
-import org.neo4j.neoclipse.neo.NodeSpaceUtil;
+import org.neo4j.neoclipse.neo.GraphDbUtil;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**
@@ -42,13 +42,13 @@ public class DeleteAction extends AbstractGraphAction
                 .openWarning( null, "Delete", "No items are selected." );
             return;
         }
-        if ( !NodeSpaceUtil.confirmDelete( count ) )
+        if ( !GraphDbUtil.confirmDelete( count ) )
         {
             return;
         }
-        NodeSpaceUtil.deletePropertyContainers( graphView
+        GraphDbUtil.deletePropertyContainers( graphView
             .getCurrentSelectedRels(), graphView );
-        NodeSpaceUtil.deletePropertyContainers( graphView
+        GraphDbUtil.deletePropertyContainers( graphView
             .getCurrentSelectedNodes(), graphView );
         setEnabled( false );
         graphView.refreshPreserveLayout();

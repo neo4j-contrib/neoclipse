@@ -20,10 +20,10 @@ import java.util.EventListener;
  * neo service changes.
  * @author Peter H&auml;nsgen
  */
-public interface NeoServiceEventListener extends EventListener
+public interface GraphDbServiceEventListener extends EventListener
 {
     /**
      * Called when the service has changed.
      */
-    void serviceChanged( NeoServiceEvent event );
+    void serviceChanged( GraphDbServiceEvent event );
 }

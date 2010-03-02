@@ -48,11 +48,11 @@ import org.neo4j.neoclipse.event.NeoclipseEvent;
 import org.neo4j.neoclipse.event.NeoclipseEventListener;
 import org.neo4j.neoclipse.event.NeoclipseListenerList;
 import org.neo4j.neoclipse.help.HelpContextConstants;
-import org.neo4j.neoclipse.neo.NeoServiceEvent;
-import org.neo4j.neoclipse.neo.NeoServiceEventListener;
-import org.neo4j.neoclipse.neo.NeoServiceManager;
-import org.neo4j.neoclipse.neo.NeoServiceStatus;
-import org.neo4j.neoclipse.preference.NeoPreferences;
+import org.neo4j.neoclipse.neo.GraphDbServiceEvent;
+import org.neo4j.neoclipse.neo.GraphDbServiceEventListener;
+import org.neo4j.neoclipse.neo.GraphDbServiceManager;
+import org.neo4j.neoclipse.neo.GraphDbServiceStatus;
+import org.neo4j.neoclipse.preference.Neo4jPreferences;
 import org.neo4j.neoclipse.property.NeoPropertySheetPage;
 import org.neo4j.neoclipse.reltype.RelationshipTypeView;
 
@@ -122,7 +122,7 @@ public class NeoGraphViewPart extends ViewPart implements
         getSite().getPage().addSelectionListener( RelationshipTypeView.ID,
             new RelTypeSelectionChangeHandler() );
         menu = new NeoGraphMenu( this );
-        NeoServiceManager sm = Activator.getDefault().getNeoServiceManager();
+        GraphDbServiceManager sm = Activator.getDefault().getGraphDbServiceManager();
         sm.addServiceEventListener( new NeoGraphServiceEventListener() );
         getSite().setSelectionProvider( viewer );
         Activator.getDefault().getPluginPreferences()
@@ -324,7 +324,7 @@ public class NeoGraphViewPart extends ViewPart implements
         {
             return; // no need to do anything
         }
-        NeoServiceManager sm = Activator.getDefault().getNeoServiceManager();
+        GraphDbServiceManager sm = Activator.getDefault().getGraphDbServiceManager();
         if ( MessageDialog
             .openQuestion(
                 null,
@@ -390,7 +390,7 @@ public class NeoGraphViewPart extends ViewPart implements
      */
     public void showSomeNode()
     {
-        GraphDatabaseService ns = Activator.getDefault().getNeoServiceSafely();
+        GraphDatabaseService ns = Activator.getDefault().getGraphDbServiceSafely();
         if ( ns != null )
         {
             Node node = ns.getReferenceNode();
@@ -424,7 +424,7 @@ public class NeoGraphViewPart extends ViewPart implements
      */
     public void showNode( final long nodeId )
     {
-        GraphDatabaseService ns = Activator.getDefault().getNeoServiceSafely();
+        GraphDatabaseService ns = Activator.getDefault().getGraphDbServiceSafely();
         if ( ns != null )
         {
             Node node = ns.getNodeById( nodeId );
@@ -592,14 +592,14 @@ public class NeoGraphViewPart extends ViewPart implements
      * Updates the view according to service changes.
      */
     private class NeoGraphServiceEventListener implements
-        NeoServiceEventListener
+        GraphDbServiceEventListener
     {
         /**
          * Refreshes the input source of the view.
          */
-        public void serviceChanged( final NeoServiceEvent event )
+        public void serviceChanged( final GraphDbServiceEvent event )
         {
-            if ( event.getStatus() == NeoServiceStatus.STOPPED )
+            if ( event.getStatus() == GraphDbServiceStatus.STOPPED )
             {
                 // when called during shutdown the content provider may already
                 // have been disposed
@@ -608,18 +608,18 @@ public class NeoGraphViewPart extends ViewPart implements
                     getViewer().setInput( null );
                 }
             }
-            else if ( event.getStatus() == NeoServiceStatus.STARTED )
+            else if ( event.getStatus() == GraphDbServiceStatus.STARTED )
             {
                 // throw away old relationship colors
                 getLabelProvider().refreshRelationshipColors();
                 showSomeNode();
             }
-            else if ( event.getStatus() == NeoServiceStatus.ROLLBACK )
+            else if ( event.getStatus() == GraphDbServiceStatus.ROLLBACK )
             {
                 refreshPreserveLayout();
                 setDirty( false );
             }
-            else if ( event.getStatus() == NeoServiceStatus.COMMIT )
+            else if ( event.getStatus() == GraphDbServiceStatus.COMMIT )
             {
                 setDirty( false );
             }
@@ -759,11 +759,11 @@ public class NeoGraphViewPart extends ViewPart implements
         public void propertyChange( final PropertyChangeEvent event )
         {
             String property = event.getProperty();
-            if ( NeoPreferences.DATABASE_LOCATION.equals( property ) )
+            if ( Neo4jPreferences.DATABASE_LOCATION.equals( property ) )
             {
                 // handle change in database location
                 cleanTransactionBeforeShutdown();
-                Activator.getDefault().restartNeo();
+                Activator.getDefault().restartGraphDb();
             }
             else
             {

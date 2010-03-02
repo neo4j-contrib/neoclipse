@@ -33,6 +33,6 @@ public class CommitAction extends AbstractGraphAction
     @Override
     public void run()
     {
-        Activator.getDefault().getNeoServiceManager().commit();
+        Activator.getDefault().getGraphDbServiceManager().commit();
     }
 }

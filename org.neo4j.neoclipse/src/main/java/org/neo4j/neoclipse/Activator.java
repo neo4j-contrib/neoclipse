@@ -19,7 +19,7 @@ import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
-import org.neo4j.neoclipse.neo.NeoServiceManager;
+import org.neo4j.neoclipse.neo.GraphDbServiceManager;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -32,9 +32,9 @@ public class Activator extends AbstractUIPlugin
      */
     public static final String PLUGIN_ID = "org.neo4j.neoclipse";
     /**
-     * The neo manager.
+     * The graphdb manager.
      */
-    protected NeoServiceManager neoManager;
+    protected GraphDbServiceManager graphDbManager;
     /**
      * The shared instance.
      */
@@ -48,7 +48,7 @@ public class Activator extends AbstractUIPlugin
     {
         super.start( context );
         PLUGIN = this;
-        neoManager = new NeoServiceManager();
+        graphDbManager = new GraphDbServiceManager();
     }
 
     /**
@@ -57,13 +57,14 @@ public class Activator extends AbstractUIPlugin
     @Override
     public void stop( final BundleContext context ) throws Exception
     {
-        neoManager.stopNeoService();
+        graphDbManager.stopGraphDbService();
         PLUGIN = null;
         super.stop( context );
     }
 
     /**
      * Returns the shared instance.
+     * 
      * @return the shared instance
      */
     public static Activator getDefault()
@@ -74,39 +75,40 @@ public class Activator extends AbstractUIPlugin
     /**
      * Returns the service manager.
      */
-    public NeoServiceManager getNeoServiceManager()
+    public GraphDbServiceManager getGraphDbServiceManager()
     {
-        return neoManager;
+        return graphDbManager;
     }
 
     /**
      * Get the current GraphDatabaseService. Returns <code>null</code> on
      * failure, after showing appropriate error messages.
+     * 
      * @return current neo service
      */
-    public GraphDatabaseService getNeoServiceSafely()
+    public GraphDatabaseService getGraphDbServiceSafely()
     {
-        NeoServiceManager sm = Activator.getDefault().getNeoServiceManager();
+        GraphDbServiceManager sm = Activator.getDefault().getGraphDbServiceManager();
         if ( sm == null )
         {
             MessageDialog.openError( null, "Error",
-                "The Neo service manager is not available." );
+                    "The Neo service manager is not available." );
             return null;
         }
         GraphDatabaseService ns = null;
         try
         {
-            ns = sm.getNeoService();
+            ns = sm.getGraphDbService();
         }
         catch ( RuntimeException rte )
         {
             MessageDialog.openInformation( null, "Database problem",
-                "The database seem to be in use. "
-                    + "Please make sure that it is not in use or "
-                    + "change to another database location." );
+                    "The database seem to be in use. "
+                            + "Please make sure that it is not in use or "
+                            + "change to another database location." );
             try
             {
-                ns = sm.getNeoService();
+                ns = sm.getGraphDbService();
             }
             catch ( RuntimeException rte2 )
             {
@@ -115,16 +117,15 @@ public class Activator extends AbstractUIPlugin
         }
         if ( ns == null )
         {
-            MessageDialog
-                .openInformation(
+            MessageDialog.openInformation(
                     null,
                     "Database location problem",
                     "Please make sure that the database location is correctly set. "
-                        + "To create an empty database, point the location to an empty directory." );
+                            + "To create an empty database, point the location to an empty directory." );
             showPreferenceDialog( true );
             try
             {
-                ns = sm.getNeoService();
+                ns = sm.getGraphDbService();
             }
             catch ( RuntimeException rte )
             {
@@ -133,7 +134,7 @@ public class Activator extends AbstractUIPlugin
             if ( ns == null )
             {
                 MessageDialog.openError( null, "Error message",
-                    "The Neo service is not available." );
+                        "The Neo service is not available." );
                 return null;
             }
         }
@@ -142,11 +143,12 @@ public class Activator extends AbstractUIPlugin
 
     /**
      * Get the reference node.
+     * 
      * @return the reference node
      */
     public Node getReferenceNode()
     {
-        GraphDatabaseService ns = getNeoServiceSafely();
+        GraphDatabaseService ns = getGraphDbServiceSafely();
         if ( ns == null )
         {
             return null;
@@ -156,15 +158,15 @@ public class Activator extends AbstractUIPlugin
 
     /**
      * Show the Neo4j preference page.
-     * @param filtered
-     *            only show Neo4j properties when true
+     * 
+     * @param filtered only show Neo4j properties when true
      * @return
      */
     public int showPreferenceDialog( final boolean filtered )
     {
         PreferenceDialog pref = PreferencesUtil.createPreferenceDialogOn( null,
-            "org.neo4j.neoclipse.preference.NeoPreferencePage",
-            (filtered ? new String[] {} : null), null );
+                "org.neo4j.neoclipse.preference.NeoPreferencePage",
+                ( filtered ? new String[] {} : null ), null );
         if ( pref != null )
         {
             return pref.open();
@@ -174,15 +176,15 @@ public class Activator extends AbstractUIPlugin
 
     /**
      * Show the Neo4j Decorator preference page.
-     * @param filtered
-     *            only show Neo4j properties when true
+     * 
+     * @param filtered only show Neo4j properties when true
      * @return
      */
     public int showDecoratorPreferenceDialog( final boolean filtered )
     {
         PreferenceDialog pref = PreferencesUtil.createPreferenceDialogOn( null,
-            "org.neo4j.neoclipse.preference.NeoDecoratorPreferencePage",
-            (filtered ? new String[] {} : null), null );
+                "org.neo4j.neoclipse.preference.NeoDecoratorPreferencePage",
+                ( filtered ? new String[] {} : null ), null );
         if ( pref != null )
         {
             return pref.open();
@@ -191,12 +193,12 @@ public class Activator extends AbstractUIPlugin
     }
 
     /**
-     * Restart the Neo service from a new location.
+     * Restart the graphdb service from a new location.
      */
-    public void restartNeo()
+    public void restartGraphDb()
     {
-        neoManager.stopNeoService();
+        graphDbManager.stopGraphDbService();
         // start the service using new location
-        getNeoServiceSafely();
+        getGraphDbServiceSafely();
     }
 }

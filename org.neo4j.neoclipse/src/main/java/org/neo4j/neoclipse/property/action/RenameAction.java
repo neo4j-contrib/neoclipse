@@ -18,7 +18,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.views.properties.IPropertySheetEntry;
 import org.neo4j.graphdb.PropertyContainer;
 import org.neo4j.neoclipse.action.Actions;
-import org.neo4j.neoclipse.neo.NodeSpaceUtil;
+import org.neo4j.neoclipse.neo.GraphDbUtil;
 import org.neo4j.neoclipse.property.NeoPropertySheetPage;
 
 public class RenameAction extends PropertyAction
@@ -40,7 +40,7 @@ public class RenameAction extends PropertyAction
         if ( input.open() == OK && input.getReturnCode() == OK )
         {
             String newKey = input.getValue();
-            NodeSpaceUtil
+            GraphDbUtil
                 .renameProperty( container, key, newKey, propertySheet );
         }
     }

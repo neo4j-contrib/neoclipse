@@ -20,7 +20,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.neo4j.graphdb.PropertyContainer;
 import org.neo4j.neoclipse.action.Actions;
-import org.neo4j.neoclipse.neo.NodeSpaceUtil;
+import org.neo4j.neoclipse.neo.GraphDbUtil;
 import org.neo4j.neoclipse.property.NeoPropertySheetPage;
 
 /**
@@ -78,6 +78,6 @@ public class PasteAction extends PropertyAction
             return;
         }
         final String key = cu.getKey();
-        NodeSpaceUtil.setProperty( container, key, value, propertySheet );
+        GraphDbUtil.setProperty( container, key, value, propertySheet );
     }
 }

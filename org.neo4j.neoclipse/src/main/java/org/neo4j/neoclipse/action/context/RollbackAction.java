@@ -33,6 +33,6 @@ public class RollbackAction extends AbstractGraphAction
     @Override
     public void run()
     {
-        Activator.getDefault().getNeoServiceManager().rollback();
+        Activator.getDefault().getGraphDbServiceManager().rollback();
     }
 }

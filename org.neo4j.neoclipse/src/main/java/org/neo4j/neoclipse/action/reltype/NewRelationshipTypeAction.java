@@ -17,7 +17,7 @@ import org.eclipse.jface.dialogs.InputDialog;
 import org.neo4j.graphdb.RelationshipType;
 import org.neo4j.neoclipse.action.AbstractBaseAction;
 import org.neo4j.neoclipse.action.Actions;
-import org.neo4j.neoclipse.neo.NodeSpaceUtil;
+import org.neo4j.neoclipse.neo.GraphDbUtil;
 import org.neo4j.neoclipse.reltype.RelationshipTypesProvider;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
@@ -83,13 +83,13 @@ public class NewRelationshipTypeAction extends AbstractBaseAction
                 case NONE:
                     return;
                 case RELATIONSHIP:
-                    NodeSpaceUtil.addRelationshipAction( relType, graphView );
+                    GraphDbUtil.addRelationshipAction( relType, graphView );
                     break;
                 case OUTGOING_NODE:
-                    NodeSpaceUtil.addOutgoingNodeAction( relType, graphView );
+                    GraphDbUtil.addOutgoingNodeAction( relType, graphView );
                     break;
                 case INCOMING_NODE:
-                    NodeSpaceUtil.addIncomingNodeAction( relType, graphView );
+                    GraphDbUtil.addIncomingNodeAction( relType, graphView );
                     break;
             }
         }

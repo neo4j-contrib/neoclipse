@@ -39,20 +39,20 @@ public class NeoPreferencePage extends AbstractPreferencePage
     {
         // database location
         DirectoryFieldEditor locationField = new DirectoryFieldEditor(
-            NeoPreferences.DATABASE_LOCATION, NEO_DATABASE_LOCATION_LABEL,
+            Neo4jPreferences.DATABASE_LOCATION, NEO_DATABASE_LOCATION_LABEL,
             getFieldEditorParent() );
         locationField.setEmptyStringAllowed( false );
         locationField.setErrorMessage( NEO_DATABASE_LOCATION_ERROR );
         addField( locationField );
         // database resource uri
         StringFieldEditor resourceUriField = new StringFieldEditor(
-            NeoPreferences.DATABASE_RESOURCE_URI, DATABASE_RESOURCE_URI_LABEL,
+            Neo4jPreferences.DATABASE_RESOURCE_URI, DATABASE_RESOURCE_URI_LABEL,
             getFieldEditorParent() );
         resourceUriField.setEmptyStringAllowed( true );
         addField( resourceUriField, "highly experimental" );
         // show help view on startup
         BooleanFieldEditor helpOnStart = new BooleanFieldEditor(
-            NeoPreferences.HELP_ON_START, HELP_ON_START_LABEL,
+            Neo4jPreferences.HELP_ON_START, HELP_ON_START_LABEL,
             getFieldEditorParent() );
         addField( helpOnStart );
     }

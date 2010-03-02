@@ -45,15 +45,15 @@ public class Matrix extends NeoclipseExample
         {
             Node referenceNode = neo.getReferenceNode();
             Node thomas = neo.createNode();
-            thomas.setProperty( "name", "Thomas Andersson" );
+            thomas.setProperty( "name", "Thomas Anderson" );
             thomas.setProperty( "age", 29 );
             neoNode = thomas;
             referenceNode.createRelationshipTo( neoNode,
-                MyRelationshipTypes.ROOT );
+                    MyRelationshipTypes.ROOT );
             Node trinity = neo.createNode();
             trinity.setProperty( "name", "Trinity" );
             Relationship rel = thomas.createRelationshipTo( trinity,
-                MyRelationshipTypes.KNOWS );
+                    MyRelationshipTypes.KNOWS );
             rel.setProperty( "age", "3 days" );
             Node morpheus = neo.createNode();
             morpheus.setProperty( "name", "Morpheus" );
@@ -61,26 +61,24 @@ public class Matrix extends NeoclipseExample
             morpheus.setProperty( "occupation", "Total badass" );
             thomas.createRelationshipTo( morpheus, MyRelationshipTypes.KNOWS );
             rel = morpheus.createRelationshipTo( trinity,
-                MyRelationshipTypes.KNOWS );
+                    MyRelationshipTypes.KNOWS );
             rel.setProperty( "age", "12 years" );
             Node cypher = neo.createNode();
             cypher.setProperty( "name", "Cypher" );
             cypher.setProperty( "last name", "Reagan" );
             rel = morpheus.createRelationshipTo( cypher,
-                MyRelationshipTypes.KNOWS );
+                    MyRelationshipTypes.KNOWS );
             rel.setProperty( "disclosure", "public" );
             Node smith = neo.createNode();
             smith.setProperty( "name", "Agent Smith" );
             smith.setProperty( "version", "1.0b" );
             smith.setProperty( "language", "C++" );
-            rel = cypher
-                .createRelationshipTo( smith, MyRelationshipTypes.KNOWS );
+            rel = cypher.createRelationshipTo( smith, MyRelationshipTypes.KNOWS );
             rel.setProperty( "disclosure", "secret" );
             rel.setProperty( "age", "6 months" );
             Node architect = neo.createNode();
             architect.setProperty( "name", "The Architect" );
-            smith
-                .createRelationshipTo( architect, MyRelationshipTypes.CODED_BY );
+            smith.createRelationshipTo( architect, MyRelationshipTypes.CODED_BY );
             tx.success();
         }
         finally
@@ -123,41 +121,43 @@ public class Matrix extends NeoclipseExample
     {
         System.out.println( person.getProperty( "name" ) + "'s friends:" );
         Traverser traverser = person.traverse( Order.BREADTH_FIRST,
-            StopEvaluator.END_OF_GRAPH, ReturnableEvaluator.ALL_BUT_START_NODE,
-            MyRelationshipTypes.KNOWS, Direction.OUTGOING );
+                StopEvaluator.END_OF_GRAPH,
+                ReturnableEvaluator.ALL_BUT_START_NODE,
+                MyRelationshipTypes.KNOWS, Direction.OUTGOING );
         for ( Node friend : traverser )
         {
             TraversalPosition position = traverser.currentPosition();
             System.out.println( "At depth " + position.depth() + " => "
-                + friend.getProperty( "name" ) );
+                                + friend.getProperty( "name" ) );
         }
     }
 
     private static void findHackers( final Node startNode )
     {
         System.out.println( "Hackers:" );
-        Traverser traverser = startNode.traverse( Order.BREADTH_FIRST,
-            StopEvaluator.END_OF_GRAPH, new ReturnableEvaluator()
-            {
-                public boolean isReturnableNode(
-                    final TraversalPosition currentPosition )
+        Traverser traverser = startNode.traverse(
+                Order.BREADTH_FIRST,
+                StopEvaluator.END_OF_GRAPH,
+                new ReturnableEvaluator()
                 {
-                    Relationship rel = currentPosition
-                        .lastRelationshipTraversed();
-                    if ( rel != null
-                        && rel.isType( MyRelationshipTypes.CODED_BY ) )
+                    public boolean isReturnableNode(
+                            final TraversalPosition currentPosition )
                     {
-                        return true;
+                        Relationship rel = currentPosition.lastRelationshipTraversed();
+                        if ( rel != null
+                             && rel.isType( MyRelationshipTypes.CODED_BY ) )
+                        {
+                            return true;
+                        }
+                        return false;
                     }
-                    return false;
-                }
-            }, MyRelationshipTypes.CODED_BY, Direction.OUTGOING,
-            MyRelationshipTypes.KNOWS, Direction.OUTGOING );
+                }, MyRelationshipTypes.CODED_BY, Direction.OUTGOING,
+                MyRelationshipTypes.KNOWS, Direction.OUTGOING );
         for ( Node hacker : traverser )
         {
             TraversalPosition position = traverser.currentPosition();
             System.out.println( "At depth " + position.depth() + " => "
-                + hacker.getProperty( "name" ) );
+                                + hacker.getProperty( "name" ) );
         }
     }
 }

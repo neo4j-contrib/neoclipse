@@ -104,7 +104,7 @@ public class NeoGraphContentProvider implements
     {
         Node node = (Node) inputElement;
         final GraphDatabaseService neoService = Activator.getDefault()
-            .getNeoServiceSafely();
+            .getGraphDbServiceSafely();
         if ( neoService == null )
         {
             return new Node[] { node };

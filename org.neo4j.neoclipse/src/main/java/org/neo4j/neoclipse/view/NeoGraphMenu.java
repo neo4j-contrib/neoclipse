@@ -69,7 +69,7 @@ import org.neo4j.neoclipse.action.view.ZoomAction;
 import org.neo4j.neoclipse.decorate.SimpleGraphDecorator.ViewSettings;
 import org.neo4j.neoclipse.event.NeoclipseEvent;
 import org.neo4j.neoclipse.event.NeoclipseEventListener;
-import org.neo4j.neoclipse.neo.NodeSpaceUtil;
+import org.neo4j.neoclipse.neo.GraphDbUtil;
 import org.neo4j.neoclipse.reltype.RelationshipTypeHashMap;
 import org.neo4j.neoclipse.reltype.RelationshipTypeSorter;
 import org.neo4j.neoclipse.reltype.RelationshipTypesProvider;
@@ -126,7 +126,7 @@ public class NeoGraphMenu
                 @Override
                 public void run()
                 {
-                    NodeSpaceUtil.addRelationshipAction( relType, graphView );
+                    GraphDbUtil.addRelationshipAction( relType, graphView );
                 }
             };
             addRel.setEnabled( false );
@@ -135,7 +135,7 @@ public class NeoGraphMenu
                 @Override
                 public void run()
                 {
-                    NodeSpaceUtil.addOutgoingNodeAction( relType, graphView );
+                    GraphDbUtil.addOutgoingNodeAction( relType, graphView );
                 }
             };
             addOut.setEnabled( false );
@@ -144,7 +144,7 @@ public class NeoGraphMenu
                 @Override
                 public void run()
                 {
-                    NodeSpaceUtil.addIncomingNodeAction( relType, graphView );
+                    GraphDbUtil.addIncomingNodeAction( relType, graphView );
                 }
             };
             addIn.setEnabled( false );

@@ -110,7 +110,7 @@ public class NeoSearchQuery implements ISearchQuery
     public IStatus run( final IProgressMonitor monitor )
         throws OperationCanceledException
     {
-        neoService = Activator.getDefault().getNeoServiceSafely();
+        neoService = Activator.getDefault().getGraphDbServiceSafely();
         if ( neoService == null )
         {
             return new Status( IStatus.ERROR, Activator.PLUGIN_ID,

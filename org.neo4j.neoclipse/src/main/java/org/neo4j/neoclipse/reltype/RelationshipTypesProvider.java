@@ -113,7 +113,7 @@ public class RelationshipTypesProvider implements IContentProvider,
     {
         Set<RelationshipType> relationshipTypes;
         relationshipTypes = new HashSet<RelationshipType>();
-        GraphDatabaseService ns = Activator.getDefault().getNeoServiceSafely();
+        GraphDatabaseService ns = Activator.getDefault().getGraphDbServiceSafely();
         if ( ns == null )
         {
             // todo ?

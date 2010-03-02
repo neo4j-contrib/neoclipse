@@ -17,12 +17,12 @@ package org.neo4j.neoclipse.preference;
  * Defines the preferences of the neo plugin.
  * @author Peter H&auml;nsgen
  */
-public final class NeoPreferences
+public final class Neo4jPreferences
 {
     /**
      * Preventing instantiation.
      */
-    private NeoPreferences()
+    private Neo4jPreferences()
     {
         // preventing instantiation
     }

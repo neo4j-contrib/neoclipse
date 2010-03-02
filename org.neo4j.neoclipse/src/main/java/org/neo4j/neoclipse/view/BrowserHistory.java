@@ -64,7 +64,7 @@ public class BrowserHistory
         public Node getNode()
         {
             GraphDatabaseService neoService = Activator.getDefault()
-                .getNeoServiceSafely();
+                .getGraphDbServiceSafely();
             if ( neoService != null )
             {
                 try

@@ -16,7 +16,7 @@ package org.neo4j.neoclipse.property.action;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.swt.widgets.Composite;
 import org.neo4j.graphdb.PropertyContainer;
-import org.neo4j.neoclipse.neo.NodeSpaceUtil;
+import org.neo4j.neoclipse.neo.GraphDbUtil;
 import org.neo4j.neoclipse.property.NeoPropertySheetPage;
 import org.neo4j.neoclipse.property.PropertyTransform.PropertyHandler;
 
@@ -52,7 +52,7 @@ public class NewAction extends PropertyAction
             return;
         }
         String key = keyInput.getValue();
-        NodeSpaceUtil.addProperty( propertyContainer, key, propertyHandler,
+        GraphDbUtil.addProperty( propertyContainer, key, propertyHandler,
             propertySheet );
     }
 }

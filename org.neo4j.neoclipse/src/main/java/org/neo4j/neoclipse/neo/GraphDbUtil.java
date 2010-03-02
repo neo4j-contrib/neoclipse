@@ -34,7 +34,7 @@ import org.neo4j.neoclipse.view.NeoGraphViewPart;
  * Utility class to handle node space manipulations.
  * @author Anders Nawroth
  */
-public class NodeSpaceUtil
+public class GraphDbUtil
 {
     private static final int OK = 0;
     private static final String CONFIRM_DELETE_TITLE = "Confirm delete";
@@ -44,7 +44,7 @@ public class NodeSpaceUtil
     private static final String ADDING_NODE_WARNING_LABEL = "Adding node";
     private static final String ADDING_NODE_WARNING_MESSAGE = "At least one node must be selected in the database graph to add a new node.";
 
-    private NodeSpaceUtil()
+    private GraphDbUtil()
     {
         // no instances
     }
@@ -104,7 +104,7 @@ public class NodeSpaceUtil
             throw new IllegalArgumentException(
                 "Both soure and destination can not be null" );
         }
-        GraphDatabaseService ns = Activator.getDefault().getNeoServiceSafely();
+        GraphDatabaseService ns = Activator.getDefault().getGraphDbServiceSafely();
         if ( ns == null )
         {
             return;

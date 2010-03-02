@@ -21,20 +21,21 @@ import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Transaction;
 import org.neo4j.kernel.EmbeddedGraphDatabase;
 import org.neo4j.neoclipse.Activator;
-import org.neo4j.neoclipse.preference.NeoPreferences;
+import org.neo4j.neoclipse.preference.Neo4jPreferences;
 import org.neo4j.remote.RemoteGraphDatabase;
 
 /**
- * This manager controls the neo service.
+ * This manager controls the neo4j service.
+ * 
  * @author Peter H&auml;nsgen
  * @author Anders Nawroth
  */
-public class NeoServiceManager
+public class GraphDbServiceManager
 {
     /**
      * The service instance.
      */
-    protected GraphDatabaseService neo;
+    protected GraphDatabaseService graphDb;
     /**
      * The registered service change listeners.
      */
@@ -44,33 +45,31 @@ public class NeoServiceManager
     /**
      * The constructor.
      */
-    public NeoServiceManager()
+    public GraphDbServiceManager()
     {
         listeners = new ListenerList();
     }
 
     /**
-     * Starts the neo service.
+     * Starts the neo4j service.
      */
-    public void startNeoService() throws RuntimeException
+    public void startGraphDbService() throws RuntimeException
     {
         System.out.println( "checking service ..." );
-        if ( neo == null )
+        if ( graphDb == null )
         {
-            System.out.println( "starting neo" );
-            final IPreferenceStore preferenceStore = Activator.getDefault()
-                .getPreferenceStore();
+            System.out.println( "starting neo4j" );
+            final IPreferenceStore preferenceStore = Activator.getDefault().getPreferenceStore();
             // try the resource URI first
-            String resourceUri = preferenceStore
-                .getString( NeoPreferences.DATABASE_RESOURCE_URI );
-            if ( (resourceUri != null) && (resourceUri.trim().length() != 0) )
+            String resourceUri = preferenceStore.getString( Neo4jPreferences.DATABASE_RESOURCE_URI );
+            if ( ( resourceUri != null ) && ( resourceUri.trim().length() != 0 ) )
             {
                 // let's try the resource URI
                 try
                 {
-                    System.out.println( "trying remote neo" );
-                    neo = new RemoteGraphDatabase( resourceUri );
-                    System.out.println( "connected to remote neo" );
+                    System.out.println( "trying remote graphdb" );
+                    graphDb = new RemoteGraphDatabase( resourceUri );
+                    System.out.println( "connected to remote neo4j" );
                 }
                 catch ( Exception e )
                 {
@@ -79,20 +78,19 @@ public class NeoServiceManager
             }
             else
             {
-                // determine the neo directory from the preferences
-                String location = preferenceStore
-                    .getString( NeoPreferences.DATABASE_LOCATION );
-                if ( (location == null) || (location.trim().length() == 0) )
+                // determine the neo4j directory from the preferences
+                String location = preferenceStore.getString( Neo4jPreferences.DATABASE_LOCATION );
+                if ( ( location == null ) || ( location.trim().length() == 0 ) )
                 {
                     return;
                 }
-                // seems to be a valid directory, try starting neo
-                neo = new EmbeddedGraphDatabase( location );
-                System.out.println( "connected to embedded neo" );
+                // seems to be a valid directory, try starting neo4j
+                graphDb = new EmbeddedGraphDatabase( location );
+                System.out.println( "connected to embedded neo4j" );
             }
-            tx = neo.beginTx();
+            tx = graphDb.beginTx();
             // notify listeners
-            fireServiceChangedEvent( NeoServiceStatus.STARTED );
+            fireServiceChangedEvent( GraphDbServiceStatus.STARTED );
         }
     }
 
@@ -100,21 +98,21 @@ public class NeoServiceManager
      * Returns the graphdb service or null, if it could not be started (due to
      * configuration problems).
      */
-    public GraphDatabaseService getNeoService() throws RuntimeException
+    public GraphDatabaseService getGraphDbService() throws RuntimeException
     {
-        if ( neo == null )
+        if ( graphDb == null )
         {
-            startNeoService();
+            startGraphDbService();
         }
-        return neo;
+        return graphDb;
     }
 
     /**
      * Stops the neo service.
      */
-    public void stopNeoService()
+    public void stopGraphDbService()
     {
-        if ( neo != null )
+        if ( graphDb != null )
         {
             try
             {
@@ -127,43 +125,44 @@ public class NeoServiceManager
             }
             try
             {
-                neo.shutdown();
+                graphDb.shutdown();
                 // notify listeners
-                fireServiceChangedEvent( NeoServiceStatus.STOPPED );
+                fireServiceChangedEvent( GraphDbServiceStatus.STOPPED );
             }
             finally
             {
-                neo = null;
+                graphDb = null;
             }
         }
     }
 
     /**
-     * Commit Neo transaction.
+     * Commit transaction.
      */
     public void commit()
     {
         tx.success();
         tx.finish();
-        tx = neo.beginTx();
-        fireServiceChangedEvent( NeoServiceStatus.COMMIT );
+        tx = graphDb.beginTx();
+        fireServiceChangedEvent( GraphDbServiceStatus.COMMIT );
     }
 
     /**
-     * Rollback neo transaction.
+     * Rollback transaction.
      */
     public void rollback()
     {
         tx.failure();
         tx.finish();
-        tx = neo.beginTx();
-        fireServiceChangedEvent( NeoServiceStatus.ROLLBACK );
+        tx = graphDb.beginTx();
+        fireServiceChangedEvent( GraphDbServiceStatus.ROLLBACK );
     }
 
     /**
      * Registers a service listener.
      */
-    public void addServiceEventListener( final NeoServiceEventListener listener )
+    public void addServiceEventListener(
+            final GraphDbServiceEventListener listener )
     {
         listeners.add( listener );
     }
@@ -172,7 +171,7 @@ public class NeoServiceManager
      * Unregisters a service listener.
      */
     public void removeServiceEventListener(
-        final NeoServiceEventListener listener )
+            final GraphDbServiceEventListener listener )
     {
         listeners.remove( listener );
     }
@@ -180,15 +179,15 @@ public class NeoServiceManager
     /**
      * Notifies all registered listeners about the new service status.
      */
-    protected void fireServiceChangedEvent( final NeoServiceStatus status )
+    protected void fireServiceChangedEvent( final GraphDbServiceStatus status )
     {
         Object[] changeListeners = listeners.getListeners();
         if ( changeListeners.length > 0 )
         {
-            final NeoServiceEvent e = new NeoServiceEvent( this, status );
-            for ( int i = 0; i < changeListeners.length; i++ )
+            final GraphDbServiceEvent e = new GraphDbServiceEvent( this, status );
+            for ( Object changeListener : changeListeners )
             {
-                final NeoServiceEventListener l = (NeoServiceEventListener) changeListeners[i];
+                final GraphDbServiceEventListener l = (GraphDbServiceEventListener) changeListener;
                 ISafeRunnable job = new ISafeRunnable()
                 {
                     public void handleException( final Throwable exception )
