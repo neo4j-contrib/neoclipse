@@ -17,7 +17,7 @@ import org.eclipse.jface.dialogs.InputDialog;
 import org.neo4j.graphdb.RelationshipType;
 import org.neo4j.neoclipse.action.AbstractBaseAction;
 import org.neo4j.neoclipse.action.Actions;
-import org.neo4j.neoclipse.neo.GraphDbUtil;
+import org.neo4j.neoclipse.graphdb.GraphDbUtil;
 import org.neo4j.neoclipse.reltype.RelationshipTypesProvider;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
 

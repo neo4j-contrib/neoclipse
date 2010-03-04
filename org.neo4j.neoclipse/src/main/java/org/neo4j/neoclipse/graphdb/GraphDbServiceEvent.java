@@ -11,13 +11,36 @@
  * OF ANY KIND, either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-package org.neo4j.neoclipse.neo;
+package org.neo4j.neoclipse.graphdb;
+
+import java.util.EventObject;
 
 /**
- * The possible states of the neo service.
+ * This class represents a change in the neo service.
  * @author Peter H&auml;nsgen
  */
-public enum GraphDbServiceStatus
+public class GraphDbServiceEvent extends EventObject
 {
-    STARTED, STOPPED, COMMIT, ROLLBACK;
+    private static final long serialVersionUID = 1L;
+    /**
+     * The status.
+     */
+    protected final GraphDbServiceStatus status;
+
+    /**
+     * The constructor.
+     */
+    public GraphDbServiceEvent( final Object source, final GraphDbServiceStatus status )
+    {
+        super( source );
+        this.status = status;
+    }
+
+    /**
+     * Returns the service status.
+     */
+    public GraphDbServiceStatus getStatus()
+    {
+        return status;
+    }
 }

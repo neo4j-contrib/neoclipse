@@ -19,7 +19,7 @@ import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
-import org.neo4j.neoclipse.neo.GraphDbServiceManager;
+import org.neo4j.neoclipse.graphdb.GraphDbServiceManager;
 import org.osgi.framework.BundleContext;
 
 /**

@@ -11,7 +11,9 @@
  * OF ANY KIND, either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-package org.neo4j.neoclipse.neo;
+package org.neo4j.neoclipse.graphdb;
+
+import java.io.File;
 
 import org.eclipse.core.runtime.ISafeRunnable;
 import org.eclipse.core.runtime.ListenerList;
@@ -20,6 +22,7 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Transaction;
 import org.neo4j.kernel.EmbeddedGraphDatabase;
+import org.neo4j.kernel.EmbeddedReadOnlyGraphDatabase;
 import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.preference.Neo4jPreferences;
 import org.neo4j.remote.RemoteGraphDatabase;
@@ -36,6 +39,8 @@ public class GraphDbServiceManager
      * The service instance.
      */
     protected GraphDatabaseService graphDb;
+    protected GraphDbServiceMode serviceMode = GraphDbServiceMode.READ_WRITE;
+
     /**
      * The registered service change listeners.
      */
@@ -48,6 +53,11 @@ public class GraphDbServiceManager
     public GraphDbServiceManager()
     {
         listeners = new ListenerList();
+    }
+
+    public boolean isReadOnlyMode()
+    {
+        return serviceMode == GraphDbServiceMode.READ_ONLY;
     }
 
     /**
@@ -69,6 +79,7 @@ public class GraphDbServiceManager
                 {
                     System.out.println( "trying remote graphdb" );
                     graphDb = new RemoteGraphDatabase( resourceUri );
+                    fireServiceChangedEvent( GraphDbServiceStatus.STARTED );
                     System.out.println( "connected to remote neo4j" );
                 }
                 catch ( Exception e )
@@ -80,18 +91,35 @@ public class GraphDbServiceManager
             {
                 // determine the neo4j directory from the preferences
                 String location = preferenceStore.getString( Neo4jPreferences.DATABASE_LOCATION );
-                // TODO actually check if the directoryt STILL exists
                 if ( ( location == null ) || ( location.trim().length() == 0 ) )
                 {
                     return;
                 }
+                File dir = new File( location );
+                if ( !dir.exists() || !dir.isDirectory() )
+                {
+                    return;
+                }
                 // seems to be a valid directory, try starting neo4j
-                graphDb = new EmbeddedGraphDatabase( location );
-                System.out.println( "connected to embedded neo4j" );
+                if ( serviceMode == GraphDbServiceMode.READ_WRITE )
+                {
+                    graphDb = new EmbeddedGraphDatabase( location );
+                    fireServiceChangedEvent( GraphDbServiceStatus.STARTED );
+                    System.out.println( "connected to embedded neo4j" );
+                }
+                else if ( serviceMode == GraphDbServiceMode.READ_ONLY )
+                {
+                    graphDb = new EmbeddedReadOnlyGraphDatabase( location );
+                    fireServiceChangedEvent( GraphDbServiceStatus.STARTED );
+                    System.out.println( "connected to embedded read-only neo4j" );
+                }
+                else
+                {
+                    System.out.println( "unknown service mode" );
+                }
             }
             tx = graphDb.beginTx();
             // notify listeners
-            fireServiceChangedEvent( GraphDbServiceStatus.STARTED );
         }
     }
 
@@ -142,7 +170,14 @@ public class GraphDbServiceManager
      */
     public void commit()
     {
-        tx.success();
+        if ( serviceMode == GraphDbServiceMode.READ_WRITE )
+        {
+            tx.success();
+        }
+        else
+        {
+            System.out.println( "Committing while not in write mode" );
+        }
         tx.finish();
         tx = graphDb.beginTx();
         fireServiceChangedEvent( GraphDbServiceStatus.COMMIT );

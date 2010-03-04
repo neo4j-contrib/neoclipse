@@ -18,7 +18,7 @@ import java.util.List;
 import org.neo4j.graphdb.RelationshipType;
 import org.neo4j.neoclipse.action.AbstractGraphAction;
 import org.neo4j.neoclipse.action.Actions;
-import org.neo4j.neoclipse.neo.GraphDbUtil;
+import org.neo4j.neoclipse.graphdb.GraphDbUtil;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**

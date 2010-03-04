@@ -17,7 +17,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.views.properties.IPropertySheetEntry;
 import org.neo4j.graphdb.PropertyContainer;
 import org.neo4j.neoclipse.action.Actions;
-import org.neo4j.neoclipse.neo.GraphDbUtil;
+import org.neo4j.neoclipse.graphdb.GraphDbUtil;
 import org.neo4j.neoclipse.property.NeoPropertySheetPage;
 
 /**
