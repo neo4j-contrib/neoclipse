@@ -80,6 +80,7 @@ public class GraphDbServiceManager
             {
                 // determine the neo4j directory from the preferences
                 String location = preferenceStore.getString( Neo4jPreferences.DATABASE_LOCATION );
+                // TODO actually check if the directoryt STILL exists
                 if ( ( location == null ) || ( location.trim().length() == 0 ) )
                 {
                     return;
