@@ -25,10 +25,11 @@ import org.neo4j.neoclipse.Activator;
 
 /**
  * This is the common superclass for all neo preference pages.
+ * 
  * @author Peter H&auml;nsgen
  */
 public abstract class AbstractPreferencePage extends FieldEditorPreferencePage
-    implements IWorkbenchPreferencePage
+        implements IWorkbenchPreferencePage
 {
     /**
      * The constructor.
@@ -53,7 +54,7 @@ public abstract class AbstractPreferencePage extends FieldEditorPreferencePage
     public void addSeparator()
     {
         Label spacer = new Label( getFieldEditorParent(), SWT.SEPARATOR
-            | SWT.HORIZONTAL );
+                                                          | SWT.HORIZONTAL );
         GridData spacerData = new GridData( GridData.FILL_HORIZONTAL );
         spacerData.horizontalSpan = 3;
         spacer.setLayoutData( spacerData );
@@ -62,7 +63,7 @@ public abstract class AbstractPreferencePage extends FieldEditorPreferencePage
     public void addNote( final String title, final String message )
     {
         Composite note = createNoteComposite( getFieldEditorParent().getFont(),
-            getFieldEditorParent(), title, message );
+                getFieldEditorParent(), title, message );
         GridData spacerData = new GridData( GridData.FILL_HORIZONTAL );
         spacerData.horizontalSpan = 3;
         note.setLayoutData( spacerData );

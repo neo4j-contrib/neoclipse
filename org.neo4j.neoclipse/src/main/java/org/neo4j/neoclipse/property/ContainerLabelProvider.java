@@ -17,7 +17,7 @@ import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.swt.graphics.Image;
 import org.neo4j.graphdb.RelationshipType;
-import org.neo4j.neoclipse.NeoIcons;
+import org.neo4j.neoclipse.Icons;
 
 public class ContainerLabelProvider implements ILabelProvider
 {
@@ -25,9 +25,9 @@ public class ContainerLabelProvider implements ILabelProvider
     {
         if ( value instanceof RelationshipType )
         {
-            return NeoIcons.TYPES_ENABLED.image();
+            return Icons.TYPES_ENABLED.image();
         }
-        return NeoIcons.TYPE_ID.image();
+        return Icons.TYPE_ID.image();
     }
 
     public String getText( final Object value )

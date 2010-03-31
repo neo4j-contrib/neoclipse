@@ -13,30 +13,30 @@
  */
 package org.neo4j.neoclipse.preference;
 
+import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
+import org.eclipse.jface.preference.IPreferenceStore;
+import org.neo4j.neoclipse.Activator;
+import org.neo4j.neoclipse.graphdb.GraphDbServiceMode;
+
 /**
- * Defines the preferences of the neo plugin.
+ * Initializes neo4j preferences with their default values.
+ * 
  * @author Peter H&auml;nsgen
+ * @author Anders Nawroth
  */
-public final class Neo4jPreferences
+public class PreferenceInitializer extends AbstractPreferenceInitializer
 {
     /**
-     * Preventing instantiation.
+     * Initializes the neo4j preferences.
      */
-    private Neo4jPreferences()
+    @Override
+    public void initializeDefaultPreferences()
     {
-        // preventing instantiation
+        IPreferenceStore pref = Activator.getDefault().getPreferenceStore();
+        pref.setDefault( Preferences.DATABASE_LOCATION, "" );
+        pref.setDefault( Preferences.DATABASE_RESOURCE_URI, "" );
+        pref.setDefault( Preferences.HELP_ON_START, true );
+        pref.setDefault( Preferences.CONNECTION_MODE,
+                GraphDbServiceMode.READ_WRITE_EMBEDDED.name() );
     }
-
-    /**
-     * The location of the neo database in the file system.
-     */
-    public static final String DATABASE_LOCATION = "databaseLocation";
-    /**
-     * Database resource URI using RemoteNeo.
-     */
-    public static final String DATABASE_RESOURCE_URI = "databaseResourceUri";
-    /**
-     * Show the help view when the application starts.
-     */
-    public static final String HELP_ON_START = "helpOnStart";
 }

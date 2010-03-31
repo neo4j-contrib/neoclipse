@@ -32,6 +32,7 @@ import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**
  * Utility class to handle node space manipulations.
+ * 
  * @author Anders Nawroth
  */
 public class GraphDbUtil
@@ -51,17 +52,14 @@ public class GraphDbUtil
 
     /**
      * Create a relationship between two nodes
-     * @param source
-     *            start node of the relationship
-     * @param dest
-     *            end node of the relationship
-     * @param relType
-     *            type of relationship
-     * @param graphView
-     *            current database graph view
+     * 
+     * @param source start node of the relationship
+     * @param dest end node of the relationship
+     * @param relType type of relationship
+     * @param graphView current database graph view
      */
     public static void createRelationship( final Node source, final Node dest,
-        final RelationshipType relType, final NeoGraphViewPart graphView )
+            final RelationshipType relType, final NeoGraphViewPart graphView )
     {
         List<Node> sourceNodes = null;
         if ( source != null )
@@ -81,30 +79,27 @@ public class GraphDbUtil
     /**
      * Create relationship between two nodes. One node can be created, but not
      * both
-     * @param sourceNodes
-     *            source, is created if <code>null</code> is given
-     * @param destNodes
-     *            destination, is created if <code>null</code> is given
-     * @param relType
-     *            type of relationship
-     * @param graphView
-     *            current database graph view
+     * 
+     * @param sourceNodes source, is created if <code>null</code> is given
+     * @param destNodes destination, is created if <code>null</code> is given
+     * @param relType type of relationship
+     * @param graphView current database graph view
      */
     private static void createRelationship( List<Node> sourceNodes,
-        List<Node> destNodes, final RelationshipType relType,
-        final NeoGraphViewPart graphView )
+            List<Node> destNodes, final RelationshipType relType,
+            final NeoGraphViewPart graphView )
     {
         if ( relType == null )
         {
             throw new IllegalArgumentException(
-                "RelationshipType can not be null" );
+                    "RelationshipType can not be null" );
         }
         if ( sourceNodes == null && destNodes == null )
         {
             throw new IllegalArgumentException(
-                "Both soure and destination can not be null" );
+                    "Both soure and destination can not be null" );
         }
-        GraphDatabaseService ns = Activator.getDefault().getGraphDbServiceSafely();
+        GraphDatabaseService ns = Activator.getDefault().getGraphDbService();
         if ( ns == null )
         {
             return;
@@ -159,26 +154,26 @@ public class GraphDbUtil
 
     /**
      * Ask the user to confirm delete.
-     * @param count
-     *            numbe rof items to delete
+     * 
+     * @param count numbe rof items to delete
      * @return true on yes to delete
      */
     public static boolean confirmDelete( final int count )
     {
         return MessageDialog.openConfirm( null, CONFIRM_DELETE_TITLE,
-            "Do you really want to delete the selected " + count + " items?" );
+                "Do you really want to delete the selected " + count
+                        + " items?" );
     }
 
     /**
      * Delete nodes and relationships from database.
-     * @param containers
-     *            node and relationships
-     * @param graphView
-     *            the current graph view
+     * 
+     * @param containers node and relationships
+     * @param graphView the current graph view
      */
     public static void deletePropertyContainers(
-        final List<? extends PropertyContainer> containers,
-        final NeoGraphViewPart graphView )
+            final List<? extends PropertyContainer> containers,
+            final NeoGraphViewPart graphView )
     {
         if ( containers.isEmpty() )
         {
@@ -195,11 +190,10 @@ public class GraphDbUtil
                 if ( container instanceof Node )
                 {
                     Node node = (Node) container;
-                    if ( node
-                        .equals( Activator.getDefault().getReferenceNode() ) )
+                    if ( node.equals( Activator.getDefault().getReferenceNode() ) )
                     {
-                        boolean confirmation = MessageDialog
-                            .openConfirm( null, CONFIRM_DELETE_TITLE,
+                        boolean confirmation = MessageDialog.openConfirm( null,
+                                CONFIRM_DELETE_TITLE,
                                 "Do you really, really want to delete the REFERENCE NODE?" );
                         if ( !confirmation )
                         {
@@ -208,8 +202,8 @@ public class GraphDbUtil
                     }
                     if ( node.equals( inputNode ) && node.hasRelationship() )
                     {
-                        newInputNode = node.getRelationships().iterator()
-                            .next().getOtherNode( node );
+                        newInputNode = node.getRelationships().iterator().next().getOtherNode(
+                                node );
                     }
                     for ( Relationship rel : node.getRelationships() )
                     {
@@ -220,7 +214,7 @@ public class GraphDbUtil
                 }
                 else if ( container instanceof Relationship )
                 {
-                    ((Relationship) container).delete();
+                    ( (Relationship) container ).delete();
                 }
                 graphView.setDirty( true );
                 if ( newInputNode != null )
@@ -232,19 +226,19 @@ public class GraphDbUtil
         catch ( Exception e )
         {
             MessageDialog.openError( null, "Error", "Error when deleting: "
-                + e.getMessage() );
+                                                    + e.getMessage() );
         }
     }
 
     /**
      * Add a relationship between two nodes.
-     * @param relTypes
-     *            relationships types to use (should only be one item)
-     * @param graphView
-     *            the current graph view
+     * 
+     * @param relTypes relationships types to use (should only be one item)
+     * @param graphView the current graph view
      */
     public static void addRelationshipAction(
-        final List<RelationshipType> relTypes, final NeoGraphViewPart graphView )
+            final List<RelationshipType> relTypes,
+            final NeoGraphViewPart graphView )
     {
         if ( !isOneRelTypeSelected( relTypes ) )
         {
@@ -255,19 +249,18 @@ public class GraphDbUtil
 
     /**
      * Add relationship between the selected two nodes.
-     * @param relTypes
-     *            relationships types to use (should only be one item)
-     * @param graphView
-     *            the current graph view
+     * 
+     * @param relTypes relationships types to use (should only be one item)
+     * @param graphView the current graph view
      */
     public static void addRelationshipAction( final RelationshipType relType,
-        final NeoGraphViewPart graphView )
+            final NeoGraphViewPart graphView )
     {
         List<Node> currentSelectedNodes = graphView.getCurrentSelectedNodes();
         if ( currentSelectedNodes.size() != 2 )
         {
             MessageDialog.openWarning( null, ADDING_REL_WARNING_LABEL,
-                ADDING_REL_WARNING_MESSAGE );
+                    ADDING_REL_WARNING_MESSAGE );
             return;
         }
         Node source = currentSelectedNodes.get( 0 );
@@ -277,12 +270,13 @@ public class GraphDbUtil
 
     /**
      * Add outgoing relationships pointing to a new node.
-     * @param relTypes
-     *            relationships types to use (should only be one item)
+     * 
+     * @param relTypes relationships types to use (should only be one item)
      * @param graphView
      */
     public static void addOutgoingNodeAction(
-        final List<RelationshipType> relTypes, final NeoGraphViewPart graphView )
+            final List<RelationshipType> relTypes,
+            final NeoGraphViewPart graphView )
     {
         if ( !isOneRelTypeSelected( relTypes ) )
         {
@@ -293,13 +287,12 @@ public class GraphDbUtil
 
     /**
      * Add outgoing relationships pointing to a new node.
-     * @param relType
-     *            relationship type to use
-     * @param graphView
-     *            the current graph view
+     * 
+     * @param relType relationship type to use
+     * @param graphView the current graph view
      */
     public static void addOutgoingNodeAction( final RelationshipType relType,
-        final NeoGraphViewPart graphView )
+            final NeoGraphViewPart graphView )
     {
         List<Node> currentSelectedNodes = graphView.getCurrentSelectedNodes();
         if ( !isOneOrMoreNodesSelected( currentSelectedNodes ) )
@@ -311,12 +304,13 @@ public class GraphDbUtil
 
     /**
      * Add incoming relationships coming from a new node.
-     * @param relTypes
-     *            relationship types to use
+     * 
+     * @param relTypes relationship types to use
      * @param graphView
      */
     public static void addIncomingNodeAction(
-        final List<RelationshipType> relTypes, final NeoGraphViewPart graphView )
+            final List<RelationshipType> relTypes,
+            final NeoGraphViewPart graphView )
     {
         if ( !isOneRelTypeSelected( relTypes ) )
         {
@@ -327,12 +321,12 @@ public class GraphDbUtil
 
     /**
      * Add incoming relationships coming from a new node.
-     * @param relTypes
-     *            relationships types to use (should only be one item)
+     * 
+     * @param relTypes relationships types to use (should only be one item)
      * @param graphView
      */
     public static void addIncomingNodeAction( final RelationshipType relType,
-        final NeoGraphViewPart graphView )
+            final NeoGraphViewPart graphView )
     {
         List<Node> currentSelectedNodes = graphView.getCurrentSelectedNodes();
         if ( !isOneOrMoreNodesSelected( currentSelectedNodes ) )
@@ -344,15 +338,16 @@ public class GraphDbUtil
 
     /**
      * Test precondition for operations.
+     * 
      * @return
      */
     private static boolean isOneRelTypeSelected(
-        final List<RelationshipType> relTypes )
+            final List<RelationshipType> relTypes )
     {
         if ( relTypes.size() != 1 )
         {
             MessageDialog.openWarning( null, ADDING_REL_WARNING_LABEL,
-                ADDING_REL_TYPECOUNT_WARNING_MESSAGE );
+                    ADDING_REL_TYPECOUNT_WARNING_MESSAGE );
             return false;
         }
         return true;
@@ -360,15 +355,16 @@ public class GraphDbUtil
 
     /**
      * Test precondition for operations.
+     * 
      * @return
      */
     private static boolean isOneOrMoreNodesSelected(
-        final List<Node> currentSelectedNodes )
+            final List<Node> currentSelectedNodes )
     {
         if ( currentSelectedNodes.size() < 1 )
         {
             MessageDialog.openWarning( null, ADDING_NODE_WARNING_LABEL,
-                ADDING_NODE_WARNING_MESSAGE );
+                    ADDING_NODE_WARNING_MESSAGE );
             return false;
         }
         return true;
@@ -376,16 +372,17 @@ public class GraphDbUtil
 
     /**
      * Remove a property from Node/Relationship.
+     * 
      * @param container
      * @param key
      * @param propertySheet
      */
     public static void removeProperty( final PropertyContainer container,
-        final String key, final NeoPropertySheetPage propertySheet )
+            final String key, final NeoPropertySheetPage propertySheet )
     {
         boolean confirmation = MessageDialog.openConfirm( null,
-            "Confirm removal",
-            "Do you really want to remove the selected property?" );
+                "Confirm removal",
+                "Do you really want to remove the selected property?" );
         if ( !confirmation )
         {
             return;
@@ -397,7 +394,7 @@ public class GraphDbUtil
         catch ( Exception e )
         {
             MessageDialog.openError( null, "Error", "Error in Neo service: "
-                + e.getMessage() );
+                                                    + e.getMessage() );
         }
         propertySheet.fireChangeEvent( container, key );
         propertySheet.refresh();
@@ -406,28 +403,32 @@ public class GraphDbUtil
     /**
      * Add a property to Node/Relationship. The user will be asked for
      * confirmation if the key already exists.
+     * 
      * @param container
      * @param key
      * @param propertyHandler
      * @param propertySheet
      */
     public static void addProperty( final PropertyContainer container,
-        final String key, final PropertyHandler propertyHandler,
-        final NeoPropertySheetPage propertySheet )
+            final String key, final PropertyHandler propertyHandler,
+            final NeoPropertySheetPage propertySheet )
     {
         if ( container.hasProperty( key ) )
         {
-            if ( !MessageDialog.openQuestion( null, "Key exists", "The key \""
-                + key
-                + "\" already exists, do you want to overwrite the old value?" ) )
+            if ( !MessageDialog.openQuestion(
+                    null,
+                    "Key exists",
+                    "The key \""
+                            + key
+                            + "\" already exists, do you want to overwrite the old value?" ) )
             {
                 return;
             }
         }
         InputDialog valueInput = new InputDialog( null, "Value entry",
-            "Please enter the value of the new property", propertyHandler
-                .render( propertyHandler.value() ), propertyHandler
-                .getValidator() );
+                "Please enter the value of the new property",
+                propertyHandler.render( propertyHandler.value() ),
+                propertyHandler.getValidator() );
         if ( valueInput.open() != OK && valueInput.getReturnCode() != OK )
         {
             return;
@@ -440,7 +441,7 @@ public class GraphDbUtil
         catch ( IOException e )
         {
             MessageDialog.openError( null, "Error message",
-                "Error parsing the input value, no changes will be performed." );
+                    "Error parsing the input value, no changes will be performed." );
             return;
         }
         setProperty( container, key, val, propertySheet );
@@ -448,14 +449,15 @@ public class GraphDbUtil
 
     /**
      * Set a property value, no questions asked.
+     * 
      * @param container
      * @param key
      * @param value
      * @param propertySheet
      */
     public static void setProperty( final PropertyContainer container,
-        final String key, final Object value,
-        final NeoPropertySheetPage propertySheet )
+            final String key, final Object value,
+            final NeoPropertySheetPage propertySheet )
     {
         try
         {
@@ -464,7 +466,7 @@ public class GraphDbUtil
         catch ( Exception e )
         {
             MessageDialog.openError( null, "Error", "Error in Neo service: "
-                + e.getMessage() );
+                                                    + e.getMessage() );
             e.printStackTrace();
         }
         propertySheet.fireChangeEvent( container, key );
@@ -473,17 +475,15 @@ public class GraphDbUtil
 
     /**
      * Rename a property key on Node/Relationship.
-     * @param container
-     *            Node/Relationship
-     * @param key
-     *            old key
-     * @param newKey
-     *            new key
+     * 
+     * @param container Node/Relationship
+     * @param key old key
+     * @param newKey new key
      * @param propertySheet
      */
     public static void renameProperty( final PropertyContainer container,
-        final String key, final String newKey,
-        final NeoPropertySheetPage propertySheet )
+            final String key, final String newKey,
+            final NeoPropertySheetPage propertySheet )
     {
         try
         {
@@ -493,7 +493,7 @@ public class GraphDbUtil
         catch ( Exception e )
         {
             MessageDialog.openError( null, "Error", "Error in Neo service: "
-                + e.getMessage() );
+                                                    + e.getMessage() );
         }
         propertySheet.fireChangeEvent( container, newKey );
         propertySheet.refresh();

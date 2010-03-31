@@ -37,17 +37,17 @@ import org.neo4j.neoclipse.reltype.RelationshipTypesProviderWrapper;
 
 /**
  * Provides the elements that must be displayed in the graph.
+ * 
  * @author Peter H&auml;nsgen
  */
 public class NeoGraphContentProvider implements
-    IGraphEntityRelationshipContentProvider
+        IGraphEntityRelationshipContentProvider
 {
     /**
      * Limit the number of nodes returned.
      */
     private static final int MAXIMUM_NODES_RETURNED = 500;
-    private final RelationshipTypesProvider relTypesProvider = RelationshipTypesProviderWrapper
-        .getInstance();
+    private final RelationshipTypesProvider relTypesProvider = RelationshipTypesProviderWrapper.getInstance();
     /**
      * The view.
      */
@@ -75,7 +75,7 @@ public class NeoGraphContentProvider implements
             for ( RelationshipType relType : relTypes )
             {
                 for ( Relationship r : start.getRelationships( relType,
-                    Direction.OUTGOING ) )
+                        Direction.OUTGOING ) )
                 {
                     if ( r.getEndNode().equals( end ) )
                     {
@@ -103,8 +103,7 @@ public class NeoGraphContentProvider implements
     public Object[] getElements( final Object inputElement )
     {
         Node node = (Node) inputElement;
-        final GraphDatabaseService neoService = Activator.getDefault()
-            .getGraphDbServiceSafely();
+        final GraphDatabaseService neoService = Activator.getDefault().getGraphDbService();
         if ( neoService == null )
         {
             return new Node[] { node };
@@ -121,8 +120,7 @@ public class NeoGraphContentProvider implements
             // and we don't want them to initialize first
             // (traversal gives better coloring!)
             relDirList = new ArrayList<Object>();
-            for ( RelationshipType relType : RelationshipTypesProviderWrapper
-                .getInstance().getRelationshipTypesFromNeo() )
+            for ( RelationshipType relType : RelationshipTypesProviderWrapper.getInstance().getRelationshipTypesFromDb() )
             {
                 relDirList.add( relType );
                 relDirList.add( Direction.BOTH );
@@ -148,14 +146,14 @@ public class NeoGraphContentProvider implements
         try
         {
             Traverser trav = node.traverse( Order.BREADTH_FIRST,
-                new StopEvaluator()
-                {
-                    public boolean isStopNode(
-                        final TraversalPosition currentPos )
+                    new StopEvaluator()
                     {
-                        return currentPos.depth() >= depth;
-                    }
-                }, ReturnableEvaluator.ALL, relDirListArray );
+                        public boolean isStopNode(
+                                final TraversalPosition currentPos )
+                        {
+                            return currentPos.depth() >= depth;
+                        }
+                    }, ReturnableEvaluator.ALL, relDirListArray );
             for ( Node currentNode : trav )
             {
                 if ( nodes.size() >= MAXIMUM_NODES_RETURNED )
@@ -179,7 +177,7 @@ public class NeoGraphContentProvider implements
     }
 
     public void inputChanged( final Viewer viewer, final Object oldInput,
-        final Object newInput )
+            final Object newInput )
     {
     }
 }

@@ -39,22 +39,23 @@ import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.RelationshipType;
 import org.neo4j.neoclipse.Activator;
-import org.neo4j.neoclipse.NeoIcons;
+import org.neo4j.neoclipse.Icons;
 import org.neo4j.neoclipse.decorate.SimpleGraphDecorator;
 import org.neo4j.neoclipse.decorate.SimpleGraphDecorator.Settings;
 import org.neo4j.neoclipse.decorate.SimpleGraphDecorator.ViewSettings;
-import org.neo4j.neoclipse.preference.NeoDecoratorPreferences;
+import org.neo4j.neoclipse.preference.DecoratorPreferences;
 import org.neo4j.neoclipse.reltype.RelationshipTypeControl;
 import org.neo4j.neoclipse.reltype.RelationshipTypeEditingSupport;
 
 /**
  * Provides the labels for graph elements.
+ * 
  * @author Peter H&auml;nsgen
  * @author Anders Nawroth
  */
 public class NeoGraphLabelProvider extends LabelProvider implements
-    IConnectionStyleProvider, IColorProvider, ILabelProvider,
-    ITableLabelProvider, ITableColorProvider, InputChangeListener
+        IConnectionStyleProvider, IColorProvider, ILabelProvider,
+        ITableLabelProvider, ITableColorProvider, InputChangeListener
 {
     /**
      * Handler for node/relationship decoration..
@@ -76,9 +77,8 @@ public class NeoGraphLabelProvider extends LabelProvider implements
      * Marked nodes.
      */
     private final Set<Node> markedNodes = new HashSet<Node>();
-    private static final Image CHECKED = NeoIcons.CHECKED.image();
-    private static final Image UNCHECKED = NeoIcons.UNCHECKED.image();
-    private final Node referenceNode;
+    private static final Image CHECKED = Icons.CHECKED.image();
+    private static final Image UNCHECKED = Icons.UNCHECKED.image();
     private Node inputNode = null;
 
     public NeoGraphLabelProvider()
@@ -89,9 +89,8 @@ public class NeoGraphLabelProvider extends LabelProvider implements
         refreshRelPropertyNames();
         refreshNodeIconPropertyNames();
         // get reference node
-        referenceNode = Activator.getDefault().getReferenceNode();
         settings.setDirections( Arrays.asList( Direction.INCOMING,
-            Direction.OUTGOING ) );
+                Direction.OUTGOING ) );
         // refresh relationship colors
         refreshGraphDecorator();
     }
@@ -106,11 +105,13 @@ public class NeoGraphLabelProvider extends LabelProvider implements
 
     /**
      * Check if a node is the reference node.
+     * 
      * @param node
      * @return
      */
     private boolean isReferenceNode( final Node node )
     {
+        Node referenceNode = Activator.getDefault().getReferenceNode();
         if ( referenceNode == null )
         {
             return false;
@@ -120,6 +121,7 @@ public class NeoGraphLabelProvider extends LabelProvider implements
 
     /**
      * Check if the current node is the input node.
+     * 
      * @param node
      * @return
      */
@@ -142,8 +144,8 @@ public class NeoGraphLabelProvider extends LabelProvider implements
 
     /**
      * Mark relationships.
-     * @param rels
-     *            relationships to mark
+     * 
+     * @param rels relationships to mark
      */
     public void addMarkedRels( final Collection<Relationship> rels )
     {
@@ -160,8 +162,8 @@ public class NeoGraphLabelProvider extends LabelProvider implements
 
     /**
      * Mark nodes.
-     * @param nodes
-     *            nodes to mark
+     * 
+     * @param nodes nodes to mark
      */
     public void addMarkedNodes( final Collection<Node> nodes )
     {
@@ -186,15 +188,15 @@ public class NeoGraphLabelProvider extends LabelProvider implements
         {
             Node node = (Node) element;
             if ( viewSettings.isShowNodeIcons()
-                && !"".equals( settings.getNodeIconLocation() ) )
+                 && !"".equals( settings.getNodeIconLocation() ) )
             {
                 return graphDecorator.getNodeImageFromProperty( node,
-                    isReferenceNode( node ) );
+                        isReferenceNode( node ) );
             }
             else
             {
                 return graphDecorator.getNodeImage( node,
-                    isReferenceNode( node ) );
+                        isReferenceNode( node ) );
             }
         }
         return null;
@@ -248,9 +250,8 @@ public class NeoGraphLabelProvider extends LabelProvider implements
 
     private final void refreshNodeIconLocation()
     {
-        settings.setNodeIconLocation( Activator.getDefault()
-            .getPreferenceStore().getString(
-                NeoDecoratorPreferences.NODE_ICON_LOCATION ) );
+        settings.setNodeIconLocation( Activator.getDefault().getPreferenceStore().getString(
+                DecoratorPreferences.NODE_ICON_LOCATION ) );
     }
 
     /**
@@ -264,9 +265,8 @@ public class NeoGraphLabelProvider extends LabelProvider implements
 
     private final void refreshNodePropertyNames()
     {
-        settings.setNodePropertyNames( Activator.getDefault()
-            .getPreferenceStore().getString(
-                NeoDecoratorPreferences.NODE_PROPERTY_NAMES ) );
+        settings.setNodePropertyNames( Activator.getDefault().getPreferenceStore().getString(
+                DecoratorPreferences.NODE_PROPERTY_NAMES ) );
     }
 
     /**
@@ -281,9 +281,8 @@ public class NeoGraphLabelProvider extends LabelProvider implements
 
     private final void refreshRelPropertyNames()
     {
-        settings.setRelPropertyNames( Activator.getDefault()
-            .getPreferenceStore().getString(
-                NeoDecoratorPreferences.RELATIONSHIP_PROPERTY_NAMES ) );
+        settings.setRelPropertyNames( Activator.getDefault().getPreferenceStore().getString(
+                DecoratorPreferences.RELATIONSHIP_PROPERTY_NAMES ) );
     }
 
     /**
@@ -298,9 +297,8 @@ public class NeoGraphLabelProvider extends LabelProvider implements
 
     private final void refreshNodeIconPropertyNames()
     {
-        settings.setNodeIconPropertyNames( Activator.getDefault()
-            .getPreferenceStore().getString(
-                NeoDecoratorPreferences.NODE_ICON_PROPERTY_NAMES ) );
+        settings.setNodeIconPropertyNames( Activator.getDefault().getPreferenceStore().getString(
+                DecoratorPreferences.NODE_ICON_PROPERTY_NAMES ) );
     }
 
     public Color getColor( final Object o )
@@ -309,7 +307,7 @@ public class NeoGraphLabelProvider extends LabelProvider implements
         {
             Relationship rel = (Relationship) o;
             if ( !viewSettings.isShowRelationshipColors()
-                || !(o instanceof Relationship) )
+                 || !( o instanceof Relationship ) )
             {
                 return graphDecorator.getRelationshipColor();
             }
@@ -343,8 +341,7 @@ public class NeoGraphLabelProvider extends LabelProvider implements
 
     public Color getHighlightColor( final Object rel )
     {
-        return graphDecorator
-            .getRelationshipHighlightColor( (Relationship) rel );
+        return graphDecorator.getRelationshipHighlightColor( (Relationship) rel );
     }
 
     public int getLineWidth( final Object rel )
@@ -384,7 +381,7 @@ public class NeoGraphLabelProvider extends LabelProvider implements
         {
             Node node = (Node) element;
             return graphDecorator.getNodeForegroundColor( node,
-                isInputNode( node ) );
+                    isInputNode( node ) );
         }
         return null;
     }
@@ -425,7 +422,7 @@ public class NeoGraphLabelProvider extends LabelProvider implements
     public Color getForeground( final Object element, final int index )
     {
         if ( !viewSettings.isShowRelationshipColors() || index != 0
-            || !(element instanceof RelationshipTypeControl) )
+             || !( element instanceof RelationshipTypeControl ) )
         {
             return graphDecorator.getRelationshipColor();
         }
@@ -435,6 +432,7 @@ public class NeoGraphLabelProvider extends LabelProvider implements
 
     /**
      * Get the relationship types that was decorated.
+     * 
      * @return
      */
     public Set<RelationshipType> getRelationshipTypes()
@@ -444,6 +442,7 @@ public class NeoGraphLabelProvider extends LabelProvider implements
 
     /**
      * Create the table columns of the Relationship types view.
+     * 
      * @param tableViewer
      */
     public void createTableColumns( final TableViewer tableViewer )
@@ -455,27 +454,25 @@ public class NeoGraphLabelProvider extends LabelProvider implements
         col.setWidth( 200 );
         col.setResizable( true );
         column.setEditingSupport( new RelationshipTypeEditingSupport(
-            tableViewer, RelationshipTypeEditingSupport.ColumnType.HEADING ) );
+                tableViewer, RelationshipTypeEditingSupport.ColumnType.HEADING ) );
         column = new TableViewerColumn( tableViewer, SWT.LEFT );
         col = column.getColumn();
         col.setText( "In" );
-        col
-            .setToolTipText( "Filter incoming relationships of this relationship type." );
+        col.setToolTipText( "Filter incoming relationships of this relationship type." );
         col.setWidth( 60 );
-        col.setImage( NeoIcons.INCOMING.image() );
+        col.setImage( Icons.INCOMING.image() );
         col.setResizable( true );
         column.setEditingSupport( new RelationshipTypeEditingSupport(
-            tableViewer, RelationshipTypeEditingSupport.ColumnType.IN ) );
+                tableViewer, RelationshipTypeEditingSupport.ColumnType.IN ) );
         column = new TableViewerColumn( tableViewer, SWT.LEFT );
         col = column.getColumn();
         col.setText( "Out" );
-        col
-            .setToolTipText( "Filter outgoing relationships of this relationship type." );
+        col.setToolTipText( "Filter outgoing relationships of this relationship type." );
         col.setWidth( 60 );
-        col.setImage( NeoIcons.OUTGOING.image() );
+        col.setImage( Icons.OUTGOING.image() );
         col.setResizable( true );
         column.setEditingSupport( new RelationshipTypeEditingSupport(
-            tableViewer, RelationshipTypeEditingSupport.ColumnType.OUT ) );
+                tableViewer, RelationshipTypeEditingSupport.ColumnType.OUT ) );
         table.setHeaderVisible( true );
         table.setLinesVisible( true );
     }
@@ -483,24 +480,22 @@ public class NeoGraphLabelProvider extends LabelProvider implements
     public boolean propertyChanged( final PropertyChangeEvent event )
     {
         String property = event.getProperty();
-        if ( NeoDecoratorPreferences.NODE_PROPERTY_NAMES.equals( property ) )
+        if ( DecoratorPreferences.NODE_PROPERTY_NAMES.equals( property ) )
         {
             readNodePropertyNames();
             return true;
         }
-        else if ( NeoDecoratorPreferences.RELATIONSHIP_PROPERTY_NAMES
-            .equals( property ) )
+        else if ( DecoratorPreferences.RELATIONSHIP_PROPERTY_NAMES.equals( property ) )
         {
             readRelPropertyNames();
             return true;
         }
-        else if ( NeoDecoratorPreferences.NODE_ICON_LOCATION.equals( property ) )
+        else if ( DecoratorPreferences.NODE_ICON_LOCATION.equals( property ) )
         {
             readNodeIconLocation();
             return true;
         }
-        else if ( NeoDecoratorPreferences.NODE_ICON_PROPERTY_NAMES
-            .equals( property ) )
+        else if ( DecoratorPreferences.NODE_ICON_PROPERTY_NAMES.equals( property ) )
         {
             readNodeIconPropertyNames();
             return true;

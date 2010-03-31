@@ -31,7 +31,7 @@ import org.eclipse.ui.views.properties.PropertySheetEntry;
 import org.eclipse.ui.views.properties.PropertySheetPage;
 import org.eclipse.ui.views.properties.PropertySheetSorter;
 import org.neo4j.graphdb.PropertyContainer;
-import org.neo4j.neoclipse.NeoIcons;
+import org.neo4j.neoclipse.Icons;
 import org.neo4j.neoclipse.help.HelpContextConstants;
 import org.neo4j.neoclipse.property.action.CopyAction;
 import org.neo4j.neoclipse.property.action.DeleteAction;
@@ -195,7 +195,7 @@ public class NeoPropertySheetPage extends PropertySheetPage implements
      */
     private MenuManager createNewSubmenu( final Composite parent )
     {
-        MenuManager addMenuMgr = new MenuManager( "New", NeoIcons.NEW_ENABLED
+        MenuManager addMenuMgr = new MenuManager( "New", Icons.NEW_ENABLED
             .descriptor(), "propertiesAddSubmenu" );
         addMenuMgr.add( new NewAction( parent, this, PropertyTransform
             .getHandler( String.class ) ) );
@@ -223,7 +223,7 @@ public class NeoPropertySheetPage extends PropertySheetPage implements
      */
     private MenuManager createNewArraySubmenu( final Composite parent )
     {
-        MenuManager addMenuMgr = new MenuManager( "New[]", NeoIcons.NEW_ENABLED
+        MenuManager addMenuMgr = new MenuManager( "New[]", Icons.NEW_ENABLED
             .descriptor(), "propertiesArrayAddSubmenu" );
         addMenuMgr.add( new NewAction( parent, this, PropertyTransform
             .getHandler( String[].class ) ) );

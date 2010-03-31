@@ -57,7 +57,7 @@ public class NeoSearchQuery implements ISearchQuery
      * @param graphView the current graph view
      */
     public NeoSearchQuery( final NeoSearchExpression expression,
-        final NeoGraphViewPart graphView )
+            final NeoGraphViewPart graphView )
     {
         this.expression = expression;
         // initialize an empty result
@@ -108,13 +108,13 @@ public class NeoSearchQuery implements ISearchQuery
      * Executes the search.
      */
     public IStatus run( final IProgressMonitor monitor )
-        throws OperationCanceledException
+            throws OperationCanceledException
     {
-        neoService = Activator.getDefault().getGraphDbServiceSafely();
+        neoService = Activator.getDefault().getGraphDbService();
         if ( neoService == null )
         {
             return new Status( IStatus.ERROR, Activator.PLUGIN_ID,
-                "There is no active Neo4j service." );
+                    "There is no active Neo4j service." );
         }
         // TODO here we should do some real search using Neo's index service
         // for now simply navigate along the graph
@@ -127,7 +127,7 @@ public class NeoSearchQuery implements ISearchQuery
             if ( monitor.isCanceled() )
             {
                 return new Status( IStatus.CANCEL, Activator.PLUGIN_ID,
-                    "Cancelled." );
+                        "Cancelled." );
             }
             else
             {
@@ -190,7 +190,7 @@ public class NeoSearchQuery implements ISearchQuery
      * Finds all nodes matching the search criteria.
      */
     protected Iterable<Node> getMatchingNodesByRecursion( final Node node,
-        final IProgressMonitor monitor )
+            final IProgressMonitor monitor )
     {
         // TODO the Neo traverser API is not sufficient as it does not allow to
         // find ALL connected
@@ -223,7 +223,7 @@ public class NeoSearchQuery implements ISearchQuery
      * nodes.
      */
     protected void checkNode( final Node node, final Set<Node> visitedNodes,
-        final List<Node> matches, final IProgressMonitor monitor )
+            final List<Node> matches, final IProgressMonitor monitor )
     {
         if ( monitor.isCanceled() )
         {

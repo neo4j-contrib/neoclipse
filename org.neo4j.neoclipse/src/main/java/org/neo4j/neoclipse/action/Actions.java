@@ -14,7 +14,7 @@
 package org.neo4j.neoclipse.action;
 
 import org.eclipse.jface.action.Action;
-import org.neo4j.neoclipse.NeoIcons;
+import org.neo4j.neoclipse.Icons;
 
 /**
  * Enum that encapsulates labels, tooltips and icons of actions.
@@ -22,137 +22,141 @@ import org.neo4j.neoclipse.NeoIcons;
 public enum Actions
 {
     // platform
-    PREFERENCES( "Preferences", NeoIcons.PREFERENCES_ENABLED,
-        NeoIcons.PREFERENCES_DISABLED ),
-    PROPERTIES( "Properties view", NeoIcons.PROPERTIES_ENABLED,
-        NeoIcons.PROPERTIES_DISABLED ),
-    GRAPH_VIEW( "Graph view", NeoIcons.GRAPH_ENABLED, NeoIcons.GRAPH_DISABLED ),
-    RELTYPES_VIEW( "Relationship types view", NeoIcons.TYPES_ENABLED,
-        NeoIcons.TYPES_DISABLED ),
-    HELP_VIEW( "Help view", NeoIcons.HELP_VIEW ),
-    HELP_WINDOW( "Help window", NeoIcons.HELP_WINDOW_ENABLED,
-        NeoIcons.HELP_WINDOW_DISABLED ),
-    SEARCH( "Search", NeoIcons.SEARCH_ENABLED, NeoIcons.SEARCH_DISABLED ),
+    PREFERENCES( "Preferences", Icons.PREFERENCES_ENABLED,
+            Icons.PREFERENCES_DISABLED ),
+    PROPERTIES( "Properties view", Icons.PROPERTIES_ENABLED,
+            Icons.PROPERTIES_DISABLED ),
+    GRAPH_VIEW( "Graph view", Icons.GRAPH_ENABLED, Icons.GRAPH_DISABLED ),
+    RELTYPES_VIEW( "Relationship types view", Icons.TYPES_ENABLED,
+            Icons.TYPES_DISABLED ),
+    HELP_VIEW( "Help view", Icons.HELP_VIEW ),
+    HELP_WINDOW( "Help window", Icons.HELP_WINDOW_ENABLED,
+            Icons.HELP_WINDOW_DISABLED ),
+    SEARCH( "Search", Icons.SEARCH_ENABLED, Icons.SEARCH_DISABLED ),
+    // connect
+    START( "Start/Connect database", Icons.START_ENABLED, Icons.START_DISABLED ),
+    STOP( "Stop/Disconnect database", Icons.STOP_ENABLED, Icons.STOP_DISABLED ),
     // add rel
     ADD_RELATIONSHIP(
-        "Create relationship between two existing nodes",
-        "Create a directed relationship from the first selected node to the second.",
-        NeoIcons.ADD_ENABLED, NeoIcons.ADD_DISABLED ),
-    ADD_INCOMING_ICON( "Set end node icon for type", NeoIcons.ICON_INCOMING ),
-    ADD_OUTGOING_ICON( "Set start node icon for type", NeoIcons.ICON_OUTGOING ),
+            "Create relationship between two existing nodes",
+            "Create a directed relationship from the first selected node to the second.",
+            Icons.ADD_ENABLED, Icons.ADD_DISABLED ),
+    ADD_INCOMING_ICON( "Set end node icon for type", Icons.ICON_INCOMING ),
+    ADD_OUTGOING_ICON( "Set start node icon for type", Icons.ICON_OUTGOING ),
     // add node
     ADD_INCOMING_NODE( "Create new node as start node",
-        "Create a new node with a relationship; "
-            + "the new node is the start node of the relationship(s).",
-        NeoIcons.ADD_INCOMING_ENABLED, NeoIcons.ADD_INCOMING_DISABLED ),
+            "Create a new node with a relationship; "
+                    + "the new node is the start node of the relationship(s).",
+            Icons.ADD_INCOMING_ENABLED, Icons.ADD_INCOMING_DISABLED ),
     ADD_OUTGOING_NODE( "Create new node as end node",
-        "Create a new node with a relationship; "
-            + "the new node is the end node of the relationship(s).",
-        NeoIcons.ADD_OUTGOING_ENABLED, NeoIcons.ADD_OUTGOING_DISABLED ),
+            "Create a new node with a relationship; "
+                    + "the new node is the end node of the relationship(s).",
+            Icons.ADD_OUTGOING_ENABLED, Icons.ADD_OUTGOING_DISABLED ),
     // add reltype
     NEW_RELATIONSHIP_TYPE( "Create new relationship type",
-        "Create a new relationship type.", NeoIcons.NEW_TYPE_ENABLED,
-        NeoIcons.NEW_TYPE_DISABLED ),
+            "Create a new relationship type.", Icons.NEW_TYPE_ENABLED,
+            Icons.NEW_TYPE_DISABLED ),
     // filter
     FILTER_NONE( "Follow no direction",
-        "Follow no relationships regardless of direction.",
-        NeoIcons.FILTER_ENABLED, NeoIcons.FILTER_DISABLED ),
+            "Follow no relationships regardless of direction.",
+            Icons.FILTER_ENABLED, Icons.FILTER_DISABLED ),
     FILTER_ALL( "Follow BOTH directions",
-        "Follow all relationships regardless of their direction.",
-        NeoIcons.FILTER_ENABLED, NeoIcons.FILTER_DISABLED ),
+            "Follow all relationships regardless of their direction.",
+            Icons.FILTER_ENABLED, Icons.FILTER_DISABLED ),
     FILTER_OUTGOING( "Follow OUTGOING direction",
-        "Follow only relationships in the outgoing direction.",
-        NeoIcons.FILTER_ENABLED, NeoIcons.FILTER_DISABLED ),
+            "Follow only relationships in the outgoing direction.",
+            Icons.FILTER_ENABLED, Icons.FILTER_DISABLED ),
     FILTER_INCOMING( "Follow INCOMING direction",
-        "Follow only relationships in the incoming direction.",
-        NeoIcons.FILTER_ENABLED, NeoIcons.FILTER_DISABLED ),
+            "Follow only relationships in the incoming direction.",
+            Icons.FILTER_ENABLED, Icons.FILTER_DISABLED ),
     // highlight
     HIGHLIGHT_RELATIONSHIPS( "Highlight relationships",
-        "Highlight relationships of the selected types.",
-        NeoIcons.HIGHLIGHT_ENABLED, NeoIcons.HIGHLIGHT_DISABLED ),
+            "Highlight relationships of the selected types.",
+            Icons.HIGHLIGHT_ENABLED, Icons.HIGHLIGHT_DISABLED ),
     HIGHLIGHT_INCOMING( "Highlight end nodes",
-        "Highlight end nodes for relationships of the selected types.",
-        NeoIcons.HIGHLIGHT_INCOMING_ENABLED,
-        NeoIcons.HIGHLIGHT_INCOMING_DISABLED ),
+            "Highlight end nodes for relationships of the selected types.",
+            Icons.HIGHLIGHT_INCOMING_ENABLED, Icons.HIGHLIGHT_INCOMING_DISABLED ),
     HIGHLIGHT_OUTGOING( "Highlight start nodes",
-        "Highlight start nodes for relationships of the selected types.",
-        NeoIcons.HIGHLIGHT_OUTGOING_ENABLED,
-        NeoIcons.HIGHLIGHT_OUTGOING_DISABLED ),
+            "Highlight start nodes for relationships of the selected types.",
+            Icons.HIGHLIGHT_OUTGOING_ENABLED, Icons.HIGHLIGHT_OUTGOING_DISABLED ),
     HIGHLIGHT_CLEAR( "Remove highlighting",
-        "Remove all curent highlighting of nodes and relationships.",
-        NeoIcons.CLEAR_ENABLED, NeoIcons.CLEAR_DISABLED ),
+            "Remove all curent highlighting of nodes and relationships.",
+            Icons.CLEAR_ENABLED, Icons.CLEAR_DISABLED ),
     // navigation
-    GO_BACK( "Go back", NeoIcons.BACK_ENABLED, NeoIcons.BACK_DISABLED ),
-    GO_FORWARD( "Go forward", NeoIcons.FORWARD_ENABLED,
-        NeoIcons.FORWARD_DISABLED ),
-    REFRESH( "Refresh", NeoIcons.REFRESH ),
-    SHOW_REFERENCE_NODE( "Show reference node", NeoIcons.HOME ),
+    GO_BACK( "Go back", Icons.BACK_ENABLED, Icons.BACK_DISABLED ),
+    GO_FORWARD( "Go forward", Icons.FORWARD_ENABLED, Icons.FORWARD_DISABLED ),
+    REFRESH( "Refresh", Icons.REFRESH ),
+    SHOW_REFERENCE_NODE( "Show reference node", Icons.HOME ),
     // edit
-    DELETE( "Delete", NeoIcons.DELETE_ENABLED, NeoIcons.DELETE_DISABLED ),
-    COMMIT( "Commit", NeoIcons.COMMIT_ENABLED, NeoIcons.COMMIT_DISABLED ),
-    ROLLBACK( "Rollback", NeoIcons.ROLLBACK_ENABLED, NeoIcons.ROLLBACK_DISABLED ),
+    DELETE( "Delete", Icons.DELETE_ENABLED, Icons.DELETE_DISABLED ),
+    COMMIT( "Commit", Icons.COMMIT_ENABLED, Icons.COMMIT_DISABLED ),
+    ROLLBACK( "Rollback", Icons.ROLLBACK_ENABLED, Icons.ROLLBACK_DISABLED ),
     // view node settings
-    NODE_COLORS( "Node colors" ), NODE_ICONS( "Node icons" ),
+    NODE_COLORS( "Node colors" ),
+    NODE_ICONS( "Node icons" ),
     NODE_ID( "Node id" ),
     NODE_LABELS( "Node labels" ),
     NODE_EXPANDED( "Expanded node mode" ),
     // view relationships settings
-    RELATIONSHIP_COLORS( "Relationship colors" ), RELATIONSHIP_DIRECTIONS(
-        "Relationship directions" ), RELATIONSHIP_ID( "Relationship id" ),
+    RELATIONSHIP_COLORS( "Relationship colors" ),
+    RELATIONSHIP_DIRECTIONS( "Relationship directions" ),
+    RELATIONSHIP_ID( "Relationship id" ),
     RELATIONSHIP_LABELS( "Relationship labels" ),
     RELATIONSHIP_EXPANDED( "Expanded relationship mode" ),
     RELATIONSHIP_TYPES( "Relationship types" ),
     // layout
-    GRID_LAYOUT( "Grid layout", "Grid layout", NeoIcons.GRID ),
+    GRID_LAYOUT( "Grid layout", "Grid layout", Icons.GRID ),
     HORIZONTAL_SHIFT_LAYOUT( "Horizontal shift layout" ),
-    HORIZONTAL_TREE_LAYOUT( "Horizontal tree layout" ), RADIAL_LAYOUT(
-        "Radial layout", NeoIcons.RADIAL ), SPRING_LAYOUT( "Spring layout",
-        NeoIcons.SPRING ), TREE_LAYOUT( "Tree layout", NeoIcons.TREE ),
+    HORIZONTAL_TREE_LAYOUT( "Horizontal tree layout" ),
+    RADIAL_LAYOUT( "Radial layout", Icons.RADIAL ),
+    SPRING_LAYOUT( "Spring layout", Icons.SPRING ),
+    TREE_LAYOUT( "Tree layout", Icons.TREE ),
     // traversal depth
-    DECREASE_TRAVERSAL_DEPTH( "Decrease traversal depth",
-        NeoIcons.MINUS_ENABLED, NeoIcons.MINUS_DISABLED ),
-    INCREASE_TRAVERSAL_DEPTH( "Increase traversal depth",
-        NeoIcons.PLUS_ENABLED, NeoIcons.PLUS_DISABLED ),
+    DECREASE_TRAVERSAL_DEPTH( "Decrease traversal depth", Icons.MINUS_ENABLED,
+            Icons.MINUS_DISABLED ),
+    INCREASE_TRAVERSAL_DEPTH( "Increase traversal depth", Icons.PLUS_ENABLED,
+            Icons.PLUS_DISABLED ),
     // zoom
-    ZOOM( "Zoom", NeoIcons.ZOOM ),
+    ZOOM( "Zoom", Icons.ZOOM ),
     // property
-    COPY( "Copy", NeoIcons.COPY_ENABLED, NeoIcons.COPY_DISABLED ), REMOVE(
-        "Remove", NeoIcons.DELETE_ENABLED, NeoIcons.DELETE_DISABLED ), PASTE(
-        "Paste", NeoIcons.PASTE_ENABLED, NeoIcons.PASTE_DISABLED ), RENAME(
-        "Rename", NeoIcons.RENAME_ENABLED, NeoIcons.RENAME_DISABLED );
+    COPY( "Copy", Icons.COPY_ENABLED, Icons.COPY_DISABLED ),
+    REMOVE( "Remove", Icons.DELETE_ENABLED, Icons.DELETE_DISABLED ),
+    PASTE( "Paste", Icons.PASTE_ENABLED, Icons.PASTE_DISABLED ),
+    RENAME( "Rename", Icons.RENAME_ENABLED, Icons.RENAME_DISABLED );
 
     private final String label;
     private final String tooltip;
-    private NeoIcons icon;
-    private NeoIcons disabledIcon = null;
+    private Icons icon;
+    private Icons disabledIcon = null;
 
-    private Actions( String label, String tooltip, NeoIcons icon )
+    private Actions( final String label, final String tooltip, final Icons icon )
     {
         this.label = label;
         this.tooltip = tooltip;
         this.icon = icon;
     }
 
-    private Actions( String label, String tooltip, NeoIcons icon,
-        NeoIcons disabledIcon )
+    private Actions( final String label, final String tooltip,
+            final Icons icon, final Icons disabledIcon )
     {
         this( label, tooltip, icon );
         this.disabledIcon = disabledIcon;
     }
 
-    private Actions( String label )
+    private Actions( final String label )
     {
         this.label = label;
         this.tooltip = label;
     }
 
-    private Actions( String label, NeoIcons icon )
+    private Actions( final String label, final Icons icon )
     {
         this( label );
         this.icon = icon;
     }
 
-    private Actions( String label, NeoIcons icon, NeoIcons disabledIcon )
+    private Actions( final String label, final Icons icon,
+            final Icons disabledIcon )
     {
         this( label, icon );
         this.disabledIcon = disabledIcon;
@@ -160,9 +164,10 @@ public enum Actions
 
     /**
      * Initialize action using default values.
+     * 
      * @param action
      */
-    public void initialize( Action action )
+    public void initialize( final Action action )
     {
         action.setText( label );
         action.setToolTipText( tooltip );
@@ -178,6 +183,7 @@ public enum Actions
 
     /**
      * Get label of action.
+     * 
      * @return
      */
     public String label()
@@ -187,9 +193,10 @@ public enum Actions
 
     /**
      * Icon if this action.
+     * 
      * @return icon or null
      */
-    public NeoIcons icon()
+    public Icons icon()
     {
         return icon;
     }

@@ -66,7 +66,7 @@ import org.neo4j.neoclipse.graphdb.GraphDbServiceEventListener;
 import org.neo4j.neoclipse.graphdb.GraphDbServiceStatus;
 import org.neo4j.neoclipse.graphdb.GraphDbUtil;
 import org.neo4j.neoclipse.help.HelpContextConstants;
-import org.neo4j.neoclipse.preference.NeoDecoratorPreferences;
+import org.neo4j.neoclipse.preference.DecoratorPreferences;
 import org.neo4j.neoclipse.view.NeoGraphLabelProvider;
 import org.neo4j.neoclipse.view.NeoGraphLabelProviderWrapper;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
@@ -484,7 +484,7 @@ public class RelationshipTypeView extends ViewPart implements
     private File getIconLocation()
     {
         String location = Activator.getDefault().getPreferenceStore().getString(
-                NeoDecoratorPreferences.NODE_ICON_LOCATION );
+                DecoratorPreferences.NODE_ICON_LOCATION );
         File dest = new File( location );
         return dest;
     }
@@ -803,9 +803,11 @@ public class RelationshipTypeView extends ViewPart implements
             if ( event.getStatus() == GraphDbServiceStatus.STOPPED )
             {
                 provider.refresh();
+                viewer.refresh();
             }
             else if ( event.getStatus() == GraphDbServiceStatus.STARTED )
             {
+                provider.refresh();
                 viewer.refresh( true );
             }
             else if ( event.getStatus() == GraphDbServiceStatus.ROLLBACK )

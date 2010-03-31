@@ -80,6 +80,11 @@ public class Activator extends AbstractUIPlugin
         return graphDbManager;
     }
 
+    public GraphDatabaseService getGraphDbService()
+    {
+        return graphDbManager.getGraphDbService();
+    }
+
     /**
      * Get the current GraphDatabaseService. Returns <code>null</code> on
      * failure, after showing appropriate error messages.
@@ -92,7 +97,7 @@ public class Activator extends AbstractUIPlugin
         if ( sm == null )
         {
             MessageDialog.openError( null, "Error",
-                    "The Neo service manager is not available." );
+                    "The Neo4j service manager is not available." );
             return null;
         }
         GraphDatabaseService ns = null;
@@ -102,10 +107,9 @@ public class Activator extends AbstractUIPlugin
         }
         catch ( RuntimeException rte )
         {
+            rte.printStackTrace();
             MessageDialog.openInformation( null, "Database problem",
-                    "The database seem to be in use. "
-                            + "Please make sure that it is not in use or "
-                            + "change to another database location." );
+                    "Unknown problem with the database. " );
             try
             {
                 ns = sm.getGraphDbService();
@@ -113,29 +117,7 @@ public class Activator extends AbstractUIPlugin
             catch ( RuntimeException rte2 )
             {
                 // just continue
-            }
-        }
-        if ( ns == null )
-        {
-            MessageDialog.openInformation(
-                    null,
-                    "Database location problem",
-                    "Please make sure that the database location is correctly set. "
-                            + "To create an empty database, point the location to an empty directory." );
-            showPreferenceDialog( true );
-            try
-            {
-                ns = sm.getGraphDbService();
-            }
-            catch ( RuntimeException rte )
-            {
-                // just continue
-            }
-            if ( ns == null )
-            {
-                MessageDialog.openError( null, "Error message",
-                        "The Neo service is not available." );
-                return null;
+                rte2.printStackTrace();
             }
         }
         return ns;
@@ -148,7 +130,7 @@ public class Activator extends AbstractUIPlugin
      */
     public Node getReferenceNode()
     {
-        GraphDatabaseService ns = getGraphDbServiceSafely();
+        GraphDatabaseService ns = getGraphDbService();
         if ( ns == null )
         {
             return null;
@@ -190,15 +172,5 @@ public class Activator extends AbstractUIPlugin
             return pref.open();
         }
         return 1;
-    }
-
-    /**
-     * Restart the graphdb service from a new location.
-     */
-    public void restartGraphDb()
-    {
-        graphDbManager.stopGraphDbService();
-        // start the service using new location
-        getGraphDbServiceSafely();
     }
 }

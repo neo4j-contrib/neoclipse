@@ -37,10 +37,11 @@ import org.neo4j.neoclipse.view.NeoGraphLabelProviderWrapper;
 /**
  * Provide (filtered) relationship types. Initial clients: Database graph view
  * and Relationship types view.
+ * 
  * @author anders
  */
 public class RelationshipTypesProvider implements IContentProvider,
-    IStructuredContentProvider
+        IStructuredContentProvider
 {
     private class ReltypeCtrlChangeListener implements NeoclipseEventListener
     {
@@ -53,7 +54,7 @@ public class RelationshipTypesProvider implements IContentProvider,
     private boolean viewAll = true;
     private final Set<RelationshipType> fakeTypes = new RelationshipTypeHashSet();
     private Set<RelationshipType> currentRelTypes = Collections.emptySet();
-    private final Map<RelationshipType,RelationshipTypeControl> currentRelTypeCtrls = new RelationshipTypeHashMap<RelationshipTypeControl>();
+    private final Map<RelationshipType, RelationshipTypeControl> currentRelTypeCtrls = new RelationshipTypeHashMap<RelationshipTypeControl>();
     private final NeoclipseListenerList filterListeners = new NeoclipseListenerList();
     private final NeoclipseListenerList typesListeners = new NeoclipseListenerList();
     private final ReltypeCtrlChangeListener reltypeCtrlChangeListener = new ReltypeCtrlChangeListener();
@@ -61,15 +62,15 @@ public class RelationshipTypesProvider implements IContentProvider,
 
     /**
      * Factory method that creates relationship type items for the table view.
-     * @param relType
-     *            the relationship type to wrap
+     * 
+     * @param relType the relationship type to wrap
      * @return
      */
     public RelationshipTypeControl createRelationshipTypeControl(
-        final RelationshipType relType )
+            final RelationshipType relType )
     {
         RelationshipTypeControl relTypeCtrl = new RelationshipTypeControl(
-            relType );
+                relType );
         relTypeCtrl.addChangeListener( reltypeCtrlChangeListener );
         return relTypeCtrl;
     }
@@ -83,13 +84,12 @@ public class RelationshipTypesProvider implements IContentProvider,
     {
         if ( viewAll )
         {
-            currentRelTypes = getRelationshipTypesFromNeo();
+            currentRelTypes = getRelationshipTypesFromDb();
             currentRelTypes.addAll( fakeTypes );
         }
         else
         {
-            currentRelTypes = NeoGraphLabelProviderWrapper.getInstance()
-                .getRelationshipTypes();
+            currentRelTypes = NeoGraphLabelProviderWrapper.getInstance().getRelationshipTypes();
             currentRelTypes.addAll( fakeTypes );
         }
         refreshListeners.notifyListeners( new NeoclipseEvent( this ) );
@@ -99,7 +99,7 @@ public class RelationshipTypesProvider implements IContentProvider,
             if ( !currentRelTypeCtrls.containsKey( relType ) )
             {
                 currentRelTypeCtrls.put( relType,
-                    createRelationshipTypeControl( relType ) );
+                        createRelationshipTypeControl( relType ) );
             }
         }
         return currentRelTypeCtrls.values().toArray();
@@ -107,13 +107,14 @@ public class RelationshipTypesProvider implements IContentProvider,
 
     /**
      * Get all relationship types in the database.
+     * 
      * @return
      */
-    public Set<RelationshipType> getRelationshipTypesFromNeo()
+    public Set<RelationshipType> getRelationshipTypesFromDb()
     {
         Set<RelationshipType> relationshipTypes;
         relationshipTypes = new HashSet<RelationshipType>();
-        GraphDatabaseService ns = Activator.getDefault().getGraphDbServiceSafely();
+        GraphDatabaseService ns = Activator.getDefault().getGraphDbService();
         if ( ns == null )
         {
             // todo ?
@@ -128,6 +129,7 @@ public class RelationshipTypesProvider implements IContentProvider,
 
     /**
      * Get all relationship types in the database and additional "fake" types.
+     * 
      * @return
      */
     public Set<RelationshipType> getCurrentRelationshipTypes()
@@ -138,8 +140,8 @@ public class RelationshipTypesProvider implements IContentProvider,
     /**
      * Add a "fake" relationship type. It will be persisted to the database upon
      * usage (creating a relationship of this type).
-     * @param name
-     *            the name of the relationship type
+     * 
+     * @param name the name of the relationship type
      */
     public RelationshipType addFakeType( final String name )
     {
@@ -151,18 +153,17 @@ public class RelationshipTypesProvider implements IContentProvider,
 
     /**
      * Get the table items corresponding to a collection of relationship types.
-     * @param relTypes
-     *            the relationship types to select
+     * 
+     * @param relTypes the relationship types to select
      * @return the relationship type controls that are used in the table
      */
     public Collection<RelationshipTypeControl> getFilteredControls(
-        final Collection<RelationshipType> relTypes )
+            final Collection<RelationshipType> relTypes )
     {
         Collection<RelationshipTypeControl> relTypeCtrls = new ArrayList<RelationshipTypeControl>();
         for ( RelationshipType relType : relTypes )
         {
-            RelationshipTypeControl relTypeCtrl = currentRelTypeCtrls
-                .get( relType );
+            RelationshipTypeControl relTypeCtrl = currentRelTypeCtrls.get( relType );
             if ( relTypeCtrl != null )
             {
                 relTypeCtrls.add( relTypeCtrl );
@@ -173,6 +174,7 @@ public class RelationshipTypesProvider implements IContentProvider,
 
     /**
      * Get relationship types and direction from current filterset.
+     * 
      * @return an array of RelationshipType and Direction (alternating)
      */
     public List<Object> getFilteredRelTypesDirections()
@@ -182,8 +184,7 @@ public class RelationshipTypesProvider implements IContentProvider,
             throw new NotFoundException();
         }
         List<Object> relDirList = new ArrayList<Object>();
-        for ( RelationshipTypeControl relTypeCtrl : currentRelTypeCtrls
-            .values() )
+        for ( RelationshipTypeControl relTypeCtrl : currentRelTypeCtrls.values() )
         {
             if ( relTypeCtrl.hasDirection() )
             {
@@ -196,18 +197,16 @@ public class RelationshipTypesProvider implements IContentProvider,
 
     /**
      * Set all relationship types to the same filtering.
-     * @param in
-     *            state for incoming relationships
-     * @param out
-     *            state for outgoing relationships
+     * 
+     * @param in state for incoming relationships
+     * @param out state for outgoing relationships
      */
     public void setAllFilters( final boolean in, final boolean out )
     {
         filterListeners.setInhibit( true );
         for ( RelationshipType relType : currentRelTypeCtrls.keySet() )
         {
-            RelationshipTypeControl relTypeCtrl = currentRelTypeCtrls
-                .get( relType );
+            RelationshipTypeControl relTypeCtrl = currentRelTypeCtrls.get( relType );
             if ( relTypeCtrl != null )
             {
                 relTypeCtrl.setIn( in );
@@ -230,7 +229,7 @@ public class RelationshipTypesProvider implements IContentProvider,
     }
 
     public void inputChanged( final Viewer viewer, final Object oldInput,
-        final Object newInput )
+            final Object newInput )
     {
     }
 
@@ -253,6 +252,7 @@ public class RelationshipTypesProvider implements IContentProvider,
 
     /**
      * Notify listeners something changed in the relationship type filters.
+     * 
      * @param event
      */
     private void notifyFilterListeners( final NeoclipseEvent event )
@@ -262,16 +262,18 @@ public class RelationshipTypesProvider implements IContentProvider,
 
     /**
      * Add listener to relationship types filter changes.
+     * 
      * @param newListener
      */
     public void addFilterStatusListener(
-        final NeoclipseEventListener newListener )
+            final NeoclipseEventListener newListener )
     {
         filterListeners.add( newListener );
     }
 
     /**
      * Add listener to relationship type (e.g. addition) changes.
+     * 
      * @param newListener
      */
     public void addTypeChangeListener( final NeoclipseEventListener newListener )
@@ -281,6 +283,7 @@ public class RelationshipTypesProvider implements IContentProvider,
 
     /**
      * Notify listeners something changed in the relationship types.
+     * 
      * @param event
      */
     private void notifyTypesListeners( final NeoclipseEvent event )
@@ -290,6 +293,7 @@ public class RelationshipTypesProvider implements IContentProvider,
 
     /**
      * Add listener to complete refresh events.
+     * 
      * @param newListener
      */
     public void addTypeRefreshListener( final NeoclipseEventListener newListener )

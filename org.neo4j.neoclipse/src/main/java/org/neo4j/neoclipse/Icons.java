@@ -21,38 +21,44 @@ import org.eclipse.ui.PlatformUI;
 
 /**
  * This enum manages neo icons.
+ * 
  * @author Peter H&auml;nsgen
  * @author Anders Nawroth
  */
-public enum NeoIcons
+public enum Icons
 {
     NEO( "small", path( "enabled/neo.gif" ) ),
     NEO_ROOT( "root", path( "enabled/home.gif" ) ),
     HELP( "help", shared( ISharedImages.IMG_LCL_LINKTO_HELP ) ),
     PREFERENCES_ENABLED( "preferences_enabled",
-        path( "enabled/preferences.gif" ) ),
+            path( "enabled/preferences.gif" ) ),
     PREFERENCES_DISABLED( "preferences_disabled",
-        path( "disabled/preferences.gif" ) ),
+            path( "disabled/preferences.gif" ) ),
     PROPERTIES_ENABLED( "properties_enabled", path( "enabled/properties.gif" ) ),
     PROPERTIES_DISABLED( "properties_disabled",
-        path( "disabled/properties.gif" ) ),
+            path( "disabled/properties.gif" ) ),
     GRAPH_ENABLED( "graph_enabled", path( "enabled/neo.gif" ) ),
     GRAPH_DISABLED( "graph_disabled", path( "disabled/neo.gif" ) ),
     HELP_VIEW( "help_view", path( "obj16/help_view.gif" ) ),
     HELP_WINDOW_ENABLED( "help_window_enabled",
-        path( "enabled/help_window.gif" ) ),
+            path( "enabled/help_window.gif" ) ),
     HELP_WINDOW_DISABLED( "help_window_disabled",
-        path( "disabled/help_window.gif" ) ),
+            path( "disabled/help_window.gif" ) ),
     SEARCH_ENABLED( "search_enabled", path( "enabled/search.gif" ) ),
     SEARCH_DISABLED( "search_disabled", path( "disabled/search.gif" ) ),
+    // connectivity
+    START_ENABLED( "start_enabled", path( "enabled/start.gif" ) ),
+    STOP_ENABLED( "stop_enabled", path( "enabled/stop.gif" ) ),
+    START_DISABLED( "start_disabled", path( "disabled/start.gif" ) ),
+    STOP_DISABLED( "stop_disabled", path( "disabled/stop.gif" ) ),
     // navigation
     HOME( "home", path( "enabled/home.gif" ) ),
     BACK_ENABLED( "back_enabled", shared( ISharedImages.IMG_TOOL_BACK ) ),
     BACK_DISABLED( "back_disabled",
-        shared( ISharedImages.IMG_TOOL_BACK_DISABLED ) ),
+            shared( ISharedImages.IMG_TOOL_BACK_DISABLED ) ),
     FORWARD_ENABLED( "forward_enabled", shared( ISharedImages.IMG_TOOL_FORWARD ) ),
     FORWARD_DISABLED( "forward_disabled",
-        shared( ISharedImages.IMG_TOOL_FORWARD_DISABLED ) ),
+            shared( ISharedImages.IMG_TOOL_FORWARD_DISABLED ) ),
     REFRESH( "refresh", path( "enabled/refresh.gif" ) ),
     ZOOM( "zoom", path( "enabled/zoom.gif" ) ),
     // traversal depth
@@ -86,56 +92,56 @@ public enum NeoIcons
     ADD_ENABLED( "add_enabled", path( "enabled/add-relationship.gif" ) ),
     ADD_DISABLED( "add_disabled", path( "disabled/add-relationship.gif" ) ),
     ADD_INCOMING_ENABLED( "add_incoming_enabled",
-        path( "enabled/add-relationship-incoming.gif" ) ),
+            path( "enabled/add-relationship-incoming.gif" ) ),
     ADD_INCOMING_DISABLED( "add_incoming_disabled",
-        path( "disabled/add-relationship-incoming.gif" ) ),
+            path( "disabled/add-relationship-incoming.gif" ) ),
     ADD_OUTGOING_ENABLED( "add_outgoing_enabled",
-        path( "enabled/add-relationship-outgoing.gif" ) ),
+            path( "enabled/add-relationship-outgoing.gif" ) ),
     ADD_OUTGOING_DISABLED( "add_outgoing_disabled",
-        path( "disabled/add-relationship-outgoing.gif" ) ),
+            path( "disabled/add-relationship-outgoing.gif" ) ),
     HIGHLIGHT_ENABLED( "highlight_enabled", path( "enabled/highlight.gif" ) ),
     HIGHLIGHT_DISABLED( "highlight_disabled", path( "disabled/highlight.gif" ) ),
     HIGHLIGHT_INCOMING_ENABLED( "highlight_incoming_enabled",
-        path( "enabled/highlight-incoming.gif" ) ),
+            path( "enabled/highlight-incoming.gif" ) ),
     HIGHLIGHT_INCOMING_DISABLED( "highlight_incoming_disabled",
-        path( "disabled/highlight-incoming.gif" ) ),
+            path( "disabled/highlight-incoming.gif" ) ),
     HIGHLIGHT_OUTGOING_ENABLED( "highlight_outgoing_enabled",
-        path( "enabled/highlight-outgoing.gif" ) ),
+            path( "enabled/highlight-outgoing.gif" ) ),
     HIGHLIGHT_OUTGOING_DISABLED( "highlight_outgoing_disabled",
-        path( "disabled/highlight-outgoing.gif" ) ), INCOMING( "incoming",
-        path( "obj16/incoming.gif" ) ), OUTGOING( "outgoing",
-        path( "obj16/outgoing.gif" ) ), CLEAR_ENABLED( "clear_enabled",
-        path( "enabled/clear.gif" ) ), CLEAR_DISABLED( "clear_disabled",
-        path( "disabled/clear.gif" ) ), ICON_INCOMING( "icon_in_enabled",
-        path( "enabled/icon-incoming.gif" ) ), ICON_OUTGOING(
-        "icon_out_enabled", path( "enabled/icon-outgoing.gif" ) ),
+            path( "disabled/highlight-outgoing.gif" ) ),
+    INCOMING( "incoming", path( "obj16/incoming.gif" ) ),
+    OUTGOING( "outgoing", path( "obj16/outgoing.gif" ) ),
+    CLEAR_ENABLED( "clear_enabled", path( "enabled/clear.gif" ) ),
+    CLEAR_DISABLED( "clear_disabled", path( "disabled/clear.gif" ) ),
+    ICON_INCOMING( "icon_in_enabled", path( "enabled/icon-incoming.gif" ) ),
+    ICON_OUTGOING( "icon_out_enabled", path( "enabled/icon-outgoing.gif" ) ),
     // filter
     FILTER_ENABLED( "filter_enabled", path( "enabled/filter.gif" ) ),
     FILTER_DISABLED( "filter_disabled", path( "disabled/filter.gif" ) ),
     // types
-    TYPE_BOOLEAN( "boolean", path( "types/type-boolean.gif" ) ), TYPE_BYTE(
-        "byte", path( "types/type-byte.gif" ) ), TYPE_CHAR( "char",
-        path( "types/type-char.gif" ) ), TYPE_DOUBLE( "double",
-        path( "types/type-double.gif" ) ), TYPE_FLOAT( "float",
-        path( "types/type-float.gif" ) ), TYPE_INT( "int",
-        path( "types/type-int.gif" ) ), TYPE_LONG( "long",
-        path( "types/type-long.gif" ) ), TYPE_SHORT( "short",
-        path( "types/type-short.gif" ) ), TYPE_STRING( "string",
-        path( "types/type-string.gif" ) ), TYPE_BOOLEANS( "booleans",
-        path( "types/type-booleans.gif" ) ), TYPE_BYTES( "bytes",
-        path( "types/type-bytes.gif" ) ), TYPE_CHARS( "chars",
-        path( "types/type-chars.gif" ) ), TYPE_DOUBLES( "doubles",
-        path( "types/type-doubles.gif" ) ), TYPE_FLOATS( "floats",
-        path( "types/type-floats.gif" ) ), TYPE_INTS( "ints",
-        path( "types/type-ints.gif" ) ), TYPE_LONGS( "longs",
-        path( "types/type-longs.gif" ) ), TYPE_SHORTS( "shorts",
-        path( "types/type-shorts.gif" ) ), TYPE_STRINGS( "strings",
-        path( "types/type-strings.gif" ) ), TYPE_ID( "id",
-        path( "obj16/key.gif" ) ), TYPES_ENABLED( "types_enabled",
-        path( "enabled/types.gif" ) ), TYPES_DISABLED( "types_disabled",
-        path( "disabled/types.gif" ) ), NEW_TYPE_ENABLED( "new_type_enabled",
-        path( "enabled/add-type.gif" ) ), NEW_TYPE_DISABLED(
-        "new_type_disabled", path( "disabled/add-type.gif" ) );
+    TYPE_BOOLEAN( "boolean", path( "types/type-boolean.gif" ) ),
+    TYPE_BYTE( "byte", path( "types/type-byte.gif" ) ),
+    TYPE_CHAR( "char", path( "types/type-char.gif" ) ),
+    TYPE_DOUBLE( "double", path( "types/type-double.gif" ) ),
+    TYPE_FLOAT( "float", path( "types/type-float.gif" ) ),
+    TYPE_INT( "int", path( "types/type-int.gif" ) ),
+    TYPE_LONG( "long", path( "types/type-long.gif" ) ),
+    TYPE_SHORT( "short", path( "types/type-short.gif" ) ),
+    TYPE_STRING( "string", path( "types/type-string.gif" ) ),
+    TYPE_BOOLEANS( "booleans", path( "types/type-booleans.gif" ) ),
+    TYPE_BYTES( "bytes", path( "types/type-bytes.gif" ) ),
+    TYPE_CHARS( "chars", path( "types/type-chars.gif" ) ),
+    TYPE_DOUBLES( "doubles", path( "types/type-doubles.gif" ) ),
+    TYPE_FLOATS( "floats", path( "types/type-floats.gif" ) ),
+    TYPE_INTS( "ints", path( "types/type-ints.gif" ) ),
+    TYPE_LONGS( "longs", path( "types/type-longs.gif" ) ),
+    TYPE_SHORTS( "shorts", path( "types/type-shorts.gif" ) ),
+    TYPE_STRINGS( "strings", path( "types/type-strings.gif" ) ),
+    TYPE_ID( "id", path( "obj16/key.gif" ) ),
+    TYPES_ENABLED( "types_enabled", path( "enabled/types.gif" ) ),
+    TYPES_DISABLED( "types_disabled", path( "disabled/types.gif" ) ),
+    NEW_TYPE_ENABLED( "new_type_enabled", path( "enabled/add-type.gif" ) ),
+    NEW_TYPE_DISABLED( "new_type_disabled", path( "disabled/add-type.gif" ) );
 
     private static final String ICON_LOCATION = "icons/";
     private static ImageRegistry reg = null;
@@ -143,13 +149,13 @@ public enum NeoIcons
 
     private final String key;
 
-    private NeoIcons( final String key, final ImageDescriptor imgDes )
+    private Icons( final String key, final ImageDescriptor imgDes )
     {
         this.key = key;
         getRegistry().put( key, imgDes );
     }
 
-    private NeoIcons( final String key, final Image image )
+    private Icons( final String key, final Image image )
     {
         this.key = key;
         getRegistry().put( key, image );
@@ -181,11 +187,12 @@ public enum NeoIcons
     private static ImageDescriptor path( final String path )
     {
         return Activator.imageDescriptorFromPlugin( Activator.PLUGIN_ID,
-            ICON_LOCATION + path );
+                ICON_LOCATION + path );
     }
 
     /**
      * Get image descriptor of icon.
+     * 
      * @return icon image descriptor
      */
     public ImageDescriptor descriptor()
@@ -195,6 +202,7 @@ public enum NeoIcons
 
     /**
      * Get icon image.
+     * 
      * @return icon image
      */
     public Image image()

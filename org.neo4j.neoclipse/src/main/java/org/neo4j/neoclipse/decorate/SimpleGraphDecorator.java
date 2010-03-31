@@ -30,8 +30,8 @@ import org.neo4j.graphdb.PropertyContainer;
 import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.RelationshipType;
 import org.neo4j.neoclipse.Activator;
-import org.neo4j.neoclipse.NeoIcons;
-import org.neo4j.neoclipse.preference.NeoDecoratorPreferences;
+import org.neo4j.neoclipse.Icons;
+import org.neo4j.neoclipse.preference.DecoratorPreferences;
 import org.neo4j.neoclipse.property.PropertyTransform;
 
 public class SimpleGraphDecorator
@@ -45,11 +45,11 @@ public class SimpleGraphDecorator
     /**
      * The icon for nodes.
      */
-    private static final Image nodeImage = NeoIcons.NEO.image();
+    private static final Image nodeImage = Icons.NEO.image();
     /**
      * The icon for the root node.
      */
-    private static final Image rootImage = NeoIcons.NEO_ROOT.image();
+    private static final Image rootImage = Icons.NEO_ROOT.image();
     /**
      * User icons for nodes.
      */
@@ -245,27 +245,27 @@ public class SimpleGraphDecorator
         {
             preferenceStore = Activator.getDefault().getPreferenceStore();
             showRelationshipTypes = preferenceStore
-                .getBoolean( NeoDecoratorPreferences.SHOW_RELATIONSHIP_TYPES );
+                .getBoolean( DecoratorPreferences.SHOW_RELATIONSHIP_TYPES );
             showRelationshipNames = preferenceStore
-                .getBoolean( NeoDecoratorPreferences.SHOW_RELATIONSHIP_NAMES );
+                .getBoolean( DecoratorPreferences.SHOW_RELATIONSHIP_NAMES );
             showRelationshipProperties = preferenceStore
-                .getBoolean( NeoDecoratorPreferences.SHOW_RELATIONSHIP_PROPERTIES );
+                .getBoolean( DecoratorPreferences.SHOW_RELATIONSHIP_PROPERTIES );
             showRelationshipIds = preferenceStore
-                .getBoolean( NeoDecoratorPreferences.SHOW_RELATIONSHIP_IDS );
+                .getBoolean( DecoratorPreferences.SHOW_RELATIONSHIP_IDS );
             showRelationshipColors = preferenceStore
-                .getBoolean( NeoDecoratorPreferences.SHOW_RELATIONSHIP_COLORS );
+                .getBoolean( DecoratorPreferences.SHOW_RELATIONSHIP_COLORS );
             showArrows = preferenceStore
-                .getBoolean( NeoDecoratorPreferences.SHOW_ARROWS );
+                .getBoolean( DecoratorPreferences.SHOW_ARROWS );
             showNodeIds = preferenceStore
-                .getBoolean( NeoDecoratorPreferences.SHOW_NODE_IDS );
+                .getBoolean( DecoratorPreferences.SHOW_NODE_IDS );
             showNodeNames = preferenceStore
-                .getBoolean( NeoDecoratorPreferences.SHOW_NODE_NAMES );
+                .getBoolean( DecoratorPreferences.SHOW_NODE_NAMES );
             showNodeProperties = preferenceStore
-                .getBoolean( NeoDecoratorPreferences.SHOW_NODE_PROPERTIES );
+                .getBoolean( DecoratorPreferences.SHOW_NODE_PROPERTIES );
             showNodeIcons = preferenceStore
-                .getBoolean( NeoDecoratorPreferences.SHOW_NODE_ICONS );
+                .getBoolean( DecoratorPreferences.SHOW_NODE_ICONS );
             showNodeColors = preferenceStore
-                .getBoolean( NeoDecoratorPreferences.SHOW_NODE_COLORS );
+                .getBoolean( DecoratorPreferences.SHOW_NODE_COLORS );
         }
 
         public boolean isShowRelationshipTypes()
@@ -278,7 +278,7 @@ public class SimpleGraphDecorator
         {
             this.showRelationshipTypes = showRelationshipTypes;
             preferenceStore.setValue(
-                NeoDecoratorPreferences.SHOW_RELATIONSHIP_TYPES,
+                DecoratorPreferences.SHOW_RELATIONSHIP_TYPES,
                 showRelationshipTypes );
         }
 
@@ -292,7 +292,7 @@ public class SimpleGraphDecorator
         {
             this.showRelationshipNames = showRelationshipNames;
             preferenceStore.setValue(
-                NeoDecoratorPreferences.SHOW_RELATIONSHIP_NAMES,
+                DecoratorPreferences.SHOW_RELATIONSHIP_NAMES,
                 showRelationshipNames );
         }
 
@@ -306,7 +306,7 @@ public class SimpleGraphDecorator
         {
             this.showRelationshipProperties = showRelationshipProperties;
             preferenceStore.setValue(
-                NeoDecoratorPreferences.SHOW_RELATIONSHIP_PROPERTIES,
+                DecoratorPreferences.SHOW_RELATIONSHIP_PROPERTIES,
                 showRelationshipProperties );
         }
 
@@ -319,7 +319,7 @@ public class SimpleGraphDecorator
         {
             this.showRelationshipIds = showRelationshipIds;
             preferenceStore.setValue(
-                NeoDecoratorPreferences.SHOW_RELATIONSHIP_IDS,
+                DecoratorPreferences.SHOW_RELATIONSHIP_IDS,
                 showRelationshipIds );
         }
 
@@ -333,7 +333,7 @@ public class SimpleGraphDecorator
         {
             this.showRelationshipColors = showRelationshipColors;
             preferenceStore.setValue(
-                NeoDecoratorPreferences.SHOW_RELATIONSHIP_COLORS,
+                DecoratorPreferences.SHOW_RELATIONSHIP_COLORS,
                 showRelationshipColors );
         }
 
@@ -345,7 +345,7 @@ public class SimpleGraphDecorator
         public void setShowArrows( final boolean showArrows )
         {
             this.showArrows = showArrows;
-            preferenceStore.setValue( NeoDecoratorPreferences.SHOW_ARROWS,
+            preferenceStore.setValue( DecoratorPreferences.SHOW_ARROWS,
                 showArrows );
         }
 
@@ -357,7 +357,7 @@ public class SimpleGraphDecorator
         public void setShowNodeIds( final boolean showNodeIds )
         {
             this.showNodeIds = showNodeIds;
-            preferenceStore.setValue( NeoDecoratorPreferences.SHOW_NODE_IDS,
+            preferenceStore.setValue( DecoratorPreferences.SHOW_NODE_IDS,
                 showNodeIds );
         }
 
@@ -369,7 +369,7 @@ public class SimpleGraphDecorator
         public void setShowNodeNames( final boolean showNodeNames )
         {
             this.showNodeNames = showNodeNames;
-            preferenceStore.setValue( NeoDecoratorPreferences.SHOW_NODE_NAMES,
+            preferenceStore.setValue( DecoratorPreferences.SHOW_NODE_NAMES,
                 showNodeNames );
         }
 
@@ -382,7 +382,7 @@ public class SimpleGraphDecorator
         {
             this.showNodeProperties = showNodeProperties;
             preferenceStore.setValue(
-                NeoDecoratorPreferences.SHOW_NODE_PROPERTIES,
+                DecoratorPreferences.SHOW_NODE_PROPERTIES,
                 showNodeProperties );
         }
 
@@ -394,7 +394,7 @@ public class SimpleGraphDecorator
         public void setShowNodeIcons( final boolean showNodeIcons )
         {
             this.showNodeIcons = showNodeIcons;
-            preferenceStore.setValue( NeoDecoratorPreferences.SHOW_NODE_ICONS,
+            preferenceStore.setValue( DecoratorPreferences.SHOW_NODE_ICONS,
                 showNodeIcons );
         }
 
@@ -406,7 +406,7 @@ public class SimpleGraphDecorator
         public void setShowNodeColors( final boolean showNodeColors )
         {
             this.showNodeColors = showNodeColors;
-            preferenceStore.setValue( NeoDecoratorPreferences.SHOW_NODE_COLORS,
+            preferenceStore.setValue( DecoratorPreferences.SHOW_NODE_COLORS,
                 showNodeColors );
         }
     }

@@ -22,7 +22,7 @@ import org.neo4j.neoclipse.Activator;
  * @author Peter H&auml;nsgen
  * @author Anders Nawroth
  */
-public class NeoDecoratorPreferenceInitializer extends
+public class DecoratorPreferenceInitializer extends
     AbstractPreferenceInitializer
 {
     /**
@@ -31,25 +31,25 @@ public class NeoDecoratorPreferenceInitializer extends
     public void initializeDefaultPreferences()
     {
         IPreferenceStore pref = Activator.getDefault().getPreferenceStore();
-        pref.setDefault( NeoDecoratorPreferences.NODE_PROPERTY_NAMES, "" );
-        pref.setDefault( NeoDecoratorPreferences.RELATIONSHIP_PROPERTY_NAMES,
+        pref.setDefault( DecoratorPreferences.NODE_PROPERTY_NAMES, "" );
+        pref.setDefault( DecoratorPreferences.RELATIONSHIP_PROPERTY_NAMES,
             "" );
-        pref.setDefault( NeoDecoratorPreferences.NODE_ICON_LOCATION, "" );
-        pref.setDefault( NeoDecoratorPreferences.NODE_ICON_PROPERTY_NAMES, "" );
+        pref.setDefault( DecoratorPreferences.NODE_ICON_LOCATION, "" );
+        pref.setDefault( DecoratorPreferences.NODE_ICON_PROPERTY_NAMES, "" );
         // view menu settings
-        pref.setDefault( NeoDecoratorPreferences.SHOW_RELATIONSHIP_TYPES, true );
-        pref.setDefault( NeoDecoratorPreferences.SHOW_NODE_COLORS, true );
-        pref.setDefault( NeoDecoratorPreferences.SHOW_NODE_NAMES, true );
-        pref.setDefault( NeoDecoratorPreferences.SHOW_RELATIONSHIP_NAMES, true );
-        pref.setDefault( NeoDecoratorPreferences.SHOW_RELATIONSHIP_PROPERTIES,
+        pref.setDefault( DecoratorPreferences.SHOW_RELATIONSHIP_TYPES, true );
+        pref.setDefault( DecoratorPreferences.SHOW_NODE_COLORS, true );
+        pref.setDefault( DecoratorPreferences.SHOW_NODE_NAMES, true );
+        pref.setDefault( DecoratorPreferences.SHOW_RELATIONSHIP_NAMES, true );
+        pref.setDefault( DecoratorPreferences.SHOW_RELATIONSHIP_PROPERTIES,
             false );
         pref
-            .setDefault( NeoDecoratorPreferences.SHOW_RELATIONSHIP_COLORS, true );
-        pref.setDefault( NeoDecoratorPreferences.SHOW_RELATIONSHIP_IDS, false );
-        pref.setDefault( NeoDecoratorPreferences.SHOW_ARROWS, true );
-        pref.setDefault( NeoDecoratorPreferences.SHOW_NODE_PROPERTIES, false );
-        pref.setDefault( NeoDecoratorPreferences.SHOW_NODE_ICONS, true );
-        pref.setDefault( NeoDecoratorPreferences.SHOW_NODE_IDS, false );
+            .setDefault( DecoratorPreferences.SHOW_RELATIONSHIP_COLORS, true );
+        pref.setDefault( DecoratorPreferences.SHOW_RELATIONSHIP_IDS, false );
+        pref.setDefault( DecoratorPreferences.SHOW_ARROWS, true );
+        pref.setDefault( DecoratorPreferences.SHOW_NODE_PROPERTIES, false );
+        pref.setDefault( DecoratorPreferences.SHOW_NODE_ICONS, true );
+        pref.setDefault( DecoratorPreferences.SHOW_NODE_IDS, false );
 
     }
 }

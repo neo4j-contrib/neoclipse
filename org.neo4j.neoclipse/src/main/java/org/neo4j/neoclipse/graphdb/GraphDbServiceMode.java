@@ -15,6 +15,7 @@ package org.neo4j.neoclipse.graphdb;
 
 public enum GraphDbServiceMode
 {
-    READ_ONLY,
-    READ_WRITE
+    READ_ONLY_EMBEDDED,
+    READ_WRITE_EMBEDDED,
+    REMOTE
 }

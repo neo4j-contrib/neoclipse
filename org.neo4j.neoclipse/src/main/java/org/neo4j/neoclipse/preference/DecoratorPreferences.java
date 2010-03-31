@@ -19,12 +19,12 @@ package org.neo4j.neoclipse.preference;
  * @author Peter H&auml;nsgen
  * @author Anders Nawroth
  */
-public final class NeoDecoratorPreferences
+public final class DecoratorPreferences
 {
     /**
      * Preventing instantiation.
      */
-    private NeoDecoratorPreferences()
+    private DecoratorPreferences()
     {
         // preventing instantiation
     }

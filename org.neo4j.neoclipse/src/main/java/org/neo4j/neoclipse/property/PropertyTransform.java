@@ -28,7 +28,7 @@ import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ICellEditorValidator;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
-import org.neo4j.neoclipse.NeoIcons;
+import org.neo4j.neoclipse.Icons;
 
 /**
  * Transform between property values and representations for editors.
@@ -42,11 +42,11 @@ public final class PropertyTransform
     public static abstract class PropertyHandler
     {
         private final Class<?> type;
-        private final NeoIcons icon;
+        private final Icons icon;
         private final Object standard;
         private Validator validator = null;
 
-        private PropertyHandler( Class<?> type, NeoIcons icon, Object standard )
+        private PropertyHandler( Class<?> type, Icons icon, Object standard )
         {
             this.type = type;
             this.icon = icon;
@@ -315,7 +315,7 @@ public final class PropertyTransform
         private static final long serialVersionUID = 1L;
         {
             put( String.class, new PropertyHandler( String.class,
-                NeoIcons.TYPE_STRING, "" )
+                Icons.TYPE_STRING, "" )
             {
                 protected Object parser( Object o )
                 {
@@ -323,7 +323,7 @@ public final class PropertyTransform
                 }
             } );
             put( String[].class, new PropertyHandler( String[].class,
-                NeoIcons.TYPE_STRINGS, new String[0] )
+                Icons.TYPE_STRINGS, new String[0] )
             {
                 protected Object parser( Object o ) throws IOException
                 {
@@ -349,7 +349,7 @@ public final class PropertyTransform
                 }
             } );
             put( Integer.class, new PropertyHandler( Integer.class,
-                NeoIcons.TYPE_INT, (int) 0 )
+                Icons.TYPE_INT, (int) 0 )
             {
                 protected Object parser( Object o )
                 {
@@ -357,7 +357,7 @@ public final class PropertyTransform
                 }
             } );
             put( int[].class, new PropertyHandler( int[].class,
-                NeoIcons.TYPE_INTS, new int[0] )
+                Icons.TYPE_INTS, new int[0] )
             {
                 protected Object parser( Object o )
                 {
@@ -376,7 +376,7 @@ public final class PropertyTransform
                 }
             } );
             put( Double.class, new PropertyHandler( Double.class,
-                NeoIcons.TYPE_DOUBLE, 0d )
+                Icons.TYPE_DOUBLE, 0d )
             {
                 protected Object parser( Object o )
                 {
@@ -384,7 +384,7 @@ public final class PropertyTransform
                 }
             } );
             put( double[].class, new PropertyHandler( double[].class,
-                NeoIcons.TYPE_DOUBLES, new double[0] )
+                Icons.TYPE_DOUBLES, new double[0] )
             {
                 protected Object parser( Object o )
                 {
@@ -403,7 +403,7 @@ public final class PropertyTransform
                 }
             } );
             put( Float.class, new PropertyHandler( Float.class,
-                NeoIcons.TYPE_FLOAT, 0f )
+                Icons.TYPE_FLOAT, 0f )
             {
                 protected Object parser( Object o )
                 {
@@ -411,7 +411,7 @@ public final class PropertyTransform
                 }
             } );
             put( float[].class, new PropertyHandler( float[].class,
-                NeoIcons.TYPE_FLOATS, new float[0] )
+                Icons.TYPE_FLOATS, new float[0] )
             {
                 protected Object parser( Object o )
                 {
@@ -430,7 +430,7 @@ public final class PropertyTransform
                 }
             } );
             put( Boolean.class, new PropertyHandler( Boolean.class,
-                NeoIcons.TYPE_BOOLEAN, false )
+                Icons.TYPE_BOOLEAN, false )
             {
                 // has it's dedicated editor, handling transforms,
                 // so we just pass things through here
@@ -440,7 +440,7 @@ public final class PropertyTransform
                 }
             } );
             put( boolean[].class, new PropertyHandler( boolean[].class,
-                NeoIcons.TYPE_BOOLEANS, new boolean[0] )
+                Icons.TYPE_BOOLEANS, new boolean[0] )
             {
                 protected Object parser( Object o )
                 {
@@ -459,7 +459,7 @@ public final class PropertyTransform
                 }
             } );
             put( Byte.class, new PropertyHandler( Byte.class,
-                NeoIcons.TYPE_BYTE, (byte) 0 )
+                Icons.TYPE_BYTE, (byte) 0 )
             {
                 protected Object parser( Object o )
                 {
@@ -467,7 +467,7 @@ public final class PropertyTransform
                 }
             } );
             put( byte[].class, new PropertyHandler( byte[].class,
-                NeoIcons.TYPE_BYTES, new byte[0] )
+                Icons.TYPE_BYTES, new byte[0] )
             {
                 protected Object parser( Object o )
                 {
@@ -486,7 +486,7 @@ public final class PropertyTransform
                 }
             } );
             put( Short.class, new PropertyHandler( Short.class,
-                NeoIcons.TYPE_SHORT, (short) 0 )
+                Icons.TYPE_SHORT, (short) 0 )
             {
                 protected Object parser( Object o )
                 {
@@ -494,7 +494,7 @@ public final class PropertyTransform
                 }
             } );
             put( short[].class, new PropertyHandler( short[].class,
-                NeoIcons.TYPE_SHORTS, new short[0] )
+                Icons.TYPE_SHORTS, new short[0] )
             {
                 protected Object parser( Object o )
                 {
@@ -513,7 +513,7 @@ public final class PropertyTransform
                 }
             } );
             put( Long.class, new PropertyHandler( Long.class,
-                NeoIcons.TYPE_LONG, 0L )
+                Icons.TYPE_LONG, 0L )
             {
                 protected Object parser( Object o )
                 {
@@ -521,7 +521,7 @@ public final class PropertyTransform
                 }
             } );
             put( long[].class, new PropertyHandler( long[].class,
-                NeoIcons.TYPE_LONGS, new long[0] )
+                Icons.TYPE_LONGS, new long[0] )
             {
                 protected Object parser( Object o )
                 {
@@ -540,7 +540,7 @@ public final class PropertyTransform
                 }
             } );
             put( Character.class, new PropertyHandler( Character.class,
-                NeoIcons.TYPE_CHAR, (char) 0 )
+                Icons.TYPE_CHAR, (char) 0 )
             {
                 protected Object parser( Object o )
                 {
@@ -553,7 +553,7 @@ public final class PropertyTransform
                 }
             } );
             put( char[].class, new PropertyHandler( char[].class,
-                NeoIcons.TYPE_CHARS, new char[0] )
+                Icons.TYPE_CHARS, new char[0] )
             {
                 protected Object parser( Object o )
                 {

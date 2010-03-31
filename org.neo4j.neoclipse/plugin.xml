@@ -26,24 +26,24 @@
    <extension
          point="org.eclipse.core.runtime.preferences">
       <initializer
-            class="org.neo4j.neoclipse.preference.NeoPreferenceInitializer">
+            class="org.neo4j.neoclipse.preference.PreferenceInitializer">
       </initializer>
       <initializer
-            class="org.neo4j.neoclipse.preference.NeoDecoratorPreferenceInitializer">
+            class="org.neo4j.neoclipse.preference.DecoratorPreferenceInitializer">
       </initializer>
    </extension>
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
-            class="org.neo4j.neoclipse.preference.NeoPreferencePage"
-            id="org.neo4j.neoclipse.preference.NeoPreferencePage"
+            class="org.neo4j.neoclipse.preference.PreferencePage"
+            id="org.neo4j.neoclipse.preference.PreferencePage"
             name="Neo4j">
       </page>
       <page
-            class="org.neo4j.neoclipse.preference.NeoDecoratorPreferencePage"
-            id="org.neo4j.neoclipse.preference.NeoDecoratorPreferencePage"
+            class="org.neo4j.neoclipse.preference.DecoratorPreferencePage"
+            id="org.neo4j.neoclipse.preference.DecoratorPreferencePage"
             name="Graph Decorations"
-            category="org.neo4j.neoclipse.preference.NeoPreferencePage">
+            category="org.neo4j.neoclipse.preference.PreferencePage">
       </page>
    </extension>
    <extension

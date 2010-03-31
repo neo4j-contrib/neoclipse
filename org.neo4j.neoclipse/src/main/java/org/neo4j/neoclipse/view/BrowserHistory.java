@@ -24,6 +24,7 @@ import org.neo4j.neoclipse.Activator;
 
 /**
  * Keep track of browsing history and preserve states.
+ * 
  * @author Anders Nawroth
  */
 public class BrowserHistory
@@ -49,8 +50,8 @@ public class BrowserHistory
 
         /**
          * Create a state.
-         * @param node
-         *            the starting point of this state
+         * 
+         * @param node the starting point of this state
          */
         public BrowserState( final Node node )
         {
@@ -59,12 +60,12 @@ public class BrowserHistory
 
         /**
          * Get starting node of this state.
+         * 
          * @return starting node or null if it doesn't exist any more
          */
         public Node getNode()
         {
-            GraphDatabaseService neoService = Activator.getDefault()
-                .getGraphDbServiceSafely();
+            GraphDatabaseService neoService = Activator.getDefault().getGraphDbService();
             if ( neoService != null )
             {
                 try
@@ -82,6 +83,7 @@ public class BrowserHistory
 
     /**
      * Move backwards in history.
+     * 
      * @return previous starting point or null
      */
     public Node getPrevious()
@@ -97,6 +99,7 @@ public class BrowserHistory
 
     /**
      * Move forward in history.
+     * 
      * @return next starting point or null
      */
     public Node getNext()
@@ -112,6 +115,7 @@ public class BrowserHistory
 
     /**
      * Get next node.
+     * 
      * @return next node or null
      */
     private Node fetchNext()
@@ -121,6 +125,7 @@ public class BrowserHistory
 
     /**
      * Get previous node.
+     * 
      * @return previous node or null
      */
     private Node fetchPrevious()
@@ -130,8 +135,8 @@ public class BrowserHistory
 
     /**
      * Get node in list from position.
-     * @param pos
-     *            position in state list
+     * 
+     * @param pos position in state list
      * @return node at the position or null
      */
     private Node getNode( final int pos )
@@ -141,6 +146,7 @@ public class BrowserHistory
 
     /**
      * Check for existence of previous state.
+     * 
      * @return true if previous state exist
      */
     public boolean hasPrevious()
@@ -150,6 +156,7 @@ public class BrowserHistory
 
     /**
      * Check for existence of forward state.
+     * 
      * @return true if forward state exist
      */
     public boolean hasNext()
@@ -159,15 +166,15 @@ public class BrowserHistory
 
     /**
      * Add a new state.
-     * @param node
-     *            starting point of state
+     * 
+     * @param node starting point of state
      */
     public void add( final Node node )
     {
         if ( node == null )
         {
             throw new IllegalArgumentException(
-                "Node in history can't be null." );
+                    "Node in history can't be null." );
         }
         if ( hasPrevious() && node.equals( fetchPrevious() ) )
         {

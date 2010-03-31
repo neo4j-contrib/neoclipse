@@ -14,17 +14,20 @@
 package org.neo4j.neoclipse.graphdb;
 
 import java.io.File;
+import java.net.URISyntaxException;
 
 import org.eclipse.core.runtime.ISafeRunnable;
 import org.eclipse.core.runtime.ListenerList;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.osgi.service.datalocation.Location;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Transaction;
 import org.neo4j.kernel.EmbeddedGraphDatabase;
 import org.neo4j.kernel.EmbeddedReadOnlyGraphDatabase;
 import org.neo4j.neoclipse.Activator;
-import org.neo4j.neoclipse.preference.Neo4jPreferences;
+import org.neo4j.neoclipse.preference.Preferences;
 import org.neo4j.remote.RemoteGraphDatabase;
 
 /**
@@ -39,13 +42,20 @@ public class GraphDbServiceManager
      * The service instance.
      */
     protected GraphDatabaseService graphDb;
-    protected GraphDbServiceMode serviceMode = GraphDbServiceMode.READ_WRITE;
+    protected GraphDbServiceMode serviceMode;
+    // protected GraphDatabaseLifecycle lifecycle; // TODO
+
+    /**
+     * Current thread for shutdown
+     */
+    protected Thread shutdownHook;
 
     /**
      * The registered service change listeners.
      */
     protected ListenerList listeners;
     private Transaction tx;
+    private final IPreferenceStore preferenceStore = Activator.getDefault().getPreferenceStore();
 
     /**
      * The constructor.
@@ -53,86 +63,148 @@ public class GraphDbServiceManager
     public GraphDbServiceManager()
     {
         listeners = new ListenerList();
+        serviceMode = GraphDbServiceMode.valueOf( preferenceStore.getString( Preferences.CONNECTION_MODE ) );
     }
 
     public boolean isReadOnlyMode()
     {
-        return serviceMode == GraphDbServiceMode.READ_ONLY;
+        return serviceMode == GraphDbServiceMode.READ_ONLY_EMBEDDED;
+    }
+
+    public void setGraphServiceMode( final GraphDbServiceMode gdbServiceMode )
+    {
+        serviceMode = gdbServiceMode;
     }
 
     /**
      * Starts the neo4j service.
      */
-    public void startGraphDbService() throws RuntimeException
+    public void startGraphDbService() throws Exception
     {
-        System.out.println( "checking service ..." );
         if ( graphDb == null )
         {
-            System.out.println( "starting neo4j" );
-            final IPreferenceStore preferenceStore = Activator.getDefault().getPreferenceStore();
-            // try the resource URI first
-            String resourceUri = preferenceStore.getString( Neo4jPreferences.DATABASE_RESOURCE_URI );
-            if ( ( resourceUri != null ) && ( resourceUri.trim().length() != 0 ) )
+            System.out.println( "trying to start/connect ..." );
+            String dbLocation;
+            switch ( serviceMode )
             {
-                // let's try the resource URI
-                try
-                {
-                    System.out.println( "trying remote graphdb" );
-                    graphDb = new RemoteGraphDatabase( resourceUri );
-                    fireServiceChangedEvent( GraphDbServiceStatus.STARTED );
-                    System.out.println( "connected to remote neo4j" );
-                }
-                catch ( Exception e )
-                {
-                    e.printStackTrace();
-                }
+            case READ_WRITE_EMBEDDED:
+                dbLocation = getDbLocation();
+                graphDb = new EmbeddedGraphDatabase( dbLocation );
+                System.out.println( "connected to embedded neo4j" );
+                break;
+            case READ_ONLY_EMBEDDED:
+                dbLocation = getDbLocation();
+                graphDb = new EmbeddedReadOnlyGraphDatabase( dbLocation );
+                System.out.println( "connected to embedded read-only neo4j" );
+                break;
+            case REMOTE:
+                graphDb = new RemoteGraphDatabase( getResourceUri() );
+                System.out.println( "connected to remote neo4j" );
+                break;
             }
-            else
-            {
-                // determine the neo4j directory from the preferences
-                String location = preferenceStore.getString( Neo4jPreferences.DATABASE_LOCATION );
-                if ( ( location == null ) || ( location.trim().length() == 0 ) )
-                {
-                    return;
-                }
-                File dir = new File( location );
-                if ( !dir.exists() || !dir.isDirectory() )
-                {
-                    return;
-                }
-                // seems to be a valid directory, try starting neo4j
-                if ( serviceMode == GraphDbServiceMode.READ_WRITE )
-                {
-                    graphDb = new EmbeddedGraphDatabase( location );
-                    fireServiceChangedEvent( GraphDbServiceStatus.STARTED );
-                    System.out.println( "connected to embedded neo4j" );
-                }
-                else if ( serviceMode == GraphDbServiceMode.READ_ONLY )
-                {
-                    graphDb = new EmbeddedReadOnlyGraphDatabase( location );
-                    fireServiceChangedEvent( GraphDbServiceStatus.STARTED );
-                    System.out.println( "connected to embedded read-only neo4j" );
-                }
-                else
-                {
-                    System.out.println( "unknown service mode" );
-                }
-            }
+            // :TODO: save thread and remove shutdown on shutdown ...
+            registerShutdownHook( graphDb );
             tx = graphDb.beginTx();
-            // notify listeners
+            fireServiceChangedEvent( GraphDbServiceStatus.STARTED );
         }
     }
 
-    /**
-     * Returns the graphdb service or null, if it could not be started (due to
-     * configuration problems).
-     */
-    public GraphDatabaseService getGraphDbService() throws RuntimeException
+    private void registerShutdownHook(
+            final GraphDatabaseService graphDbInstance )
     {
-        if ( graphDb == null )
+        shutdownHook = new Thread()
         {
-            startGraphDbService();
+            @Override
+            public void run()
+            {
+                if ( graphDbInstance == null )
+                {
+                    return;
+                }
+                graphDbInstance.shutdown();
+            }
+        };
+        Runtime.getRuntime().addShutdownHook( shutdownHook );
+    }
+
+    private void removeShutdownhook()
+    {
+        Runtime.getRuntime().removeShutdownHook( shutdownHook );
+    }
+
+    // determine the neo4j directory from the preferences
+    private String getDbLocation()
+    {
+        String location = preferenceStore.getString( Preferences.DATABASE_LOCATION );
+        if ( ( location == null ) || ( location.trim().length() == 0 ) )
+        {
+            // if there's really no db dir, create one in the node space
+            Location workspace = Platform.getInstanceLocation();
+            if ( workspace == null )
+            {
+                throw new IllegalArgumentException(
+                        "The database location is not correctly set." );
+            }
+            try
+            {
+                File dbDir = new File( workspace.getURL().toURI().getPath()
+                                       + "/neo4j-db" );
+                if ( !dbDir.exists() )
+                {
+                    if ( !dbDir.mkdir() )
+                    {
+                        throw new IllegalArgumentException(
+                                "Could not create a database directory." );
+                    }
+                    System.out.println( "created: " + dbDir.getAbsolutePath() );
+                }
+                location = dbDir.getAbsolutePath();
+                preferenceStore.setValue( Preferences.DATABASE_LOCATION,
+                        location );
+            }
+            catch ( URISyntaxException e )
+            {
+                e.printStackTrace();
+                throw new IllegalArgumentException(
+                        "The database location is not correctly set." );
+            }
         }
+        File dir = new File( location );
+        if ( !dir.exists() )
+        {
+            throw new IllegalArgumentException(
+                    "The database location does not exist." );
+        }
+        if ( !dir.isDirectory() )
+        {
+            throw new IllegalArgumentException(
+                    "The database location is not a directory." );
+        }
+        if ( !dir.canWrite() )
+        {
+            throw new IllegalAccessError(
+                    "Writes are not allowed to the database location." );
+        }
+        System.out.println( "using location: " + location );
+        return location;
+    }
+
+    private String getResourceUri()
+    {
+        String resourceUri = preferenceStore.getString( Preferences.DATABASE_RESOURCE_URI );
+        if ( resourceUri == null || resourceUri.trim().length() == 0 )
+        {
+            throw new IllegalArgumentException(
+                    "There is no resource URI defined." );
+        }
+        return resourceUri;
+    }
+
+    /**
+     * Returns the graphdb service or null, if it isn't started.
+     */
+    public GraphDatabaseService getGraphDbService()
+    {
         return graphDb;
     }
 
@@ -143,6 +215,7 @@ public class GraphDbServiceManager
     {
         if ( graphDb != null )
         {
+            System.out.println( "trying to stop/disconnect ..." );
             try
             {
                 tx.failure();
@@ -163,6 +236,8 @@ public class GraphDbServiceManager
                 graphDb = null;
             }
         }
+        removeShutdownhook();
+        System.out.println( "stopped/disconnected" );
     }
 
     /**
@@ -170,7 +245,7 @@ public class GraphDbServiceManager
      */
     public void commit()
     {
-        if ( serviceMode == GraphDbServiceMode.READ_WRITE )
+        if ( serviceMode == GraphDbServiceMode.READ_WRITE_EMBEDDED )
         {
             tx.success();
         }

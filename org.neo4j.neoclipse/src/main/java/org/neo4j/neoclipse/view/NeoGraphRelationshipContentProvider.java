@@ -82,7 +82,7 @@ public class NeoGraphRelationshipContentProvider implements
             // (traversal gives better coloring!)
             relDirList = new ArrayList<Object>();
             for ( RelationshipType relType : RelationshipTypesProviderWrapper
-                .getInstance().getRelationshipTypesFromNeo() )
+                .getInstance().getRelationshipTypesFromDb() )
             {
                 relDirList.add( relType );
                 relDirList.add( Direction.BOTH );

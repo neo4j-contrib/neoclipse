@@ -24,7 +24,7 @@ import org.eclipse.search.ui.ISearchQuery;
 import org.eclipse.search.ui.ISearchResult;
 import org.eclipse.search.ui.ISearchResultListener;
 import org.neo4j.graphdb.Node;
-import org.neo4j.neoclipse.NeoIcons;
+import org.neo4j.neoclipse.Icons;
 
 /**
  * This class represents the result of a Neo search.
@@ -80,7 +80,7 @@ public class NeoSearchResult implements ISearchResult
      */
     public ImageDescriptor getImageDescriptor()
     {
-        return NeoIcons.NEO.descriptor();
+        return Icons.NEO.descriptor();
     }
 
     /**
