@@ -2,7 +2,7 @@
 <feature
       id="org.neo4j.neoclipse.feature"
       label="Neoclipse Feature"
-      version="0.4.1"
+      version="0.4.2"
       provider-name="Neo4j.org">
 
    <description url="http://wiki.neo4j.org/content/Neoclipse">
@@ -214,7 +214,7 @@ libraries, licensed under the Eclipse Public License,
          id="org.neo4j.neoclipse"
          download-size="1881"
          install-size="1881"
-         version="0.4.1"
+         version="0.4.2"
          unpack="false"/>
 
    <plugin
