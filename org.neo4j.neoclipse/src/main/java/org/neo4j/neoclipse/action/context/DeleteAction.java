@@ -13,19 +13,20 @@
  */
 package org.neo4j.neoclipse.action.context;
 
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.neo4j.neoclipse.action.AbstractGraphAction;
 import org.neo4j.neoclipse.action.Actions;
 import org.neo4j.neoclipse.graphdb.GraphDbUtil;
+import org.neo4j.neoclipse.view.Dialog;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**
  * Action to delete a node or relationship.
+ * 
  * @author Anders Nawroth
  */
 public class DeleteAction extends AbstractGraphAction
 {
-    public DeleteAction( NeoGraphViewPart neoGraphViewPart )
+    public DeleteAction( final NeoGraphViewPart neoGraphViewPart )
     {
         super( Actions.DELETE, neoGraphViewPart );
         setEnabled( false );
@@ -35,22 +36,20 @@ public class DeleteAction extends AbstractGraphAction
     public void run()
     {
         int count = graphView.getCurrentSelectedNodes().size()
-            + graphView.getCurrentSelectedRels().size();
+                    + graphView.getCurrentSelectedRels().size();
         if ( count < 1 )
         {
-            MessageDialog
-                .openWarning( null, "Delete", "No items are selected." );
+            Dialog.openError( "Delete", "No items are selected." );
             return;
         }
         if ( !GraphDbUtil.confirmDelete( count ) )
         {
             return;
         }
-        GraphDbUtil.deletePropertyContainers( graphView
-            .getCurrentSelectedRels(), graphView );
-        GraphDbUtil.deletePropertyContainers( graphView
-            .getCurrentSelectedNodes(), graphView );
-        setEnabled( false );
+        GraphDbUtil.deletePropertyContainers(
+                graphView.getCurrentSelectedRels(), graphView );
+        GraphDbUtil.deletePropertyContainers(
+                graphView.getCurrentSelectedNodes(), graphView );
         graphView.refreshPreserveLayout();
     }
 }

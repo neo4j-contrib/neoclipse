@@ -19,6 +19,7 @@ import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**
  * This action handles the node names setting.
+ * 
  * @author Anders Nawroth
  */
 public class ShowNodeLabelAction extends AbstractCheckboxAction
@@ -27,7 +28,7 @@ public class ShowNodeLabelAction extends AbstractCheckboxAction
      * The constructor.
      */
     public ShowNodeLabelAction( final NeoGraphViewPart view,
-        final boolean checked )
+            final boolean checked )
     {
         super( Actions.NODE_LABELS, checked, view );
     }
@@ -35,10 +36,11 @@ public class ShowNodeLabelAction extends AbstractCheckboxAction
     /**
      * Executes the action.
      */
+    @Override
     public void run()
     {
         graphView.getLabelProvider().getViewSettings().setShowNodeNames(
-            isChecked() );
+                isChecked() );
         graphView.refreshPreserveLayout();
     }
 }

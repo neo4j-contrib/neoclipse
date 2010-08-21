@@ -70,6 +70,7 @@ import org.neo4j.neoclipse.preference.DecoratorPreferences;
 import org.neo4j.neoclipse.view.NeoGraphLabelProvider;
 import org.neo4j.neoclipse.view.NeoGraphLabelProviderWrapper;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
+import org.neo4j.neoclipse.view.UiHelper;
 
 /**
  * View that shows the relationships of the database.
@@ -719,14 +720,14 @@ public class RelationshipTypeView extends ViewPart implements
         {
             setGraphView( (NeoGraphViewPart) part );
             List<Relationship> currentSelectedRels = getGraphView().getCurrentSelectedRels();
-            Set<RelationshipType> relTypes = new HashSet<RelationshipType>();
+            Set<RelationshipType> relTypes = new RelationshipTypeHashSet();
             for ( Relationship rel : currentSelectedRels )
             {
                 relTypes.add( rel.getType() );
             }
             if ( !relTypes.isEmpty() )
             {
-                Collection<RelationshipTypeControl> relTypeCtrls = provider.getFilteredControls( relTypes );
+                Collection<RelationshipTypeControl> relTypeCtrls = provider.getFilteredRelTypeControls( relTypes );
                 viewer.setSelection( new StructuredSelection(
                         relTypeCtrls.toArray() ) );
                 setEnableHighlightingActions( true );
@@ -749,7 +750,7 @@ public class RelationshipTypeView extends ViewPart implements
                 Object o = iter.next();
                 if ( o instanceof RelationshipTypeControl )
                 {
-                    currentSelectedRelTypes.add( ( (RelationshipTypeControl) o ).getRelType() );
+                    currentSelectedRelTypes.add( ( (DirectedRelationship) o ).getRelType() );
                 }
             }
         }
@@ -800,21 +801,27 @@ public class RelationshipTypeView extends ViewPart implements
     {
         public void serviceChanged( final GraphDbServiceEvent event )
         {
-            if ( event.getStatus() == GraphDbServiceStatus.STOPPED )
+            UiHelper.asyncExec( new Runnable()
             {
-                provider.refresh();
-                viewer.refresh();
-            }
-            else if ( event.getStatus() == GraphDbServiceStatus.STARTED )
-            {
-                provider.refresh();
-                viewer.refresh( true );
-            }
-            else if ( event.getStatus() == GraphDbServiceStatus.ROLLBACK )
-            {
-                provider.refresh();
-                viewer.refresh( true );
-            }
+                public void run()
+                {
+                    if ( event.getStatus() == GraphDbServiceStatus.STOPPED )
+                    {
+                        provider.refresh();
+                        viewer.refresh();
+                    }
+                    else if ( event.getStatus() == GraphDbServiceStatus.STARTED )
+                    {
+                        provider.refresh();
+                        viewer.refresh( true );
+                    }
+                    else if ( event.getStatus() == GraphDbServiceStatus.ROLLBACK )
+                    {
+                        provider.refresh();
+                        viewer.refresh( true );
+                    }
+                }
+            } );
         }
     }
 

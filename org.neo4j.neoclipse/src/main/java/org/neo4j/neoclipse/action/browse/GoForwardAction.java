@@ -20,6 +20,7 @@ import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**
  * This action moves forward in the browsing history.
+ * 
  * @author Anders Nawroth
  */
 public class GoForwardAction extends AbstractGraphAction
@@ -27,7 +28,7 @@ public class GoForwardAction extends AbstractGraphAction
     /**
      * The constructor.
      */
-    public GoForwardAction( NeoGraphViewPart view )
+    public GoForwardAction( final NeoGraphViewPart view )
     {
         super( Actions.GO_FORWARD, Action.AS_PUSH_BUTTON, view );
         setEnabled( false );
@@ -36,6 +37,7 @@ public class GoForwardAction extends AbstractGraphAction
     /**
      * Executes the action.
      */
+    @Override
     public void run()
     {
         graphView.goForward();

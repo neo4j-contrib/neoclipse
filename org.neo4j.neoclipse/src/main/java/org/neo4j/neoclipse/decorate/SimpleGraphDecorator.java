@@ -15,9 +15,12 @@ package org.neo4j.neoclipse.decorate;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.concurrent.Callable;
 
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.graphics.Color;
@@ -31,17 +34,15 @@ import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.RelationshipType;
 import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.Icons;
+import org.neo4j.neoclipse.graphdb.GraphDbServiceManager;
+import org.neo4j.neoclipse.graphdb.GraphDbUtil;
 import org.neo4j.neoclipse.preference.DecoratorPreferences;
 import org.neo4j.neoclipse.property.PropertyTransform;
+import org.neo4j.neoclipse.property.PropertyTransform.PropertyHandler;
+import org.neo4j.neoclipse.view.ErrorMessage;
 
 public class SimpleGraphDecorator
 {
-    private static final int RELATIONSHIP = 0;
-    private static final int NODE_INCOMING = 1;
-    private static final int NODE_OUTGOING = 2;
-    private static final int RELATIONSHIP_MARKED = 3;
-    private static final int NODE_INCOMING_MARKED = 4;
-    private static final int NODE_OUTGOING_MARKED = 5;
     /**
      * The icon for nodes.
      */
@@ -57,28 +58,28 @@ public class SimpleGraphDecorator
     /**
      * Default relationship "color" (gray).
      */
-    private static final Color RELATIONSHIP_COLOR = new Color( Display
-        .getDefault(), new RGB( 70, 70, 70 ) );
+    private static final Color RELATIONSHIP_COLOR = new Color(
+            Display.getDefault(), new RGB( 70, 70, 70 ) );
     /**
      * Default node background color.
      */
-    private static final Color NODE_BACKGROUND_COLOR = new Color( Display
-        .getDefault(), new RGB( 255, 255, 255 ) );
+    private static final Color NODE_BACKGROUND_COLOR = new Color(
+            Display.getDefault(), new RGB( 255, 255, 255 ) );
     /**
      * Color of node foreground/text.
      */
-    private static final Color NODE_FOREGROUND_COLOR = new Color( Display
-        .getDefault(), new RGB( 0, 0, 0 ) );
+    private static final Color NODE_FOREGROUND_COLOR = new Color(
+            Display.getDefault(), new RGB( 0, 0, 0 ) );
     /**
      * Color of node foreground/text.
      */
-    private static final Color INPUTNODE_FOREGROUND_COLOR = new Color( Display
-        .getDefault(), new RGB( 60, 60, 200 ) );
+    private static final Color INPUTNODE_FOREGROUND_COLOR = new Color(
+            Display.getDefault(), new RGB( 60, 60, 200 ) );
     /**
      * Highlight color for relationships.
      */
     private static final Color HIGHLIGHTED_RELATIONSHIP_COLOR = new Color(
-        Display.getDefault(), new RGB( 0, 0, 0 ) );
+            Display.getDefault(), new RGB( 0, 0, 0 ) );
     /**
      * Map colors to relationship types.
      */
@@ -168,8 +169,8 @@ public class SimpleGraphDecorator
         /**
          * Convert a string containing a comma-separated list of names to a list
          * of strings. Ignores "" as a name.
-         * @param names
-         *            comma-separated names
+         * 
+         * @param names comma-separated names
          * @return list of names
          */
         private List<String> listFromString( final String names )
@@ -187,6 +188,7 @@ public class SimpleGraphDecorator
             return list;
         }
     }
+
     public static class ViewSettings
     {
         /**
@@ -244,28 +246,17 @@ public class SimpleGraphDecorator
         public ViewSettings()
         {
             preferenceStore = Activator.getDefault().getPreferenceStore();
-            showRelationshipTypes = preferenceStore
-                .getBoolean( DecoratorPreferences.SHOW_RELATIONSHIP_TYPES );
-            showRelationshipNames = preferenceStore
-                .getBoolean( DecoratorPreferences.SHOW_RELATIONSHIP_NAMES );
-            showRelationshipProperties = preferenceStore
-                .getBoolean( DecoratorPreferences.SHOW_RELATIONSHIP_PROPERTIES );
-            showRelationshipIds = preferenceStore
-                .getBoolean( DecoratorPreferences.SHOW_RELATIONSHIP_IDS );
-            showRelationshipColors = preferenceStore
-                .getBoolean( DecoratorPreferences.SHOW_RELATIONSHIP_COLORS );
-            showArrows = preferenceStore
-                .getBoolean( DecoratorPreferences.SHOW_ARROWS );
-            showNodeIds = preferenceStore
-                .getBoolean( DecoratorPreferences.SHOW_NODE_IDS );
-            showNodeNames = preferenceStore
-                .getBoolean( DecoratorPreferences.SHOW_NODE_NAMES );
-            showNodeProperties = preferenceStore
-                .getBoolean( DecoratorPreferences.SHOW_NODE_PROPERTIES );
-            showNodeIcons = preferenceStore
-                .getBoolean( DecoratorPreferences.SHOW_NODE_ICONS );
-            showNodeColors = preferenceStore
-                .getBoolean( DecoratorPreferences.SHOW_NODE_COLORS );
+            showRelationshipTypes = preferenceStore.getBoolean( DecoratorPreferences.SHOW_RELATIONSHIP_TYPES );
+            showRelationshipNames = preferenceStore.getBoolean( DecoratorPreferences.SHOW_RELATIONSHIP_NAMES );
+            showRelationshipProperties = preferenceStore.getBoolean( DecoratorPreferences.SHOW_RELATIONSHIP_PROPERTIES );
+            showRelationshipIds = preferenceStore.getBoolean( DecoratorPreferences.SHOW_RELATIONSHIP_IDS );
+            showRelationshipColors = preferenceStore.getBoolean( DecoratorPreferences.SHOW_RELATIONSHIP_COLORS );
+            showArrows = preferenceStore.getBoolean( DecoratorPreferences.SHOW_ARROWS );
+            showNodeIds = preferenceStore.getBoolean( DecoratorPreferences.SHOW_NODE_IDS );
+            showNodeNames = preferenceStore.getBoolean( DecoratorPreferences.SHOW_NODE_NAMES );
+            showNodeProperties = preferenceStore.getBoolean( DecoratorPreferences.SHOW_NODE_PROPERTIES );
+            showNodeIcons = preferenceStore.getBoolean( DecoratorPreferences.SHOW_NODE_ICONS );
+            showNodeColors = preferenceStore.getBoolean( DecoratorPreferences.SHOW_NODE_COLORS );
         }
 
         public boolean isShowRelationshipTypes()
@@ -274,12 +265,12 @@ public class SimpleGraphDecorator
         }
 
         public void setShowRelationshipTypes(
-            final boolean showRelationshipTypes )
+                final boolean showRelationshipTypes )
         {
             this.showRelationshipTypes = showRelationshipTypes;
             preferenceStore.setValue(
-                DecoratorPreferences.SHOW_RELATIONSHIP_TYPES,
-                showRelationshipTypes );
+                    DecoratorPreferences.SHOW_RELATIONSHIP_TYPES,
+                    showRelationshipTypes );
         }
 
         public boolean isShowRelationshipNames()
@@ -288,12 +279,12 @@ public class SimpleGraphDecorator
         }
 
         public void setShowRelationshipNames(
-            final boolean showRelationshipNames )
+                final boolean showRelationshipNames )
         {
             this.showRelationshipNames = showRelationshipNames;
             preferenceStore.setValue(
-                DecoratorPreferences.SHOW_RELATIONSHIP_NAMES,
-                showRelationshipNames );
+                    DecoratorPreferences.SHOW_RELATIONSHIP_NAMES,
+                    showRelationshipNames );
         }
 
         public boolean isShowRelationshipProperties()
@@ -302,12 +293,12 @@ public class SimpleGraphDecorator
         }
 
         public void setShowRelationshipProperties(
-            final boolean showRelationshipProperties )
+                final boolean showRelationshipProperties )
         {
             this.showRelationshipProperties = showRelationshipProperties;
             preferenceStore.setValue(
-                DecoratorPreferences.SHOW_RELATIONSHIP_PROPERTIES,
-                showRelationshipProperties );
+                    DecoratorPreferences.SHOW_RELATIONSHIP_PROPERTIES,
+                    showRelationshipProperties );
         }
 
         public boolean isShowRelationshipIds()
@@ -319,8 +310,8 @@ public class SimpleGraphDecorator
         {
             this.showRelationshipIds = showRelationshipIds;
             preferenceStore.setValue(
-                DecoratorPreferences.SHOW_RELATIONSHIP_IDS,
-                showRelationshipIds );
+                    DecoratorPreferences.SHOW_RELATIONSHIP_IDS,
+                    showRelationshipIds );
         }
 
         public boolean isShowRelationshipColors()
@@ -329,12 +320,12 @@ public class SimpleGraphDecorator
         }
 
         public void setShowRelationshipColors(
-            final boolean showRelationshipColors )
+                final boolean showRelationshipColors )
         {
             this.showRelationshipColors = showRelationshipColors;
             preferenceStore.setValue(
-                DecoratorPreferences.SHOW_RELATIONSHIP_COLORS,
-                showRelationshipColors );
+                    DecoratorPreferences.SHOW_RELATIONSHIP_COLORS,
+                    showRelationshipColors );
         }
 
         public boolean isShowArrows()
@@ -346,7 +337,7 @@ public class SimpleGraphDecorator
         {
             this.showArrows = showArrows;
             preferenceStore.setValue( DecoratorPreferences.SHOW_ARROWS,
-                showArrows );
+                    showArrows );
         }
 
         public boolean isShowNodeIds()
@@ -358,7 +349,7 @@ public class SimpleGraphDecorator
         {
             this.showNodeIds = showNodeIds;
             preferenceStore.setValue( DecoratorPreferences.SHOW_NODE_IDS,
-                showNodeIds );
+                    showNodeIds );
         }
 
         public boolean isShowNodeNames()
@@ -370,7 +361,7 @@ public class SimpleGraphDecorator
         {
             this.showNodeNames = showNodeNames;
             preferenceStore.setValue( DecoratorPreferences.SHOW_NODE_NAMES,
-                showNodeNames );
+                    showNodeNames );
         }
 
         public boolean isShowNodeProperties()
@@ -382,8 +373,8 @@ public class SimpleGraphDecorator
         {
             this.showNodeProperties = showNodeProperties;
             preferenceStore.setValue(
-                DecoratorPreferences.SHOW_NODE_PROPERTIES,
-                showNodeProperties );
+                    DecoratorPreferences.SHOW_NODE_PROPERTIES,
+                    showNodeProperties );
         }
 
         public boolean isShowNodeIcons()
@@ -395,7 +386,7 @@ public class SimpleGraphDecorator
         {
             this.showNodeIcons = showNodeIcons;
             preferenceStore.setValue( DecoratorPreferences.SHOW_NODE_ICONS,
-                showNodeIcons );
+                    showNodeIcons );
         }
 
         public boolean isShowNodeColors()
@@ -407,12 +398,12 @@ public class SimpleGraphDecorator
         {
             this.showNodeColors = showNodeColors;
             preferenceStore.setValue( DecoratorPreferences.SHOW_NODE_COLORS,
-                showNodeColors );
+                    showNodeColors );
         }
     }
 
     public SimpleGraphDecorator( final Settings settings,
-        final ViewSettings viewSettings )
+            final ViewSettings viewSettings )
     {
         if ( settings.getDirections() == null )
         {
@@ -424,22 +415,7 @@ public class SimpleGraphDecorator
         }
         this.settings = settings;
         this.viewSettings = viewSettings;
-        final float[] saturations = new float[6];
-        final float[] brightnesses = new float[6];
-        saturations[RELATIONSHIP] = 0.8f;
-        brightnesses[RELATIONSHIP] = 0.7f;
-        saturations[NODE_INCOMING] = 0.17f;
-        brightnesses[NODE_INCOMING] = 1.0f;
-        saturations[NODE_OUTGOING] = 0.08f;
-        brightnesses[NODE_OUTGOING] = 0.95f;
-        saturations[RELATIONSHIP_MARKED] = 0.8f;
-        brightnesses[RELATIONSHIP_MARKED] = 0.5f;
-        saturations[NODE_INCOMING_MARKED] = 0.3f;
-        brightnesses[NODE_INCOMING_MARKED] = 0.7f;
-        saturations[NODE_OUTGOING_MARKED] = 0.2f;
-        brightnesses[NODE_OUTGOING_MARKED] = 0.6f;
-        colorMapper = new RelationshipTypeColorMapper( saturations,
-            brightnesses );
+        colorMapper = new RelationshipTypeColorMapper( ColorCategory.values() );
         userIcons = new UserIcons( settings.getNodeIconLocation() );
     }
 
@@ -455,83 +431,103 @@ public class SimpleGraphDecorator
 
     /**
      * Get color of node.
+     * 
      * @param node
-     * @param marked
-     *            true if the node is marked
+     * @param marked true if the node is marked
      * @return
      */
     private Color getNodeColor( final Node node, final boolean marked )
     {
-        Relationship randomRel = null;
-        Direction randomDir = null;
-        for ( Direction direction : settings.getDirections() )
+        GraphDbServiceManager gsm = Activator.getDefault().getGraphDbServiceManager();
+        try
         {
-            for ( Relationship rel : node.getRelationships( direction ) )
+            return gsm.submitTask( new Callable<Color>()
             {
-                RelationshipType type = rel.getType();
-                if ( !colorMapper.colorExists( type ) )
+                public Color call() throws Exception
                 {
-                    if ( randomRel == null )
+                    Relationship randomRel = null;
+                    Direction randomDir = null;
+                    for ( Direction direction : settings.getDirections() )
                     {
-                        randomRel = rel;
-                        randomDir = direction;
+                        for ( Relationship rel : node.getRelationships( direction ) )
+                        {
+                            RelationshipType type = rel.getType();
+                            if ( !colorMapper.colorExists( type ) )
+                            {
+                                if ( randomRel == null )
+                                {
+                                    randomRel = rel;
+                                    randomDir = direction;
+                                }
+                                continue;
+                            }
+                            else
+                            {
+                                return getColorFromDirection( type, direction,
+                                        marked );
+                            }
+                        }
                     }
-                    continue;
+                    if ( randomRel != null )
+                    {
+                        return getColorFromDirection( randomRel.getType(),
+                                randomDir, marked );
+                    }
+                    return getNodeColor();
                 }
-                else
-                {
-                    return getColorFromDirection( type, direction, marked );
-                }
-            }
+            }, "get node color" ).get();
         }
-        if ( randomRel != null )
+        catch ( Exception e )
         {
-            return getColorFromDirection( randomRel.getType(), randomDir,
-                marked );
+            e.printStackTrace();
         }
-        return getNodeColor();
+        return null;
     }
 
     /**
      * Get color connected to relationship type depending on direction and if
      * it's marked or not.
+     * 
      * @param type
      * @param direction
      * @param marked
      * @return
      */
     private Color getColorFromDirection( final RelationshipType type,
-        final Direction direction, final boolean marked )
+            final Direction direction, final boolean marked )
     {
         switch ( direction )
         {
-            case INCOMING:
-                if ( marked )
-                {
-                    return colorMapper.getColor( type, NODE_INCOMING_MARKED );
-                }
-                else
-                {
-                    return colorMapper.getColor( type, NODE_INCOMING );
-                }
-            case OUTGOING:
-                if ( marked )
-                {
-                    return colorMapper.getColor( type, NODE_OUTGOING_MARKED );
-                }
-                else
-                {
-                    return colorMapper.getColor( type, NODE_OUTGOING );
-                }
-            default:
-                if ( marked )
-                {
-                    return colorMapper.getColor( type, RELATIONSHIP_MARKED );
-                }
-                else
-                {
-                    return colorMapper.getColor( type, RELATIONSHIP );
-                }
+        case INCOMING:
+            if ( marked )
+            {
+                return colorMapper.getColor( type,
+                        ColorCategory.NODE_INCOMING_MARKED );
+            }
+            else
+            {
+                return colorMapper.getColor( type, ColorCategory.NODE_INCOMING );
+            }
+        case OUTGOING:
+            if ( marked )
+            {
+                return colorMapper.getColor( type,
+                        ColorCategory.NODE_OUTGOING_MARKED );
+            }
+            else
+            {
+                return colorMapper.getColor( type, ColorCategory.NODE_OUTGOING );
+            }
+        default:
+            if ( marked )
+            {
+                return colorMapper.getColor( type,
+                        ColorCategory.RELATIONSHIP_MARKED );
+            }
+            else
+            {
+                return colorMapper.getColor( type, ColorCategory.RELATIONSHIP );
+            }
         }
     }
 
@@ -542,16 +538,16 @@ public class SimpleGraphDecorator
 
     public Color getRelationshipColor( final Relationship rel )
     {
-        return colorMapper.getColor( rel.getType(), RELATIONSHIP );
+        return colorMapper.getColor( rel.getType(), ColorCategory.RELATIONSHIP );
     }
 
     public Color getRelationshipColor( final RelationshipType relType )
     {
-        return colorMapper.getColor( relType, RELATIONSHIP );
+        return colorMapper.getColor( relType, ColorCategory.RELATIONSHIP );
     }
 
     private String getSimpleNodeText( final Node node,
-        final boolean isReferenceNode )
+            final boolean isReferenceNode )
     {
         if ( isReferenceNode )
         {
@@ -573,10 +569,10 @@ public class SimpleGraphDecorator
         else
         {
             if ( viewSettings.isShowNodeNames()
-                && !settings.getNodePropertyNames().isEmpty() )
+                 && !settings.getNodePropertyNames().isEmpty() )
             {
-                String propertyValue = readProperties( node, settings
-                    .getNodePropertyNames() );
+                String propertyValue = readProperties( node,
+                        settings.getNodePropertyNames() );
                 if ( propertyValue == null )
                 {
                     propertyValue = getSimpleNodeText( node, isReferenceNode );
@@ -608,12 +604,17 @@ public class SimpleGraphDecorator
     }
 
     private String readProperties( final PropertyContainer container,
-        final List<String> propertyNames )
+            final List<String> propertyNames )
     {
+        Map<String, Object> props = GraphDbUtil.getProperties( container );
         List<String> values = new ArrayList<String>();
         for ( String propertyName : propertyNames )
         {
-            Object propertyValue = container.getProperty( propertyName, "" );
+            Object propertyValue = props.get( propertyName );
+            if ( propertyValue == null )
+            {
+                continue;
+            }
             if ( propertyValue instanceof String )
             {
                 if ( "".equals( propertyValue ) )
@@ -626,8 +627,7 @@ public class SimpleGraphDecorator
             else
             {
                 // get a proper String from other types
-                String render = PropertyTransform.getHandler( propertyValue )
-                    .render( propertyValue );
+                String render = PropertyTransform.render( propertyValue );
                 values.add( render );
             }
         }
@@ -640,37 +640,28 @@ public class SimpleGraphDecorator
     }
 
     private String readAllProperties( final PropertyContainer container,
-        final boolean includeId )
+            final boolean includeId )
     {
+        Map<String, Object> props = GraphDbUtil.getProperties( container );
         SortedSet<String> values = new TreeSet<String>();
-        Iterable<String> allProperties = container.getPropertyKeys();
-        for ( String propertyName : allProperties )
+        for ( Entry<String, Object> entry : props.entrySet() )
         {
-            Object propertyValue = container.getProperty( propertyName, "" );
-            if ( propertyValue instanceof String )
-            {
-                values.add( propertyName + ": " + propertyValue );
-            }
-            else
-            {
-                // get a proper String from other types
-                String render = PropertyTransform.getHandler( propertyValue )
-                    .render( propertyValue );
-                values.add( propertyName + ": " + render );
-            }
+            String key = entry.getKey();
+            Object value = entry.getValue();
+            values.add( key + ": " + PropertyTransform.render( value ) );
         }
         StringBuilder str = new StringBuilder( 128 );
         if ( includeId )
         {
             if ( container instanceof Node )
             {
-                str.append( "id: " ).append( ((Node) container).getId() )
-                    .append( '\n' );
+                str.append( "id: " ).append( ( (Node) container ).getId() ).append(
+                        '\n' );
             }
             else if ( container instanceof Relationship )
             {
-                str.append( "id: " )
-                    .append( ((Relationship) container).getId() ).append( '\n' );
+                str.append( "id: " ).append(
+                        ( (Relationship) container ).getId() ).append( '\n' );
             }
         }
         if ( values.size() > 0 )
@@ -700,8 +691,8 @@ public class SimpleGraphDecorator
             {
                 str.append( '\n' );
             }
-            String propertyValue = readAllProperties( rel, viewSettings
-                .isShowRelationshipIds() );
+            String propertyValue = readAllProperties( rel,
+                    viewSettings.isShowRelationshipIds() );
             if ( propertyValue != null )
             {
                 str.append( propertyValue );
@@ -722,10 +713,10 @@ public class SimpleGraphDecorator
                 str.append( rel.getId() );
             }
             if ( viewSettings.isShowRelationshipNames()
-                && !settings.getRelPropertyNames().isEmpty() )
+                 && !settings.getRelPropertyNames().isEmpty() )
             {
-                String propertyValue = readProperties( rel, settings
-                    .getRelPropertyNames() );
+                String propertyValue = readProperties( rel,
+                        settings.getRelPropertyNames() );
                 if ( propertyValue != null )
                 {
                     if ( str.length() > 0 )
@@ -754,33 +745,63 @@ public class SimpleGraphDecorator
     }
 
     public Image getNodeImageFromProperty( final Node node,
-        final boolean isReferenceNode )
+            final boolean isReferenceNode )
     {
         Image img = null;
         // look in properties
-        for ( String propertyName : settings.getNodeIconPropertyNames() )
+        for ( String key : settings.getNodeIconPropertyNames() )
         {
-            String tmpPropVal = (String) node.getProperty( propertyName, "" );
-            if ( !"".equals( tmpPropVal ) ) // no empty strings
+            Map<String, Object> props = GraphDbUtil.getProperties( node );
+            if ( !props.containsKey( key ) )
             {
-                img = userIcons.getImage( tmpPropVal );
-                if ( img != null )
+                continue;
+            }
+            Object value = props.get( key );
+            PropertyHandler handler = PropertyTransform.getHandler( value );
+            if ( !handler.isArray() )
+            {
+                String tmpPropVal = handler.render( value );
+                if ( !"".equals( tmpPropVal ) ) // no empty strings
                 {
-                    return img;
+                    img = userIcons.getImage( tmpPropVal );
+                    if ( img != null )
+                    {
+                        return img;
+                    }
                 }
             }
         }
         // look in relations
-        for ( Direction direction : settings.getDirections() )
+        GraphDbServiceManager gsm = Activator.getDefault().getGraphDbServiceManager();
+        try
         {
-            for ( Relationship rel : node.getRelationships( direction ) )
+            img = gsm.submitTask( new Callable<Image>()
             {
-                img = userIcons.getImage( rel.getType(), direction );
-                if ( img != null )
+                public Image call() throws Exception
                 {
+                    Image img = null;
+                    for ( Direction direction : settings.getDirections() )
+                    {
+                        for ( Relationship rel : node.getRelationships( direction ) )
+                        {
+                            img = userIcons.getImage( rel.getType(), direction );
+                            if ( img != null )
+                            {
+                                return img;
+                            }
+                        }
+                    }
                     return img;
                 }
+            }, "find icons from relationships" ).get();
+            if ( img != null )
+            {
+                return img;
             }
+        }
+        catch ( Exception e )
+        {
+            ErrorMessage.showDialog( "Error retrieving relationships", e );
         }
         return getNodeImage( node, isReferenceNode );
     }
@@ -791,7 +812,7 @@ public class SimpleGraphDecorator
     }
 
     public Color getNodeForegroundColor( final Node node,
-        final boolean isInputNode )
+            final boolean isInputNode )
     {
         if ( isInputNode )
         {
@@ -810,7 +831,8 @@ public class SimpleGraphDecorator
 
     public Color getMarkedRelationshipColor( final Relationship rel )
     {
-        return colorMapper.getColor( rel.getType(), RELATIONSHIP_MARKED );
+        return colorMapper.getColor( rel.getType(),
+                ColorCategory.RELATIONSHIP_MARKED );
     }
 
     public int getMarkedRelationshipStyle( final Object rel )

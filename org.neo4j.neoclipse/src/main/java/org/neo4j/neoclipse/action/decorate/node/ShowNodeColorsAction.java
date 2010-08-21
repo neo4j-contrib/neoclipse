@@ -19,6 +19,7 @@ import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**
  * This action handles the node colors setting.
+ * 
  * @author Anders Nawroth
  */
 public class ShowNodeColorsAction extends AbstractCheckboxAction
@@ -27,7 +28,7 @@ public class ShowNodeColorsAction extends AbstractCheckboxAction
      * The constructor.
      */
     public ShowNodeColorsAction( final NeoGraphViewPart view,
-        final boolean checked )
+            final boolean checked )
     {
         super( Actions.NODE_COLORS, checked, view );
     }
@@ -35,10 +36,11 @@ public class ShowNodeColorsAction extends AbstractCheckboxAction
     /**
      * Executes the action.
      */
+    @Override
     public void run()
     {
         graphView.getLabelProvider().getViewSettings().setShowNodeColors(
-            isChecked() );
+                isChecked() );
         graphView.refreshPreserveLayout();
     }
 }

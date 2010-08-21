@@ -20,6 +20,7 @@ import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**
  * This action focuses the graph viewer on the neo reference node.
+ * 
  * @author Peter H&auml;nsgen
  */
 public class ShowReferenceNodeAction extends AbstractGraphAction
@@ -27,7 +28,7 @@ public class ShowReferenceNodeAction extends AbstractGraphAction
     /**
      * The constructor.
      */
-    public ShowReferenceNodeAction( NeoGraphViewPart view )
+    public ShowReferenceNodeAction( final NeoGraphViewPart view )
     {
         super( Actions.SHOW_REFERENCE_NODE, Action.AS_PUSH_BUTTON, view );
     }
@@ -35,6 +36,7 @@ public class ShowReferenceNodeAction extends AbstractGraphAction
     /**
      * Executes the action.
      */
+    @Override
     public void run()
     {
         graphView.showReferenceNode();

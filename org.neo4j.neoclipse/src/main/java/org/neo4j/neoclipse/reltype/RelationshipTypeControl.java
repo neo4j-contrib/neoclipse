@@ -22,9 +22,10 @@ import org.neo4j.neoclipse.event.NeoclipseListenerList;
 /**
  * This is a single item in the relationship type view, wrapping a relationship
  * type.
+ * 
  * @author anders
  */
-public class RelationshipTypeControl
+public class RelationshipTypeControl implements DirectedRelationship
 {
     private final NeoclipseListenerList listeners = new NeoclipseListenerList();
     private final RelationshipType relType;
@@ -33,6 +34,7 @@ public class RelationshipTypeControl
 
     /**
      * Wrap a relationship type for display in the table viewer.
+     * 
      * @param relType
      */
     RelationshipTypeControl( final RelationshipType relType )
@@ -41,7 +43,8 @@ public class RelationshipTypeControl
     }
 
     /**
-     * Is incoming realtionships selected?
+     * Is incoming relationships selected?
+     * 
      * @return
      */
     public boolean isIn()
@@ -51,6 +54,7 @@ public class RelationshipTypeControl
 
     /**
      * Set if incoming relationships are selected.
+     * 
      * @param in
      */
     public void setIn( final boolean in )
@@ -64,6 +68,7 @@ public class RelationshipTypeControl
 
     /**
      * Is outgoing realtionships selected?
+     * 
      * @return
      */
     public boolean isOut()
@@ -73,6 +78,7 @@ public class RelationshipTypeControl
 
     /**
      * Set if outgoing relationships are selected.
+     * 
      * @param in
      */
     public void setOut( final boolean out )
@@ -84,9 +90,8 @@ public class RelationshipTypeControl
         }
     }
 
-    /**
-     * Get the relationship type in this wrapper.
-     * @return
+    /* (non-Javadoc)
+     * @see org.neo4j.neoclipse.reltype.DirectedRelationship#getRelType()
      */
     public RelationshipType getRelType()
     {
@@ -95,6 +100,7 @@ public class RelationshipTypeControl
 
     /**
      * True if either incoming or outgoing or both exists.
+     * 
      * @return
      */
     public boolean hasDirection()
@@ -102,9 +108,8 @@ public class RelationshipTypeControl
         return in || out;
     }
 
-    /**
-     * Get direction filter for this relationship type.
-     * @return
+    /* (non-Javadoc)
+     * @see org.neo4j.neoclipse.reltype.DirectedRelationship#getDirection()
      */
     public Direction getDirection()
     {
@@ -121,7 +126,8 @@ public class RelationshipTypeControl
             return Direction.OUTGOING;
         }
         throw new RuntimeException(
-            "There is no direction set for RelationshipType: " + relType.name() );
+                "There is no direction set for RelationshipType: "
+                        + relType.name() );
     }
 
     /**
@@ -135,6 +141,7 @@ public class RelationshipTypeControl
 
     /**
      * Add a new listener to changes.
+     * 
      * @param newListener
      */
     public void addChangeListener( final NeoclipseEventListener newListener )
@@ -158,7 +165,7 @@ public class RelationshipTypeControl
         if ( obj instanceof RelationshipTypeControl )
         {
             return this.getRelType().name().equals(
-                ((RelationshipTypeControl) obj).getRelType().name() );
+                    ( (DirectedRelationship) obj ).getRelType().name() );
         }
         return false;
     }

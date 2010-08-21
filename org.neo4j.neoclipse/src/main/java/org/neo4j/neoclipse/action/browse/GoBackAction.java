@@ -20,6 +20,7 @@ import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**
  * This action moves backward in the browsing history.
+ * 
  * @author Anders Nawroth
  */
 public class GoBackAction extends AbstractGraphAction
@@ -27,7 +28,7 @@ public class GoBackAction extends AbstractGraphAction
     /**
      * The constructor.
      */
-    public GoBackAction( NeoGraphViewPart view )
+    public GoBackAction( final NeoGraphViewPart view )
     {
         super( Actions.GO_BACK, Action.AS_PUSH_BUTTON, view );
         setEnabled( false );
@@ -36,6 +37,7 @@ public class GoBackAction extends AbstractGraphAction
     /**
      * Executes the action.
      */
+    @Override
     public void run()
     {
         graphView.goBack();

@@ -21,6 +21,7 @@ import org.neo4j.neoclipse.view.NeoGraphViewPart;
 /**
  * This action refreshes the graph view, e.g. it sets the current node again as
  * input source.
+ * 
  * @author Peter H&auml;nsgen
  */
 public class RefreshAction extends AbstractGraphAction
@@ -28,7 +29,7 @@ public class RefreshAction extends AbstractGraphAction
     /**
      * The constructor.
      */
-    public RefreshAction( NeoGraphViewPart view )
+    public RefreshAction( final NeoGraphViewPart view )
     {
         super( Actions.REFRESH, Action.AS_PUSH_BUTTON, view );
     }
@@ -36,6 +37,7 @@ public class RefreshAction extends AbstractGraphAction
     /**
      * Executes the action.
      */
+    @Override
     public void run()
     {
         graphView.refresh();

@@ -11,42 +11,38 @@
  * OF ANY KIND, either express or implied. See the License for the specific
  * language governing permissions and limitations under the License.
  */
-package org.neo4j.neoclipse.action.layout;
+package org.neo4j.neoclipse.action.context;
 
-import org.eclipse.jface.action.Action;
-import org.eclipse.zest.layouts.LayoutStyles;
-import org.eclipse.zest.layouts.algorithms.SpringLayoutAlgorithm;
+import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.action.AbstractGraphAction;
 import org.neo4j.neoclipse.action.Actions;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**
- * This action sets the layout of the graph viewer to spring layout.
+ * Action to restart transaction (without committing).
  * 
- * @author Peter H&auml;nsgen
+ * @author Anders Nawroth
  */
-public class ShowSpringLayoutAction extends AbstractGraphAction
+public class SyncAction extends AbstractGraphAction
 {
-    /**
-     * The constructor.
-     */
-    public ShowSpringLayoutAction( final NeoGraphViewPart view )
+    public SyncAction( final NeoGraphViewPart neoGraphViewPart )
     {
-        super( Actions.SPRING_LAYOUT, Action.AS_RADIO_BUTTON, view );
-        setChecked( true );
+        super( Actions.SYNC, neoGraphViewPart );
+        setEnabled( false );
     }
 
-    /**
-     * Executes the action.
-     */
     @Override
     public void run()
     {
-        if ( isChecked() )
+        setEnabled( false );
+        try
         {
-            graphView.getViewer().setLayoutAlgorithm(
-                    new SpringLayoutAlgorithm(
-                            LayoutStyles.NO_LAYOUT_NODE_RESIZING ), true );
+            Activator.getDefault().getGraphDbServiceManager().rollback();
         }
+        catch ( Exception e )
+        {
+            e.printStackTrace();
+        }
+        setEnabled( true );
     }
 }

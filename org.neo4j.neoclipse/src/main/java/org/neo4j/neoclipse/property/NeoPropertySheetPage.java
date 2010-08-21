@@ -39,14 +39,16 @@ import org.neo4j.neoclipse.property.action.NewAction;
 import org.neo4j.neoclipse.property.action.PasteAction;
 import org.neo4j.neoclipse.property.action.RenameAction;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
+import org.neo4j.neoclipse.view.UiHelper;
 
 /**
  * This class is a workaround to sort the property categories in the way we
  * want.
+ * 
  * @author Anders Nawroth
  */
 public class NeoPropertySheetPage extends PropertySheetPage implements
-    ISelectionListener
+        ISelectionListener
 {
     private static class NeoPropertySheetSorter extends PropertySheetSorter
     {
@@ -54,10 +56,10 @@ public class NeoPropertySheetPage extends PropertySheetPage implements
 
         @Override
         public int compareCategories( final String categoryA,
-            final String categoryB )
+                final String categoryB )
         {
             if ( RELATIONSHIP.equals( categoryA )
-                || RELATIONSHIP.equals( categoryB ) )
+                 || RELATIONSHIP.equals( categoryB ) )
             {
                 // reverse the categories in this case
                 return super.compareCategories( categoryB, categoryA );
@@ -91,7 +93,8 @@ public class NeoPropertySheetPage extends PropertySheetPage implements
         listeners.add( listener );
     }
 
-    public void fireChangeEvent( final Object element, final String key )
+    public void fireChangeEvent( final Object element, final String key,
+            final boolean refresh )
     {
         // TODO make sure this key gets selected in the view
         ChangeEvent ce = new ChangeEvent( element, key );
@@ -99,6 +102,21 @@ public class NeoPropertySheetPage extends PropertySheetPage implements
         {
             listener.handleStateChanged( ce );
         }
+        if ( refresh )
+        {
+            refreshSafely();
+        }
+    }
+
+    public void refreshSafely()
+    {
+        UiHelper.asyncExec( new Runnable()
+        {
+            public void run()
+            {
+                refresh();
+            }
+        } );
     }
 
     public PropertyContainer getPropertyContainer()
@@ -108,6 +126,7 @@ public class NeoPropertySheetPage extends PropertySheetPage implements
 
     /**
      * Get the current selection.
+     * 
      * @return current selection
      */
     public ISelection getSelection()
@@ -125,11 +144,12 @@ public class NeoPropertySheetPage extends PropertySheetPage implements
         getControl().setMenu( menu );
         getSite().getPage().addSelectionListener( NeoGraphViewPart.ID, this );
         PlatformUI.getWorkbench().getHelpSystem().setHelp( parent,
-            HelpContextConstants.NEO_PROPERTY_SHEET_PAGE );
+                HelpContextConstants.NEO_PROPERTY_SHEET_PAGE );
     }
 
     /**
      * Create the context menu for this property sheet.
+     * 
      * @param parent
      */
     private void createMenu( final Composite parent )
@@ -172,6 +192,7 @@ public class NeoPropertySheetPage extends PropertySheetPage implements
 
     /**
      * Enable/disable actions that operate on an existing property.
+     * 
      * @param enabled
      */
     private void setRestrictedEnabled( final boolean enabled )
@@ -195,26 +216,26 @@ public class NeoPropertySheetPage extends PropertySheetPage implements
      */
     private MenuManager createNewSubmenu( final Composite parent )
     {
-        MenuManager addMenuMgr = new MenuManager( "New", Icons.NEW_ENABLED
-            .descriptor(), "propertiesAddSubmenu" );
-        addMenuMgr.add( new NewAction( parent, this, PropertyTransform
-            .getHandler( String.class ) ) );
-        addMenuMgr.add( new NewAction( parent, this, PropertyTransform
-            .getHandler( Character.class ) ) );
-        addMenuMgr.add( new NewAction( parent, this, PropertyTransform
-            .getHandler( Long.class ) ) );
-        addMenuMgr.add( new NewAction( parent, this, PropertyTransform
-            .getHandler( Integer.class ) ) );
-        addMenuMgr.add( new NewAction( parent, this, PropertyTransform
-            .getHandler( Short.class ) ) );
-        addMenuMgr.add( new NewAction( parent, this, PropertyTransform
-            .getHandler( Byte.class ) ) );
-        addMenuMgr.add( new NewAction( parent, this, PropertyTransform
-            .getHandler( Double.class ) ) );
-        addMenuMgr.add( new NewAction( parent, this, PropertyTransform
-            .getHandler( Float.class ) ) );
-        addMenuMgr.add( new NewAction( parent, this, PropertyTransform
-            .getHandler( Boolean.class ) ) );
+        MenuManager addMenuMgr = new MenuManager( "New",
+                Icons.NEW_ENABLED.descriptor(), "propertiesAddSubmenu" );
+        addMenuMgr.add( new NewAction( parent, this,
+                PropertyTransform.getHandler( String.class ) ) );
+        addMenuMgr.add( new NewAction( parent, this,
+                PropertyTransform.getHandler( Character.class ) ) );
+        addMenuMgr.add( new NewAction( parent, this,
+                PropertyTransform.getHandler( Long.class ) ) );
+        addMenuMgr.add( new NewAction( parent, this,
+                PropertyTransform.getHandler( Integer.class ) ) );
+        addMenuMgr.add( new NewAction( parent, this,
+                PropertyTransform.getHandler( Short.class ) ) );
+        addMenuMgr.add( new NewAction( parent, this,
+                PropertyTransform.getHandler( Byte.class ) ) );
+        addMenuMgr.add( new NewAction( parent, this,
+                PropertyTransform.getHandler( Double.class ) ) );
+        addMenuMgr.add( new NewAction( parent, this,
+                PropertyTransform.getHandler( Float.class ) ) );
+        addMenuMgr.add( new NewAction( parent, this,
+                PropertyTransform.getHandler( Boolean.class ) ) );
         return addMenuMgr;
     }
 
@@ -223,26 +244,26 @@ public class NeoPropertySheetPage extends PropertySheetPage implements
      */
     private MenuManager createNewArraySubmenu( final Composite parent )
     {
-        MenuManager addMenuMgr = new MenuManager( "New[]", Icons.NEW_ENABLED
-            .descriptor(), "propertiesArrayAddSubmenu" );
-        addMenuMgr.add( new NewAction( parent, this, PropertyTransform
-            .getHandler( String[].class ) ) );
-        addMenuMgr.add( new NewAction( parent, this, PropertyTransform
-            .getHandler( char[].class ) ) );
-        addMenuMgr.add( new NewAction( parent, this, PropertyTransform
-            .getHandler( long[].class ) ) );
-        addMenuMgr.add( new NewAction( parent, this, PropertyTransform
-            .getHandler( int[].class ) ) );
-        addMenuMgr.add( new NewAction( parent, this, PropertyTransform
-            .getHandler( short[].class ) ) );
-        addMenuMgr.add( new NewAction( parent, this, PropertyTransform
-            .getHandler( byte[].class ) ) );
-        addMenuMgr.add( new NewAction( parent, this, PropertyTransform
-            .getHandler( double[].class ) ) );
-        addMenuMgr.add( new NewAction( parent, this, PropertyTransform
-            .getHandler( float[].class ) ) );
-        addMenuMgr.add( new NewAction( parent, this, PropertyTransform
-            .getHandler( boolean[].class ) ) );
+        MenuManager addMenuMgr = new MenuManager( "New[]",
+                Icons.NEW_ENABLED.descriptor(), "propertiesArrayAddSubmenu" );
+        addMenuMgr.add( new NewAction( parent, this,
+                PropertyTransform.getHandler( String[].class ) ) );
+        addMenuMgr.add( new NewAction( parent, this,
+                PropertyTransform.getHandler( char[].class ) ) );
+        addMenuMgr.add( new NewAction( parent, this,
+                PropertyTransform.getHandler( long[].class ) ) );
+        addMenuMgr.add( new NewAction( parent, this,
+                PropertyTransform.getHandler( int[].class ) ) );
+        addMenuMgr.add( new NewAction( parent, this,
+                PropertyTransform.getHandler( short[].class ) ) );
+        addMenuMgr.add( new NewAction( parent, this,
+                PropertyTransform.getHandler( byte[].class ) ) );
+        addMenuMgr.add( new NewAction( parent, this,
+                PropertyTransform.getHandler( double[].class ) ) );
+        addMenuMgr.add( new NewAction( parent, this,
+                PropertyTransform.getHandler( float[].class ) ) );
+        addMenuMgr.add( new NewAction( parent, this,
+                PropertyTransform.getHandler( boolean[].class ) ) );
         return addMenuMgr;
     }
 
@@ -280,19 +301,19 @@ public class NeoPropertySheetPage extends PropertySheetPage implements
 
     @Override
     public void selectionChanged( final IWorkbenchPart part,
-        final ISelection selection )
+            final ISelection selection )
     {
         if ( part instanceof NeoGraphViewPart )
         {
             super.selectionChanged( part, selection );
-            if ( !(selection instanceof IStructuredSelection) )
+            if ( !( selection instanceof IStructuredSelection ) )
             {
                 containerSelection = null;
                 return;
             }
             IStructuredSelection parSs = (IStructuredSelection) selection;
             Object parFirstElement = parSs.getFirstElement();
-            if ( !(parFirstElement instanceof PropertyContainer) )
+            if ( !( parFirstElement instanceof PropertyContainer ) )
             {
                 containerSelection = null;
                 return;
@@ -303,7 +324,7 @@ public class NeoPropertySheetPage extends PropertySheetPage implements
 
     @Override
     public void setPropertySourceProvider(
-        final IPropertySourceProvider newProvider )
+            final IPropertySourceProvider newProvider )
     {
         super.setPropertySourceProvider( newProvider );
     }

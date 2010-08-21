@@ -15,8 +15,14 @@ package org.neo4j.neoclipse.graphdb;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.Callable;
 
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -28,6 +34,8 @@ import org.neo4j.graphdb.RelationshipType;
 import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.property.NeoPropertySheetPage;
 import org.neo4j.neoclipse.property.PropertyTransform.PropertyHandler;
+import org.neo4j.neoclipse.view.Dialog;
+import org.neo4j.neoclipse.view.ErrorMessage;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**
@@ -84,10 +92,33 @@ public class GraphDbUtil
      * @param destNodes destination, is created if <code>null</code> is given
      * @param relType type of relationship
      * @param graphView current database graph view
+     * @return
      */
-    private static void createRelationship( List<Node> sourceNodes,
-            List<Node> destNodes, final RelationshipType relType,
+    private static void createRelationship( final List<Node> sourceNodes,
+            final List<Node> destNodes, final RelationshipType relType,
             final NeoGraphViewPart graphView )
+    {
+        try
+        {
+            Activator.getDefault().getGraphDbServiceManager().submitTask(
+                    new GraphRunnable()
+                    {
+                        public void run( final GraphDatabaseService graphDb )
+                        {
+                            createTheRelationship( sourceNodes, destNodes,
+                                    relType, graphView, graphDb );
+                        }
+                    }, "create relationship" ).get();
+        }
+        catch ( Exception e )
+        {
+            ErrorMessage.showDialog( "Create relationship(s)", e );
+        }
+    }
+
+    private static void createTheRelationship( List<Node> sourceNodes,
+            List<Node> destNodes, final RelationshipType relType,
+            final NeoGraphViewPart graphView, final GraphDatabaseService graphDb )
     {
         if ( relType == null )
         {
@@ -99,10 +130,10 @@ public class GraphDbUtil
             throw new IllegalArgumentException(
                     "Both soure and destination can not be null" );
         }
-        GraphDatabaseService ns = Activator.getDefault().getGraphDbService();
-        if ( ns == null )
+        if ( graphDb == null )
         {
-            return;
+            throw new IllegalStateException(
+                    "No active GraphDatabaseService was found" );
         }
         Node newInputNode = null;
         Node createNode = null;
@@ -111,14 +142,14 @@ public class GraphDbUtil
             if ( destNodes == null )
             {
                 destNodes = new ArrayList<Node>();
-                createNode = ns.createNode();
+                createNode = graphDb.createNode();
                 destNodes.add( createNode );
                 newInputNode = sourceNodes.get( 0 );
             }
             else if ( sourceNodes == null )
             {
                 sourceNodes = new ArrayList<Node>();
-                createNode = ns.createNode();
+                createNode = graphDb.createNode();
                 sourceNodes.add( createNode );
                 newInputNode = destNodes.get( 0 );
             }
@@ -153,7 +184,8 @@ public class GraphDbUtil
     }
 
     /**
-     * Ask the user to confirm delete.
+     * Ask the user to confirm delete. Note that this method should only be
+     * called from inside the UI thread.
      * 
      * @param count numbe rof items to delete
      * @return true on yes to delete
@@ -170,6 +202,7 @@ public class GraphDbUtil
      * 
      * @param containers node and relationships
      * @param graphView the current graph view
+     * @return
      */
     public static void deletePropertyContainers(
             final List<? extends PropertyContainer> containers,
@@ -181,6 +214,28 @@ public class GraphDbUtil
         }
         try
         {
+            Activator.getDefault().getGraphDbServiceManager().submitTask(
+                    new GraphRunnable()
+                    {
+                        public void run( final GraphDatabaseService graphDb )
+                        {
+                            deleteThePropertyContainers( containers, graphView,
+                                    graphDb );
+                        }
+                    }, "delete property containers" ).get();
+        }
+        catch ( Exception e )
+        {
+            ErrorMessage.showDialog( "Delete", e );
+        }
+    }
+
+    private static void deleteThePropertyContainers(
+            final List<? extends PropertyContainer> containers,
+            final NeoGraphViewPart graphView, final GraphDatabaseService graphDb )
+    {
+        try
+        {
             Node inputNode = graphView.getCurrentNode();
             Node newInputNode = null;
             Iterator<? extends PropertyContainer> iter = containers.iterator();
@@ -190,12 +245,12 @@ public class GraphDbUtil
                 if ( container instanceof Node )
                 {
                     Node node = (Node) container;
-                    if ( node.equals( Activator.getDefault().getReferenceNode() ) )
+                    if ( node.equals( graphDb.getReferenceNode() ) )
                     {
-                        boolean confirmation = MessageDialog.openConfirm( null,
+                        boolean confirmed = MessageDialog.openConfirm( null,
                                 CONFIRM_DELETE_TITLE,
                                 "Do you really, really want to delete the REFERENCE NODE?" );
-                        if ( !confirmation )
+                        if ( !confirmed )
                         {
                             return;
                         }
@@ -225,8 +280,7 @@ public class GraphDbUtil
         }
         catch ( Exception e )
         {
-            MessageDialog.openError( null, "Error", "Error when deleting: "
-                                                    + e.getMessage() );
+            ErrorMessage.showDialog( "Error when deleting", e );
         }
     }
 
@@ -259,7 +313,7 @@ public class GraphDbUtil
         List<Node> currentSelectedNodes = graphView.getCurrentSelectedNodes();
         if ( currentSelectedNodes.size() != 2 )
         {
-            MessageDialog.openWarning( null, ADDING_REL_WARNING_LABEL,
+            Dialog.openWarning( ADDING_REL_WARNING_LABEL,
                     ADDING_REL_WARNING_MESSAGE );
             return;
         }
@@ -346,7 +400,7 @@ public class GraphDbUtil
     {
         if ( relTypes.size() != 1 )
         {
-            MessageDialog.openWarning( null, ADDING_REL_WARNING_LABEL,
+            Dialog.openWarning( ADDING_REL_WARNING_LABEL,
                     ADDING_REL_TYPECOUNT_WARNING_MESSAGE );
             return false;
         }
@@ -363,7 +417,7 @@ public class GraphDbUtil
     {
         if ( currentSelectedNodes.size() < 1 )
         {
-            MessageDialog.openWarning( null, ADDING_NODE_WARNING_LABEL,
+            Dialog.openWarning( ADDING_NODE_WARNING_LABEL,
                     ADDING_NODE_WARNING_MESSAGE );
             return false;
         }
@@ -389,15 +443,21 @@ public class GraphDbUtil
         }
         try
         {
-            container.removeProperty( key );
+            Activator.getDefault().getGraphDbServiceManager().submitTask(
+                    new Runnable()
+                    {
+                        public void run()
+                        {
+                            container.removeProperty( key );
+                        }
+                    }, "removing a property" );
         }
         catch ( Exception e )
         {
-            MessageDialog.openError( null, "Error", "Error in Neo service: "
-                                                    + e.getMessage() );
+            Dialog.openError( "Error",
+                    "Error in Neo service: " + e.getMessage() );
         }
-        propertySheet.fireChangeEvent( container, key );
-        propertySheet.refresh();
+        stateChanged( container, key, true, propertySheet );
     }
 
     /**
@@ -440,11 +500,14 @@ public class GraphDbUtil
         }
         catch ( IOException e )
         {
-            MessageDialog.openError( null, "Error message",
+            Dialog.openError( "Error message",
                     "Error parsing the input value, no changes will be performed." );
             return;
         }
-        setProperty( container, key, val, propertySheet );
+        if ( setTheProperty( container, key, val ) )
+        {
+            stateChanged( container, key, true, propertySheet );
+        }
     }
 
     /**
@@ -459,18 +522,39 @@ public class GraphDbUtil
             final String key, final Object value,
             final NeoPropertySheetPage propertySheet )
     {
+        if ( setTheProperty( container, key, value ) )
+        {
+            stateChanged( container, key, false, propertySheet );
+        }
+    }
+
+    private static boolean setTheProperty( final PropertyContainer container,
+            final String key, final Object value )
+    {
         try
         {
-            container.setProperty( key, value );
+            Activator.getDefault().getGraphDbServiceManager().submitTask(
+                    new Runnable()
+                    {
+                        public void run()
+                        {
+                            container.setProperty( key, value );
+                        }
+                    }, "set property" ).get();
         }
         catch ( Exception e )
         {
-            MessageDialog.openError( null, "Error", "Error in Neo service: "
-                                                    + e.getMessage() );
-            e.printStackTrace();
+            ErrorMessage.showDialog( "Set property", e );
+            return false;
         }
-        propertySheet.fireChangeEvent( container, key );
-        propertySheet.refresh();
+        return true;
+    }
+
+    private static void stateChanged( final PropertyContainer container,
+            final String key, final boolean refresh,
+            final NeoPropertySheetPage propertySheet )
+    {
+        propertySheet.fireChangeEvent( container, key, refresh );
     }
 
     /**
@@ -487,15 +571,92 @@ public class GraphDbUtil
     {
         try
         {
-            container.setProperty( newKey, container.getProperty( key ) );
-            container.removeProperty( key );
+            Activator.getDefault().getGraphDbServiceManager().submitTask(
+                    new Runnable()
+                    {
+                        public void run()
+                        {
+                            container.setProperty( newKey,
+                                    container.getProperty( key ) );
+                            container.removeProperty( key );
+                        }
+                    }, "rename property" ).get();
         }
         catch ( Exception e )
         {
-            MessageDialog.openError( null, "Error", "Error in Neo service: "
-                                                    + e.getMessage() );
+            ErrorMessage.showDialog( "Rename property", e );
         }
-        propertySheet.fireChangeEvent( container, newKey );
-        propertySheet.refresh();
+        stateChanged( container, newKey, true, propertySheet );
+    }
+
+    public static Object getProperty( final PropertyContainer container,
+            final String key )
+    {
+        try
+        {
+            return Activator.getDefault().getGraphDbServiceManager().submitTask(
+                    new Callable<Object>()
+                    {
+
+                        public Object call() throws Exception
+                        {
+                            return container.getProperty( key, null );
+                        }
+                    }, "get property" ).get();
+        }
+        catch ( Exception e )
+        {
+            ErrorMessage.showDialog( "Get property", e );
+        }
+        return null;
+    }
+
+    public static Map<String, Object> getProperties(
+            final PropertyContainer container )
+    {
+        try
+        {
+            return Activator.getDefault().getGraphDbServiceManager().submitTask(
+                    new Callable<Map<String, Object>>()
+                    {
+                        public Map<String, Object> call() throws Exception
+                        {
+                            Map<String, Object> props = new HashMap<String, Object>();
+                            for ( String key : container.getPropertyKeys() )
+                            {
+                                props.put( key, container.getProperty( key ) );
+                            }
+                            return props;
+                        }
+                    }, "get properties" ).get();
+        }
+        catch ( Exception e )
+        {
+            ErrorMessage.showDialog( "Get properties", e );
+        }
+        return null;
+    }
+
+    /**
+     * Get all relationships from the database. Note that relationship types not
+     * more in use can show up in the result.
+     * 
+     * @param graphDb the graphdb instance
+     * @return the relationship types
+     */
+    public static Set<RelationshipType> getRelationshipTypesFromDb(
+            final GraphDatabaseService graphDb )
+    {
+        if ( graphDb == null )
+        {
+            return Collections.emptySet();
+        }
+        Set<RelationshipType> relationshipTypes;
+        relationshipTypes = new HashSet<RelationshipType>();
+        for ( RelationshipType relType : graphDb.getRelationshipTypes() )
+        {
+            relationshipTypes.add( relType );
+        }
+        return relationshipTypes;
     }
 }

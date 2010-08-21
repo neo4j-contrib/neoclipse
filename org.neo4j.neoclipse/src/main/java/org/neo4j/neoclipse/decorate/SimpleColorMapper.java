@@ -23,9 +23,9 @@ import org.eclipse.swt.widgets.Display;
 
 /**
  * Map some type to colors.
+ * 
  * @author Anders Nawroth
- * @param <T>
- *            type to map
+ * @param <T> type to map
  */
 public class SimpleColorMapper<T>
 {
@@ -35,14 +35,14 @@ public class SimpleColorMapper<T>
         private final int size;
 
         public Colors( final float hue, final float[] saturations,
-            final float[] brightnesses )
+                final float[] brightnesses )
         {
             size = saturations.length;
             colors = new Color[size];
             for ( int i = 0; i < size; i++ )
             {
                 colors[i] = new Color( Display.getDefault(), new RGB( hue,
-                    saturations[i], brightnesses[i] ) );
+                        saturations[i], brightnesses[i] ) );
             }
         }
 
@@ -56,7 +56,7 @@ public class SimpleColorMapper<T>
     /**
      * Map Objects to Colors for the graph.
      */
-    private final Map<T,Colors> colorMap = new HashMap<T,Colors>();
+    private final Map<T, Colors> colorMap = new HashMap<T, Colors>();
     /**
      * Create colors.
      */
@@ -66,7 +66,7 @@ public class SimpleColorMapper<T>
     private final float[] brightnesses;
 
     public SimpleColorMapper( final float[] saturations,
-        final float[] brightnesses )
+            final float[] brightnesses )
     {
         if ( saturations == null )
         {
@@ -75,17 +75,17 @@ public class SimpleColorMapper<T>
         if ( brightnesses == null )
         {
             throw new IllegalArgumentException(
-                "Null brightnesses array given." );
+                    "Null brightnesses array given." );
         }
         if ( saturations.length == 0 )
         {
             throw new IllegalArgumentException(
-                "Zero length saturations array given." );
+                    "Zero length saturations array given." );
         }
         if ( brightnesses.length == 0 )
         {
             throw new IllegalArgumentException(
-                "Zero length brightnesses array given." );
+                    "Zero length brightnesses array given." );
         }
         if ( saturations.length != brightnesses.length )
         {
@@ -101,7 +101,7 @@ public class SimpleColorMapper<T>
         if ( colors == null )
         {
             colors = new Colors( hueGenerator.nextHue(), saturations,
-                brightnesses );
+                    brightnesses );
             colorMap.put( type, colors );
         }
         return colors.getColor( index );

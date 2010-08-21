@@ -13,8 +13,6 @@
  */
 package org.neo4j.neoclipse.search;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -29,8 +27,9 @@ import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
-import org.neo4j.graphdb.Transaction;
 import org.neo4j.neoclipse.Activator;
+import org.neo4j.neoclipse.graphdb.GraphCallable;
+import org.neo4j.neoclipse.view.ErrorMessage;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**
@@ -49,7 +48,6 @@ public class NeoSearchQuery implements ISearchQuery
      * The found matches.
      */
     private final NeoSearchResult result;
-    private GraphDatabaseService neoService;
 
     /**
      * The constructor.
@@ -110,40 +108,53 @@ public class NeoSearchQuery implements ISearchQuery
     public IStatus run( final IProgressMonitor monitor )
             throws OperationCanceledException
     {
-        neoService = Activator.getDefault().getGraphDbService();
-        if ( neoService == null )
-        {
-            return new Status( IStatus.ERROR, Activator.PLUGIN_ID,
-                    "There is no active Neo4j service." );
-        }
-        // TODO here we should do some real search using Neo's index service
-        // for now simply navigate along the graph
-        // make sure we're in a transaction when performing search
-        Transaction tx = neoService.beginTx();
         try
         {
-            Iterable<Node> matches = getMatchingNodes( monitor );
-            result.setMatches( matches );
-            if ( monitor.isCanceled() )
-            {
-                return new Status( IStatus.CANCEL, Activator.PLUGIN_ID,
-                        "Cancelled." );
-            }
-            else
-            {
-                return new Status( IStatus.OK, Activator.PLUGIN_ID, "OK" );
-            }
+            return Activator.getDefault().getGraphDbServiceManager().submitTask(
+                    new GraphCallable<IStatus>()
+                    {
+                        public IStatus call( final GraphDatabaseService graphDb )
+                        {
+                            if ( graphDb == null )
+                            {
+                                return new Status( IStatus.ERROR,
+                                        Activator.PLUGIN_ID,
+                                        "There is no active Neo4j service." );
+                            }
+                            // TODO here we should do some real search using
+                            // Neo's
+                            // index service
+                            // for now simply navigate along the graph
+                            Iterable<Node> matches = getMatchingNodes( monitor,
+                                    graphDb );
+                            result.setMatches( matches );
+                            if ( monitor.isCanceled() )
+                            {
+                                return new Status( IStatus.CANCEL,
+                                        Activator.PLUGIN_ID, "Cancelled." );
+                            }
+                            else
+                            {
+                                return new Status( IStatus.OK,
+                                        Activator.PLUGIN_ID, "OK" );
+                            }
+                        }
+                    }, "run search" ).get();
         }
-        finally
+        catch ( Exception e )
         {
-            tx.finish();
+            ErrorMessage.showDialog( "Search error", e );
         }
+        return null;
     }
 
     /**
      * Finds all nodes matching the search criteria.
+     * 
+     * @param graphDb TODO
      */
-    protected Iterable<Node> getMatchingNodes( final IProgressMonitor monitor )
+    protected Iterable<Node> getMatchingNodes( final IProgressMonitor monitor,
+            final GraphDatabaseService graphDb )
     {
         // monitor.beginTask( "Neo4j search operation started.",
         // IProgressMonitor.UNKNOWN );
@@ -154,7 +165,7 @@ public class NeoSearchQuery implements ISearchQuery
             try
             {
                 long id = Long.parseLong( expression.getExpression() );
-                nodeFromId = neoService.getNodeById( id );
+                nodeFromId = graphDb.getNodeById( id );
                 matches.add( nodeFromId );
             }
             catch ( RuntimeException e ) // NumberFormatException included
@@ -162,7 +173,7 @@ public class NeoSearchQuery implements ISearchQuery
                 // do nothing
             }
         }
-        for ( Node node : neoService.getAllNodes() )
+        for ( Node node : graphDb.getAllNodes() )
         {
             if ( expression.matches( node.getId() ) )
             {
@@ -189,34 +200,34 @@ public class NeoSearchQuery implements ISearchQuery
     /**
      * Finds all nodes matching the search criteria.
      */
-    protected Iterable<Node> getMatchingNodesByRecursion( final Node node,
-            final IProgressMonitor monitor )
-    {
-        // TODO the Neo traverser API is not sufficient as it does not allow to
-        // find ALL connected
-        // nodes regardless of their relationship types
-        // we have to implement a similar functionality ourselves...
-        Set<Node> visitedNodes = new HashSet<Node>();
-        List<Node> matches = new ArrayList<Node>();
-        // try using as id, if possible
-        if ( expression.isPossibleId() )
-        {
-            try
-            {
-                long id = Long.parseLong( expression.getExpression() );
-                Node nodeFromId = neoService.getNodeById( id );
-                matches.add( nodeFromId );
-                visitedNodes.add( nodeFromId );
-            }
-            catch ( RuntimeException e ) // this also covers
-            // NumberFormatException
-            {
-                // do nothing
-            }
-        }
-        checkNode( node, visitedNodes, matches, monitor );
-        return matches;
-    }
+    // protected Iterable<Node> getMatchingNodesByRecursion( final Node node,
+    // final IProgressMonitor monitor )
+    // {
+    // // TODO the Neo traverser API is not sufficient as it does not allow to
+    // // find ALL connected
+    // // nodes regardless of their relationship types
+    // // we have to implement a similar functionality ourselves...
+    // Set<Node> visitedNodes = new HashSet<Node>();
+    // List<Node> matches = new ArrayList<Node>();
+    // // try using as id, if possible
+    // if ( expression.isPossibleId() )
+    // {
+    // try
+    // {
+    // long id = Long.parseLong( expression.getExpression() );
+    // Node nodeFromId = neoService.getNodeById( id );
+    // matches.add( nodeFromId );
+    // visitedNodes.add( nodeFromId );
+    // }
+    // catch ( RuntimeException e ) // this also covers
+    // // NumberFormatException
+    // {
+    // // do nothing
+    // }
+    // }
+    // checkNode( node, visitedNodes, matches, monitor );
+    // return matches;
+    // }
 
     /**
      * Checks if a node matches the search criteria and visits all connected

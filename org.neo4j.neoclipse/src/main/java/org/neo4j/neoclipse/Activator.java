@@ -13,12 +13,9 @@
  */
 package org.neo4j.neoclipse;
 
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.PreferenceDialog;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.neo4j.graphdb.GraphDatabaseService;
-import org.neo4j.graphdb.Node;
 import org.neo4j.neoclipse.graphdb.GraphDbServiceManager;
 import org.osgi.framework.BundleContext;
 
@@ -52,12 +49,13 @@ public class Activator extends AbstractUIPlugin
     }
 
     /**
-     * Stops the plug-in and shuts down the neo service.
+     * Stops the plug-in and shuts down the neo4j service.
      */
     @Override
     public void stop( final BundleContext context ) throws Exception
     {
-        graphDbManager.stopGraphDbService();
+        graphDbManager.shutdownGraphDbService();
+        graphDbManager.stopExecutingTasks();
         PLUGIN = null;
         super.stop( context );
     }
@@ -78,64 +76,6 @@ public class Activator extends AbstractUIPlugin
     public GraphDbServiceManager getGraphDbServiceManager()
     {
         return graphDbManager;
-    }
-
-    public GraphDatabaseService getGraphDbService()
-    {
-        return graphDbManager.getGraphDbService();
-    }
-
-    /**
-     * Get the current GraphDatabaseService. Returns <code>null</code> on
-     * failure, after showing appropriate error messages.
-     * 
-     * @return current neo service
-     */
-    public GraphDatabaseService getGraphDbServiceSafely()
-    {
-        GraphDbServiceManager sm = Activator.getDefault().getGraphDbServiceManager();
-        if ( sm == null )
-        {
-            MessageDialog.openError( null, "Error",
-                    "The Neo4j service manager is not available." );
-            return null;
-        }
-        GraphDatabaseService ns = null;
-        try
-        {
-            ns = sm.getGraphDbService();
-        }
-        catch ( RuntimeException rte )
-        {
-            rte.printStackTrace();
-            MessageDialog.openInformation( null, "Database problem",
-                    "Unknown problem with the database. " );
-            try
-            {
-                ns = sm.getGraphDbService();
-            }
-            catch ( RuntimeException rte2 )
-            {
-                // just continue
-                rte2.printStackTrace();
-            }
-        }
-        return ns;
-    }
-
-    /**
-     * Get the reference node.
-     * 
-     * @return the reference node
-     */
-    public Node getReferenceNode()
-    {
-        GraphDatabaseService ns = getGraphDbService();
-        if ( ns == null )
-        {
-            return null;
-        }
-        return ns.getReferenceNode();
     }
 
     /**

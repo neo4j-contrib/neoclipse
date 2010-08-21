@@ -90,7 +90,8 @@ public enum Actions
     // edit
     DELETE( "Delete", Icons.DELETE_ENABLED, Icons.DELETE_DISABLED ),
     COMMIT( "Commit", Icons.COMMIT_ENABLED, Icons.COMMIT_DISABLED ),
-    ROLLBACK( "Rollback", Icons.ROLLBACK_ENABLED, Icons.ROLLBACK_DISABLED ),
+    ROLLBACK( "Roll back", Icons.ROLLBACK_ENABLED, Icons.ROLLBACK_DISABLED ),
+    SYNC( "Sync", Icons.SYNC_ENABLED, Icons.SYNC_DISABLED ),
     // view node settings
     NODE_COLORS( "Node colors" ),
     NODE_ICONS( "Node icons" ),
@@ -199,5 +200,15 @@ public enum Actions
     public Icons icon()
     {
         return icon;
+    }
+
+    /**
+     * Icon for disabled state.
+     * 
+     * @return icon or null
+     */
+    public Icons disabledIcon()
+    {
+        return disabledIcon;
     }
 }

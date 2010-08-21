@@ -24,6 +24,7 @@ import org.neo4j.neoclipse.reltype.RelationshipTypeHashMap;
 
 /**
  * Map relationship types to colors.
+ * 
  * @author Anders Nawroth
  */
 public class RelationshipTypeColorMapper
@@ -31,77 +32,49 @@ public class RelationshipTypeColorMapper
     private static class Colors
     {
         private final Color[] colors;
-        private final int size;
 
-        public Colors( final float hue, final float[] saturations,
-            final float[] brightnesses )
+        public Colors( final float hue, final ColorSetting[] categories )
         {
-            size = saturations.length;
-            colors = new Color[size];
-            for ( int i = 0; i < size; i++ )
+            colors = new Color[categories.length];
+            for ( ColorSetting category : categories )
             {
-                colors[i] = new Color( Display.getDefault(), new RGB( hue,
-                    saturations[i], brightnesses[i] ) );
+                colors[category.ordinal()] = new Color( Display.getDefault(),
+                        new RGB( hue, category.getSaturation(),
+                                category.getBrightness() ) );
             }
         }
 
-        public Color getColor( final int index )
+        public Color getColor( final ColorSetting category )
         {
-            return colors[index];
+            return colors[category.ordinal()];
         }
     }
 
     /**
      * Map Objects to Colors for the graph.
      */
-    private final Map<RelationshipType,Colors> colorMap = new RelationshipTypeHashMap<Colors>();
+    private final Map<RelationshipType, Colors> colorMap = new RelationshipTypeHashMap<Colors>();
     /**
      * Create colors.
      */
     private final SimpleHueGenerator hueGenerator = new SimpleHueGenerator();
-    private final float[] saturations;
-    private final float[] brightnesses;
+    private final ColorCategory[] colorCategories;
 
-    public RelationshipTypeColorMapper( final float[] saturations,
-        final float[] brightnesses )
+    public RelationshipTypeColorMapper( final ColorCategory[] values )
     {
-        if ( saturations == null )
-        {
-            throw new IllegalArgumentException( "Null saturations array given." );
-        }
-        if ( brightnesses == null )
-        {
-            throw new IllegalArgumentException(
-                "Null brightnesses array given." );
-        }
-        if ( saturations.length == 0 )
-        {
-            throw new IllegalArgumentException(
-                "Zero length saturations array given." );
-        }
-        if ( brightnesses.length == 0 )
-        {
-            throw new IllegalArgumentException(
-                "Zero length brightnesses array given." );
-        }
-        if ( saturations.length != brightnesses.length )
-        {
-            throw new IllegalArgumentException( "Different size arrays given." );
-        }
-        this.saturations = saturations.clone();
-        this.brightnesses = brightnesses.clone();
+        this.colorCategories = values;
     }
 
-    public Color getColor( final RelationshipType type, final int index )
+    public Color getColor( final RelationshipType type,
+            final ColorSetting colorSetting )
     {
         Colors colors = colorMap.get( type );
         if ( colors == null )
         {
-            colors = new Colors( hueGenerator.nextHue(), saturations,
-                brightnesses );
+            colors = new Colors( hueGenerator.nextHue(), colorCategories );
             colorMap.put( type, colors );
         }
-        return colors.getColor( index );
+        return colors.getColor( colorSetting );
     }
 
     public boolean colorExists( final RelationshipType type )

@@ -19,6 +19,7 @@ import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**
  * This action handles the relationship id setting.
+ * 
  * @author Anders Nawroth
  */
 public class ShowRelationshipIdsAction extends AbstractCheckboxAction
@@ -27,7 +28,7 @@ public class ShowRelationshipIdsAction extends AbstractCheckboxAction
      * The constructor.
      */
     public ShowRelationshipIdsAction( final NeoGraphViewPart view,
-        final boolean checked )
+            final boolean checked )
     {
         super( Actions.RELATIONSHIP_ID, checked, view );
     }
@@ -35,10 +36,11 @@ public class ShowRelationshipIdsAction extends AbstractCheckboxAction
     /**
      * Executes the action.
      */
+    @Override
     public void run()
     {
         graphView.getLabelProvider().getViewSettings().setShowRelationshipIds(
-            isChecked() );
+                isChecked() );
         graphView.refreshPreserveLayout();
     }
 }

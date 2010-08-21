@@ -25,6 +25,7 @@ import org.neo4j.neoclipse.view.NeoGraphViewPart;
 /**
  * This action prints the neo graph as it is currently displayed in the graph
  * view.
+ * 
  * @author Peter H&auml;nsgen
  */
 public class PrintGraphAction extends WorkbenchPartAction
@@ -40,21 +41,23 @@ public class PrintGraphAction extends WorkbenchPartAction
     /**
      * Returns true if there are any available printers.
      */
+    @Override
     protected boolean calculateEnabled()
     {
         PrinterData[] printers = Printer.getPrinterList();
-        return (printers != null) && (printers.length > 0);
+        return ( printers != null ) && ( printers.length > 0 );
     }
 
     /**
      * Executes the action.
      */
+    @Override
     public void run()
     {
         NeoGraphViewPart view = (NeoGraphViewPart) getWorkbenchPart();
         // let the user select the print mode
-        PrintDialog dialog = new PrintDialog( view.getViewer().getControl()
-            .getShell(), SWT.NULL );
+        PrintDialog dialog = new PrintDialog(
+                view.getViewer().getControl().getShell(), SWT.NULL );
         PrinterData data = dialog.open();
         if ( data != null )
         {
@@ -64,7 +67,7 @@ public class PrintGraphAction extends WorkbenchPartAction
             // print the neo figure
             Graph g = view.getViewer().getGraphControl();
             PrintFigureOperation p = new PrintFigureOperation( new Printer(
-                data ), g.getContents() );
+                    data ), g.getContents() );
             p.setPrintMode( PrintFigureOperation.FIT_PAGE );
             p.run( view.getTitle() );
         }

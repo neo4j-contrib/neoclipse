@@ -49,28 +49,28 @@ public class PreferencePage extends AbstractPreferencePage
     {
         // connection mode
         String[][] labels = {
-            { "read/write embedded",
-                GraphDbServiceMode.READ_WRITE_EMBEDDED.name() },
-            { "read-only embedded",
-                GraphDbServiceMode.READ_ONLY_EMBEDDED.name() },
-            { "remote", GraphDbServiceMode.REMOTE.name() } };
+                { "read/write embedded",
+                        GraphDbServiceMode.READ_WRITE_EMBEDDED.name() },
+                { "read-only embedded",
+                        GraphDbServiceMode.READ_ONLY_EMBEDDED.name() },
+                { "remote", GraphDbServiceMode.REMOTE.name() } };
         connectionMode = new RadioGroupFieldEditor(
-                Preferences.CONNECTION_MODE, NEO4J_CONNECTION_MODE, 1,
-                labels, getFieldEditorParent() );
+                Preferences.CONNECTION_MODE, NEO4J_CONNECTION_MODE, 1, labels,
+                getFieldEditorParent() );
         addField( connectionMode );
 
         // location
         locationField = new DirectoryFieldEditor(
-                Preferences.DATABASE_LOCATION,
-                NEO4J_DATABASE_LOCATION_LABEL, getFieldEditorParent() );
+                Preferences.DATABASE_LOCATION, NEO4J_DATABASE_LOCATION_LABEL,
+                getFieldEditorParent() );
         locationField.setEmptyStringAllowed( false );
         locationField.setErrorMessage( NEO4J_DATABASE_LOCATION_ERROR );
         addField( locationField );
 
         // resource uri
         resourceUriField = new StringFieldEditor(
-                Preferences.DATABASE_RESOURCE_URI,
-                DATABASE_RESOURCE_URI_LABEL, getFieldEditorParent() );
+                Preferences.DATABASE_RESOURCE_URI, DATABASE_RESOURCE_URI_LABEL,
+                getFieldEditorParent() );
         resourceUriField.setEmptyStringAllowed( true );
         addField( resourceUriField, "experimental" );
 
@@ -98,7 +98,7 @@ public class PreferencePage extends AbstractPreferencePage
         resourceUriField.setEnabled( true, getFieldEditorParent() );
     }
 
-    private void setStateForConnectionMode( GraphDbServiceMode mode )
+    private void setStateForConnectionMode( final GraphDbServiceMode mode )
     {
         switch ( mode )
         {
@@ -112,7 +112,7 @@ public class PreferencePage extends AbstractPreferencePage
         }
     }
 
-    private void setStateForConnectionMode( String mode )
+    private void setStateForConnectionMode( final String mode )
     {
         try
         {
@@ -127,9 +127,13 @@ public class PreferencePage extends AbstractPreferencePage
     }
 
     @Override
-    public void propertyChange( PropertyChangeEvent event )
+    public void propertyChange( final PropertyChangeEvent event )
     {
         super.propertyChange( event );
-        setStateForConnectionMode( (String) event.getNewValue() );
+        String property = event.getProperty();
+        if ( Preferences.CONNECTION_MODE.equals( property ) )
+        {
+            setStateForConnectionMode( (String) event.getNewValue() );
+        }
     }
 }

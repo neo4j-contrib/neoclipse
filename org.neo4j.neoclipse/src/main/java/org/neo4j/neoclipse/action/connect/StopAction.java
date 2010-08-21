@@ -16,6 +16,8 @@ package org.neo4j.neoclipse.action.connect;
 import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.action.AbstractGraphAction;
 import org.neo4j.neoclipse.action.Actions;
+import org.neo4j.neoclipse.graphdb.GraphDbServiceManager;
+import org.neo4j.neoclipse.view.ErrorMessage;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**
@@ -25,28 +27,24 @@ import org.neo4j.neoclipse.view.NeoGraphViewPart;
  */
 public class StopAction extends AbstractGraphAction
 {
-    private StartAction startAction = null;
-
     public StopAction( final NeoGraphViewPart neoGraphViewPart )
     {
         super( Actions.STOP, neoGraphViewPart );
         setEnabled( false );
     }
 
-    public void setStartAction( final StartAction startAction )
-    {
-        this.startAction = startAction;
-    }
-
     @Override
     public void run()
     {
         graphView.cleanTransactionBeforeShutdown();
-        Activator.getDefault().getGraphDbServiceManager().stopGraphDbService();
-        setEnabled( false );
-        if ( startAction != null )
+        GraphDbServiceManager gsm = Activator.getDefault().getGraphDbServiceManager();
+        try
         {
-            startAction.setEnabled( true );
+            gsm.stopGraphDbService().get();
+        }
+        catch ( Exception e )
+        {
+            ErrorMessage.showDialog( "Database problem", e );
         }
     }
 }

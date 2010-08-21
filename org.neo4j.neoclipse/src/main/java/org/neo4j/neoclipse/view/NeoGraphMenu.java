@@ -46,6 +46,7 @@ import org.neo4j.neoclipse.action.connect.StopAction;
 import org.neo4j.neoclipse.action.context.CommitAction;
 import org.neo4j.neoclipse.action.context.DeleteAction;
 import org.neo4j.neoclipse.action.context.RollbackAction;
+import org.neo4j.neoclipse.action.context.SyncAction;
 import org.neo4j.neoclipse.action.decorate.node.ShowNodeColorsAction;
 import org.neo4j.neoclipse.action.decorate.node.ShowNodeIconsAction;
 import org.neo4j.neoclipse.action.decorate.node.ShowNodeIdsAction;
@@ -132,7 +133,7 @@ public class NeoGraphMenu
                     GraphDbUtil.addRelationshipAction( relType, graphView );
                 }
             };
-            addRel.setEnabled( false );
+            addRel.setEnabled( true );
             addOut = new Action( name, imgDesc )
             {
                 @Override
@@ -141,7 +142,7 @@ public class NeoGraphMenu
                     GraphDbUtil.addOutgoingNodeAction( relType, graphView );
                 }
             };
-            addOut.setEnabled( false );
+            addOut.setEnabled( true );
             addIn = new Action( name, imgDesc )
             {
                 @Override
@@ -150,7 +151,7 @@ public class NeoGraphMenu
                     GraphDbUtil.addIncomingNodeAction( relType, graphView );
                 }
             };
-            addIn.setEnabled( false );
+            addIn.setEnabled( true );
         }
 
         /**
@@ -190,21 +191,6 @@ public class NeoGraphMenu
             addOutNodeMenuMgr.insert( index,
                     new ActionContributionItem( addOut ) );
             addInNodeMenuMgr.insert( index, new ActionContributionItem( addIn ) );
-        }
-
-        /**
-         * Enable the different actions in the set.
-         * 
-         * @param rel enable create relationship
-         * @param out enable create outgoing relationships and node
-         * @param in enable create incoming relationships and node
-         */
-        public void setEnabled( final boolean rel, final boolean out,
-                final boolean in )
-        {
-            addRel.setEnabled( rel );
-            addOut.setEnabled( out );
-            addIn.setEnabled( in );
         }
     }
 
@@ -253,12 +239,24 @@ public class NeoGraphMenu
     private final MenuManager addRelMenuMgr = new MenuManager(
             Actions.ADD_RELATIONSHIP.label(),
             Actions.ADD_RELATIONSHIP.icon().descriptor(), "addRelSubmenu" );
+    private static final MenuManager addRelMenuMgrFake = new MenuManager(
+            Actions.ADD_RELATIONSHIP.label(),
+            Actions.ADD_RELATIONSHIP.disabledIcon().descriptor(),
+            "addRelSubmenuFake" );
     private final MenuManager addOutNodeMenuMgr = new MenuManager(
             Actions.ADD_OUTGOING_NODE.label(),
             Actions.ADD_OUTGOING_NODE.icon().descriptor(), "addOutNodeSubmenu" );
+    private static final MenuManager addOutNodeMenuMgrFake = new MenuManager(
+            Actions.ADD_OUTGOING_NODE.label(),
+            Actions.ADD_OUTGOING_NODE.disabledIcon().descriptor(),
+            "addOutNodeSubmenuFake" );
     private final MenuManager addInNodeMenuMgr = new MenuManager(
             Actions.ADD_INCOMING_NODE.label(),
             Actions.ADD_INCOMING_NODE.icon().descriptor(), "addInNodeSubmenu" );
+    private static final MenuManager addInNodeMenuMgrFake = new MenuManager(
+            Actions.ADD_INCOMING_NODE.label(),
+            Actions.ADD_INCOMING_NODE.disabledIcon().descriptor(),
+            "addInNodeSubmenuFake" );
     /**
      * Colored images for the different relationship types.
      */
@@ -275,20 +273,9 @@ public class NeoGraphMenu
      * Keep state of relationship colors.
      */
     private boolean showRelationshipColors;
-    /**
-     * Enabled state of add relationship actions.
-     */
-    private boolean addState = false;
-    /**
-     * Enabled state of add outgoing relationships actions.
-     */
-    private boolean outState = false;
-    /**
-     * Enabled state of add incoming relationships actions.
-     */
-    private boolean inState = false;
     private final StartAction startAction;
     private final StopAction stopAction;
+    private final SyncAction syncAction;
     static
     {
         // create gray default color
@@ -300,6 +287,13 @@ public class NeoGraphMenu
         gc.fillRectangle( image.getBounds() );
         gc.dispose();
         RELTYPES_DEFAULT_IMG = ImageDescriptor.createFromImage( image );
+        Action dummyAction = new Action( "(disabled)" )
+        {
+        };
+        dummyAction.setEnabled( false );
+        addRelMenuMgrFake.add( dummyAction );
+        addOutNodeMenuMgrFake.add( dummyAction );
+        addInNodeMenuMgrFake.add( dummyAction );
     }
 
     /**
@@ -318,10 +312,9 @@ public class NeoGraphMenu
         incAction = new IncreaseTraversalDepthAction( graphView );
         startAction = new StartAction( graphView );
         stopAction = new StopAction( graphView );
-        startAction.setStopAction( stopAction );
-        stopAction.setStartAction( startAction );
         commitAction = new CommitAction( graphView );
         rollbackAction = new RollbackAction( graphView );
+        syncAction = new SyncAction( graphView );
         refNodeAction = new ShowReferenceNodeAction( graphView );
         refreshAction = new RefreshAction( graphView );
         RelationshipTypesProvider relTypesProvider = RelationshipTypesProviderWrapper.getInstance();
@@ -342,24 +335,23 @@ public class NeoGraphMenu
     }
 
     /**
-     * Enable relatinship actions.
+     * Enable relationship actions.
      * 
      * @param add enable add relationship
-     * @param out enable add outgoing reltionships
+     * @param out enable add outgoing relationships
      * @param in enable add incoming relationships
      */
     public void setEnabledRelActions( final boolean add, final boolean out,
             final boolean in )
     {
-        // preserve state for use on newly created actions sets
-        this.addState = add;
-        this.outState = out;
-        this.inState = in;
-        addNewActionSet.setEnabled( add, out, in );
-        for ( ActionSet actionSet : actionMap.values() )
-        {
-            actionSet.setEnabled( add, out, in );
-        }
+        addRelMenuMgr.setVisible( add );
+        addRelMenuMgrFake.setVisible( !add );
+        addOutNodeMenuMgr.setVisible( out );
+        addOutNodeMenuMgrFake.setVisible( !out );
+        addInNodeMenuMgr.setVisible( in );
+        addInNodeMenuMgrFake.setVisible( !in );
+        // update
+        addInNodeMenuMgr.getParent().update( true );
     }
 
     /**
@@ -413,7 +405,37 @@ public class NeoGraphMenu
     }
 
     /**
-     * Handle chanes in the type list.
+     * Enable sync action.
+     * 
+     * @param enabled
+     */
+    public void setEnabledSyncAction( final boolean enabled )
+    {
+        syncAction.setEnabled( enabled );
+    }
+
+    /**
+     * Enable start action.
+     * 
+     * @param enabled
+     */
+    public void setEnabledStartAction( final boolean enabled )
+    {
+        startAction.setEnabled( enabled );
+    }
+
+    /**
+     * Enable stop action.
+     * 
+     * @param enabled
+     */
+    public void setEnabledStopAction( final boolean enabled )
+    {
+        stopAction.setEnabled( enabled );
+    }
+
+    /**
+     * Handle changes in the type list.
      */
     private class RelTypeRefreshHandler implements NeoclipseEventListener
     {
@@ -492,8 +514,11 @@ public class NeoGraphMenu
     private void contributeContextActions( final MenuManager cm )
     {
         cm.add( addRelMenuMgr );
+        cm.add( addRelMenuMgrFake );
         cm.add( addOutNodeMenuMgr );
+        cm.add( addOutNodeMenuMgrFake );
         cm.add( addInNodeMenuMgr );
+        cm.add( addInNodeMenuMgrFake );
         cm.add( SEPARATOR );
         cm.add( deleteAction );
     }
@@ -507,6 +532,8 @@ public class NeoGraphMenu
     {
         tm.add( commitAction );
         tm.add( rollbackAction );
+        // TODO make it work
+        // tm.add( syncAction );
         tm.add( SEPARATOR );
     }
 
@@ -633,19 +660,23 @@ public class NeoGraphMenu
                 mm.add( SEPARATOR );
             }
             // relationship types actions
-            mm.appendToGroup( relationshipGroupName,
+            mm.appendToGroup(
+                    relationshipGroupName,
                     new ShowRelationshipTypesAction( graphView,
                             viewSettings.isShowRelationshipTypes() ) );
             // relationship id's actions
-            mm.appendToGroup( relationshipGroupName,
+            mm.appendToGroup(
+                    relationshipGroupName,
                     new ShowRelationshipIdsAction( graphView,
                             viewSettings.isShowRelationshipIds() ) );
             // relationship labels actions
-            mm.appendToGroup( relationshipGroupName,
+            mm.appendToGroup(
+                    relationshipGroupName,
                     new ShowRelationshipLabelAction( graphView,
                             viewSettings.isShowRelationshipNames() ) );
             // relationship colors actions
-            mm.appendToGroup( relationshipGroupName,
+            mm.appendToGroup(
+                    relationshipGroupName,
                     new ShowRelationshipColorsAction( graphView,
                             viewSettings.isShowRelationshipColors() ) );
             // relationship directions actions
@@ -728,7 +759,6 @@ public class NeoGraphMenu
     private void addRelType( final RelationshipType relType )
     {
         final ActionSet actionSet = new ActionSet( relType );
-        actionSet.setEnabled( addState, outState, inState );
         final String name = relType.name();
         actionMap.put( name, actionSet );
         actionSet.addAt( actionMap.headMap( name ).size() + 1 );

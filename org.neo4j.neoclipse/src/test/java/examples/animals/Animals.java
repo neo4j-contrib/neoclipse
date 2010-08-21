@@ -28,6 +28,7 @@ import examples.NeoclipseExample;
 /**
  * Example on modeling DAGs from Kemal Erdogan,
  * http://www.codeproject.com/KB/database/Modeling_DAGs_on_SQL_DBs.aspx
+ * 
  * @author Anders Nawroth
  */
 public class Animals extends NeoclipseExample
@@ -48,10 +49,10 @@ public class Animals extends NeoclipseExample
         {
             Node referenceNode = neo.getReferenceNode();
             Node animal = createNode( "Animal", AnimalRels.ANIMAL,
-                referenceNode );
+                    referenceNode );
             Node pet = createNode( "Pet", AnimalRels.CATEGORY, animal );
             Node livestock = createNode( "Livestock", AnimalRels.CATEGORY,
-                animal );
+                    animal );
             createNode( "Cat", AnimalRels.SPECIES, pet );
             Node dog = createNode( "Dog", AnimalRels.SPECIES, pet, livestock );
             createNode( "Doberman", AnimalRels.RACE, dog );
@@ -67,7 +68,7 @@ public class Animals extends NeoclipseExample
     }
 
     private static Node createNode( final String name,
-        final RelationshipType relType, final Node... containedIn )
+            final RelationshipType relType, final Node... containedIn )
     {
         Node node = neo.createNode();
         node.setProperty( NAME, name );
@@ -87,11 +88,11 @@ public class Animals extends NeoclipseExample
         {
             Node livestock = neo.getNodeById( 3 );
             Traverser traverser = livestock.traverse(
-                Traverser.Order.DEPTH_FIRST, StopEvaluator.END_OF_GRAPH,
-                ReturnableEvaluator.ALL_BUT_START_NODE, AnimalRels.ANIMAL,
-                Direction.OUTGOING, AnimalRels.CATEGORY, Direction.OUTGOING,
-                AnimalRels.SPECIES, Direction.OUTGOING, AnimalRels.RACE,
-                Direction.OUTGOING );
+                    Traverser.Order.DEPTH_FIRST, StopEvaluator.END_OF_GRAPH,
+                    ReturnableEvaluator.ALL_BUT_START_NODE, AnimalRels.ANIMAL,
+                    Direction.OUTGOING, AnimalRels.CATEGORY,
+                    Direction.OUTGOING, AnimalRels.SPECIES, Direction.OUTGOING,
+                    AnimalRels.RACE, Direction.OUTGOING );
             for ( Node part : traverser )
             {
                 int depth = traverser.currentPosition().depth();

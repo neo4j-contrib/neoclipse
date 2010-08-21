@@ -17,6 +17,7 @@ import java.util.EventObject;
 
 /**
  * This class represents a change in the neo service.
+ * 
  * @author Peter H&auml;nsgen
  */
 public class GraphDbServiceEvent extends EventObject
@@ -30,17 +31,27 @@ public class GraphDbServiceEvent extends EventObject
     /**
      * The constructor.
      */
-    public GraphDbServiceEvent( final Object source, final GraphDbServiceStatus status )
+    public GraphDbServiceEvent( final GraphDbServiceManager source,
+            final GraphDbServiceStatus status )
     {
         super( source );
         this.status = status;
     }
-
+    
     /**
      * Returns the service status.
      */
     public GraphDbServiceStatus getStatus()
     {
         return status;
+    }
+
+    /**
+     * Get info on the service mode.
+     */
+    public boolean isReadOnlyMode()
+    {
+        GraphDbServiceManager serviceMgr = (GraphDbServiceManager) source;
+        return serviceMgr.isReadOnlyMode();
     }
 }

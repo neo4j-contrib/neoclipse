@@ -19,6 +19,7 @@ import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**
  * This action handles the relationship name setting.
+ * 
  * @author Anders Nawroth
  */
 public class ShowRelationshipLabelAction extends AbstractCheckboxAction
@@ -27,7 +28,7 @@ public class ShowRelationshipLabelAction extends AbstractCheckboxAction
      * The constructor.
      */
     public ShowRelationshipLabelAction( final NeoGraphViewPart view,
-        final boolean checked )
+            final boolean checked )
     {
         super( Actions.RELATIONSHIP_LABELS, checked, view );
     }
@@ -35,10 +36,11 @@ public class ShowRelationshipLabelAction extends AbstractCheckboxAction
     /**
      * Executes the action.
      */
+    @Override
     public void run()
     {
-        graphView.getLabelProvider().getViewSettings()
-            .setShowRelationshipNames( isChecked() );
+        graphView.getLabelProvider().getViewSettings().setShowRelationshipNames(
+                isChecked() );
         graphView.refreshPreserveLayout();
     }
 }

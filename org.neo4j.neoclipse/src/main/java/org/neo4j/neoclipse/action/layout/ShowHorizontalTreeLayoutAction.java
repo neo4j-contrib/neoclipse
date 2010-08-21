@@ -22,6 +22,7 @@ import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**
  * This action sets the layout of the graph viewer to horizontal tree layout.
+ * 
  * @author Anders Nawroth
  */
 public class ShowHorizontalTreeLayoutAction extends AbstractGraphAction
@@ -29,7 +30,7 @@ public class ShowHorizontalTreeLayoutAction extends AbstractGraphAction
     /**
      * The constructor.
      */
-    public ShowHorizontalTreeLayoutAction( NeoGraphViewPart view )
+    public ShowHorizontalTreeLayoutAction( final NeoGraphViewPart view )
     {
         super( Actions.HORIZONTAL_TREE_LAYOUT, Action.AS_RADIO_BUTTON, view );
         setChecked( false );
@@ -38,13 +39,14 @@ public class ShowHorizontalTreeLayoutAction extends AbstractGraphAction
     /**
      * Executes the action.
      */
+    @Override
     public void run()
     {
         if ( isChecked() )
         {
             graphView.getViewer().setLayoutAlgorithm(
-                new HorizontalTreeLayoutAlgorithm(
-                    LayoutStyles.NO_LAYOUT_NODE_RESIZING ), true );
+                    new HorizontalTreeLayoutAlgorithm(
+                            LayoutStyles.NO_LAYOUT_NODE_RESIZING ), true );
         }
     }
 }

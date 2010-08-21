@@ -15,11 +15,16 @@ package org.neo4j.neoclipse.graphdb;
 
 import java.io.File;
 import java.net.URISyntaxException;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import org.eclipse.core.runtime.ISafeRunnable;
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.osgi.service.datalocation.Location;
 import org.neo4j.graphdb.GraphDatabaseService;
@@ -28,7 +33,10 @@ import org.neo4j.kernel.EmbeddedGraphDatabase;
 import org.neo4j.kernel.EmbeddedReadOnlyGraphDatabase;
 import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.preference.Preferences;
+import org.neo4j.neoclipse.view.ErrorMessage;
+import org.neo4j.neoclipse.view.UiHelper;
 import org.neo4j.remote.RemoteGraphDatabase;
+import org.neo4j.util.GraphDatabaseLifecycle;
 
 /**
  * This manager controls the neo4j service.
@@ -38,22 +46,210 @@ import org.neo4j.remote.RemoteGraphDatabase;
  */
 public class GraphDbServiceManager
 {
+    private static final String NEOCLIPSE_PACKAGE = "org.neo4j.neoclipse.";
+    private static Logger logger = Logger.getLogger( GraphDbServiceManager.class.getName() );
+
+    static
+    {
+        logger.setUseParentHandlers( false );
+        logger.setLevel( Level.INFO );
+        ConsoleHandler handler = new ConsoleHandler();
+        handler.setLevel( Level.INFO );
+        logger.addHandler( handler );
+    }
+
+    private class Tasks
+    {
+        final Runnable START = new Runnable()
+        {
+            public void run()
+            {
+                if ( lifecycle != null )
+                {
+                    throw new IllegalStateException(
+                            "Can't start new database: the old one isn't shutdown properly." );
+                }
+                logInfo( "trying to start/connect ..." );
+                String dbLocation;
+                GraphDatabaseService graphDb = null;
+                switch ( serviceMode )
+                {
+                case READ_WRITE_EMBEDDED:
+                    dbLocation = getDbLocation();
+                    graphDb = new EmbeddedGraphDatabase( dbLocation );
+                    logInfo( "connected to embedded neo4j" );
+                    break;
+                case READ_ONLY_EMBEDDED:
+                    dbLocation = getDbLocation();
+                    graphDb = new EmbeddedReadOnlyGraphDatabase( dbLocation );
+                    logInfo( "connected to embedded read-only neo4j" );
+                    break;
+                case REMOTE:
+                    try
+                    {
+                        graphDb = new RemoteGraphDatabase( getResourceUri() );
+                    }
+                    catch ( URISyntaxException e )
+                    {
+                        ErrorMessage.showDialog( "URI syntax error", e );
+                    }
+                    logInfo( "connected to remote neo4j" );
+                    break;
+                }
+                lifecycle = new GraphDatabaseLifecycle( graphDb );
+                logFine( "starting tx" );
+                tx = graphDb.beginTx();
+                fireServiceChangedEvent( GraphDbServiceStatus.STARTED );
+            }
+        };
+
+        final Runnable STOP = new Runnable()
+        {
+            public void run()
+            {
+                logInfo( "stopping/disconnecting ..." );
+                if ( lifecycle == null )
+                {
+                    throw new IllegalStateException(
+                            "Can't stop the database: there is no running database." );
+                }
+                try
+                {
+                    tx.failure();
+                    tx.finish();
+                }
+                catch ( Exception e )
+                {
+                    e.printStackTrace();
+                }
+                try
+                {
+                    lifecycle.manualShutdown();
+                    fireServiceChangedEvent( GraphDbServiceStatus.STOPPED );
+                }
+                finally
+                {
+                    lifecycle = null;
+                }
+                logInfo( "stopped/disconnected" );
+            }
+        };
+
+        final Runnable SHUTDOWN = new Runnable()
+        {
+            public void run()
+            {
+                if ( lifecycle != null )
+                {
+                    STOP.run();
+                }
+            }
+        };
+
+        final Runnable COMMIT = new Runnable()
+        {
+            public void run()
+            {
+                if ( serviceMode == GraphDbServiceMode.READ_WRITE_EMBEDDED )
+                {
+                    tx.success();
+                }
+                else
+                {
+                    logFine( "Committing while not in write mode." );
+                }
+                tx.finish();
+                tx = lifecycle.graphDb().beginTx();
+                fireServiceChangedEvent( GraphDbServiceStatus.COMMIT );
+            }
+        };
+
+        final Runnable ROLLBACK = new Runnable()
+        {
+            public void run()
+            {
+                tx.finish();
+                tx = lifecycle.graphDb().beginTx();
+                fireServiceChangedEvent( GraphDbServiceStatus.ROLLBACK );
+            }
+        };
+    }
+
+    private class TaskWrapper<T> implements Callable<T>
+    {
+        private final GraphCallable<T> callable;
+
+        public TaskWrapper( final GraphCallable<T> callable )
+        {
+            this.callable = callable;
+        }
+
+        public T call() throws Exception
+        {
+            GraphDatabaseService graphDb = null;
+            if ( lifecycle != null )
+            {
+                graphDb = lifecycle.graphDb();
+            }
+            return callable.call( graphDb );
+        }
+    }
+
+    private class RunnableWrapper implements Runnable
+    {
+        private final GraphRunnable runnable;
+        private final String name;
+
+        public RunnableWrapper( final GraphRunnable runnable, final String name )
+        {
+            this.runnable = runnable;
+            this.name = name;
+        }
+
+        public void run()
+        {
+            GraphDatabaseService graphDb = null;
+            if ( lifecycle != null )
+            {
+                graphDb = lifecycle.graphDb();
+            }
+            logFine( "running: " + name );
+            runnable.run( graphDb );
+            logFine( "finished running: " + name );
+        }
+    }
+
+    private class DisplayRunnable implements Runnable
+    {
+        private final Runnable runnable;
+        private final String name;
+
+        public DisplayRunnable( final Runnable runnable, final String name )
+        {
+            this.runnable = runnable;
+            this.name = name;
+        }
+
+        public void run()
+        {
+            logFine( "sending display task: " + name );
+            UiHelper.asyncExec( runnable );
+        }
+    }
+
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private final Tasks tasks = new Tasks();
+
     /**
      * The service instance.
      */
-    protected GraphDatabaseService graphDb;
     protected GraphDbServiceMode serviceMode;
-    // protected GraphDatabaseLifecycle lifecycle; // TODO
-
-    /**
-     * Current thread for shutdown
-     */
-    protected Thread shutdownHook;
+    protected GraphDatabaseLifecycle lifecycle = null;
 
     /**
      * The registered service change listeners.
      */
-    protected ListenerList listeners;
+    private final ListenerList listeners = new ListenerList();
     private Transaction tx;
     private final IPreferenceStore preferenceStore = Activator.getDefault().getPreferenceStore();
 
@@ -62,8 +258,100 @@ public class GraphDbServiceManager
      */
     public GraphDbServiceManager()
     {
-        listeners = new ListenerList();
         serviceMode = GraphDbServiceMode.valueOf( preferenceStore.getString( Preferences.CONNECTION_MODE ) );
+        logInfo( "Starting " + this.getClass().getSimpleName() );
+    }
+
+    private void logFine( final String message )
+    {
+        logger.fine( message );
+    }
+
+    private void logInfo( final String message )
+    {
+        logger.info( message );
+    }
+
+    private Tasks tasks()
+    {
+        return tasks;
+    }
+
+    private void printTask( final Object task, final String type,
+            final String info )
+    {
+        String name = task.getClass().getName();
+        if ( name.startsWith( NEOCLIPSE_PACKAGE ) )
+        {
+            name = name.substring( NEOCLIPSE_PACKAGE.length() );
+        }
+        logFine( type + " -> " + name + ":\n" + info );
+    }
+
+    public <T> Future<T> submitTask( final Callable<T> task, final String info )
+    {
+        printTask( task, "C", info );
+        return executor.submit( task );
+    }
+
+    public <T> Future<T> submitTask( final GraphCallable<T> callable,
+            final String info )
+    {
+        printTask( callable, "GC", info );
+        TaskWrapper<T> wrapped = new TaskWrapper<T>( callable );
+        return executor.submit( wrapped );
+    }
+
+    public Future<?> submitTask( final Runnable runnable, final String info )
+    {
+        printTask( runnable, "R", info );
+        return executor.submit( runnable );
+    }
+
+    public Future<?> submitTask( final GraphRunnable runnable, final String info )
+    {
+        printTask( runnable, "GR", info );
+        RunnableWrapper wrapped = new RunnableWrapper( runnable, info );
+        return executor.submit( wrapped );
+    }
+
+    /**
+     * Submit a task that should be performed by the UI thread after the tasks
+     * in the execution queue have executed.
+     * 
+     * @param runnable runnable to execute
+     * @param info short discription of the task
+     */
+    public void submitDisplayTask( final Runnable runnable, final String info )
+    {
+        DisplayRunnable wrapped = new DisplayRunnable( runnable, info );
+        executor.submit( wrapped );
+    }
+
+    public void executeTask( final GraphRunnable runnable, final String info )
+    {
+        logFine( "starting: " + info );
+        runnable.run( lifecycle.graphDb() );
+        logFine( "finishing: " + info );
+    }
+
+    public <T> T executeTask( final GraphCallable<T> callable, final String info )
+    {
+        logFine( "calling: " + info );
+        return callable.call( lifecycle.graphDb() );
+    }
+
+    public void stopExecutingTasks()
+    {
+        if ( !executor.isShutdown() )
+        {
+            executor.shutdown();
+        }
+    }
+
+    public boolean isRunning()
+    {
+        return lifecycle != null && lifecycle.graphDb() != null;
     }
 
     public boolean isReadOnlyMode()
@@ -78,58 +366,70 @@ public class GraphDbServiceManager
 
     /**
      * Starts the neo4j service.
+     * 
+     * @return
      */
-    public void startGraphDbService() throws Exception
+    public Future<?> startGraphDbService() throws Exception
     {
-        if ( graphDb == null )
-        {
-            System.out.println( "trying to start/connect ..." );
-            String dbLocation;
-            switch ( serviceMode )
-            {
-            case READ_WRITE_EMBEDDED:
-                dbLocation = getDbLocation();
-                graphDb = new EmbeddedGraphDatabase( dbLocation );
-                System.out.println( "connected to embedded neo4j" );
-                break;
-            case READ_ONLY_EMBEDDED:
-                dbLocation = getDbLocation();
-                graphDb = new EmbeddedReadOnlyGraphDatabase( dbLocation );
-                System.out.println( "connected to embedded read-only neo4j" );
-                break;
-            case REMOTE:
-                graphDb = new RemoteGraphDatabase( getResourceUri() );
-                System.out.println( "connected to remote neo4j" );
-                break;
-            }
-            // :TODO: save thread and remove shutdown on shutdown ...
-            registerShutdownHook( graphDb );
-            tx = graphDb.beginTx();
-            fireServiceChangedEvent( GraphDbServiceStatus.STARTED );
-        }
+        return submitTask( tasks().START, "start db" );
     }
 
-    private void registerShutdownHook(
-            final GraphDatabaseService graphDbInstance )
+    /**
+     * Stops the neo4j service.
+     * 
+     * @return
+     */
+    public Future<?> stopGraphDbService()
     {
-        shutdownHook = new Thread()
-        {
-            @Override
-            public void run()
-            {
-                if ( graphDbInstance == null )
-                {
-                    return;
-                }
-                graphDbInstance.shutdown();
-            }
-        };
-        Runtime.getRuntime().addShutdownHook( shutdownHook );
+        return submitTask( tasks().STOP, "stop db" );
     }
 
-    private void removeShutdownhook()
+    /**
+     * Shuts down the Neo4j service if it's running.
+     * 
+     * @return
+     */
+    public Future<?> shutdownGraphDbService()
     {
-        Runtime.getRuntime().removeShutdownHook( shutdownHook );
+        return submitTask( tasks().SHUTDOWN, "shutdown db" );
+    }
+
+    /**
+     * Commit transaction.
+     * 
+     * @return
+     */
+    public Future<?> commit()
+    {
+        return submitTask( tasks().COMMIT, "commit" );
+    }
+
+    /**
+     * Roll back transaction.
+     * 
+     * @return
+     */
+    public Future<?> rollback()
+    {
+        return submitTask( tasks().ROLLBACK, "rollback" );
+    }
+
+    /**
+     * Registers a service listener.
+     */
+    public void addServiceEventListener(
+            final GraphDbServiceEventListener listener )
+    {
+        listeners.add( listener );
+    }
+
+    /**
+     * Unregisters a service listener.
+     */
+    public void removeServiceEventListener(
+            final GraphDbServiceEventListener listener )
+    {
+        listeners.remove( listener );
     }
 
     // determine the neo4j directory from the preferences
@@ -156,7 +456,7 @@ public class GraphDbServiceManager
                         throw new IllegalArgumentException(
                                 "Could not create a database directory." );
                     }
-                    System.out.println( "created: " + dbDir.getAbsolutePath() );
+                    logInfo( "created: " + dbDir.getAbsolutePath() );
                 }
                 location = dbDir.getAbsolutePath();
                 preferenceStore.setValue( Preferences.DATABASE_LOCATION,
@@ -185,7 +485,7 @@ public class GraphDbServiceManager
             throw new IllegalAccessError(
                     "Writes are not allowed to the database location." );
         }
-        System.out.println( "using location: " + location );
+        logFine( "using location: " + location );
         return location;
     }
 
@@ -201,96 +501,21 @@ public class GraphDbServiceManager
     }
 
     /**
-     * Returns the graphdb service or null, if it isn't started.
-     */
-    public GraphDatabaseService getGraphDbService()
-    {
-        return graphDb;
-    }
-
-    /**
-     * Stops the neo service.
-     */
-    public void stopGraphDbService()
-    {
-        if ( graphDb != null )
-        {
-            System.out.println( "trying to stop/disconnect ..." );
-            try
-            {
-                tx.failure();
-                tx.finish();
-            }
-            catch ( Exception e )
-            {
-                e.printStackTrace();
-            }
-            try
-            {
-                graphDb.shutdown();
-                // notify listeners
-                fireServiceChangedEvent( GraphDbServiceStatus.STOPPED );
-            }
-            finally
-            {
-                graphDb = null;
-            }
-        }
-        removeShutdownhook();
-        System.out.println( "stopped/disconnected" );
-    }
-
-    /**
-     * Commit transaction.
-     */
-    public void commit()
-    {
-        if ( serviceMode == GraphDbServiceMode.READ_WRITE_EMBEDDED )
-        {
-            tx.success();
-        }
-        else
-        {
-            System.out.println( "Committing while not in write mode" );
-        }
-        tx.finish();
-        tx = graphDb.beginTx();
-        fireServiceChangedEvent( GraphDbServiceStatus.COMMIT );
-    }
-
-    /**
-     * Rollback transaction.
-     */
-    public void rollback()
-    {
-        tx.failure();
-        tx.finish();
-        tx = graphDb.beginTx();
-        fireServiceChangedEvent( GraphDbServiceStatus.ROLLBACK );
-    }
-
-    /**
-     * Registers a service listener.
-     */
-    public void addServiceEventListener(
-            final GraphDbServiceEventListener listener )
-    {
-        listeners.add( listener );
-    }
-
-    /**
-     * Unregisters a service listener.
-     */
-    public void removeServiceEventListener(
-            final GraphDbServiceEventListener listener )
-    {
-        listeners.remove( listener );
-    }
-
-    /**
-     * Notifies all registered listeners about the new service status.
+     * Notifies all registered listeners about the new service status. Actually
+     * just queues up the task so running tasks can finish first.
      */
     protected void fireServiceChangedEvent( final GraphDbServiceStatus status )
+    {
+        submitTask( new Runnable()
+        {
+            public void run()
+            {
+                fireTheServiceChangedEvent( status );
+            }
+        }, "fire changed event" );
+    }
+
+    private void fireTheServiceChangedEvent( final GraphDbServiceStatus status )
     {
         Object[] changeListeners = listeners.getListeners();
         if ( changeListeners.length > 0 )
@@ -299,19 +524,7 @@ public class GraphDbServiceManager
             for ( Object changeListener : changeListeners )
             {
                 final GraphDbServiceEventListener l = (GraphDbServiceEventListener) changeListener;
-                ISafeRunnable job = new ISafeRunnable()
-                {
-                    public void handleException( final Throwable exception )
-                    {
-                        // do nothing
-                    }
-
-                    public void run() throws RuntimeException
-                    {
-                        l.serviceChanged( e );
-                    }
-                };
-                SafeRunner.run( job );
+                l.serviceChanged( e );
             }
         }
     }

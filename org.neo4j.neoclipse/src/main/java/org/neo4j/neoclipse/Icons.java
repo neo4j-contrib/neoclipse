@@ -88,6 +88,8 @@ public enum Icons
     COMMIT_DISABLED( "commit_disabled", path( "disabled/commit.gif" ) ),
     ROLLBACK_ENABLED( "rollback_enabled", path( "enabled/rollback.gif" ) ),
     ROLLBACK_DISABLED( "rollback_disabled", path( "disabled/rollback.gif" ) ),
+    SYNC_ENABLED( "sync-enabled", path( "enabled/sync.gif" ) ),
+    SYNC_DISABLED( "sync-disabled", path( "disabled/sync.gif" ) ),
     // relationship types actions
     ADD_ENABLED( "add_enabled", path( "enabled/add-relationship.gif" ) ),
     ADD_DISABLED( "add_disabled", path( "disabled/add-relationship.gif" ) ),

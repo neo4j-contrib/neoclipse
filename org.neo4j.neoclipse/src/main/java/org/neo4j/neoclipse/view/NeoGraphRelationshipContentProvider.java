@@ -38,7 +38,7 @@ import org.neo4j.neoclipse.reltype.RelationshipTypesProviderWrapper;
  * used to get it working
  */
 public class NeoGraphRelationshipContentProvider implements
-    IGraphContentProvider
+        IGraphContentProvider
 {
     private static final Relationship[] EMPTY_REL_ARRAY = new Relationship[0];
     /**
@@ -54,9 +54,14 @@ public class NeoGraphRelationshipContentProvider implements
         this.view = view;
     }
 
+    public Object getSource( final Object rel )
+    {
+        return ( (Relationship) rel ).getStartNode();
+    }
+
     public Object getDestination( final Object rel )
     {
-        return ((Relationship) rel).getEndNode();
+        return ( (Relationship) rel ).getEndNode();
     }
 
     public Object[] getElements( final Object input )
@@ -70,8 +75,7 @@ public class NeoGraphRelationshipContentProvider implements
         List<Object> relDirList;
         try
         {
-            RelationshipTypesProvider relTypesProvider = RelationshipTypesProviderWrapper
-                .getInstance();
+            RelationshipTypesProvider relTypesProvider = RelationshipTypesProviderWrapper.getInstance();
             relDirList = relTypesProvider.getFilteredRelTypesDirections();
         }
         catch ( NotFoundException nfe )
@@ -81,8 +85,7 @@ public class NeoGraphRelationshipContentProvider implements
             // and we don't want them to initialize first
             // (traversal gives better coloring!)
             relDirList = new ArrayList<Object>();
-            for ( RelationshipType relType : RelationshipTypesProviderWrapper
-                .getInstance().getRelationshipTypesFromDb() )
+            for ( RelationshipType relType : RelationshipTypesProviderWrapper.getInstance().getRelationshipTypesFromDb() )
             {
                 relDirList.add( relType );
                 relDirList.add( Direction.BOTH );
@@ -97,20 +100,20 @@ public class NeoGraphRelationshipContentProvider implements
         }
         Node node = (Node) input;
         Traverser trav = node.traverse( Order.BREADTH_FIRST,
-            new StopEvaluator()
-            {
-                public boolean isStopNode( final TraversalPosition currentPos )
+                new StopEvaluator()
                 {
-                    return currentPos.depth() >= depth;
-                }
-            }, ReturnableEvaluator.ALL, relDirList.toArray() );
+                    public boolean isStopNode(
+                            final TraversalPosition currentPos )
+                    {
+                        return currentPos.depth() >= depth;
+                    }
+                }, ReturnableEvaluator.ALL, relDirList.toArray() );
         Set<Relationship> rels = new HashSet<Relationship>();
         for ( Node current : trav )
         {
             if ( trav.currentPosition().depth() != depth )
             {
-                for ( Relationship rel : current
-                    .getRelationships( Direction.OUTGOING ) )
+                for ( Relationship rel : current.getRelationships( Direction.OUTGOING ) )
                 {
                     rels.add( rel );
                 }
@@ -131,18 +134,13 @@ public class NeoGraphRelationshipContentProvider implements
         return rels.toArray( EMPTY_REL_ARRAY );
     }
 
-    public Object getSource( final Object rel )
-    {
-        return ((Relationship) rel).getStartNode();
-    }
-
     public void dispose()
     {
         // TODO Auto-generated method stub
     }
 
     public void inputChanged( final Viewer viewer, final Object oldInput,
-        final Object newInput )
+            final Object newInput )
     {
         // TODO Auto-generated method stub
     }

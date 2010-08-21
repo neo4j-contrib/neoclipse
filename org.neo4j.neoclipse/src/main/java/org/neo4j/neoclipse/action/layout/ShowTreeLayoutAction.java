@@ -22,6 +22,7 @@ import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**
  * This action switches the neo graph view to tree layout.
+ * 
  * @author Peter H&auml;nsgen
  */
 public class ShowTreeLayoutAction extends AbstractGraphAction
@@ -29,7 +30,7 @@ public class ShowTreeLayoutAction extends AbstractGraphAction
     /**
      * The constructor.
      */
-    public ShowTreeLayoutAction( NeoGraphViewPart view )
+    public ShowTreeLayoutAction( final NeoGraphViewPart view )
     {
         super( Actions.TREE_LAYOUT, Action.AS_RADIO_BUTTON, view );
         setChecked( false );
@@ -38,14 +39,14 @@ public class ShowTreeLayoutAction extends AbstractGraphAction
     /**
      * Executes the action.
      */
+    @Override
     public void run()
     {
         if ( isChecked() )
         {
-            graphView.getViewer()
-                .setLayoutAlgorithm(
+            graphView.getViewer().setLayoutAlgorithm(
                     new TreeLayoutAlgorithm(
-                        LayoutStyles.NO_LAYOUT_NODE_RESIZING ), true );
+                            LayoutStyles.NO_LAYOUT_NODE_RESIZING ), true );
         }
     }
 }

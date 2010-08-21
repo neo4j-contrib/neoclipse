@@ -24,6 +24,7 @@ import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**
  * This action allows to zoom in / out the graph view.
+ * 
  * @author Peter H&auml;nsgen
  */
 public class ZoomAction extends AbstractGraphAction implements IMenuCreator
@@ -45,6 +46,7 @@ public class ZoomAction extends AbstractGraphAction implements IMenuCreator
     /**
      * Executes the default action, which sets zoom level to page.
      */
+    @Override
     public void run()
     {
         // represents 100%, workaround for non-public API of zoom manager
@@ -60,7 +62,7 @@ public class ZoomAction extends AbstractGraphAction implements IMenuCreator
         {
             menu = new Menu( parent );
             ZoomContributionViewItem zoom = new ZoomContributionViewItem(
-                graphView );
+                    graphView );
             zoom.fill( menu, 0 );
         }
         return menu;
@@ -75,7 +77,7 @@ public class ZoomAction extends AbstractGraphAction implements IMenuCreator
         {
             menu = new Menu( parent );
             ZoomContributionViewItem zoom = new ZoomContributionViewItem(
-                graphView );
+                    graphView );
             zoom.fill( menu, 0 );
         }
         return menu;

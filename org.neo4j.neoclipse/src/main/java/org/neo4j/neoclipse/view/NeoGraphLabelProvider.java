@@ -35,6 +35,7 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.zest.core.viewers.IConnectionStyleProvider;
 import org.eclipse.zest.core.widgets.ZestStyles;
 import org.neo4j.graphdb.Direction;
+import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.RelationshipType;
@@ -43,7 +44,9 @@ import org.neo4j.neoclipse.Icons;
 import org.neo4j.neoclipse.decorate.SimpleGraphDecorator;
 import org.neo4j.neoclipse.decorate.SimpleGraphDecorator.Settings;
 import org.neo4j.neoclipse.decorate.SimpleGraphDecorator.ViewSettings;
+import org.neo4j.neoclipse.graphdb.GraphCallable;
 import org.neo4j.neoclipse.preference.DecoratorPreferences;
+import org.neo4j.neoclipse.reltype.DirectedRelationship;
 import org.neo4j.neoclipse.reltype.RelationshipTypeControl;
 import org.neo4j.neoclipse.reltype.RelationshipTypeEditingSupport;
 
@@ -111,12 +114,27 @@ public class NeoGraphLabelProvider extends LabelProvider implements
      */
     private boolean isReferenceNode( final Node node )
     {
-        Node referenceNode = Activator.getDefault().getReferenceNode();
-        if ( referenceNode == null )
+        try
         {
-            return false;
+            return Activator.getDefault().getGraphDbServiceManager().submitTask(
+                    new GraphCallable<Boolean>()
+                    {
+                        public Boolean call( final GraphDatabaseService graphDb )
+                        {
+                            Node referenceNode = graphDb.getReferenceNode();
+                            if ( referenceNode == null )
+                            {
+                                return false;
+                            }
+                            return referenceNode.equals( node );
+                        }
+                    }, "is ref node" ).get();
         }
-        return referenceNode.equals( node );
+        catch ( Exception e )
+        {
+            ErrorMessage.showDialog( "Create relationship(s)", e );
+        }
+        return false;
     }
 
     /**
@@ -220,8 +238,12 @@ public class NeoGraphLabelProvider extends LabelProvider implements
         }
         else if ( element instanceof RelationshipTypeControl )
         {
-            RelationshipTypeControl typeControl = (RelationshipTypeControl) element;
+            DirectedRelationship typeControl = (DirectedRelationship) element;
             return typeControl.getRelType().name();
+        }
+        else if ( element == null )
+        {
+            return "";
         }
         return element.toString();
     }
@@ -407,7 +429,7 @@ public class NeoGraphLabelProvider extends LabelProvider implements
     {
         if ( index == 0 && element instanceof RelationshipTypeControl )
         {
-            RelationshipTypeControl control = (RelationshipTypeControl) element;
+            DirectedRelationship control = (DirectedRelationship) element;
             return control.getRelType().name();
         }
         return null;
@@ -426,7 +448,7 @@ public class NeoGraphLabelProvider extends LabelProvider implements
         {
             return graphDecorator.getRelationshipColor();
         }
-        RelationshipTypeControl control = (RelationshipTypeControl) element;
+        DirectedRelationship control = (DirectedRelationship) element;
         return graphDecorator.getRelationshipColor( control.getRelType() );
     }
 

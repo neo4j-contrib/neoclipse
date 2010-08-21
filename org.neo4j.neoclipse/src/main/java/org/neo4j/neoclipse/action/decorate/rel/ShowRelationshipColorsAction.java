@@ -19,6 +19,7 @@ import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**
  * This action handles the relationship colors setting.
+ * 
  * @author Anders Nawroth
  */
 public class ShowRelationshipColorsAction extends AbstractCheckboxAction
@@ -27,7 +28,7 @@ public class ShowRelationshipColorsAction extends AbstractCheckboxAction
      * The constructor.
      */
     public ShowRelationshipColorsAction( final NeoGraphViewPart view,
-        final boolean checked )
+            final boolean checked )
     {
         super( Actions.RELATIONSHIP_COLORS, checked, view );
     }
@@ -35,6 +36,7 @@ public class ShowRelationshipColorsAction extends AbstractCheckboxAction
     /**
      * Executes the action.
      */
+    @Override
     public void run()
     {
         graphView.setShowRelationshipColors( isChecked() );

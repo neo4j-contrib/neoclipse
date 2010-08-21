@@ -22,6 +22,7 @@ import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**
  * This action switches the graph view to grid layout.
+ * 
  * @author Peter H&auml;nsgen
  */
 public class ShowGridLayoutAction extends AbstractGraphAction
@@ -29,7 +30,7 @@ public class ShowGridLayoutAction extends AbstractGraphAction
     /**
      * The constructor.
      */
-    public ShowGridLayoutAction( NeoGraphViewPart view )
+    public ShowGridLayoutAction( final NeoGraphViewPart view )
     {
         super( Actions.GRID_LAYOUT, Action.AS_RADIO_BUTTON, view );
         setChecked( false );
@@ -38,14 +39,14 @@ public class ShowGridLayoutAction extends AbstractGraphAction
     /**
      * Executes the action.
      */
+    @Override
     public void run()
     {
         if ( isChecked() )
         {
-            graphView.getViewer()
-                .setLayoutAlgorithm(
+            graphView.getViewer().setLayoutAlgorithm(
                     new GridLayoutAlgorithm(
-                        LayoutStyles.NO_LAYOUT_NODE_RESIZING ), true );
+                            LayoutStyles.NO_LAYOUT_NODE_RESIZING ), true );
         }
     }
 }

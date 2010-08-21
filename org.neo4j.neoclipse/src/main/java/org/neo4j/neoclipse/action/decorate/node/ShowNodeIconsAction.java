@@ -19,6 +19,7 @@ import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**
  * This action handles the node icons setting.
+ * 
  * @author Anders Nawroth
  */
 public class ShowNodeIconsAction extends AbstractCheckboxAction
@@ -27,7 +28,7 @@ public class ShowNodeIconsAction extends AbstractCheckboxAction
      * The constructor.
      */
     public ShowNodeIconsAction( final NeoGraphViewPart view,
-        final boolean checked )
+            final boolean checked )
     {
         super( Actions.NODE_ICONS, checked, view );
     }
@@ -35,10 +36,11 @@ public class ShowNodeIconsAction extends AbstractCheckboxAction
     /**
      * Executes the action.
      */
+    @Override
     public void run()
     {
         graphView.getLabelProvider().getViewSettings().setShowNodeIcons(
-            isChecked() );
+                isChecked() );
         graphView.refreshPreserveLayout();
     }
 }

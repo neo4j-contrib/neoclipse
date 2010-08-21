@@ -19,6 +19,7 @@ import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**
  * This action handles the relationship type setting.
+ * 
  * @author Anders Nawroth
  */
 public class ShowRelationshipTypesAction extends AbstractCheckboxAction
@@ -27,7 +28,7 @@ public class ShowRelationshipTypesAction extends AbstractCheckboxAction
      * The constructor.
      */
     public ShowRelationshipTypesAction( final NeoGraphViewPart view,
-        final boolean checked )
+            final boolean checked )
     {
         super( Actions.RELATIONSHIP_TYPES, checked, view );
     }
@@ -35,10 +36,11 @@ public class ShowRelationshipTypesAction extends AbstractCheckboxAction
     /**
      * Executes the action.
      */
+    @Override
     public void run()
     {
-        graphView.getLabelProvider().getViewSettings()
-            .setShowRelationshipTypes( isChecked() );
+        graphView.getLabelProvider().getViewSettings().setShowRelationshipTypes(
+                isChecked() );
         graphView.refreshPreserveLayout();
     }
 }

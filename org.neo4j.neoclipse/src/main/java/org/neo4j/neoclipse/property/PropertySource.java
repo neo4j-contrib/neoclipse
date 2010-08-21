@@ -15,15 +15,23 @@ package org.neo4j.neoclipse.property;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.concurrent.Callable;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.neo4j.graphdb.PropertyContainer;
+import org.neo4j.neoclipse.Activator;
+import org.neo4j.neoclipse.graphdb.GraphDbServiceManager;
+import org.neo4j.neoclipse.graphdb.GraphDbUtil;
 import org.neo4j.neoclipse.property.PropertyTransform.PropertyHandler;
+import org.neo4j.neoclipse.view.Dialog;
 
 /**
  * Common property handling for nodes and relationships.
+ * 
  * @author Peter H&auml;nsgen
  * @author Anders Nawroth
  */
@@ -39,10 +47,11 @@ public class PropertySource implements IPropertySource
 
     /**
      * The constructor.
+     * 
      * @param propertySheet
      */
     public PropertySource( final PropertyContainer container,
-        final NeoPropertySheetPage propertySheet )
+            final NeoPropertySheetPage propertySheet )
     {
         this.container = container;
         this.propertySheet = propertySheet;
@@ -58,15 +67,14 @@ public class PropertySource implements IPropertySource
      */
     public IPropertyDescriptor[] getPropertyDescriptors()
     {
-        List<IPropertyDescriptor> descs = new ArrayList<IPropertyDescriptor>();
+        final List<IPropertyDescriptor> descs = new ArrayList<IPropertyDescriptor>();
         descs.addAll( getHeadPropertyDescriptors() );
-        Iterable<String> keys = container.getPropertyKeys();
-        for ( String key : keys )
+        Map<String, Object> properties = GraphDbUtil.getProperties( container );
+        for ( Entry<String, Object> entry : properties.entrySet() )
         {
-            Object value = container.getProperty( key );
-            Class<?> c = value.getClass();
-            descs
-                .add( new PropertyDescriptor( key, key, PROPERTIES_CATEGORY, c ) );
+            String key = entry.getKey();
+            Class<?> c = entry.getValue().getClass();
+            descs.add( new PropertyDescriptor( key, key, PROPERTIES_CATEGORY, c ) );
         }
         return descs.toArray( new IPropertyDescriptor[descs.size()] );
     }
@@ -86,13 +94,13 @@ public class PropertySource implements IPropertySource
 
     /**
      * Performs the real getting of the property value.
-     * @param id
-     *            id of the property
+     * 
+     * @param id id of the property
      * @return value of the property
      */
     protected Object getValue( final Object id )
     {
-        return container.getProperty( (String) id );
+        return GraphDbUtil.getProperty( container, (String) id );
     }
 
     /**
@@ -105,13 +113,29 @@ public class PropertySource implements IPropertySource
 
     /**
      * Performs the real testing of if a property is set.
-     * @param id
-     *            id of the property
+     * 
+     * @param id id of the property
      * @return true if set
      */
     protected boolean isSet( final Object id )
     {
-        return container.hasProperty( (String) id );
+        GraphDbServiceManager gsm = Activator.getDefault().getGraphDbServiceManager();
+        try
+        {
+            return gsm.submitTask( new Callable<Boolean>()
+            {
+                public Boolean call() throws Exception
+                {
+                    return container.hasProperty( (String) id );
+                }
+            }, "check if property exists" ).get();
+        }
+        catch ( Exception e )
+        {
+            e.printStackTrace();
+        }
+        // TODO should handle error somehow
+        return false;
     }
 
     /**
@@ -126,16 +150,21 @@ public class PropertySource implements IPropertySource
      */
     public void setPropertyValue( final Object id, final Object value )
     {
-        if ( container.hasProperty( (String) id ) )
+        setProperty( (String) id, value );
+    }
+
+    private void setProperty( final String key, final Object value )
+    {
+        if ( container.hasProperty( key ) )
         {
             // try to keep the same type as the previous value
-            Class<?> c = container.getProperty( (String) id ).getClass();
+            Class<?> c = GraphDbUtil.getProperty( container, key ).getClass();
             PropertyHandler propertyHandler = PropertyTransform.getHandler( c );
             if ( propertyHandler == null )
             {
                 MessageDialog.openError( null, "Error",
-                    "No property handler was found for type "
-                        + c.getSimpleName() + "." );
+                        "No property handler was found for type "
+                                + c.getSimpleName() + "." );
                 return;
             }
             Object o = null;
@@ -145,40 +174,21 @@ public class PropertySource implements IPropertySource
             }
             catch ( Exception e )
             {
-                MessageDialog.openError( null, "Error",
-                    "Could not parse the input as type " + c.getSimpleName()
-                        + "." );
+                Dialog.openError( "Error", "Could not parse the input as type "
+                                           + c.getSimpleName() + "." );
                 return;
             }
             if ( o == null )
             {
-                MessageDialog.openError( null, "Error",
-                    "Input parsing resulted in null value." );
+                Dialog.openError( "Error",
+                        "Input parsing resulted in null value." );
                 return;
             }
-            try
-            {
-                container.setProperty( (String) id, o );
-            }
-            catch ( Exception e )
-            {
-                MessageDialog.openError( null, "Error",
-                    "Error in Neo service: " + e.getMessage() );
-            }
+            GraphDbUtil.setProperty( container, key, o, propertySheet );
         }
         else
         {
-            // simply set the value
-            try
-            {
-                container.setProperty( (String) id, value );
-            }
-            catch ( Exception e )
-            {
-                MessageDialog.openError( null, "Error",
-                    "Error in Neo service: " + e.getMessage() );
-            }
+            GraphDbUtil.setProperty( container, key, value, propertySheet );
         }
-        propertySheet.fireChangeEvent( container, (String) id );
     }
 }

@@ -21,6 +21,7 @@ import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.NotFoundException;
 import org.neo4j.neoclipse.Activator;
+import org.neo4j.neoclipse.graphdb.GraphCallable;
 
 /**
  * Keep track of browsing history and preserve states.
@@ -65,17 +66,31 @@ public class BrowserHistory
          */
         public Node getNode()
         {
-            GraphDatabaseService neoService = Activator.getDefault().getGraphDbService();
-            if ( neoService != null )
+            try
             {
-                try
-                {
-                    return neoService.getNodeById( id );
-                }
-                catch ( NotFoundException e )
-                {
-                    return null;
-                }
+                return Activator.getDefault().getGraphDbServiceManager().submitTask(
+                        new GraphCallable<Node>()
+                        {
+                            public Node call( final GraphDatabaseService graphDb )
+                            {
+                                if ( graphDb != null )
+                                {
+                                    try
+                                    {
+                                        return graphDb.getNodeById( id );
+                                    }
+                                    catch ( NotFoundException e )
+                                    {
+                                        return null;
+                                    }
+                                }
+                                return null;
+                            }
+                        }, "get starting node of state" ).get();
+            }
+            catch ( Exception e )
+            {
+                ErrorMessage.showDialog( "Create relationship(s)", e );
             }
             return null;
         }

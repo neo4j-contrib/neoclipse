@@ -20,6 +20,7 @@ import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**
  * Increases the traversal depth of the neo graph view.
+ * 
  * @author Peter H&auml;nsgen
  */
 public class IncreaseTraversalDepthAction extends AbstractGraphAction
@@ -35,6 +36,7 @@ public class IncreaseTraversalDepthAction extends AbstractGraphAction
     /**
      * Executes the action.
      */
+    @Override
     public void run()
     {
         graphView.incTraversalDepth();

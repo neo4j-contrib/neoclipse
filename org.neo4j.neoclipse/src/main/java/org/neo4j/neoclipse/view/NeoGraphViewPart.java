@@ -47,11 +47,13 @@ import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.event.NeoclipseEvent;
 import org.neo4j.neoclipse.event.NeoclipseEventListener;
 import org.neo4j.neoclipse.event.NeoclipseListenerList;
+import org.neo4j.neoclipse.graphdb.GraphCallable;
 import org.neo4j.neoclipse.graphdb.GraphDbServiceEvent;
 import org.neo4j.neoclipse.graphdb.GraphDbServiceEventListener;
 import org.neo4j.neoclipse.graphdb.GraphDbServiceManager;
 import org.neo4j.neoclipse.graphdb.GraphDbServiceMode;
 import org.neo4j.neoclipse.graphdb.GraphDbServiceStatus;
+import org.neo4j.neoclipse.graphdb.GraphRunnable;
 import org.neo4j.neoclipse.help.HelpContextConstants;
 import org.neo4j.neoclipse.preference.Preferences;
 import org.neo4j.neoclipse.property.NeoPropertySheetPage;
@@ -179,6 +181,18 @@ public class NeoGraphViewPart extends ViewPart implements
      */
     private void notifyListeners( final Node node )
     {
+        Activator.getDefault().getGraphDbServiceManager().submitTask(
+                new Runnable()
+                {
+                    public void run()
+                    {
+                        notifyTheListeners( node );
+                    }
+                }, "notify listeners" );
+    }
+
+    private void notifyTheListeners( final Node node )
+    {
         for ( InputChangeListener listener : listeners )
         {
             listener.inputChange( node );
@@ -210,13 +224,17 @@ public class NeoGraphViewPart extends ViewPart implements
      */
     public void updateMenuState()
     {
-        int selectedNodeCount = currentSelectedNodes.size();
-        int selectedRelationshipCount = currentSelectedRels.size();
-        menu.setEnableDeleteAction( selectedNodeCount > 0
-                                    || selectedRelationshipCount > 0 );
-        boolean rel = selectedNodeCount == 2;
-        boolean outIn = selectedNodeCount > 0;
-        menu.setEnabledRelActions( rel, outIn, outIn );
+        GraphDbServiceManager sm = Activator.getDefault().getGraphDbServiceManager();
+        if ( !sm.isReadOnlyMode() )
+        {
+            int selectedNodeCount = currentSelectedNodes.size();
+            int selectedRelationshipCount = currentSelectedRels.size();
+            menu.setEnableDeleteAction( selectedNodeCount > 0
+                                        || selectedRelationshipCount > 0 );
+            boolean rel = selectedNodeCount == 2;
+            boolean outIn = selectedNodeCount > 0;
+            menu.setEnabledRelActions( rel, outIn, outIn );
+        }
     }
 
     /**
@@ -226,17 +244,32 @@ public class NeoGraphViewPart extends ViewPart implements
      */
     public Node getCurrentNode()
     {
-        Object node = viewer.getInput();
-        if ( node instanceof Node )
+        try
         {
-            return (Node) node;
+            Object node = viewer.getInput();
+            if ( node instanceof Node )
+            {
+                return (Node) node;
+            }
+            return Activator.getDefault().getGraphDbServiceManager().submitTask(
+                    new GraphCallable<Node>()
+                    {
+                        public Node call( final GraphDatabaseService graphDb )
+                        {
+                            Node refNode = graphDb.getReferenceNode();
+                            if ( refNode != null )
+                            {
+                                return refNode;
+                            }
+                            throw new NotFoundException(
+                                    "No current node could be found." );
+                        }
+                    }, "get current node" ).get();
         }
-        Node refNode = Activator.getDefault().getReferenceNode();
-        if ( refNode != null )
+        catch ( Exception e )
         {
-            return refNode;
+            throw new NotFoundException( "No current node could be found." );
         }
-        throw new NotFoundException( "No current node could be found." );
     }
 
     /*
@@ -248,16 +281,22 @@ public class NeoGraphViewPart extends ViewPart implements
     /**
      * Updates the content of the status bar.
      */
-    public void refreshStatusBar()
+    private void refreshStatusBar()
     {
-        StringBuilder str = new StringBuilder( 64 );
-        str.append( "Traversal depth: " ).append( traversalDepth );
-        str.append( "   Nodes: " ).append(
-                viewer.getGraphControl().getNodes().size() );
-        str.append( "   Relationships: " ).append(
-                viewer.getGraphControl().getConnections().size() );
-        getViewSite().getActionBars().getStatusLineManager().setMessage(
-                str.toString() );
+        UiHelper.asyncExec( new Runnable()
+        {
+            public void run()
+            {
+                StringBuilder str = new StringBuilder( 64 );
+                str.append( "Traversal depth: " ).append( traversalDepth );
+                str.append( "   Nodes: " ).append(
+                        viewer.getGraphControl().getNodes().size() );
+                str.append( "   Relationships: " ).append(
+                        viewer.getGraphControl().getConnections().size() );
+                getViewSite().getActionBars().getStatusLineManager().setMessage(
+                        str.toString() );
+            }
+        } );
     }
 
     /**
@@ -280,8 +319,7 @@ public class NeoGraphViewPart extends ViewPart implements
      * This is how the framework determines which interfaces we implement.
      */
     @Override
-    @SuppressWarnings( "unchecked" )
-    public Object getAdapter( final Class key )
+    public Object getAdapter( @SuppressWarnings( "rawtypes" ) final Class key )
     {
         if ( key.equals( IPropertySheetPage.class ) )
         {
@@ -333,7 +371,7 @@ public class NeoGraphViewPart extends ViewPart implements
         GraphDbServiceManager sm = Activator.getDefault().getGraphDbServiceManager();
         if ( MessageDialog.openQuestion(
                 null,
-                "Stopping database",
+                "Stopping the database",
                 "There are changes that are not commited to the database. Do you want to commit (save) them?" ) )
         {
             sm.commit();
@@ -384,8 +422,22 @@ public class NeoGraphViewPart extends ViewPart implements
      */
     public void showReferenceNode()
     {
-        Node node = Activator.getDefault().getReferenceNode();
-        setInput( node );
+        try
+        {
+            Activator.getDefault().getGraphDbServiceManager().executeTask(
+                    new GraphRunnable()
+                    {
+                        public void run( final GraphDatabaseService graphDb )
+                        {
+                            Node node = graphDb.getReferenceNode();
+                            setInput( node );
+                        }
+                    }, "show reference node" );
+        }
+        catch ( Exception e )
+        {
+            ErrorMessage.showDialog( "Navigation error", e );
+        }
     }
 
     /**
@@ -395,32 +447,53 @@ public class NeoGraphViewPart extends ViewPart implements
      */
     public void showSomeNode()
     {
-        GraphDatabaseService ns = Activator.getDefault().getGraphDbServiceSafely();
-        if ( ns != null )
+        try
         {
-            Node node = ns.getReferenceNode();
-            if ( !node.hasRelationship() )
+            final GraphDbServiceManager gsm = Activator.getDefault().getGraphDbServiceManager();
+            gsm.submitTask( new GraphRunnable()
             {
-                // so, find a more friendly node if possible!
-                int tries = 0;
-                for ( Node candidateNode : ns.getAllNodes() )
+                public void run( final GraphDatabaseService graphDb )
                 {
-                    if ( node.equals( candidateNode ) )
+                    if ( graphDb == null )
                     {
-                        continue;
+                        return;
                     }
-                    if ( candidateNode.hasRelationship() )
+                    Node node = graphDb.getReferenceNode();
+                    if ( !node.hasRelationship() )
                     {
-                        node = candidateNode;
-                        break;
+                        // so, find a more friendly node if possible!
+                        int tries = 0;
+                        for ( Node candidateNode : graphDb.getAllNodes() )
+                        {
+                            if ( node.equals( candidateNode ) )
+                            {
+                                continue;
+                            }
+                            if ( candidateNode.hasRelationship() )
+                            {
+                                node = candidateNode;
+                                break;
+                            }
+                            if ( tries++ > MAX_NODE_TRIES )
+                            {
+                                break;
+                            }
+                        }
                     }
-                    if ( tries++ > MAX_NODE_TRIES )
+                    setInput( node );
+                    gsm.submitDisplayTask( new Runnable()
                     {
-                        break;
-                    }
+                        public void run()
+                        {
+                            NeoGraphViewPart.this.refreshStatusBar();
+                        }
+                    }, "refresh statusbar" );
                 }
-            }
-            setInput( node );
+            }, "show some node" );
+        }
+        catch ( Exception e )
+        {
+            ErrorMessage.showDialog( "Graph view", e );
         }
     }
 
@@ -429,11 +502,31 @@ public class NeoGraphViewPart extends ViewPart implements
      */
     public void showNode( final long nodeId )
     {
-        GraphDatabaseService ns = Activator.getDefault().getGraphDbService();
-        if ( ns != null )
+        try
         {
-            Node node = ns.getNodeById( nodeId );
-            setInput( node );
+            GraphDbServiceManager gsm = Activator.getDefault().getGraphDbServiceManager();
+            gsm.submitTask( new GraphRunnable()
+            {
+                public void run( final GraphDatabaseService graphDb )
+                {
+                    if ( graphDb != null )
+                    {
+                        try
+                        {
+                            Node node = graphDb.getNodeById( nodeId );
+                            setInput( node );
+                        }
+                        catch ( Exception e )
+                        {
+                            showSomeNode();
+                        }
+                    }
+                }
+            }, "show node byid" );
+        }
+        catch ( Exception e )
+        {
+            ErrorMessage.showDialog( "Can't show node", e );
         }
     }
 
@@ -442,7 +535,21 @@ public class NeoGraphViewPart extends ViewPart implements
      */
     public void showNode( final Node node )
     {
-        setInput( node );
+        try
+        {
+            Activator.getDefault().getGraphDbServiceManager().submitTask(
+                    new Runnable()
+                    {
+                        public void run()
+                        {
+                            setInput( node );
+                        }
+                    }, "show node" );
+        }
+        catch ( Exception e )
+        {
+            ErrorMessage.showDialog( "Can't show node", e );
+        }
     }
 
     /**
@@ -511,15 +618,21 @@ public class NeoGraphViewPart extends ViewPart implements
 
     public void refresh( final boolean updateLabels )
     {
-        disableDelete();
-        viewer.refresh( updateLabels );
-        if ( viewer.getGraphControl().getNodes().size() == 0 )
+        UiHelper.asyncExec( new Runnable()
         {
-            // will take care of if the input node
-            // gets deleted or disappears in a rollback
-            showSomeNode();
-        }
-        refreshStatusBar();
+            public void run()
+            {
+                disableDelete();
+                viewer.refresh( updateLabels );
+                if ( viewer.getGraphControl().getNodes().size() == 0 )
+                {
+                    // will take care of if the input node
+                    // gets deleted or disappears in a rollback
+                    showSomeNode();
+                }
+                refreshStatusBar();
+            }
+        } );
     }
 
     /**
@@ -530,9 +643,15 @@ public class NeoGraphViewPart extends ViewPart implements
      */
     public void refresh( final Object element, final boolean updateLabels )
     {
-        disableDelete();
-        viewer.refresh( element, updateLabels );
-        refreshStatusBar();
+        UiHelper.asyncExec( new Runnable()
+        {
+            public void run()
+            {
+                disableDelete();
+                viewer.refresh( element, updateLabels );
+                refreshStatusBar();
+            }
+        } );
     }
 
     /**
@@ -561,7 +680,7 @@ public class NeoGraphViewPart extends ViewPart implements
      * 
      * @return
      */
-    public BrowserHistory getBrowserHistory()
+    private BrowserHistory getBrowserHistory()
     {
         if ( browserHistory == null )
         {
@@ -577,13 +696,25 @@ public class NeoGraphViewPart extends ViewPart implements
      */
     public void setInput( final Node node )
     {
-        viewer.setInput( node );
-        if ( node != null )
+        UiHelper.asyncExec( new Runnable()
         {
-            notifyListeners( node );
-            getBrowserHistory().add( node );
-        }
-        updateNavStatus();
+            public void run()
+            {
+                viewer.setInput( node );
+                if ( node != null )
+                {
+                    UiHelper.asyncExec( new Runnable()
+                    {
+                        public void run()
+                        {
+                            notifyListeners( node );
+                        }
+                    } );
+                    getBrowserHistory().add( node );
+                }
+                updateNavStatus();
+            }
+        } );
     }
 
     /**
@@ -607,24 +738,54 @@ public class NeoGraphViewPart extends ViewPart implements
          */
         public void serviceChanged( final GraphDbServiceEvent event )
         {
+            UiHelper.asyncExec( new Runnable()
+            {
+                public void run()
+                {
+                    handleServiceChange( event );
+                }
+            } );
+        }
+
+        private void handleServiceChange( final GraphDbServiceEvent event )
+        {
             if ( event.getStatus() == GraphDbServiceStatus.STOPPED )
             {
                 // when called during shutdown the content provider may already
                 // have been disposed
+                menu.setEnabledSyncAction( false );
+                menu.setEnabledStartAction( true );
+                menu.setEnabledStopAction( false );
                 if ( getViewer().getContentProvider() != null )
                 {
-                    getViewer().setInput( null );
+                    setInput( null );
                 }
             }
             else if ( event.getStatus() == GraphDbServiceStatus.STARTED )
             {
                 // throw away old relationship colors
                 getLabelProvider().refreshRelationshipColors();
-                showSomeNode();
+                menu.setEnabledSyncAction( true );
+                menu.setEnabledStartAction( false );
+                menu.setEnabledStopAction( true );
+                if ( event.isReadOnlyMode() )
+                {
+                    // set up menus for read-only mode
+                    menu.setEnableDeleteAction( false );
+                    menu.setEnabledRelActions( false, false, false );
+                    menu.setEnabledCommitAction( false );
+                    menu.setEnabledRollbackAction( false );
+                }
+                else
+                {
+                    // TODO set up menus for read/write mode
+                    // - not needed?
+                }
+                // showSomeNode();
             }
             else if ( event.getStatus() == GraphDbServiceStatus.ROLLBACK )
             {
-                refreshPreserveLayout();
+                refresh( true );
                 setDirty( false );
             }
             else if ( event.getStatus() == GraphDbServiceStatus.COMMIT )
@@ -641,7 +802,16 @@ public class NeoGraphViewPart extends ViewPart implements
      */
     public void setDirty( final boolean dirty )
     {
+        // TODO add a StructureChangeEvent instead of having
+        // this method public?
+        GraphDbServiceManager sm = Activator.getDefault().getGraphDbServiceManager();
         this.dirty = dirty;
+        if ( sm.isReadOnlyMode() )
+        {
+            // menu.setEnabledSyncAction( !dirty );
+            return;
+        }
+        menu.setEnabledSyncAction( !dirty );
         menu.setEnabledCommitAction( dirty );
         menu.setEnabledRollbackAction( dirty );
     }
@@ -756,8 +926,14 @@ public class NeoGraphViewPart extends ViewPart implements
          */
         public void handleStateChanged( final ChangeEvent event )
         {
-            refresh( event.getSource(), true );
-            setDirty( true );
+            UiHelper.asyncExec( new Runnable()
+            {
+                public void run()
+                {
+                    refresh( event.getSource(), true );
+                    setDirty( true );
+                }
+            } );
         }
     }
 
@@ -771,6 +947,17 @@ public class NeoGraphViewPart extends ViewPart implements
          */
         public void propertyChange( final PropertyChangeEvent event )
         {
+            UiHelper.asyncExec( new Runnable()
+            {
+                public void run()
+                {
+                    handleChange( event );
+                }
+            } );
+        }
+
+        private void handleChange( final PropertyChangeEvent event )
+        {
             String property = event.getProperty();
             if ( Preferences.CONNECTION_MODE.equals( property ) )
             {
@@ -780,12 +967,14 @@ public class NeoGraphViewPart extends ViewPart implements
                 cleanTransactionBeforeShutdown();
                 sm.setGraphServiceMode( newConnectionMode );
                 // TODO refresh what needs to be refreshed here
-                System.out.println( "New connection mode saved." );
             }
             else if ( Preferences.DATABASE_LOCATION.equals( property ) )
             {
                 // handle change in database location
                 // cleanTransactionBeforeShutdown();
+                // TODO UGLY
+                traversalDepth = 0;
+                incTraversalDepth();
             }
             else
             {

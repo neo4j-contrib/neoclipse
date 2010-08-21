@@ -22,6 +22,7 @@ import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**
  * This action switches the graph view to radial layout.
+ * 
  * @author Peter H&auml;nsgen
  */
 public class ShowRadialLayoutAction extends AbstractGraphAction
@@ -29,7 +30,7 @@ public class ShowRadialLayoutAction extends AbstractGraphAction
     /**
      * The constructor.
      */
-    public ShowRadialLayoutAction( NeoGraphViewPart view )
+    public ShowRadialLayoutAction( final NeoGraphViewPart view )
     {
         super( Actions.RADIAL_LAYOUT, Action.AS_RADIO_BUTTON, view );
         setChecked( false );
@@ -38,14 +39,14 @@ public class ShowRadialLayoutAction extends AbstractGraphAction
     /**
      * Executes the action.
      */
+    @Override
     public void run()
     {
         if ( isChecked() )
         {
-            graphView.getViewer()
-                .setLayoutAlgorithm(
+            graphView.getViewer().setLayoutAlgorithm(
                     new RadialLayoutAlgorithm(
-                        LayoutStyles.NO_LAYOUT_NODE_RESIZING ), true );
+                            LayoutStyles.NO_LAYOUT_NODE_RESIZING ), true );
         }
     }
 }

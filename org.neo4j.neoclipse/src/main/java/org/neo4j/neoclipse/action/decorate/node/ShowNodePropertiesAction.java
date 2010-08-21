@@ -19,6 +19,7 @@ import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**
  * This action handles the node properties setting.
+ * 
  * @author Anders Nawroth
  */
 public class ShowNodePropertiesAction extends AbstractCheckboxAction
@@ -27,7 +28,7 @@ public class ShowNodePropertiesAction extends AbstractCheckboxAction
      * The constructor.
      */
     public ShowNodePropertiesAction( final NeoGraphViewPart view,
-        final boolean checked )
+            final boolean checked )
     {
         super( Actions.NODE_EXPANDED, checked, view );
     }
@@ -35,10 +36,11 @@ public class ShowNodePropertiesAction extends AbstractCheckboxAction
     /**
      * Executes the action.
      */
+    @Override
     public void run()
     {
         graphView.getLabelProvider().getViewSettings().setShowNodeProperties(
-            isChecked() );
+                isChecked() );
         graphView.refreshPreserveLayout();
     }
 }

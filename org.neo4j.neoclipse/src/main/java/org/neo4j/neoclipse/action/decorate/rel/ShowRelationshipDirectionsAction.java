@@ -19,6 +19,7 @@ import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**
  * This action handles the relationship directions setting.
+ * 
  * @author Anders Nawroth
  */
 public class ShowRelationshipDirectionsAction extends AbstractCheckboxAction
@@ -27,7 +28,7 @@ public class ShowRelationshipDirectionsAction extends AbstractCheckboxAction
      * The constructor.
      */
     public ShowRelationshipDirectionsAction( final NeoGraphViewPart view,
-        final boolean checked )
+            final boolean checked )
     {
         super( Actions.RELATIONSHIP_DIRECTIONS, checked, view );
     }
@@ -35,10 +36,11 @@ public class ShowRelationshipDirectionsAction extends AbstractCheckboxAction
     /**
      * Executes the action.
      */
+    @Override
     public void run()
     {
         graphView.getLabelProvider().getViewSettings().setShowArrows(
-            isChecked() );
+                isChecked() );
         graphView.refreshPreserveLayout();
     }
 }

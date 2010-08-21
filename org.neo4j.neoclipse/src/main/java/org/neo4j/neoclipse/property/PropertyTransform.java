@@ -32,6 +32,7 @@ import org.neo4j.neoclipse.Icons;
 
 /**
  * Transform between property values and representations for editors.
+ * 
  * @author Anders Nawroth
  */
 public final class PropertyTransform
@@ -45,22 +46,25 @@ public final class PropertyTransform
         private final Icons icon;
         private final Object standard;
         private Validator validator = null;
+        private final boolean isArray;
 
-        private PropertyHandler( Class<?> type, Icons icon, Object standard )
+        private PropertyHandler( final Class<?> type, final Icons icon,
+                final Object standard, final boolean array )
         {
             this.type = type;
             this.icon = icon;
             this.standard = standard;
+            this.isArray = array;
         }
 
         /**
          * Transform from editor representation to property value.
-         * @param o
-         *            editor representation (mostly a String)
+         * 
+         * @param o editor representation (mostly a String)
          * @return property value or null
          * @throws IOException
          */
-        public Object parse( Object o ) throws IOException
+        public Object parse( final Object o ) throws IOException
         {
             if ( isType( o.getClass() ) )
             {
@@ -72,26 +76,37 @@ public final class PropertyTransform
         /**
          * Compare type to the type of this handler.
          */
-        public boolean isType( Class<?> t )
+        public boolean isType( final Class<?> t )
         {
             return t.equals( type );
+        }
+
+        /**
+         * Tell if type is array type.
+         * 
+         * @return true if type is array type
+         */
+        public boolean isArray()
+        {
+            return isArray;
         }
 
         protected abstract Object parser( Object o ) throws IOException;
 
         /**
          * Transform from property value to editor representation.
-         * @param o
-         *            property value
+         * 
+         * @param o property value
          * @return editor representation of the value
          */
-        public String render( Object o )
+        public String render( final Object o )
         {
             return type.cast( o ).toString();
         }
 
         /**
          * Get the icon image for this type.
+         * 
          * @return
          */
         public ImageDescriptor descriptor()
@@ -101,6 +116,7 @@ public final class PropertyTransform
 
         /**
          * Get the icon image for this type.
+         * 
          * @return
          */
         public Image image()
@@ -110,6 +126,7 @@ public final class PropertyTransform
 
         /**
          * Get default value.
+         * 
          * @return default value
          */
         public Object value()
@@ -119,6 +136,7 @@ public final class PropertyTransform
 
         /**
          * Get simple name of the class.
+         * 
          * @return
          */
         public String name()
@@ -127,12 +145,12 @@ public final class PropertyTransform
         }
 
         private class Validator implements ICellEditorValidator,
-            IInputValidator
+                IInputValidator
         {
             /**
              * cell editor validator
              */
-            public String isValid( Object value )
+            public String isValid( final Object value )
             {
                 try
                 {
@@ -148,7 +166,7 @@ public final class PropertyTransform
             /**
              * dialog field validator
              */
-            public String isValid( String value )
+            public String isValid( final String value )
             {
                 return isValid( (Object) value );
             }
@@ -156,6 +174,7 @@ public final class PropertyTransform
 
         /**
          * get an input field validator
+         * 
          * @return
          */
         public IInputValidator getValidator()
@@ -165,6 +184,7 @@ public final class PropertyTransform
 
         /**
          * get a cell editor validator
+         * 
          * @return
          */
         private ICellEditorValidator getCellValidator()
@@ -174,6 +194,7 @@ public final class PropertyTransform
 
         /**
          * Get the real internal validator.
+         * 
          * @return
          */
         private Validator getInternalValidator()
@@ -187,6 +208,7 @@ public final class PropertyTransform
 
         /**
          * Editor for this property type.
+         * 
          * @return editor
          */
         public CellEditor getEditor( final Composite parent )
@@ -199,6 +221,7 @@ public final class PropertyTransform
         /**
          * Gets editor type for this property type. Override if another editor
          * than TEXT should be used.
+         * 
          * @return editor type
          */
         protected PropertyEditor getEditorType()
@@ -217,11 +240,11 @@ public final class PropertyTransform
 
     /**
      * Transform a String to a List of Strings.
-     * @param input
-     *            editor data for array
+     * 
+     * @param input editor data for array
      * @return list containing the separated strings
      */
-    protected static List<String> arrayToCollection( Object input )
+    protected static List<String> arrayToCollection( final Object input )
     {
         String in = removeBrackets( input );
         List<String> out = new ArrayList<String>();
@@ -241,13 +264,13 @@ public final class PropertyTransform
      * property value. Adds a little more features like being able to have
      * spaces inside a string. Citation signs (") are escaped by a backslash
      * (\).
-     * @param input
-     *            editor data for String array
+     * 
+     * @param input editor data for String array
      * @return list containing the separated strings
      * @throws IOException
      */
-    protected static List<String> stringArrayToCollection( Object input )
-        throws IOException
+    protected static List<String> stringArrayToCollection( final Object input )
+            throws IOException
     {
         String in = removeBrackets( input );
         List<String> out = new ArrayList<String>();
@@ -265,11 +288,11 @@ public final class PropertyTransform
 
     /**
      * Simple utility to remove [brackets] used as markers for an array.
-     * @param input
-     *            user data
+     * 
+     * @param input user data
      * @return user data minus brackets and leading/trailing whitespace
      */
-    private static String removeBrackets( Object input )
+    private static String removeBrackets( final Object input )
     {
         String in = input.toString().trim();
         if ( in.charAt( 0 ) == '[' )
@@ -285,24 +308,35 @@ public final class PropertyTransform
 
     /**
      * Get a PropertyHandler for a specific type.
-     * @param cls
-     *            type to handle
+     * 
+     * @param cls type to handle
      * @return handler for type
      */
-    public static PropertyHandler getHandler( Class<?> cls )
+    public static PropertyHandler getHandler( final Class<?> cls )
     {
         return HANDLERS.get( cls );
     }
 
     /**
      * Get a PropertyHandler for an object.
-     * @param o
-     *            object to handle
+     * 
+     * @param o object to handle
      * @return handler for type
      */
-    public static PropertyHandler getHandler( Object o )
+    public static PropertyHandler getHandler( final Object o )
     {
         return HANDLERS.get( o.getClass() );
+    }
+
+    /**
+     * Render a property value.
+     * 
+     * @param o the value
+     * @return rendition of value
+     */
+    public static String render( final Object o )
+    {
+        return HANDLERS.get( o.getClass() ).render( o );
     }
 
     /**
@@ -310,22 +344,24 @@ public final class PropertyTransform
      * map to retrieve the correct property handler with parse(), render() and
      * getEditorType() methods.
      */
-    private static final Map<Class<?>,PropertyHandler> HANDLERS = new HashMap<Class<?>,PropertyHandler>()
+    private static final Map<Class<?>, PropertyHandler> HANDLERS = new HashMap<Class<?>, PropertyHandler>()
     {
         private static final long serialVersionUID = 1L;
         {
             put( String.class, new PropertyHandler( String.class,
-                Icons.TYPE_STRING, "" )
+                    Icons.TYPE_STRING, "", false )
             {
-                protected Object parser( Object o )
+                @Override
+                protected Object parser( final Object o )
                 {
                     return o;
                 }
             } );
             put( String[].class, new PropertyHandler( String[].class,
-                Icons.TYPE_STRINGS, new String[0] )
+                    Icons.TYPE_STRINGS, new String[0], true )
             {
-                protected Object parser( Object o ) throws IOException
+                @Override
+                protected Object parser( final Object o ) throws IOException
                 {
                     List<String> items = stringArrayToCollection( o );
                     String[] res = new String[items.size()];
@@ -336,12 +372,13 @@ public final class PropertyTransform
                     return res;
                 }
 
-                public String render( Object o )
+                @Override
+                public String render( final Object o )
                 {
-                    String[] res = new String[((String[]) o).length];
+                    String[] res = new String[( (String[]) o ).length];
                     for ( int i = 0; i < res.length; i++ )
                     {
-                        String s = ((String[]) o)[i];
+                        String s = ( (String[]) o )[i];
                         s = s.replaceAll( "\"", "\\\\\"" );
                         res[i] = '"' + s + '"';
                     }
@@ -349,17 +386,19 @@ public final class PropertyTransform
                 }
             } );
             put( Integer.class, new PropertyHandler( Integer.class,
-                Icons.TYPE_INT, (int) 0 )
+                    Icons.TYPE_INT, 0, false )
             {
-                protected Object parser( Object o )
+                @Override
+                protected Object parser( final Object o )
                 {
                     return Integer.parseInt( (String) o );
                 }
             } );
             put( int[].class, new PropertyHandler( int[].class,
-                Icons.TYPE_INTS, new int[0] )
+                    Icons.TYPE_INTS, new int[0], true )
             {
-                protected Object parser( Object o )
+                @Override
+                protected Object parser( final Object o )
                 {
                     List<String> items = arrayToCollection( o );
                     int[] res = new int[items.size()];
@@ -370,23 +409,26 @@ public final class PropertyTransform
                     return res;
                 }
 
-                public String render( Object o )
+                @Override
+                public String render( final Object o )
                 {
                     return Arrays.toString( (int[]) o );
                 }
             } );
             put( Double.class, new PropertyHandler( Double.class,
-                Icons.TYPE_DOUBLE, 0d )
+                    Icons.TYPE_DOUBLE, 0d, false )
             {
-                protected Object parser( Object o )
+                @Override
+                protected Object parser( final Object o )
                 {
                     return Double.parseDouble( (String) o );
                 }
             } );
             put( double[].class, new PropertyHandler( double[].class,
-                Icons.TYPE_DOUBLES, new double[0] )
+                    Icons.TYPE_DOUBLES, new double[0], true )
             {
-                protected Object parser( Object o )
+                @Override
+                protected Object parser( final Object o )
                 {
                     List<String> items = arrayToCollection( o );
                     double[] res = new double[items.size()];
@@ -397,23 +439,26 @@ public final class PropertyTransform
                     return res;
                 }
 
-                public String render( Object o )
+                @Override
+                public String render( final Object o )
                 {
                     return Arrays.toString( (double[]) o );
                 }
             } );
             put( Float.class, new PropertyHandler( Float.class,
-                Icons.TYPE_FLOAT, 0f )
+                    Icons.TYPE_FLOAT, 0f, false )
             {
-                protected Object parser( Object o )
+                @Override
+                protected Object parser( final Object o )
                 {
                     return Float.parseFloat( (String) o );
                 }
             } );
             put( float[].class, new PropertyHandler( float[].class,
-                Icons.TYPE_FLOATS, new float[0] )
+                    Icons.TYPE_FLOATS, new float[0], true )
             {
-                protected Object parser( Object o )
+                @Override
+                protected Object parser( final Object o )
                 {
                     List<String> items = arrayToCollection( o );
                     float[] res = new float[items.size()];
@@ -424,25 +469,28 @@ public final class PropertyTransform
                     return res;
                 }
 
-                public String render( Object o )
+                @Override
+                public String render( final Object o )
                 {
                     return Arrays.toString( (float[]) o );
                 }
             } );
             put( Boolean.class, new PropertyHandler( Boolean.class,
-                Icons.TYPE_BOOLEAN, false )
+                    Icons.TYPE_BOOLEAN, false, false )
             {
                 // has it's dedicated editor, handling transforms,
                 // so we just pass things through here
-                protected Object parser( Object o )
+                @Override
+                protected Object parser( final Object o )
                 {
                     return Boolean.parseBoolean( (String) o );
                 }
             } );
             put( boolean[].class, new PropertyHandler( boolean[].class,
-                Icons.TYPE_BOOLEANS, new boolean[0] )
+                    Icons.TYPE_BOOLEANS, new boolean[0], true )
             {
-                protected Object parser( Object o )
+                @Override
+                protected Object parser( final Object o )
                 {
                     List<String> items = arrayToCollection( o );
                     boolean[] res = new boolean[items.size()];
@@ -453,23 +501,26 @@ public final class PropertyTransform
                     return res;
                 }
 
-                public String render( Object o )
+                @Override
+                public String render( final Object o )
                 {
                     return Arrays.toString( (boolean[]) o );
                 }
             } );
-            put( Byte.class, new PropertyHandler( Byte.class,
-                Icons.TYPE_BYTE, (byte) 0 )
+            put( Byte.class, new PropertyHandler( Byte.class, Icons.TYPE_BYTE,
+                    (byte) 0, false )
             {
-                protected Object parser( Object o )
+                @Override
+                protected Object parser( final Object o )
                 {
                     return Byte.parseByte( (String) o );
                 }
             } );
             put( byte[].class, new PropertyHandler( byte[].class,
-                Icons.TYPE_BYTES, new byte[0] )
+                    Icons.TYPE_BYTES, new byte[0], true )
             {
-                protected Object parser( Object o )
+                @Override
+                protected Object parser( final Object o )
                 {
                     List<String> items = arrayToCollection( o );
                     byte[] res = new byte[items.size()];
@@ -480,23 +531,26 @@ public final class PropertyTransform
                     return res;
                 }
 
-                public String render( Object o )
+                @Override
+                public String render( final Object o )
                 {
                     return Arrays.toString( (byte[]) o );
                 }
             } );
             put( Short.class, new PropertyHandler( Short.class,
-                Icons.TYPE_SHORT, (short) 0 )
+                    Icons.TYPE_SHORT, (short) 0, false )
             {
-                protected Object parser( Object o )
+                @Override
+                protected Object parser( final Object o )
                 {
                     return Short.parseShort( (String) o );
                 }
             } );
             put( short[].class, new PropertyHandler( short[].class,
-                Icons.TYPE_SHORTS, new short[0] )
+                    Icons.TYPE_SHORTS, new short[0], true )
             {
-                protected Object parser( Object o )
+                @Override
+                protected Object parser( final Object o )
                 {
                     List<String> items = arrayToCollection( o );
                     short[] res = new short[items.size()];
@@ -507,23 +561,26 @@ public final class PropertyTransform
                     return res;
                 }
 
-                public String render( Object o )
+                @Override
+                public String render( final Object o )
                 {
                     return Arrays.toString( (short[]) o );
                 }
             } );
-            put( Long.class, new PropertyHandler( Long.class,
-                Icons.TYPE_LONG, 0L )
+            put( Long.class, new PropertyHandler( Long.class, Icons.TYPE_LONG,
+                    0L, false )
             {
-                protected Object parser( Object o )
+                @Override
+                protected Object parser( final Object o )
                 {
                     return Long.parseLong( (String) o );
                 }
             } );
             put( long[].class, new PropertyHandler( long[].class,
-                Icons.TYPE_LONGS, new long[0] )
+                    Icons.TYPE_LONGS, new long[0], true )
             {
-                protected Object parser( Object o )
+                @Override
+                protected Object parser( final Object o )
                 {
                     List<String> items = arrayToCollection( o );
                     long[] res = new long[items.size()];
@@ -534,28 +591,31 @@ public final class PropertyTransform
                     return res;
                 }
 
-                public String render( Object o )
+                @Override
+                public String render( final Object o )
                 {
                     return Arrays.toString( (long[]) o );
                 }
             } );
             put( Character.class, new PropertyHandler( Character.class,
-                Icons.TYPE_CHAR, (char) 0 )
+                    Icons.TYPE_CHAR, (char) 0, false )
             {
-                protected Object parser( Object o )
+                @Override
+                protected Object parser( final Object o )
                 {
                     String s = (String) o;
                     if ( s.length() > 0 )
                     {
-                        return ((String) o).charAt( 0 );
+                        return ( (String) o ).charAt( 0 );
                     }
                     return null;
                 }
             } );
             put( char[].class, new PropertyHandler( char[].class,
-                Icons.TYPE_CHARS, new char[0] )
+                    Icons.TYPE_CHARS, new char[0], true )
             {
-                protected Object parser( Object o )
+                @Override
+                protected Object parser( final Object o )
                 {
                     List<String> items = arrayToCollection( o );
                     char[] res = new char[items.size()];
@@ -566,7 +626,8 @@ public final class PropertyTransform
                     return res;
                 }
 
-                public String render( Object o )
+                @Override
+                public String render( final Object o )
                 {
                     return Arrays.toString( (char[]) o );
                 }

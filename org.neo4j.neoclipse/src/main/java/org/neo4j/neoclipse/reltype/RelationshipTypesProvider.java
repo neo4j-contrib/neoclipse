@@ -16,7 +16,6 @@ package org.neo4j.neoclipse.reltype;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -32,6 +31,9 @@ import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.event.NeoclipseEvent;
 import org.neo4j.neoclipse.event.NeoclipseEventListener;
 import org.neo4j.neoclipse.event.NeoclipseListenerList;
+import org.neo4j.neoclipse.graphdb.GraphCallable;
+import org.neo4j.neoclipse.graphdb.GraphDbUtil;
+import org.neo4j.neoclipse.view.ErrorMessage;
 import org.neo4j.neoclipse.view.NeoGraphLabelProviderWrapper;
 
 /**
@@ -112,19 +114,23 @@ public class RelationshipTypesProvider implements IContentProvider,
      */
     public Set<RelationshipType> getRelationshipTypesFromDb()
     {
-        Set<RelationshipType> relationshipTypes;
-        relationshipTypes = new HashSet<RelationshipType>();
-        GraphDatabaseService ns = Activator.getDefault().getGraphDbService();
-        if ( ns == null )
+        try
         {
-            // todo ?
-            return Collections.emptySet();
+            return Activator.getDefault().getGraphDbServiceManager().submitTask(
+                    new GraphCallable<Set<RelationshipType>>()
+                    {
+                        public Set<RelationshipType> call(
+                                final GraphDatabaseService graphDb )
+                        {
+                            return GraphDbUtil.getRelationshipTypesFromDb( graphDb );
+                        }
+                    }, "get relationship types" ).get();
         }
-        for ( RelationshipType relType : ns.getRelationshipTypes() )
+        catch ( Exception e )
         {
-            relationshipTypes.add( relType );
+            ErrorMessage.showDialog( "Listing relationship types", e );
         }
-        return relationshipTypes;
+        return Collections.emptySet();
     }
 
     /**
@@ -157,7 +163,7 @@ public class RelationshipTypesProvider implements IContentProvider,
      * @param relTypes the relationship types to select
      * @return the relationship type controls that are used in the table
      */
-    public Collection<RelationshipTypeControl> getFilteredControls(
+    Collection<RelationshipTypeControl> getFilteredRelTypeControls(
             final Collection<RelationshipType> relTypes )
     {
         Collection<RelationshipTypeControl> relTypeCtrls = new ArrayList<RelationshipTypeControl>();
@@ -169,7 +175,7 @@ public class RelationshipTypesProvider implements IContentProvider,
                 relTypeCtrls.add( relTypeCtrl );
             }
         }
-        return relTypeCtrls;
+        return Collections.unmodifiableCollection( relTypeCtrls );
     }
 
     /**
@@ -193,6 +199,15 @@ public class RelationshipTypesProvider implements IContentProvider,
             }
         }
         return relDirList;
+    }
+
+    public Collection<RelationshipTypeControl> getFilteredDirectedRelationships()
+    {
+        if ( currentRelTypeCtrls.isEmpty() )
+        {
+            throw new NotFoundException();
+        }
+        return currentRelTypeCtrls.values();
     }
 
     /**

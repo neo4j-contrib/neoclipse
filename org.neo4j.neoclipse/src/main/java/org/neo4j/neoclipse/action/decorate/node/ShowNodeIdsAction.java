@@ -19,6 +19,7 @@ import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**
  * This action handles the node id setting.
+ * 
  * @author Anders Nawroth
  */
 public class ShowNodeIdsAction extends AbstractCheckboxAction
@@ -34,10 +35,11 @@ public class ShowNodeIdsAction extends AbstractCheckboxAction
     /**
      * Executes the action.
      */
+    @Override
     public void run()
     {
         graphView.getLabelProvider().getViewSettings().setShowNodeIds(
-            isChecked() );
+                isChecked() );
         graphView.refreshPreserveLayout();
     }
 }

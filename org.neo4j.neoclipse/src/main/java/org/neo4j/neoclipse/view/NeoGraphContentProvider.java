@@ -13,25 +13,23 @@
  */
 package org.neo4j.neoclipse.view;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
+import java.util.Collection;
 import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.zest.core.viewers.IGraphEntityRelationshipContentProvider;
-import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
-import org.neo4j.graphdb.NotFoundException;
-import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.RelationshipType;
-import org.neo4j.graphdb.ReturnableEvaluator;
-import org.neo4j.graphdb.StopEvaluator;
-import org.neo4j.graphdb.TraversalPosition;
-import org.neo4j.graphdb.Traverser;
-import org.neo4j.graphdb.Traverser.Order;
 import org.neo4j.neoclipse.Activator;
+import org.neo4j.neoclipse.graphdb.DefaultTraverser;
+import org.neo4j.neoclipse.graphdb.GraphCallable;
+import org.neo4j.neoclipse.graphdb.GraphDbServiceManager;
+import org.neo4j.neoclipse.graphdb.TraversalStrategy;
+import org.neo4j.neoclipse.reltype.DirectedRelationship;
+import org.neo4j.neoclipse.reltype.RelationshipTypeHashSet;
 import org.neo4j.neoclipse.reltype.RelationshipTypesProvider;
 import org.neo4j.neoclipse.reltype.RelationshipTypesProviderWrapper;
 
@@ -52,7 +50,9 @@ public class NeoGraphContentProvider implements
      * The view.
      */
     protected NeoGraphViewPart view;
-    private final Set<RelationshipType> relTypes = new HashSet<RelationshipType>();
+    private final TraversalStrategy traverser = new DefaultTraverser();
+    // private final TraversalStrategy traverser = new DefaultTraverser();
+    private final Set<RelationshipType> relTypes = new RelationshipTypeHashSet();
 
     /**
      * The constructor.
@@ -67,34 +67,32 @@ public class NeoGraphContentProvider implements
      */
     public Object[] getRelationships( final Object source, final Object dest )
     {
-        Node start = (Node) source;
-        Node end = (Node) dest;
-        List<Relationship> rels = new ArrayList<Relationship>();
-        if ( !relTypes.isEmpty() )
+        if ( source == null || dest == null )
         {
-            for ( RelationshipType relType : relTypes )
-            {
-                for ( Relationship r : start.getRelationships( relType,
-                        Direction.OUTGOING ) )
-                {
-                    if ( r.getEndNode().equals( end ) )
+            return new Object[] {};
+        }
+        final Node start = (Node) source;
+        final Node end = (Node) dest;
+        try
+        {
+            return Activator.getDefault().getGraphDbServiceManager().submitTask(
+                    new Callable<Object[]>()
                     {
-                        rels.add( r );
-                    }
-                }
-            }
+                        public Object[] call() throws Exception
+                        {
+                            return traverser.getRelationships( start, end ).toArray();
+                        }
+                    }, "find rels" ).get();
         }
-        else
+        catch ( InterruptedException e )
         {
-            for ( Relationship r : start.getRelationships( Direction.OUTGOING ) )
-            {
-                if ( r.getEndNode().equals( end ) )
-                {
-                    rels.add( r );
-                }
-            }
+            e.printStackTrace();
         }
-        return rels.toArray();
+        catch ( ExecutionException e )
+        {
+            e.printStackTrace();
+        }
+        return new Object[] {};
     }
 
     /**
@@ -102,30 +100,47 @@ public class NeoGraphContentProvider implements
      */
     public Object[] getElements( final Object inputElement )
     {
-        Node node = (Node) inputElement;
-        final GraphDatabaseService neoService = Activator.getDefault().getGraphDbService();
-        if ( neoService == null )
+        if ( inputElement == null )
+        {
+            return new Node[] {};
+        }
+        final Node node = (Node) inputElement;
+        GraphDbServiceManager gsm = Activator.getDefault().getGraphDbServiceManager();
+        if ( gsm == null || !gsm.isRunning() )
         {
             return new Node[] { node };
         }
-        List<Object> relDirList;
         try
         {
-            relDirList = relTypesProvider.getFilteredRelTypesDirections();
-        }
-        catch ( NotFoundException nfe )
-        {
-            // (no relationship types found by the provider)
-            // we'll end up here when the reltypes are not initialized,
-            // and we don't want them to initialize first
-            // (traversal gives better coloring!)
-            relDirList = new ArrayList<Object>();
-            for ( RelationshipType relType : RelationshipTypesProviderWrapper.getInstance().getRelationshipTypesFromDb() )
+            return gsm.submitTask( new GraphCallable<Object[]>()
             {
-                relDirList.add( relType );
-                relDirList.add( Direction.BOTH );
-            }
+                public Object[] call( final GraphDatabaseService graphDb )
+                {
+                    return getTheElements( node, graphDb );
+                }
+            }, "get elements" ).get();
         }
+        catch ( InterruptedException e )
+        {
+            e.printStackTrace();
+        }
+        catch ( ExecutionException e )
+        {
+            e.printStackTrace();
+        }
+        return new Node[] { node };
+    }
+
+    private Object[] getTheElements( final Node node,
+            final GraphDatabaseService graphDb )
+    {
+        GraphDbServiceManager nsm = Activator.getDefault().getGraphDbServiceManager();
+        if ( nsm == null || !nsm.isRunning() )
+        {
+            return new Node[] { node };
+        }
+        Collection<? extends DirectedRelationship> relDirList;
+        relDirList = relTypesProvider.getFilteredDirectedRelationships();
         if ( relDirList.isEmpty() )
         {
             // if there are no relationship types,
@@ -142,34 +157,8 @@ public class NeoGraphContentProvider implements
             }
         }
         final int depth = view.getTraversalDepth();
-        List<Node> nodes = new ArrayList<Node>();
-        try
-        {
-            Traverser trav = node.traverse( Order.BREADTH_FIRST,
-                    new StopEvaluator()
-                    {
-                        public boolean isStopNode(
-                                final TraversalPosition currentPos )
-                        {
-                            return currentPos.depth() >= depth;
-                        }
-                    }, ReturnableEvaluator.ALL, relDirListArray );
-            for ( Node currentNode : trav )
-            {
-                if ( nodes.size() >= MAXIMUM_NODES_RETURNED )
-                {
-                    break;
-                }
-                nodes.add( currentNode );
-            }
-        }
-        catch ( NotFoundException nfe )
-        {
-            // this happens when the start node has been removed
-            // somehow (could be a rollback operation)
-            // just return an empty array then
-        }
-        return nodes.toArray();
+        return traverser.getNodes( node, relDirList, depth,
+                MAXIMUM_NODES_RETURNED ).toArray();
     }
 
     public void dispose()

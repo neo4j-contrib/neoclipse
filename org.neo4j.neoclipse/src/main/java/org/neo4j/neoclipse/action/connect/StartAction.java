@@ -13,10 +13,11 @@
  */
 package org.neo4j.neoclipse.action.connect;
 
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.action.AbstractGraphAction;
 import org.neo4j.neoclipse.action.Actions;
+import org.neo4j.neoclipse.graphdb.GraphDbServiceManager;
+import org.neo4j.neoclipse.view.ErrorMessage;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**
@@ -26,17 +27,10 @@ import org.neo4j.neoclipse.view.NeoGraphViewPart;
  */
 public class StartAction extends AbstractGraphAction
 {
-    private StopAction stopAction = null;
-
     public StartAction( final NeoGraphViewPart neoGraphViewPart )
     {
         super( Actions.START, neoGraphViewPart );
         setEnabled( true );
-    }
-
-    public void setStopAction( final StopAction stopAction )
-    {
-        this.stopAction = stopAction;
     }
 
     @Override
@@ -44,30 +38,13 @@ public class StartAction extends AbstractGraphAction
     {
         try
         {
-            Activator.getDefault().getGraphDbServiceManager().startGraphDbService();
-            setEnabled( false );
-            if ( stopAction != null )
-            {
-                stopAction.setEnabled( true );
-            }
+            GraphDbServiceManager gsm = Activator.getDefault().getGraphDbServiceManager();
+            gsm.startGraphDbService().get();
             graphView.showSomeNode();
         }
         catch ( Exception e )
         {
-            e.printStackTrace();
-            String message = e.getMessage();
-            Throwable throwable = e.getCause();
-            int depth = 0;
-            while ( throwable != null && depth++ < 10 )
-            {
-                if ( throwable.getMessage() != null )
-                {
-                    message += ": " + throwable.getMessage();
-                }
-                throwable = throwable.getCause();
-            }
-            MessageDialog.openInformation( null, "Database problem", message );
-
+            ErrorMessage.showDialog( "Database problem", e );
         }
     }
 }
