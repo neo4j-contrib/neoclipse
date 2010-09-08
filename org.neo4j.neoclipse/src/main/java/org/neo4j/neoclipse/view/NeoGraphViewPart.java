@@ -14,6 +14,7 @@
 package org.neo4j.neoclipse.view;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -104,6 +105,45 @@ public class NeoGraphViewPart extends ViewPart implements
      * Keep track of the current database state.
      */
     private boolean dirty = false;
+    private static final IStructuredSelection EMPTY_SELECTION;
+
+    static
+    {
+        EMPTY_SELECTION = new IStructuredSelection()
+        {
+            public boolean isEmpty()
+            {
+                return true;
+            }
+
+            @SuppressWarnings( "rawtypes" )
+            public List toList()
+            {
+                return Collections.emptyList();
+            }
+
+            public Object[] toArray()
+            {
+                return toList().toArray();
+            }
+
+            public int size()
+            {
+                return 0;
+            }
+
+            @SuppressWarnings( "rawtypes" )
+            public Iterator iterator()
+            {
+                return null;
+            }
+
+            public Object getFirstElement()
+            {
+                return null;
+            }
+        };
+    }
 
     /**
      * Creates the view.
@@ -364,10 +404,24 @@ public class NeoGraphViewPart extends ViewPart implements
      */
     public void cleanTransactionBeforeShutdown()
     {
+        // clear the properties view if it hasn't already
+        // been disposed
+        if ( !propertySheetPage.getControl().isDisposed() )
+        {
+            getPropertySheetPage().selectionChanged( NeoGraphViewPart.this,
+                    EMPTY_SELECTION );
+        }
+
         if ( !dirty )
         {
             return; // no need to do anything
         }
+
+        if ( viewer.getContentProvider() != null )
+        {
+            viewer.setInput( null );
+        }
+
         GraphDbServiceManager sm = Activator.getDefault().getGraphDbServiceManager();
         if ( MessageDialog.openQuestion(
                 null,
@@ -749,13 +803,17 @@ public class NeoGraphViewPart extends ViewPart implements
 
         private void handleServiceChange( final GraphDbServiceEvent event )
         {
-            if ( event.getStatus() == GraphDbServiceStatus.STOPPED )
+            if ( event.getStatus() == GraphDbServiceStatus.STOPPING )
             {
-                // when called during shutdown the content provider may already
-                // have been disposed
+                browserHistory.clear();
+                updateNavStatus();
                 menu.setEnabledSyncAction( false );
                 menu.setEnabledStartAction( true );
                 menu.setEnabledStopAction( false );
+                menu.setEnabledShowRefNodeAction( false );
+                menu.setEnabledRefreshAction( false );
+                // when called during shutdown the content provider may already
+                // have been disposed
                 if ( getViewer().getContentProvider() != null )
                 {
                     setInput( null );
@@ -768,6 +826,8 @@ public class NeoGraphViewPart extends ViewPart implements
                 menu.setEnabledSyncAction( true );
                 menu.setEnabledStartAction( false );
                 menu.setEnabledStopAction( true );
+                menu.setEnabledShowRefNodeAction( true );
+                menu.setEnabledRefreshAction( true );
                 if ( event.isReadOnlyMode() )
                 {
                     // set up menus for read-only mode

@@ -9,12 +9,11 @@ Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ClassPath: .,
  lib/geronimo-jta_1.1_spec-1.1.1.jar,
- lib/lucene-core-2.9.1.jar,
- lib/neo4j-commons-1.0.jar,
- lib/neo4j-index-1.0.jar,
- lib/neo4j-kernel-1.0.jar,
- lib/neo4j-remote-graphdb-0.6.jar,
- lib/neo4j-utils-1.1.jar
+ lib/neo4j-kernel-1.1.jar,
+ lib/neo4j-remote-graphdb-0.7.jar,
+ lib/neo4j-utils-1.1.jar,
+ lib/neo4j-index-1.1.jar,
+ lib/lucene-core-2.9.2.jar
 Import-Package: org.eclipse.core.commands.common,
  org.eclipse.core.runtime,
  org.eclipse.core.runtime.preferences,

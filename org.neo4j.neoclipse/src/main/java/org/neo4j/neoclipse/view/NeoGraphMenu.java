@@ -385,6 +385,26 @@ public class NeoGraphMenu
     }
 
     /**
+     * Enable show reference node action.
+     * 
+     * @param enabled
+     */
+    public void setEnabledShowRefNodeAction( final boolean enabled )
+    {
+        refNodeAction.setEnabled( enabled );
+    }
+
+    /**
+     * Enable refresh action.
+     * 
+     * @param enabled
+     */
+    public void setEnabledRefreshAction( final boolean enabled )
+    {
+        refreshAction.setEnabled( enabled );
+    }
+
+    /**
      * Enable commit action.
      * 
      * @param enabled

@@ -23,6 +23,7 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.ui.INullSelectionListener;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
@@ -48,7 +49,7 @@ import org.neo4j.neoclipse.view.UiHelper;
  * @author Anders Nawroth
  */
 public class NeoPropertySheetPage extends PropertySheetPage implements
-        ISelectionListener
+        ISelectionListener, INullSelectionListener
 {
     private static class NeoPropertySheetSorter extends PropertySheetSorter
     {
@@ -303,23 +304,26 @@ public class NeoPropertySheetPage extends PropertySheetPage implements
     public void selectionChanged( final IWorkbenchPart part,
             final ISelection selection )
     {
-        if ( part instanceof NeoGraphViewPart )
+        super.selectionChanged( part, selection );
+        if ( !( selection instanceof IStructuredSelection ) )
         {
-            super.selectionChanged( part, selection );
-            if ( !( selection instanceof IStructuredSelection ) )
-            {
-                containerSelection = null;
-                return;
-            }
-            IStructuredSelection parSs = (IStructuredSelection) selection;
-            Object parFirstElement = parSs.getFirstElement();
-            if ( !( parFirstElement instanceof PropertyContainer ) )
-            {
-                containerSelection = null;
-                return;
-            }
-            containerSelection = (PropertyContainer) parFirstElement;
+            containerSelection = null;
+            return;
         }
+        IStructuredSelection parSs = (IStructuredSelection) selection;
+        if ( parSs.isEmpty() )
+        {
+            containerSelection = null;
+            refresh();
+            return;
+        }
+        Object parFirstElement = parSs.getFirstElement();
+        if ( !( parFirstElement instanceof PropertyContainer ) )
+        {
+            containerSelection = null;
+            return;
+        }
+        containerSelection = (PropertyContainer) parFirstElement;
     }
 
     @Override

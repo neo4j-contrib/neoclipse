@@ -15,9 +15,15 @@ package org.neo4j.neoclipse.graphdb;
 
 /**
  * The possible states of the neo service.
+ * 
  * @author Peter H&auml;nsgen
+ * @author Anders Nawroth
  */
 public enum GraphDbServiceStatus
 {
-    STARTED, STOPPED, COMMIT, ROLLBACK;
+    STARTED,
+    STOPPED,
+    COMMIT,
+    ROLLBACK,
+    STOPPING;
 }

@@ -37,7 +37,7 @@ public class BrowserHistory
     /**
      * Position of last added item.
      */
-    private int position = -1;
+    private Integer position = null;
 
     /**
      * Class to save one browser state.
@@ -54,7 +54,7 @@ public class BrowserHistory
          * 
          * @param node the starting point of this state
          */
-        public BrowserState( final Node node )
+        BrowserState( final Node node )
         {
             id = node.getId();
         }
@@ -64,7 +64,7 @@ public class BrowserHistory
          * 
          * @return starting node or null if it doesn't exist any more
          */
-        public Node getNode()
+        Node getNode()
         {
             try
             {
@@ -93,6 +93,17 @@ public class BrowserHistory
                 ErrorMessage.showDialog( "Create relationship(s)", e );
             }
             return null;
+        }
+
+        boolean isWrappingNode( final Node node )
+        {
+            return node.getId() == id;
+        }
+
+        @Override
+        public String toString()
+        {
+            return String.valueOf( id );
         }
     }
 
@@ -166,7 +177,8 @@ public class BrowserHistory
      */
     public boolean hasPrevious()
     {
-        return position > 0 && position <= states.size() - 1;
+        return position != null && position > 0
+               && position <= states.size() - 1;
     }
 
     /**
@@ -176,7 +188,7 @@ public class BrowserHistory
      */
     public boolean hasNext()
     {
-        return position > -1 && position + 1 <= states.size() - 1;
+        return position != null && position + 1 <= states.size() - 1;
     }
 
     /**
@@ -191,9 +203,9 @@ public class BrowserHistory
             throw new IllegalArgumentException(
                     "Node in history can't be null." );
         }
-        if ( hasPrevious() && node.equals( fetchPrevious() ) )
+        if ( position != null && position < states.size()
+             && states.get( position ).isWrappingNode( node ) )
         {
-            // nothing new to add at this position
             return;
         }
         if ( hasNext() && node.equals( fetchNext() ) )
@@ -203,6 +215,10 @@ public class BrowserHistory
         }
         BrowserState state = new BrowserState( node );
         // clear rest of list before adding
+        if ( position == null )
+        {
+            position = -1;
+        }
         position++;
         if ( states.size() > position && position >= 0 )
         {
@@ -215,5 +231,11 @@ public class BrowserHistory
             position = states.size();
         }
         states.add( state );
+    }
+
+    public void clear()
+    {
+        states.clear();
+        position = null;
     }
 }

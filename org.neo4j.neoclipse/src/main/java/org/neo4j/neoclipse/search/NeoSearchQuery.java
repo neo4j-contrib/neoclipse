@@ -29,8 +29,10 @@ import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
 import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.graphdb.GraphCallable;
+import org.neo4j.neoclipse.graphdb.GraphDbServiceManager;
 import org.neo4j.neoclipse.view.ErrorMessage;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
+import org.neo4j.neoclipse.view.UiHelper;
 
 /**
  * This class represents a search query for Neo objects.
@@ -108,38 +110,40 @@ public class NeoSearchQuery implements ISearchQuery
     public IStatus run( final IProgressMonitor monitor )
             throws OperationCanceledException
     {
+        final GraphDbServiceManager gsm = Activator.getDefault().getGraphDbServiceManager();
+        if ( !gsm.isRunning() )
+        {
+            return new Status( IStatus.ERROR, Activator.PLUGIN_ID,
+                    "There is no active Neo4j service." );
+        }
+
         try
         {
-            return Activator.getDefault().getGraphDbServiceManager().submitTask(
-                    new GraphCallable<IStatus>()
+            gsm.submitTask( new GraphCallable<Boolean>()
+            {
+                public Boolean call( final GraphDatabaseService graphDb )
+                {
+                    final Iterable<Node> matches = getMatchingNodes( monitor,
+                            graphDb );
+                    UiHelper.asyncExec( new Runnable()
                     {
-                        public IStatus call( final GraphDatabaseService graphDb )
+                        public void run()
                         {
-                            if ( graphDb == null )
-                            {
-                                return new Status( IStatus.ERROR,
-                                        Activator.PLUGIN_ID,
-                                        "There is no active Neo4j service." );
-                            }
-                            // TODO here we should do some real search using
-                            // Neo's
-                            // index service
-                            // for now simply navigate along the graph
-                            Iterable<Node> matches = getMatchingNodes( monitor,
-                                    graphDb );
                             result.setMatches( matches );
-                            if ( monitor.isCanceled() )
-                            {
-                                return new Status( IStatus.CANCEL,
-                                        Activator.PLUGIN_ID, "Cancelled." );
-                            }
-                            else
-                            {
-                                return new Status( IStatus.OK,
-                                        Activator.PLUGIN_ID, "OK" );
-                            }
                         }
-                    }, "run search" ).get();
+                    } );
+                    return true;
+                }
+            }, "run search" ).get();
+            if ( monitor.isCanceled() )
+            {
+                return new Status( IStatus.CANCEL, Activator.PLUGIN_ID,
+                        "Cancelled." );
+            }
+            else
+            {
+                return new Status( IStatus.OK, Activator.PLUGIN_ID, "OK" );
+            }
         }
         catch ( Exception e )
         {
@@ -158,6 +162,7 @@ public class NeoSearchQuery implements ISearchQuery
     {
         // monitor.beginTask( "Neo4j search operation started.",
         // IProgressMonitor.UNKNOWN );
+        System.out.println( "searching ..." );
         List<Node> matches = new LinkedList<Node>();
         Node nodeFromId = null;
         if ( expression.isPossibleId() )
@@ -175,6 +180,7 @@ public class NeoSearchQuery implements ISearchQuery
         }
         for ( Node node : graphDb.getAllNodes() )
         {
+            System.out.print( "." );
             if ( expression.matches( node.getId() ) )
             {
                 matches.add( node );
