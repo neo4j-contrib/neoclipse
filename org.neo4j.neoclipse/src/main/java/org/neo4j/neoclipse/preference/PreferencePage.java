@@ -16,6 +16,7 @@ package org.neo4j.neoclipse.preference;
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.DirectoryFieldEditor;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.preference.IntegerFieldEditor;
 import org.eclipse.jface.preference.RadioGroupFieldEditor;
 import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.jface.util.PropertyChangeEvent;
@@ -40,6 +41,7 @@ public class PreferencePage extends AbstractPreferencePage
     private DirectoryFieldEditor locationField;
     private StringFieldEditor resourceUriField;
     private RadioGroupFieldEditor connectionMode;
+    private IntegerFieldEditor maxNodesField;
 
     /**
      * Initializes the several input fields.
@@ -79,6 +81,11 @@ public class PreferencePage extends AbstractPreferencePage
                 Preferences.HELP_ON_START, HELP_ON_START_LABEL,
                 getFieldEditorParent() );
         addField( helpOnStart );
+
+        maxNodesField = new IntegerFieldEditor( Preferences.MAX_NODES,
+                "Maximum number of nodes", getFieldEditorParent(), 4 );
+        maxNodesField.setEmptyStringAllowed( false );
+        addField( maxNodesField );
 
         // initialize UI
         final IPreferenceStore preferenceStore = Activator.getDefault().getPreferenceStore();

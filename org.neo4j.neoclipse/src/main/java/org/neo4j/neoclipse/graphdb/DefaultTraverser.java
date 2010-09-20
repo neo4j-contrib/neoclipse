@@ -46,6 +46,11 @@ public class DefaultTraverser implements TraversalStrategy
             traverseTypes.add( directedRel.getRelType() );
             traverseTypes.add( directedRel.getDirection() );
         }
+        if ( traverseTypes.isEmpty() )
+        {
+            nodes.add( node );
+            return nodes;
+        }
         Object[] relDirListArray = traverseTypes.toArray();
         try
         {

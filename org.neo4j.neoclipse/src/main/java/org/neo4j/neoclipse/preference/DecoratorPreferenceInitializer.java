@@ -19,22 +19,24 @@ import org.neo4j.neoclipse.Activator;
 
 /**
  * Initializes neo preferences with their default values.
+ * 
  * @author Peter H&auml;nsgen
  * @author Anders Nawroth
  */
 public class DecoratorPreferenceInitializer extends
-    AbstractPreferenceInitializer
+        AbstractPreferenceInitializer
 {
     /**
      * Initializes the neo preferences.
      */
+    @Override
     public void initializeDefaultPreferences()
     {
         IPreferenceStore pref = Activator.getDefault().getPreferenceStore();
         pref.setDefault( DecoratorPreferences.NODE_PROPERTY_NAMES, "" );
-        pref.setDefault( DecoratorPreferences.RELATIONSHIP_PROPERTY_NAMES,
-            "" );
+        pref.setDefault( DecoratorPreferences.RELATIONSHIP_PROPERTY_NAMES, "" );
         pref.setDefault( DecoratorPreferences.NODE_ICON_LOCATION, "" );
+        pref.setDefault( DecoratorPreferences.LOCAL_NODE_ICON_LOCATION, false );
         pref.setDefault( DecoratorPreferences.NODE_ICON_PROPERTY_NAMES, "" );
         // view menu settings
         pref.setDefault( DecoratorPreferences.SHOW_RELATIONSHIP_TYPES, true );
@@ -42,9 +44,8 @@ public class DecoratorPreferenceInitializer extends
         pref.setDefault( DecoratorPreferences.SHOW_NODE_NAMES, true );
         pref.setDefault( DecoratorPreferences.SHOW_RELATIONSHIP_NAMES, true );
         pref.setDefault( DecoratorPreferences.SHOW_RELATIONSHIP_PROPERTIES,
-            false );
-        pref
-            .setDefault( DecoratorPreferences.SHOW_RELATIONSHIP_COLORS, true );
+                false );
+        pref.setDefault( DecoratorPreferences.SHOW_RELATIONSHIP_COLORS, true );
         pref.setDefault( DecoratorPreferences.SHOW_RELATIONSHIP_IDS, false );
         pref.setDefault( DecoratorPreferences.SHOW_ARROWS, true );
         pref.setDefault( DecoratorPreferences.SHOW_NODE_PROPERTIES, false );

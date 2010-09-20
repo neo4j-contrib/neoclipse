@@ -22,41 +22,46 @@ import org.neo4j.neoclipse.property.PropertyTransform.PropertyHandler;
 
 /**
  * Editors used for property values.
+ * 
  * @author Anders Nawroth
  */
 public enum PropertyEditor
 {
     NONE
     {
-        CellEditor getEditor( Composite parent, PropertyHandler propertyHandler )
+        @Override
+        CellEditor getEditor( final Composite parent,
+                final PropertyHandler propertyHandler )
         {
             return null;
         }
     },
     TEXT
     {
-        CellEditor getEditor( Composite parent, PropertyHandler propertyHandler )
+        @Override
+        CellEditor getEditor( final Composite parent,
+                final PropertyHandler propertyHandler )
         {
             return new PropertyCellEditor( parent, propertyHandler );
         }
     };
     /**
      * Get actual editor for this property editor type.
-     * @param parent
-     *            parent object
+     * 
+     * @param parent parent object
      * @param propertyHandler
      * @return cell editor for a property object
      */
     abstract CellEditor getEditor( Composite parent,
-        PropertyHandler propertyHandler );
+            PropertyHandler propertyHandler );
 
     public static class PropertyCellEditor extends TextCellEditor
     {
         private final PropertyHandler propertyHandler;
         private Object untouched = null;
 
-        public PropertyCellEditor( Composite parent,
-            PropertyHandler propertyHandler )
+        public PropertyCellEditor( final Composite parent,
+                final PropertyHandler propertyHandler )
         {
             super( parent );
             this.propertyHandler = propertyHandler;
@@ -67,7 +72,7 @@ public enum PropertyEditor
         {
             String value = text.getText();
             if ( !propertyHandler.isType( String.class )
-                && "".equals( ((String) value).trim() ) )
+                 && "".equals( ( value ).trim() ) )
             {
                 return untouched;
             }
@@ -83,16 +88,17 @@ public enum PropertyEditor
         }
 
         @Override
-        protected void doSetValue( Object value )
+        protected void doSetValue( final Object value )
         {
             untouched = value;
             super.doSetValue( propertyHandler.render( value ) );
         }
 
         @Override
-        protected boolean isCorrect( Object value )
+        protected boolean isCorrect( final Object value )
         {
-            if ( value instanceof String && "".equals( ((String) value).trim() ) )
+            if ( value instanceof String
+                 && "".equals( ( (String) value ).trim() ) )
             {
                 return true;
             }

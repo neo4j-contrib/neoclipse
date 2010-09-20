@@ -41,8 +41,12 @@ public enum Actions
             "Create relationship between two existing nodes",
             "Create a directed relationship from the first selected node to the second.",
             Icons.ADD_ENABLED, Icons.ADD_DISABLED ),
-    ADD_INCOMING_ICON( "Set end node icon for type", Icons.ICON_INCOMING ),
-    ADD_OUTGOING_ICON( "Set start node icon for type", Icons.ICON_OUTGOING ),
+    ADD_INCOMING_ICON( "Set end node icon for type", Icons.ADD_ICON_INCOMING ),
+    ADD_OUTGOING_ICON( "Set start node icon for type", Icons.ADD_ICON_OUTGOING ),
+    DELETE_INCOMING_ICON( "Remove end node icon for type",
+            Icons.DELETE_ICON_INCOMING ),
+    DELETE_OUTGOING_ICON( "Remove start node icon for type",
+            Icons.DELETE_ICON_OUTGOING ),
     // add node
     ADD_INCOMING_NODE( "Create new node as start node",
             "Create a new node with a relationship; "

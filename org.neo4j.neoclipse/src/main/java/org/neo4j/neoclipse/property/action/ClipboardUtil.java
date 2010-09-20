@@ -13,7 +13,7 @@ public class ClipboardUtil
     private Object value;
 
     public ClipboardUtil( final Class<?> cls, final String key,
-        final Object value )
+            final Object value )
     {
         this.cls = cls;
         this.key = key;
@@ -70,7 +70,7 @@ public class ClipboardUtil
     {
         String type = cls.getName();
         String representation = PropertyTransform.getHandler( cls ).render(
-            value );
+                value );
         return type + CLS_SEP + key + KEY_SEP + representation;
     }
 
@@ -84,6 +84,7 @@ public class ClipboardUtil
         return value;
     }
 
+    @Override
     public String toString()
     {
         String res = "type: " + cls + "\n";

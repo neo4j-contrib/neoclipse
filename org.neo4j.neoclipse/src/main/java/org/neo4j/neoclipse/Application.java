@@ -29,12 +29,12 @@ public class Application extends WorkbenchAdvisor implements IApplication
 {
     @Override
     public WorkbenchWindowAdvisor createWorkbenchWindowAdvisor(
-        IWorkbenchWindowConfigurer configurer )
+            final IWorkbenchWindowConfigurer configurer )
     {
         return new ApplicationWindowAdvisor( configurer );
     }
 
-    public Object start( IApplicationContext context ) throws Exception
+    public Object start( final IApplicationContext context ) throws Exception
     {
         Display display = PlatformUI.createDisplay();
         int returnCode = PlatformUI.createAndRunWorkbench( display, this );
@@ -59,7 +59,8 @@ public class Application extends WorkbenchAdvisor implements IApplication
         return NeoPerspectiveFactory.ID;
     }
 
-    public void preWindowOpen( IWorkbenchWindowConfigurer wwc )
+    @Override
+    public void preWindowOpen( final IWorkbenchWindowConfigurer wwc )
     {
         wwc.setShowMenuBar( false );
         wwc.setShowFastViewBars( false );
@@ -72,17 +73,15 @@ public class Application extends WorkbenchAdvisor implements IApplication
     {
         super.postStartup();
         // show help on startup if the user wants it
-        boolean showHelp = Activator.getDefault().getPreferenceStore()
-            .getBoolean( Preferences.HELP_ON_START );
+        boolean showHelp = Activator.getDefault().getPreferenceStore().getBoolean(
+                Preferences.HELP_ON_START );
         if ( showHelp )
         {
-            IWorkbenchHelpSystem helpSystem = PlatformUI.getWorkbench()
-                .getHelpSystem();
+            IWorkbenchHelpSystem helpSystem = PlatformUI.getWorkbench().getHelpSystem();
             helpSystem.displayDynamicHelp();
 
-            NeoGraphViewPart graphView = (NeoGraphViewPart) PlatformUI
-                .getWorkbench().getActiveWorkbenchWindow().getActivePage()
-                .findView( NeoGraphViewPart.ID );
+            NeoGraphViewPart graphView = (NeoGraphViewPart) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(
+                    NeoGraphViewPart.ID );
             if ( graphView != null )
             {
                 graphView.setFocus();

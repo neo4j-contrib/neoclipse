@@ -22,18 +22,20 @@ import org.neo4j.neoclipse.property.NeoPropertySheetPage;
 
 /**
  * Action to delete a property from a PropertyContainer.
+ * 
  * @author Anders Nawroth
  */
 public class DeleteAction extends PropertyAction
 {
     public DeleteAction( final Composite parent,
-        final NeoPropertySheetPage propertySheet )
+            final NeoPropertySheetPage propertySheet )
     {
         super( Actions.REMOVE, parent, propertySheet );
     }
 
+    @Override
     protected void performOperation( final PropertyContainer container,
-        final IPropertySheetEntry entry )
+            final IPropertySheetEntry entry )
     {
         String key = entry.getDisplayName();
         GraphDbUtil.removeProperty( container, key, propertySheet );

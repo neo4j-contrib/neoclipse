@@ -361,6 +361,12 @@ public class GraphDbServiceManager
         return serviceMode == GraphDbServiceMode.READ_ONLY_EMBEDDED;
     }
 
+    public boolean isLocal()
+    {
+        return serviceMode == GraphDbServiceMode.READ_WRITE_EMBEDDED
+               || serviceMode == GraphDbServiceMode.READ_ONLY_EMBEDDED;
+    }
+
     public void setGraphServiceMode( final GraphDbServiceMode gdbServiceMode )
     {
         serviceMode = gdbServiceMode;

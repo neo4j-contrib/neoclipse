@@ -162,7 +162,6 @@ public class NeoSearchQuery implements ISearchQuery
     {
         // monitor.beginTask( "Neo4j search operation started.",
         // IProgressMonitor.UNKNOWN );
-        System.out.println( "searching ..." );
         List<Node> matches = new LinkedList<Node>();
         Node nodeFromId = null;
         if ( expression.isPossibleId() )
@@ -180,7 +179,6 @@ public class NeoSearchQuery implements ISearchQuery
         }
         for ( Node node : graphDb.getAllNodes() )
         {
-            System.out.print( "." );
             if ( expression.matches( node.getId() ) )
             {
                 matches.add( node );

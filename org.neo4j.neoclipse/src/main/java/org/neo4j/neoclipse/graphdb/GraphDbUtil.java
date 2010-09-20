@@ -473,6 +473,7 @@ public class GraphDbUtil
             final String key, final PropertyHandler propertyHandler,
             final NeoPropertySheetPage propertySheet )
     {
+
         if ( container.hasProperty( key ) )
         {
             if ( !MessageDialog.openQuestion(

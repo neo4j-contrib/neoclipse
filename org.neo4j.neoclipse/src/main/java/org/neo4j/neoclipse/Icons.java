@@ -115,8 +115,10 @@ public enum Icons
     OUTGOING( "outgoing", path( "obj16/outgoing.gif" ) ),
     CLEAR_ENABLED( "clear_enabled", path( "enabled/clear.gif" ) ),
     CLEAR_DISABLED( "clear_disabled", path( "disabled/clear.gif" ) ),
-    ICON_INCOMING( "icon_in_enabled", path( "enabled/icon-incoming.gif" ) ),
-    ICON_OUTGOING( "icon_out_enabled", path( "enabled/icon-outgoing.gif" ) ),
+    ADD_ICON_INCOMING( "add_icon_in_enabled", path( "enabled/add.gif" ) ),
+    ADD_ICON_OUTGOING( "add_icon_out_enabled", path( "enabled/add.gif" ) ),
+    DELETE_ICON_INCOMING( "del_icon_in_enabled", path( "enabled/delete.gif" ) ),
+    DELETE_ICON_OUTGOING( "del_icon_out_enabled", path( "enabled/delete.gif" ) ),
     // filter
     FILTER_ENABLED( "filter_enabled", path( "enabled/filter.gif" ) ),
     FILTER_DISABLED( "filter_disabled", path( "disabled/filter.gif" ) ),

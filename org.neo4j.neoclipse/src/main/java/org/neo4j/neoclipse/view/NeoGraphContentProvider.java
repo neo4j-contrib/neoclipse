@@ -18,6 +18,7 @@ import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.zest.core.viewers.IGraphEntityRelationshipContentProvider;
 import org.neo4j.graphdb.GraphDatabaseService;
@@ -28,6 +29,7 @@ import org.neo4j.neoclipse.graphdb.DefaultTraverser;
 import org.neo4j.neoclipse.graphdb.GraphCallable;
 import org.neo4j.neoclipse.graphdb.GraphDbServiceManager;
 import org.neo4j.neoclipse.graphdb.TraversalStrategy;
+import org.neo4j.neoclipse.preference.Preferences;
 import org.neo4j.neoclipse.reltype.DirectedRelationship;
 import org.neo4j.neoclipse.reltype.RelationshipTypeHashSet;
 import org.neo4j.neoclipse.reltype.RelationshipTypesProvider;
@@ -44,7 +46,6 @@ public class NeoGraphContentProvider implements
     /**
      * Limit the number of nodes returned.
      */
-    private static final int MAXIMUM_NODES_RETURNED = 500;
     private final RelationshipTypesProvider relTypesProvider = RelationshipTypesProviderWrapper.getInstance();
     /**
      * The view.
@@ -53,6 +54,7 @@ public class NeoGraphContentProvider implements
     private final TraversalStrategy traverser = new DefaultTraverser();
     // private final TraversalStrategy traverser = new DefaultTraverser();
     private final Set<RelationshipType> relTypes = new RelationshipTypeHashSet();
+    private final IPreferenceStore preferenceStore;
 
     /**
      * The constructor.
@@ -60,6 +62,7 @@ public class NeoGraphContentProvider implements
     public NeoGraphContentProvider( final NeoGraphViewPart view )
     {
         this.view = view;
+        preferenceStore = Activator.getDefault().getPreferenceStore();
     }
 
     /**
@@ -157,8 +160,8 @@ public class NeoGraphContentProvider implements
             }
         }
         final int depth = view.getTraversalDepth();
-        return traverser.getNodes( node, relDirList, depth,
-                MAXIMUM_NODES_RETURNED ).toArray();
+        int max = preferenceStore.getInt( Preferences.MAX_NODES );
+        return traverser.getNodes( node, relDirList, depth, max ).toArray();
     }
 
     public void dispose()

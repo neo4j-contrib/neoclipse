@@ -44,4 +44,8 @@ public final class Preferences
      * Show the help view when the application starts.
      */
     public static final String HELP_ON_START = "helpOnStart";
+    /**
+     * Maximum number of nodes to show.
+     */
+    public static final String MAX_NODES = "maxNodes";
 }

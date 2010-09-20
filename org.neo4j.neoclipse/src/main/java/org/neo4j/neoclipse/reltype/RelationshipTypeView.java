@@ -17,6 +17,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
@@ -33,6 +34,7 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
@@ -66,7 +68,6 @@ import org.neo4j.neoclipse.graphdb.GraphDbServiceEventListener;
 import org.neo4j.neoclipse.graphdb.GraphDbServiceStatus;
 import org.neo4j.neoclipse.graphdb.GraphDbUtil;
 import org.neo4j.neoclipse.help.HelpContextConstants;
-import org.neo4j.neoclipse.preference.DecoratorPreferences;
 import org.neo4j.neoclipse.view.NeoGraphLabelProvider;
 import org.neo4j.neoclipse.view.NeoGraphLabelProviderWrapper;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
@@ -103,6 +104,10 @@ public class RelationshipTypeView extends ViewPart implements
     private Action filterOutgoing;
     private Action filterIncoming;
     private final List<RelationshipType> currentSelectedRelTypes = new ArrayList<RelationshipType>();
+    private FileDialog iconFileDialog;
+    private Action deleteIncomingIcon;
+    private Action deleteOutgoingIcon;
+    private IPreferenceStore preferenceStore;
     static
     {
         // build filters for file selection dialog.
@@ -176,6 +181,7 @@ public class RelationshipTypeView extends ViewPart implements
         getSite().getPage().addSelectionListener( NeoGraphViewPart.ID, this );
         getSite().setSelectionProvider( viewer );
         getSite().getPage().addSelectionListener( ID, this );
+        preferenceStore = Activator.getDefault().getPreferenceStore();
     }
 
     /**
@@ -262,6 +268,8 @@ public class RelationshipTypeView extends ViewPart implements
     {
         manager.add( addOutgoingIcon );
         manager.add( addIncomingIcon );
+        manager.add( deleteOutgoingIcon );
+        manager.add( deleteIncomingIcon );
         // Other plug-ins can contribute there actions here
         manager.add( new Separator( IWorkbenchActionConstants.MB_ADDITIONS ) );
     }
@@ -388,6 +396,24 @@ public class RelationshipTypeView extends ViewPart implements
             }
         };
         Actions.ADD_OUTGOING_ICON.initialize( addOutgoingIcon );
+        deleteIncomingIcon = new Action()
+        {
+            @Override
+            public void run()
+            {
+                removeIcon( Direction.INCOMING );
+            }
+        };
+        Actions.DELETE_INCOMING_ICON.initialize( deleteIncomingIcon );
+        deleteOutgoingIcon = new Action()
+        {
+            @Override
+            public void run()
+            {
+                removeIcon( Direction.OUTGOING );
+            }
+        };
+        Actions.DELETE_OUTGOING_ICON.initialize( deleteOutgoingIcon );
     }
 
     /**
@@ -397,25 +423,12 @@ public class RelationshipTypeView extends ViewPart implements
      */
     private void copyIcon( final Direction direction )
     {
-        File dest = getIconLocation();
-        if ( !dest.exists() || !dest.isDirectory() )
+        File dest = NodeIconUtil.getIconLocation();
+        if ( dest == null )
         {
-            MessageDialog.openInformation( null, "Icon location problem",
-                    "Please make sure that the node icon location is correctly set." );
-            Activator.getDefault().showDecoratorPreferenceDialog( true );
-            dest = getIconLocation();
-            if ( !dest.exists() || !dest.isDirectory() )
-            {
-                MessageDialog.openError( null, "Error message",
-                        "The icon location can not be found." );
-                return;
-            }
+            return;
         }
-        FileDialog fd = new FileDialog(
-                RelationshipTypeView.this.getSite().getShell(), SWT.OPEN );
-        fd.setFilterExtensions( EXT_FILTER );
-        fd.setFilterNames( EXT_FILTER_NAMES );
-        String src = fd.open();
+        String src = getIconFileDialog().open();
         if ( src == null )
         {
             return; // cancel by user
@@ -478,16 +491,47 @@ public class RelationshipTypeView extends ViewPart implements
     }
 
     /**
-     * Get icons location from the settings.
+     * Remove icon file for current selected relationship types.
      * 
-     * @return
+     * @param direction direction of relationships
      */
-    private File getIconLocation()
+    private void removeIcon( final Direction direction )
     {
-        String location = Activator.getDefault().getPreferenceStore().getString(
-                DecoratorPreferences.NODE_ICON_LOCATION );
-        File dest = new File( location );
-        return dest;
+        File dest = NodeIconUtil.getIconLocation();
+        if ( dest == null )
+        {
+            return;
+        }
+        for ( RelationshipType relType : getCurrentSelectedRelTypes() )
+        {
+            final String destFilename = UserIcons.createFilename( relType,
+                    direction ) + ".";
+            File[] deleteFiles = dest.listFiles( new FilenameFilter()
+            {
+                public boolean accept( final File dir, final String name )
+                {
+                    return name.startsWith( destFilename );
+                }
+            } );
+            for ( File file : deleteFiles )
+            {
+                file.delete();
+            }
+        }
+        graphLabelProvider.readNodeIconLocation();
+        getGraphView().refreshPreserveLayout();
+    }
+
+    private FileDialog getIconFileDialog()
+    {
+        if ( iconFileDialog == null )
+        {
+            iconFileDialog = new FileDialog(
+                    RelationshipTypeView.this.getSite().getShell(), SWT.OPEN );
+            iconFileDialog.setFilterExtensions( EXT_FILTER );
+            iconFileDialog.setFilterNames( EXT_FILTER_NAMES );
+        }
+        return iconFileDialog;
     }
 
     /**

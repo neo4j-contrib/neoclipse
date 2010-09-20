@@ -13,9 +13,9 @@
  */
 package org.neo4j.neoclipse.preference;
 
-
 /**
  * Defines the preferences of the neo plugin.
+ * 
  * @author Peter H&auml;nsgen
  * @author Anders Nawroth
  */
@@ -42,6 +42,10 @@ public final class DecoratorPreferences
      * The location of icons for the nodes.
      */
     public static final String NODE_ICON_LOCATION = "iconLocation";
+    /**
+     * If icons for local dbs should be stored in db directory.
+     */
+    public static final String LOCAL_NODE_ICON_LOCATION = "localIconLocation";
     /**
      * The property to use for icon names.
      */
@@ -90,5 +94,5 @@ public final class DecoratorPreferences
     /**
      * Keep track of node colors display on/off.
      */
-    public static final String SHOW_NODE_COLORS = "showNodeColors";    
+    public static final String SHOW_NODE_COLORS = "showNodeColors";
 }

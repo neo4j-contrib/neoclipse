@@ -28,30 +28,31 @@ import org.neo4j.neoclipse.property.NeoPropertySheetPage;
 
 /**
  * Action to copy the text representation of a property value.
+ * 
  * @author Anders Nawroth
  */
 public class CopyAction extends PropertyAction
 {
     private final Shell shell;
-    private static final Transfer[] TRANSFER_TYPES = new Transfer[] { TextTransfer
-        .getInstance() };
+    private static final Transfer[] TRANSFER_TYPES = new Transfer[] { TextTransfer.getInstance() };
 
     public CopyAction( final Composite parent,
-        final NeoPropertySheetPage propertySheet )
+            final NeoPropertySheetPage propertySheet )
     {
         super( Actions.COPY, parent, propertySheet );
         shell = propertySheet.getControl().getShell();
     }
 
+    @Override
     protected void performOperation( final PropertyContainer container,
-        final IPropertySheetEntry entry )
+            final IPropertySheetEntry entry )
     {
         final String key = entry.getDisplayName();
         Object value = container.getProperty( key, null );
         if ( value == null )
         {
             MessageDialog.openError( shell, "Error",
-                "Problem reading the value to copy." );
+                    "Problem reading the value to copy." );
             return;
         }
         ClipboardUtil cu = new ClipboardUtil( value.getClass(), key, value );
@@ -66,7 +67,7 @@ public class CopyAction extends PropertyAction
         catch ( SWTError e )
         {
             MessageDialog.openError( shell, "Error",
-                "Could not copy the value to the clipboard." );
+                    "Could not copy the value to the clipboard." );
         }
     }
 

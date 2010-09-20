@@ -22,6 +22,7 @@ import org.neo4j.neoclipse.property.PropertyTransform.PropertyHandler;
 
 /**
  * Action to add a new property to a PropertyContainer.
+ * 
  * @author Anders Nawroth
  */
 public class NewAction extends PropertyAction
@@ -29,11 +30,11 @@ public class NewAction extends PropertyAction
     private final PropertyHandler propertyHandler;
 
     public NewAction( final Composite parent,
-        final NeoPropertySheetPage propertySheet,
-        final PropertyHandler propertyHandler )
+            final NeoPropertySheetPage propertySheet,
+            final PropertyHandler propertyHandler )
     {
         super( propertyHandler.name(), propertyHandler.descriptor(), parent,
-            propertySheet );
+                propertySheet );
         this.propertyHandler = propertyHandler;
     }
 
@@ -46,13 +47,17 @@ public class NewAction extends PropertyAction
             return;
         }
         InputDialog keyInput = new InputDialog( null, "Key entry",
-            "Please enter the key of the new property", null, null );
+                "Please enter the key of the new property", null, null );
         if ( keyInput.open() != OK || keyInput.getReturnCode() != OK )
         {
             return;
         }
         String key = keyInput.getValue();
+        // TODO dialog asking for both at the same time
+        // GraphDbUtil.setProperty( propertyContainer, key,
+        // propertyHandler.value(), propertySheet );
+        // propertySheet.fireChangeEvent( propertyContainer, key, true );
         GraphDbUtil.addProperty( propertyContainer, key, propertyHandler,
-            propertySheet );
+                propertySheet );
     }
 }

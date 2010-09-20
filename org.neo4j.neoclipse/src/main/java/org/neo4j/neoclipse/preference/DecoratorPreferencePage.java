@@ -13,11 +13,13 @@
  */
 package org.neo4j.neoclipse.preference;
 
+import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.DirectoryFieldEditor;
 import org.eclipse.jface.preference.StringFieldEditor;
 
 /**
  * The page for neo preferences.
+ * 
  * @author Peter H&auml;nsgen
  * @author Anders Nawroth
  */
@@ -32,6 +34,7 @@ public class DecoratorPreferencePage extends AbstractPreferencePage
     private static final String NODE_ICONS_LOCATION_LABEL = "Node icons location:";
     private static final String NODE_ICONS_LOCATION_ERROR = "The Node icons location is invalid.";
     private static final String ICON_LOCATION_NOTE = "the icon filenames should correspond to the settings for node icon filename properties";
+    private static final String LOCAL_ICONS_LABEL = "Store icons in database directory for local databases (overrides Node icons location setting)";
     // node icon filename properties
     private static final String NODE_ICON_FILENAME_PROPERTIES_LABEL = "Node icon filename properties:";
     private static final String ICON_PROPERTY_NAMES_NOTE = "comma-separated list (see node labels); file EXTENSIONS are added automatically to the property values found";
@@ -39,34 +42,40 @@ public class DecoratorPreferencePage extends AbstractPreferencePage
     /**
      * Initializes the several input fields.
      */
+    @Override
     protected void createFieldEditors()
     {
         // node label properties
         StringFieldEditor propertyNameField = new StringFieldEditor(
-            DecoratorPreferences.NODE_PROPERTY_NAMES,
-            NODE_LABEL_PROPERTIES_LABEL, getFieldEditorParent() );
+                DecoratorPreferences.NODE_PROPERTY_NAMES,
+                NODE_LABEL_PROPERTIES_LABEL, getFieldEditorParent() );
         propertyNameField.setEmptyStringAllowed( true );
         addField( propertyNameField, PROPTERTY_NAMES_NOTE );
 
         // node label properties
         StringFieldEditor relPropertyNameField = new StringFieldEditor(
-            DecoratorPreferences.RELATIONSHIP_PROPERTY_NAMES,
-            RELATIONSHIP_LABEL_PROPERTIES_LABEL, getFieldEditorParent() );
+                DecoratorPreferences.RELATIONSHIP_PROPERTY_NAMES,
+                RELATIONSHIP_LABEL_PROPERTIES_LABEL, getFieldEditorParent() );
         relPropertyNameField.setEmptyStringAllowed( true );
         addField( relPropertyNameField, PROPTERTY_NAMES_NOTE );
 
         // icon locations
         DirectoryFieldEditor iconLocationField = new DirectoryFieldEditor(
-            DecoratorPreferences.NODE_ICON_LOCATION,
-            NODE_ICONS_LOCATION_LABEL, getFieldEditorParent() );
+                DecoratorPreferences.NODE_ICON_LOCATION,
+                NODE_ICONS_LOCATION_LABEL, getFieldEditorParent() );
         iconLocationField.setEmptyStringAllowed( true );
         iconLocationField.setErrorMessage( NODE_ICONS_LOCATION_ERROR );
         addField( iconLocationField, ICON_LOCATION_NOTE );
 
+        BooleanFieldEditor localIconLocation = new BooleanFieldEditor(
+                DecoratorPreferences.LOCAL_NODE_ICON_LOCATION,
+                LOCAL_ICONS_LABEL, getFieldEditorParent() );
+        addField( localIconLocation );
+
         // node icon filename properties
         StringFieldEditor iconPropertyNameField = new StringFieldEditor(
-            DecoratorPreferences.NODE_ICON_PROPERTY_NAMES,
-            NODE_ICON_FILENAME_PROPERTIES_LABEL, getFieldEditorParent() );
+                DecoratorPreferences.NODE_ICON_PROPERTY_NAMES,
+                NODE_ICON_FILENAME_PROPERTIES_LABEL, getFieldEditorParent() );
         iconPropertyNameField.setEmptyStringAllowed( true );
         addField( iconPropertyNameField, ICON_PROPERTY_NAMES_NOTE );
     }
