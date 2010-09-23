@@ -36,7 +36,6 @@ public class DecoratorPreferenceInitializer extends
         pref.setDefault( DecoratorPreferences.NODE_PROPERTY_NAMES, "" );
         pref.setDefault( DecoratorPreferences.RELATIONSHIP_PROPERTY_NAMES, "" );
         pref.setDefault( DecoratorPreferences.NODE_ICON_LOCATION, "" );
-        pref.setDefault( DecoratorPreferences.LOCAL_NODE_ICON_LOCATION, false );
         pref.setDefault( DecoratorPreferences.NODE_ICON_PROPERTY_NAMES, "" );
         // view menu settings
         pref.setDefault( DecoratorPreferences.SHOW_RELATIONSHIP_TYPES, true );

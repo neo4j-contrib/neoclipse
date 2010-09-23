@@ -43,10 +43,6 @@ public final class DecoratorPreferences
      */
     public static final String NODE_ICON_LOCATION = "iconLocation";
     /**
-     * If icons for local dbs should be stored in db directory.
-     */
-    public static final String LOCAL_NODE_ICON_LOCATION = "localIconLocation";
-    /**
      * The property to use for icon names.
      */
     public static final String NODE_ICON_PROPERTY_NAMES = "nodeIconPropertyNames";

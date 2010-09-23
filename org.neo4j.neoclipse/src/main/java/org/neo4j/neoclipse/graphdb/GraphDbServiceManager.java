@@ -446,7 +446,7 @@ public class GraphDbServiceManager
         String location = preferenceStore.getString( Preferences.DATABASE_LOCATION );
         if ( ( location == null ) || ( location.trim().length() == 0 ) )
         {
-            // if there's really no db dir, create one in the node space
+            // if there's really no db dir, create one in the workspace
             Location workspace = Platform.getInstanceLocation();
             if ( workspace == null )
             {

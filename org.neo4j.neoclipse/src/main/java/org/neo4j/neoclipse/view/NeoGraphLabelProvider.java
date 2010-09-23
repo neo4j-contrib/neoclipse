@@ -47,6 +47,7 @@ import org.neo4j.neoclipse.decorate.SimpleGraphDecorator.ViewSettings;
 import org.neo4j.neoclipse.graphdb.GraphCallable;
 import org.neo4j.neoclipse.preference.DecoratorPreferences;
 import org.neo4j.neoclipse.reltype.DirectedRelationship;
+import org.neo4j.neoclipse.reltype.NodeIconUtil;
 import org.neo4j.neoclipse.reltype.RelationshipTypeControl;
 import org.neo4j.neoclipse.reltype.RelationshipTypeEditingSupport;
 
@@ -272,8 +273,7 @@ public class NeoGraphLabelProvider extends LabelProvider implements
 
     private final void refreshNodeIconLocation()
     {
-        settings.setNodeIconLocation( Activator.getDefault().getPreferenceStore().getString(
-                DecoratorPreferences.NODE_ICON_LOCATION ) );
+        settings.setNodeIconLocation( NodeIconUtil.getIconLocation().getPath() );
     }
 
     /**

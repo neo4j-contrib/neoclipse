@@ -13,7 +13,6 @@
  */
 package org.neo4j.neoclipse.preference;
 
-import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.DirectoryFieldEditor;
 import org.eclipse.jface.preference.StringFieldEditor;
 
@@ -34,7 +33,6 @@ public class DecoratorPreferencePage extends AbstractPreferencePage
     private static final String NODE_ICONS_LOCATION_LABEL = "Node icons location:";
     private static final String NODE_ICONS_LOCATION_ERROR = "The Node icons location is invalid.";
     private static final String ICON_LOCATION_NOTE = "the icon filenames should correspond to the settings for node icon filename properties";
-    private static final String LOCAL_ICONS_LABEL = "Store icons in database directory for local databases (overrides Node icons location setting)";
     // node icon filename properties
     private static final String NODE_ICON_FILENAME_PROPERTIES_LABEL = "Node icon filename properties:";
     private static final String ICON_PROPERTY_NAMES_NOTE = "comma-separated list (see node labels); file EXTENSIONS are added automatically to the property values found";
@@ -66,11 +64,6 @@ public class DecoratorPreferencePage extends AbstractPreferencePage
         iconLocationField.setEmptyStringAllowed( true );
         iconLocationField.setErrorMessage( NODE_ICONS_LOCATION_ERROR );
         addField( iconLocationField, ICON_LOCATION_NOTE );
-
-        BooleanFieldEditor localIconLocation = new BooleanFieldEditor(
-                DecoratorPreferences.LOCAL_NODE_ICON_LOCATION,
-                LOCAL_ICONS_LABEL, getFieldEditorParent() );
-        addField( localIconLocation );
 
         // node icon filename properties
         StringFieldEditor iconPropertyNameField = new StringFieldEditor(
