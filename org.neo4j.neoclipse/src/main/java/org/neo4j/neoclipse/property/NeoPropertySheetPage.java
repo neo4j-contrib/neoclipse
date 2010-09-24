@@ -34,6 +34,7 @@ import org.eclipse.ui.views.properties.PropertySheetSorter;
 import org.neo4j.graphdb.PropertyContainer;
 import org.neo4j.neoclipse.Icons;
 import org.neo4j.neoclipse.help.HelpContextConstants;
+import org.neo4j.neoclipse.property.action.AddNodeLabelAction;
 import org.neo4j.neoclipse.property.action.CopyAction;
 import org.neo4j.neoclipse.property.action.DeleteAction;
 import org.neo4j.neoclipse.property.action.NewAction;
@@ -82,6 +83,7 @@ public class NeoPropertySheetPage extends PropertySheetPage implements
     private PasteAction pasteAction;
     private PropertyContainer containerSelection;
     private final List<ChangeListener> listeners = new ArrayList<ChangeListener>();
+    private AddNodeLabelAction addNodeLabelAction;
 
     public NeoPropertySheetPage()
     {
@@ -180,6 +182,8 @@ public class NeoPropertySheetPage extends PropertySheetPage implements
         menuMgr.add( deleteAction );
         renameAction = new RenameAction( parent, this );
         menuMgr.add( renameAction );
+        addNodeLabelAction = new AddNodeLabelAction( parent, this );
+        menuMgr.add( addNodeLabelAction );
         return menuMgr;
     }
 
@@ -209,6 +213,10 @@ public class NeoPropertySheetPage extends PropertySheetPage implements
         if ( renameAction != null )
         {
             renameAction.setEnabled( enabled );
+        }
+        if ( addNodeLabelAction != null )
+        {
+            addNodeLabelAction.setEnabled( enabled );
         }
     }
 

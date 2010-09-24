@@ -90,6 +90,8 @@ public enum Icons
     ROLLBACK_DISABLED( "rollback_disabled", path( "disabled/rollback.gif" ) ),
     SYNC_ENABLED( "sync-enabled", path( "enabled/sync.gif" ) ),
     SYNC_DISABLED( "sync-disabled", path( "disabled/sync.gif" ) ),
+    ADD_NODE_LABEL_ENABLED( "add-label-enabled", path( "enabled/filter.gif" ) ),
+    ADD_NODE_LABEL_DISABLED( "add-label-enabled", path( "disabled/filter.gif" ) ),
     // relationship types actions
     ADD_ENABLED( "add_enabled", path( "enabled/add-relationship.gif" ) ),
     ADD_DISABLED( "add_disabled", path( "disabled/add-relationship.gif" ) ),

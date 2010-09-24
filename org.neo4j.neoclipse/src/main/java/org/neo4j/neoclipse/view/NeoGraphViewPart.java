@@ -702,7 +702,14 @@ public class NeoGraphViewPart extends ViewPart implements
             public void run()
             {
                 disableDelete();
-                viewer.refresh( element, updateLabels );
+                if ( element == null )
+                {
+                    viewer.refresh( updateLabels );
+                }
+                else
+                {
+                    viewer.refresh( element, updateLabels );
+                }
                 refreshStatusBar();
             }
         } );
@@ -991,7 +998,10 @@ public class NeoGraphViewPart extends ViewPart implements
                 public void run()
                 {
                     refresh( event.getSource(), true );
-                    setDirty( true );
+                    if ( event.getPropertyName() != null )
+                    {
+                        setDirty( true );
+                    }
                 }
             } );
         }

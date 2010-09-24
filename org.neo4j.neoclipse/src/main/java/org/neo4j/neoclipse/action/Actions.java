@@ -127,7 +127,9 @@ public enum Actions
     COPY( "Copy", Icons.COPY_ENABLED, Icons.COPY_DISABLED ),
     REMOVE( "Remove", Icons.DELETE_ENABLED, Icons.DELETE_DISABLED ),
     PASTE( "Paste", Icons.PASTE_ENABLED, Icons.PASTE_DISABLED ),
-    RENAME( "Rename", Icons.RENAME_ENABLED, Icons.RENAME_DISABLED );
+    RENAME( "Rename", Icons.RENAME_ENABLED, Icons.RENAME_DISABLED ),
+    ADD_NODE_LABEL( "Add key to node labels", Icons.ADD_NODE_LABEL_ENABLED,
+            Icons.ADD_NODE_LABEL_DISABLED );
 
     private final String label;
     private final String tooltip;

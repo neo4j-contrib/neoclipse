@@ -173,7 +173,7 @@ public class SimpleGraphDecorator
          * @param names comma-separated names
          * @return list of names
          */
-        private List<String> listFromString( final String names )
+        public static List<String> listFromString( final String names )
         {
             final List<String> list = new ArrayList<String>();
             for ( String name : names.split( "," ) )
