@@ -2,6 +2,7 @@
 <classpath>
 	<classpathentry kind="src" output="target/classes" path="src/main/java"/>
 	<classpathentry kind="src" output="target/test-classes" path="src/test/java"/>
+	<classpathentry exported="true" kind="lib" path="lib/neo4j-utils-1.2-1.2.M01.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/geronimo-jta_1.1_spec-1.1.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/neo4j-examples-1.2.M01.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/neo4j-graph-algo-0.7-1.2.M01.jar"/>
