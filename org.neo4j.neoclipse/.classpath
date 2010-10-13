@@ -1,14 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" output="target/classes" path="src/main/java"/>
 	<classpathentry kind="src" output="target/test-classes" path="src/test/java"/>
 	<classpathentry exported="true" kind="lib" path="lib/geronimo-jta_1.1_spec-1.1.1.jar"/>
-	<classpathentry kind="lib" path="lib/neo4j-utils-1.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/neo4j-examples-1.2.M01.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/neo4j-graph-algo-0.7-1.2.M01.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/neo4j-index-1.2-1.2.M01.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/neo4j-kernel-1.2-1.2.M01.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/neo4j-online-backup-0.7-1.2.M01.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/neo4j-remote-graphdb-0.8-1.2.M01.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/neo4j-shell-1.2-1.2.M01.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/neo4j-udc-0.1-1.2.M01-neo4j.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/org.apache.servicemix.bundles.jline-0.9.94_1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/org.apache.servicemix.bundles.lucene-3.0.1_2.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/protobuf-java-2.3.0.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-1.5"/>
-	<classpathentry kind="lib" path="lib/neo4j-kernel-1.1.jar" sourcepath="/home/anders/.m2/repository/org/neo4j/neo4j-kernel/1.1/neo4j-kernel-1.1-sources.jar"/>
-	<classpathentry kind="lib" path="lib/neo4j-remote-graphdb-0.7.jar"/>
-	<classpathentry kind="lib" path="lib/lucene-core-2.9.2.jar"/>
-	<classpathentry kind="lib" path="lib/neo4j-index-1.1.jar"/>
+	<classpathentry kind="con" path="org.maven.ide.eclipse.MAVEN2_CLASSPATH_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
