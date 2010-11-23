@@ -406,7 +406,8 @@ public class NeoGraphViewPart extends ViewPart implements
     {
         // clear the properties view if it hasn't already
         // been disposed
-        if ( !propertySheetPage.getControl().isDisposed() )
+        if ( propertySheetPage != null
+             && !propertySheetPage.getControl().isDisposed() )
         {
             getPropertySheetPage().selectionChanged( NeoGraphViewPart.this,
                     EMPTY_SELECTION );
