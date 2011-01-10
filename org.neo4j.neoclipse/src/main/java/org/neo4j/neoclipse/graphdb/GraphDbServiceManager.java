@@ -88,12 +88,12 @@ public class GraphDbServiceManager
                     try
                     {
                         graphDb = new RemoteGraphDatabase( getResourceUri() );
+                        logInfo( "connected to remote neo4j" );
                     }
                     catch ( URISyntaxException e )
                     {
                         ErrorMessage.showDialog( "URI syntax error", e );
                     }
-                    logInfo( "connected to remote neo4j" );
                     break;
                 }
                 lifecycle = new GraphDatabaseLifecycle( graphDb );
