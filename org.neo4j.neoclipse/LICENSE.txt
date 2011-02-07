@@ -1,177 +1,50 @@
+Neoclipse - Graph database tool
 
-                                 Apache License
-                           Version 2.0, January 2004
-                        http://www.apache.org/licenses/
+Copyright (c) 2008-2011 "Neo Technology," Network Engine for Objects in Lund AB
 
-   TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
+This product includes software developed at "Neo Technology," Network Engine for Objects in Lund AB (http://neotechnology.com).
 
-   1. Definitions.
+The bundled graph database engine Neo4j is copyright "Neo Technology," Network Engine for Objects in Lund AB and licensed under the Neo4j Software License for Neoclipse, version 1.0 or later.
 
-      "License" shall mean the terms and conditions for use, reproduction,
-      and distribution as defined by Sections 1 through 9 of this document.
+The bundled Apache Geronimo JTA library is copyright The Apache Software Foundation  (http://www.apache.org/) under the Apache License version 2.0.
 
-      "Licensor" shall mean the copyright owner or entity authorized by
-      the copyright owner that is granting the License.
+Eclipse platform support is provided by various org.eclipse.*libraries, licensed under the Eclipse Public License, (http://www.eclipse.org/legal/epl-v10.html)
 
-      "Legal Entity" shall mean the union of the acting entity and all
-      other entities that control, are controlled by, or are under common
-      control with that entity. For the purposes of this definition,
-      "control" means (i) the power, direct or indirect, to cause the
-      direction or management of such entity, whether by contract or
-      otherwise, or (ii) ownership of fifty percent (50%) or more of the
-      outstanding shares, or (iii) beneficial ownership of such entity.
+Neo4j Software License for Neoclipse.
+Version 1.0
 
-      "You" (or "Your") shall mean an individual or Legal Entity
-      exercising permissions granted by this License.
+This Software License Agreement (“Agreement”) is entered into between any individual or legal entity (“Customer”) exercising permissions granted by this license (“License”) and Network Engine for Objects in Lund AB (“Neo Technology”). Neo Technology and Customer are hereinafter also individually referred to as “Party” and collectively as “Parties”.
 
-      "Source" form shall mean the preferred form for making modifications,
-      including but not limited to software source code, documentation
-      source, and configuration files.
+Neo Technology has created Neoclipse software application which aims to provide plugins for the Eclipse IDE in order to support the development of Neo4j applications. Neoclipse contains the bundled graph database engine Neo4j (”Product”). Under this License, Neo Technology grants to Customer a commercial perpetual license to the Product only for Customer’s use together with Neoclipse subject to the terms and conditions in this Agreement.
 
-      "Object" form shall mean any form resulting from mechanical
-      transformation or translation of a Source form, including but
-      not limited to compiled object code, generated documentation,
-      and conversions to other media types.
+1. Grant. Neo Technology grants to Customer a royalty free, perpetual, non-exclusive and non-transferable license to run and use Product only as bundled or otherwise together with an unmodified version of Neoclipse as from time to time can be downloaded from Neo Technology’s website http://www.neo4j.org/download. Customer may not under this License modify or create derivative works of Product or use Product in its original or any modified version, together with any other product than an unmodified version of Neoclipse or for any other purpose. For any other use of the Product  than as bundled or otherwise together with an unmodified version of Neoclipse, please contact Neo Technology info@neotechnology.com.
 
-      "Work" shall mean the work of authorship, whether in Source or
-      Object form, made available under the License, as indicated by a
-      copyright notice that is included in or attached to the work
-      (an example is provided in the Appendix below).
+2. Term. The term of this Agreement commences upon Customer’s download of Neoclipse or Customer’s use of any or all parts of the source code or binary code of Neoclipse, whichever is first and shall continue in full force and effect in perpetuity, unless terminated in accordance with Section 7 below.
 
-      "Derivative Works" shall mean any work, whether in Source or Object
-      form, that is based on (or derived from) the Work and for which the
-      editorial revisions, annotations, elaborations, or other modifications
-      represent, as a whole, an original work of authorship. For the purposes
-      of this License, Derivative Works shall not include works that remain
-      separable from, or merely link (or bind by name) to the interfaces of,
-      the Work and Derivative Works thereof.
+3. No Support and Maintenance. Neo Technology shall not be obligated to provide the Customer with any Support Services regarding the Product.
 
-      "Contribution" shall mean any work of authorship, including
-      the original version of the Work and any modifications or additions
-      to that Work or Derivative Works thereof, that is intentionally
-      submitted to Licensor for inclusion in the Work by the copyright owner
-      or by an individual or Legal Entity authorized to submit on behalf of
-      the copyright owner. For the purposes of this definition, "submitted"
-      means any form of electronic, verbal, or written communication sent
-      to the Licensor or its representatives, including but not limited to
-      communication on electronic mailing lists, source code control systems,
-      and issue tracking systems that are managed by, or on behalf of, the
-      Licensor for the purpose of discussing and improving the Work, but
-      excluding communication that is conspicuously marked or otherwise
-      designated in writing by the copyright owner as "Not a Contribution."
+4. Ownership. Neo Technology owns and retains all right, title and interest in and to the Product. Such rights include, but are not limited to, trade secret, trademark, service mark, patent and copyright rights. Neo Technology does not grant to Customer any other rights or licenses beyond those specifically set forth herein.
 
-      "Contributor" shall mean Licensor and any individual or Legal Entity
-      on behalf of whom a Contribution has been received by Licensor and
-      subsequently incorporated within the Work.
+5. No Warranty. NEO TECHNOLOGY MAKES NO WARRANTIES TO ANY INDIVIDUAL OR LEGAL ENTITY WITH RESPECT TO THE PRODUCT, OR ANY DERIVATIVE WORKS THEREOF, OR ANY SERVICES AND DISCLAIMS ALL IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE AND NON-INFRINGEMENT OF THIRD PARTY RIGHTS.
 
-   2. Grant of Copyright License. Subject to the terms and conditions of
-      this License, each Contributor hereby grants to You a perpetual,
-      worldwide, non-exclusive, no-charge, royalty-free, irrevocable
-      copyright license to reproduce, prepare Derivative Works of,
-      publicly display, publicly perform, sublicense, and distribute the
-      Work and such Derivative Works in Source or Object form.
+6. Limitation of Liability. IN NO EVENT, INCLUDING ANY BREACH OF AGREEMENT, WARRANTY OR REPRESENTATION MADE HEREUNDER, AND TO THE EXTENT NOT PROHIBITED BY APPLICABLE LAW NEO TECHNOLOGY SHALL HAVE NO LIABILTY WHATSOEVER IN RELATION TO THE CUSTOMER FOR CLAIMS ARISING OUT OF OR RELATING TO THIS AGREEMENT, WHETHER FOR BREACH OR IN TORT (INCLUDING NEGLIGENCE). IN ANY CASE AND FOR NO REASON, NEO TECHNOLOGY WILL NOT BE LIABLE FOR ANY INDIRECT, PUNITIVE, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGE IN CONNECTION WITH OR ARISING OUT OF OR RELATING TO THIS AGREEMENT (INCLUDING LOSS OF BUSINESS, REVENUE, PROFITS, USE, DATA, OR OTHER ECONOMIC ADVANTAGE), HOWEVER IT ARISES, WHETHER FOR BREACH OR IN TORT (INCLUDING NEGLIGENCE), EVEN IF THAT PARTY HAS BEEN PREVIOUSLY ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. LIABILITY FOR DAMAGES SHALL BE LIMITED AND EXCLUDED, EVEN IF ANY EXCLUSIVE REMEDY PROVIDED FOR IN THIS AGREEMENT FAILS OF ITS ESSENTIAL PURPOSE.
 
-   3. Grant of Patent License. Subject to the terms and conditions of
-      this License, each Contributor hereby grants to You a perpetual,
-      worldwide, non-exclusive, no-charge, royalty-free, irrevocable
-      (except as stated in this section) patent license to make, have made,
-      use, offer to sell, sell, import, and otherwise transfer the Work,
-      where such license applies only to those patent claims licensable
-      by such Contributor that are necessarily infringed by their
-      Contribution(s) alone or by combination of their Contribution(s)
-      with the Work to which such Contribution(s) was submitted. If You
-      institute patent litigation against any entity (including a
-      cross-claim or counterclaim in a lawsuit) alleging that the Work
-      or a Contribution incorporated within the Work constitutes direct
-      or contributory patent infringement, then any patent licenses
-      granted to You under this License for that Work shall terminate
-      as of the date such litigation is filed.
+7. Premature termination. The Agreement may be terminated immediately by either Party by notice in writing in case:
+a)	the other Party commits a material breach of any provision of the Agreement and fails to rectify such breach within thirty (30) days after notification thereof from the suffered Party; or
+b)	the other Party commits a non-remedial material breach of any provision of the Agreement; or
+c)	the other Party becomes insolvent, ceases its operations, dissolves, files for bankruptcy or bankruptcy protection, appoints receivers, or enters into an arrangement for the benefit of creditors.
 
-   4. Redistribution. You may reproduce and distribute copies of the
-      Work or Derivative Works thereof in any medium, with or without
-      modifications, and in Source or Object form, provided that You
-      meet the following conditions:
+8. Consequences upon termination. In event of termination of the Agreement, Customer’s right to use the Product shall automatically expire upon the day of termination. Within thirty (30) days from the day of termination, the Customer shall:
+a) return or, if not possible, delete and destroy all copies of Product from all computer systems and storage media and return to Neo Technology any and all material relating to the Product and copies of the documentation, including manuals, signs and all other such material provided hereunder; and
+b) deliver to Neo Technology all items within the Customer’s possession or control that contains confidential information proprietary to Neo Technology or otherwise provided by Neo Technology hereunder, and
+c) certify in writing that the Customer has complied with the obligations hereunder.
 
-      (a) You must give any other recipients of the Work or
-          Derivative Works a copy of this License; and
+Notwithstanding any termination of the Agreement the provisions of Article 4 (Ownership), 5 (No Warranty), 6 (Limitation of Liability), 8 (Consequences upon termination) and 9 (Governing Law, Disputes) shall survive termination as well as any other term or condition which by its nature is clearly intended to survive termination of this Agreement.
 
-      (b) You must cause any modified files to carry prominent notices
-          stating that You changed the files; and
+9. Governing Law, Disputes. This Agreement shall be governed by and construed under the laws of Sweden, irrespective of its choice of law provisions. Any dispute, controversy or claim arising out of or in connection with this Agreement, or the breach, termination or invalidity thereof, shall be finally settled by arbitration administered by the Arbitration Institute of the Stockholm Chamber of Commerce (“the SCC”). The Rules for Expedited Arbitrations of the Arbitration Institute of the Stockholm Chamber of Commerce shall apply, unless the SCC, taking into account the complexity of the case, the amount in dispute and other circumstances, determines, in its discretion, that the Arbitration Rules of the Arbitration Institute of the Stockholm Chamber of Commerce shall apply. In the latter case, the SCC shall also decide whether the arbitral tribunal shall be composed of one or three arbitrators. The seat of arbitration shall be Stockholm, Sweden. The language to be used in the arbitral proceedings shall be English.
 
-      (c) You must retain, in the Source form of any Derivative Works
-          that You distribute, all copyright, patent, trademark, and
-          attribution notices from the Source form of the Work,
-          excluding those notices that do not pertain to any part of
-          the Derivative Works; and
+10. Entire Agreement. This Agreement shall constitute the entire agreement between the Parties with respect to the subject matter hereof and merges all prior and contemporaneous communications. It shall not be modified except by a written agreement signed on behalf of the Parties by their respective duly authorized representatives.
 
-      (d) If the Work includes a "NOTICE" text file as part of its
-          distribution, then any Derivative Works that You distribute must
-          include a readable copy of the attribution notices contained
-          within such NOTICE file, excluding those notices that do not
-          pertain to any part of the Derivative Works, in at least one
-          of the following places: within a NOTICE text file distributed
-          as part of the Derivative Works; within the Source form or
-          documentation, if provided along with the Derivative Works; or,
-          within a display generated by the Derivative Works, if and
-          wherever such third-party notices normally appear. The contents
-          of the NOTICE file are for informational purposes only and
-          do not modify the License. You may add Your own attribution
-          notices within Derivative Works that You distribute, alongside
-          or as an addendum to the NOTICE text from the Work, provided
-          that such additional attribution notices cannot be construed
-          as modifying the License.
+11. No Joint Venture. The Parties are independent contractors and nothing in this Agreement shall be deemed to create a de facto corporation, agency, partnership or joint venture relationship. Neither Party shall have the right to act for the other Party or to bind or commit other Party in any way.
 
-      You may add Your own copyright statement to Your modifications and
-      may provide additional or different license terms and conditions
-      for use, reproduction, or distribution of Your modifications, or
-      for any such Derivative Works as a whole, provided Your use,
-      reproduction, and distribution of the Work otherwise complies with
-      the conditions stated in this License.
-
-   5. Submission of Contributions. Unless You explicitly state otherwise,
-      any Contribution intentionally submitted for inclusion in the Work
-      by You to the Licensor shall be under the terms and conditions of
-      this License, without any additional terms or conditions.
-      Notwithstanding the above, nothing herein shall supersede or modify
-      the terms of any separate license agreement you may have executed
-      with Licensor regarding such Contributions.
-
-   6. Trademarks. This License does not grant permission to use the trade
-      names, trademarks, service marks, or product names of the Licensor,
-      except as required for reasonable and customary use in describing the
-      origin of the Work and reproducing the content of the NOTICE file.
-
-   7. Disclaimer of Warranty. Unless required by applicable law or
-      agreed to in writing, Licensor provides the Work (and each
-      Contributor provides its Contributions) on an "AS IS" BASIS,
-      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
-      implied, including, without limitation, any warranties or conditions
-      of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A
-      PARTICULAR PURPOSE. You are solely responsible for determining the
-      appropriateness of using or redistributing the Work and assume any
-      risks associated with Your exercise of permissions under this License.
-
-   8. Limitation of Liability. In no event and under no legal theory,
-      whether in tort (including negligence), contract, or otherwise,
-      unless required by applicable law (such as deliberate and grossly
-      negligent acts) or agreed to in writing, shall any Contributor be
-      liable to You for damages, including any direct, indirect, special,
-      incidental, or consequential damages of any character arising as a
-      result of this License or out of the use or inability to use the
-      Work (including but not limited to damages for loss of goodwill,
-      work stoppage, computer failure or malfunction, or any and all
-      other commercial damages or losses), even if such Contributor
-      has been advised of the possibility of such damages.
-
-   9. Accepting Warranty or Additional Liability. While redistributing
-      the Work or Derivative Works thereof, You may choose to offer,
-      and charge a fee for, acceptance of support, warranty, indemnity,
-      or other liability obligations and/or rights consistent with this
-      License. However, in accepting such obligations, You may act only
-      on Your own behalf and on Your sole responsibility, not on behalf
-      of any other Contributor, and only if You agree to indemnify,
-      defend, and hold each Contributor harmless for any liability
-      incurred by, or claims asserted against, such Contributor by reason
-      of your accepting any such warranty or additional liability.
-
-   END OF TERMS AND CONDITIONS
+12. Assignment. Neither this Agreement, nor any rights, licenses nor obligations hereunder, may be assigned by either Party without the prior written approval and consent of the other Party. Notwithstanding the foregoing, either Party may assign this Agreement or the licenses granted hereunder to any acquirer of all or of substantially all of such Party's assets or business or equity securities, who consents in writing to be bound by the terms of this Agreement. In the event this Agreement is assigned to an acquirer, the licenses granted hereunder will be limited to those deployed at the closing of the acquisition.

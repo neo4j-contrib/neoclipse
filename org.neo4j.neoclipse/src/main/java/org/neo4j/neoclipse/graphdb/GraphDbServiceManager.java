@@ -111,7 +111,7 @@ public class GraphDbServiceManager
                 if ( lifecycle == null )
                 {
                     throw new IllegalStateException(
-                            "Can't stop the database: there is no running database." );
+                            "Can not stop the database: there is no running database." );
                 }
                 fireServiceChangedEvent( GraphDbServiceStatus.STOPPING );
                 // TODO give the UI some time to deal with it here?
@@ -127,13 +127,18 @@ public class GraphDbServiceManager
                 try
                 {
                     lifecycle.manualShutdown();
+                    logInfo( "stopped/disconnected" );
+                }
+                catch ( Exception e )
+                {
+                    throw new RuntimeException(
+                            "Can not stop the database. The reason is not known." );
                 }
                 finally
                 {
                     lifecycle = null;
                     fireServiceChangedEvent( GraphDbServiceStatus.STOPPED );
                 }
-                logInfo( "stopped/disconnected" );
             }
         };
 
