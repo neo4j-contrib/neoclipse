@@ -8,16 +8,16 @@ The bundled graph database engine Neo4j is copyright "Neo Technology," Network E
 
 The bundled Apache Geronimo JTA library is copyright The Apache Software Foundation  (http://www.apache.org/) under the Apache License version 2.0.
 
-Eclipse platform support is provided by various org.eclipse.*libraries, licensed under the Eclipse Public License, (http://www.eclipse.org/legal/epl-v10.html)
+Eclipse platform support is provided by various org.eclipse.* libraries, licensed under the Eclipse Public License, (http://www.eclipse.org/legal/epl-v10.html)
 
 Neo4j Software License for Neoclipse.
 Version 1.0
 
 This Software License Agreement (“Agreement”) is entered into between any individual or legal entity (“Customer”) exercising permissions granted by this license (“License”) and Network Engine for Objects in Lund AB (“Neo Technology”). Neo Technology and Customer are hereinafter also individually referred to as “Party” and collectively as “Parties”.
 
-Neo Technology has created Neoclipse software application which aims to provide plugins for the Eclipse IDE in order to support the development of Neo4j applications. Neoclipse contains the bundled graph database engine Neo4j (”Product”). Under this License, Neo Technology grants to Customer a commercial perpetual license to the Product only for Customer’s use together with Neoclipse subject to the terms and conditions in this Agreement.
+Neo Technology has created the Neoclipse standalone software application, which aims to provide support for the development of Neo4j applications. Neoclipse contains the bundled graph database engine Neo4j (”Product”). Under this License, Neo Technology grants to Customer a commercial perpetual license to the Product only for Customer’s use together with Neoclipse subject to the terms and conditions in this Agreement.
 
-1. Grant. Neo Technology grants to Customer a royalty free, perpetual, non-exclusive and non-transferable license to run and use Product only as bundled or otherwise together with an unmodified version of Neoclipse as from time to time can be downloaded from Neo Technology’s website http://www.neo4j.org/download. Customer may not under this License modify or create derivative works of Product or use Product in its original or any modified version, together with any other product than an unmodified version of Neoclipse or for any other purpose. For any other use of the Product  than as bundled or otherwise together with an unmodified version of Neoclipse, please contact Neo Technology info@neotechnology.com.
+1. Grant. Neo Technology grants to Customer a royalty free, perpetual, non-exclusive and non-transferable license to run and use Product only as bundled or otherwise together with an unmodified version of Neoclipse as from time to time can be downloaded from Neo Technology’s website http://neo4j.org/download. Customer may not under this License modify or create derivative works of Product or use Product in its original or any modified version, together with any other product than an unmodified version of Neoclipse or for any other purpose. For any other use of the Product than as bundled or otherwise together with an unmodified version of Neoclipse, please contact Neo Technology info@neotechnology.com.
 
 2. Term. The term of this Agreement commences upon Customer’s download of Neoclipse or Customer’s use of any or all parts of the source code or binary code of Neoclipse, whichever is first and shall continue in full force and effect in perpetuity, unless terminated in accordance with Section 7 below.
 
