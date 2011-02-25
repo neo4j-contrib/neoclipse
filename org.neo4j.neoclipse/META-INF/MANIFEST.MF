@@ -2,11 +2,11 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Neoclipse
 Bundle-SymbolicName: org.neo4j.neoclipse;singleton:=true
-Bundle-Version: 0.4.2
+Bundle-Version: 1.2
 Bundle-Activator: org.neo4j.neoclipse.Activator
 Bundle-Vendor: Neo4j.org
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ClassPath: .,
  lib/geronimo-jta_1.1_spec-1.1.1.jar,
  lib/neo4j-graph-algo-0.7-1.2.jar,

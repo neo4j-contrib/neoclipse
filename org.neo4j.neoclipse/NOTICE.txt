@@ -1,21 +1,29 @@
 Neoclipse - Graph database tool
 
-Copyright (c) 2008-2010 "Neo Technology," Network Engine for Objects in Lund AB
+Copyright (c) 2008-2011 "Neo Technology," Network Engine for Objects in Lund AB
 
 This product includes software developed at
 "Neo Technology," Network Engine for Objects in Lund AB
 (http://neotechnology.com).
 
-The bundled graph database engine is copyright
-"Neo Technology," Network Engine for Objects in Lund AB
-and licensed under the GNU AFFERO GENERAL PUBLIC LICENSE
-Version 3 (http://www.fsf.org/licensing/licenses/agpl-3.0.html).
+The bundled graph database engine Neo4j is copyright "Neo Technology," Network
+Engine for Objects in Lund AB and licensed under the Neo4j Software License for
+Neoclipse, version 1.0 or later.
 
 The bundled Apache Geronimo JTA library is copyright
 The Apache Software Foundation  (http://www.apache.org/)
 under the Apache License version 2.0.
 
-Eclipse platform support is provided by various org.eclipse.*
-libraries, licensed under the Eclipse Public License,
+Eclipse platform support is provided by various libraries,
+licensed under the Eclipse Public License,
 (http://www.eclipse.org/legal/epl-v10.html)
+The libraries include:
+org.eclipse.*, org.mortbay.jetty, org.junit, org.apache.*,
+javax.servlet, javax.servlet.jsp, com.ibm.icu
+On the Linux platform, there are additional libraries included:
+Cairo for Linux is copyright The Cairo Project (http://cairographics.org/)
+under the Mozilla Public License Version 1.1. Libpixregion is copyright
+The Open Group and Digital Equipment Corporation, Maynard, Massachusetts
+under the MIT license. Libic is copyright 2001 Keith Packard under the
+MIT license. Slim is copyright Richard Henderson under the MIT license.
 

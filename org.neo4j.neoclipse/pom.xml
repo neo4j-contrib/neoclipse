@@ -1,59 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<version>0.4.2</version>
-	<parent>
-		<artifactId>neoclipse</artifactId>
-		<groupId>org.neo4j</groupId>
-		<version>1.2</version>
-	</parent>
-	<groupId>org.neo4j</groupId>
-	<artifactId>org.neo4j.neoclipse</artifactId>
-	<name>Neoclipse Eclipse Plugin</name>
-	<dependencies>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.8.1</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.neo4j</groupId>
-			<artifactId>neo4j-utils</artifactId>
-			<version>1.2-1.2</version>
-		</dependency>
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <version>0.4.2</version>
+  <parent>
+    <artifactId>neoclipse</artifactId>
+    <groupId>org.neo4j</groupId>
+    <version>1.2</version>
+  </parent>
+  <groupId>org.neo4j</groupId>
+  <artifactId>org.neo4j.neoclipse</artifactId>
+  <name>Neoclipse</name>
 
-		<dependency>
-			<groupId>org.neo4j</groupId>
-			<artifactId>neo4j</artifactId>
-			<version>1.2</version>
-			<type>pom</type>
-			<scope>compile</scope>
-		</dependency>
-	</dependencies>
-	<build>
-		<resources>
-			<resource>
-				<directory>${basedir}</directory>
-				<includes>
-					<include>plugin.xml</include>
-				</includes>
-			</resource>
-		</resources>
-	</build>
-	<repositories>
-		<repository>
-			<id>neo4j-public-repository</id>
-			<url>http://m2.neo4j.org</url>
-		</repository>
-		<repository>
-			<id>m2-snapshots</id>
-			<url>http://snapshots.repository.codehaus.org
-            </url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-	</repositories>
+  <properties>
+    <license-text.header>ApacheLicense-2.0-header.txt</license-text.header>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.8.1</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.neo4j</groupId>
+      <artifactId>neo4j-utils</artifactId>
+      <version>1.2-1.2</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.neo4j</groupId>
+      <artifactId>neo4j</artifactId>
+      <version>1.2</version>
+      <type>pom</type>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
+  <build>
+    <resources>
+      <resource>
+        <directory>${basedir}</directory>
+        <includes>
+          <include>plugin.xml</include>
+        </includes>
+      </resource>
+    </resources>
+  </build>
 </project>

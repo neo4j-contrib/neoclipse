@@ -100,7 +100,7 @@
         </property>
         <property
               name="aboutText"
-              value="Neoclipse provides an easy to use GUI frontend to the Neo4j graph-oriented database.&#x0A;&#x0A;This software is realeased under the Apache License Version 2.">
+              value="Neoclipse provides an easy to use GUI frontend to the Neo4j graph-oriented database.&#x0A;&#x0A;This software is realeased under the Neo4j Software License for Neoclipse Version 1.0.">
         </property>
     </product>
   </extension>

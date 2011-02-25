@@ -10,6 +10,6 @@
   <groupId>org.neo4j</groupId>
   <artifactId>org.neo4j.neoclipse.updatesite</artifactId>
   <name>Neoclipse Update Site</name>
-  <version>1.0.0</version>
+  <version>1.2</version>
   <packaging>eclipse-update-site</packaging>
 </project>
