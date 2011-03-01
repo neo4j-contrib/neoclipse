@@ -13,8 +13,9 @@ do
 	rm -f neoclipse/about.html
 	name=neoclipse-$version-$platform
 	mv neoclipse $name
-  if [ "$platform" == "win*" ]
-  	then zip -r9l $builddir/$name.zip $name
+	echo "$platform"
+  if [[ "$platform" == win* ]]
+  	then zip -r9 $builddir/$name.zip $name
   	else tar -czf $builddir/$name.tar.gz $name
   fi
   cd ..
