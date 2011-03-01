@@ -39,7 +39,6 @@ This software is realeased under the Neo4j Software License for Neoclipse Versio
       </win>
    </launcher>
 
-
    <vm>
    </vm>
 
@@ -49,52 +48,151 @@ This software is realeased under the Neo4j Software License for Neoclipse Versio
 
 Copyright (c) 2008-2011 &quot;Neo Technology,&quot; Network Engine for Objects in Lund AB
 
-This product includes software developed at &quot;Neo Technology,&quot; Network Engine for Objects in Lund AB (http://neotechnology.com).
+This product includes software developed at &quot;Neo Technology,&quot; Network Engine for
+Objects in Lund AB (http://neotechnology.com).
 
-The bundled graph database engine Neo4j is copyright &quot;Neo Technology,&quot; Network Engine for Objects in Lund AB and licensed under the Neo4j Software License for Neoclipse, version 1.0 or later.
+The bundled graph database engine Neo4j is copyright &quot;Neo Technology,&quot; Network
+Engine for Objects in Lund AB and licensed under the Neo4j Software License for
+Neoclipse, version 1.0 or later.
 
-The bundled Apache Geronimo JTA library is copyright The Apache Software Foundation  (http://www.apache.org/) under the Apache License version 2.0.
+The bundled Apache Geronimo JTA library is copyright The Apache Software
+Foundation (http://www.apache.org/) under the Apache License version 2.0.
 
-Eclipse platform support is provided by various org.eclipse.* libraries, licensed under the Eclipse Public License, (http://www.eclipse.org/legal/epl-v10.html)
+Eclipse platform support is provided by various libraries,
+licensed under the Eclipse Public License,
+(http://www.eclipse.org/legal/epl-v10.html)
+The libraries include:
+org.eclipse.*, org.mortbay.jetty, org.junit, org.apache.*,
+javax.servlet, javax.servlet.jsp, com.ibm.icu
+On the Linux platform, there are additional libraries included:
+Cairo for Linux is copyright The Cairo Project (http://cairographics.org/)
+under the Mozilla Public License Version 1.1. Libpixregion is copyright
+The Open Group and Digital Equipment Corporation, Maynard, Massachusetts
+under the MIT license. Libic is copyright 2001 Keith Packard under the
+MIT license. Slim is copyright Richard Henderson under the MIT license.
 
-Neo4j Software License for Neoclipse.
-Version 1.0
+Neo4j Software License for Neoclipse.  Version 1.0
 
-This Software License Agreement (“Agreement”) is entered into between any individual or legal entity (“Customer”) exercising permissions granted by this license (“License”) and Network Engine for Objects in Lund AB (“Neo Technology”). Neo Technology and Customer are hereinafter also individually referred to as “Party” and collectively as “Parties”.
+This Software License Agreement (“Agreement”) is entered into between any
+individual or legal entity (“Customer”) exercising permissions granted by this
+license (“License”) and Network Engine for Objects in Lund AB (“Neo
+Technology”).  Neo Technology and Customer are hereinafter also individually
+referred to as “Party” and collectively as “Parties”.
 
-Neo Technology has created the Neoclipse standalone software application, which aims to provide support for the development of Neo4j applications. Neoclipse contains the bundled graph database engine Neo4j (”Product”). Under this License, Neo Technology grants to Customer a commercial perpetual license to the Product only for Customer’s use together with Neoclipse subject to the terms and conditions in this Agreement.
+Neo Technology has created the Neoclipse standalone software application, which
+aims to provide support for the development of Neo4j applications.  Neoclipse
+contains the bundled graph database engine Neo4j (”Product”).  Under this
+License, Neo Technology grants to Customer a commercial perpetual license to the
+Product only for Customer’s use together with Neoclipse subject to the terms and
+conditions in this Agreement.
 
-1. Grant. Neo Technology grants to Customer a royalty free, perpetual, non-exclusive and non-transferable license to run and use Product only as bundled or otherwise together with an unmodified version of Neoclipse as from time to time can be downloaded from Neo Technology’s website http://neo4j.org/download. Customer may not under this License modify or create derivative works of Product or use Product in its original or any modified version, together with any other product than an unmodified version of Neoclipse or for any other purpose. For any other use of the Product than as bundled or otherwise together with an unmodified version of Neoclipse, please contact Neo Technology info@neotechnology.com.
+1.  Grant.  Neo Technology grants to Customer a royalty free, perpetual,
+    non-exclusive and non-transferable license to run and use Product only as
+    bundled or otherwise together with an unmodified version of Neoclipse as from
+    time to time can be downloaded from Neo Technology’s website
+    http://neo4j.org/download.  Customer may not under this License modify or create
+    derivative works of Product or use Product in its original or any modified
+    version, together with any other product than an unmodified version of Neoclipse
+    or for any other purpose.  For any other use of the Product than as bundled or
+    otherwise together with an unmodified version of Neoclipse, please contact Neo
+    Technology info@neotechnology.com.
 
-2. Term. The term of this Agreement commences upon Customer’s download of Neoclipse or Customer’s use of any or all parts of the source code or binary code of Neoclipse, whichever is first and shall continue in full force and effect in perpetuity, unless terminated in accordance with Section 7 below.
+2.  Term.  The term of this Agreement commences upon Customer’s download of
+    Neoclipse or Customer’s use of any or all parts of the source code or binary
+    code of Neoclipse, whichever is first and shall continue in full force and
+    effect in perpetuity, unless terminated in accordance with Section 7 below.
 
-3. No Support and Maintenance. Neo Technology shall not be obligated to provide the Customer with any Support Services regarding the Product.
+3.  No Support and Maintenance.  Neo Technology shall not be obligated to
+    provide the Customer with any Support Services regarding the Product.
 
-4. Ownership. Neo Technology owns and retains all right, title and interest in and to the Product. Such rights include, but are not limited to, trade secret, trademark, service mark, patent and copyright rights. Neo Technology does not grant to Customer any other rights or licenses beyond those specifically set forth herein.
+4.  Ownership.  Neo Technology owns and retains all right, title and interest in
+    and to the Product.  Such rights include, but are not limited to, trade secret,
+    trademark, service mark, patent and copyright rights.  Neo Technology does not
+    grant to Customer any other rights or licenses beyond those specifically set
+    forth herein.
 
-5. No Warranty. NEO TECHNOLOGY MAKES NO WARRANTIES TO ANY INDIVIDUAL OR LEGAL ENTITY WITH RESPECT TO THE PRODUCT, OR ANY DERIVATIVE WORKS THEREOF, OR ANY SERVICES AND DISCLAIMS ALL IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE AND NON-INFRINGEMENT OF THIRD PARTY RIGHTS.
+5.  No Warranty.  NEO TECHNOLOGY MAKES NO WARRANTIES TO ANY INDIVIDUAL OR LEGAL
+    ENTITY WITH RESPECT TO THE PRODUCT, OR ANY DERIVATIVE WORKS THEREOF, OR ANY
+    SERVICES AND DISCLAIMS ALL IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION
+    WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE AND
+    NON-INFRINGEMENT OF THIRD PARTY RIGHTS.
 
-6. Limitation of Liability. IN NO EVENT, INCLUDING ANY BREACH OF AGREEMENT, WARRANTY OR REPRESENTATION MADE HEREUNDER, AND TO THE EXTENT NOT PROHIBITED BY APPLICABLE LAW NEO TECHNOLOGY SHALL HAVE NO LIABILTY WHATSOEVER IN RELATION TO THE CUSTOMER FOR CLAIMS ARISING OUT OF OR RELATING TO THIS AGREEMENT, WHETHER FOR BREACH OR IN TORT (INCLUDING NEGLIGENCE). IN ANY CASE AND FOR NO REASON, NEO TECHNOLOGY WILL NOT BE LIABLE FOR ANY INDIRECT, PUNITIVE, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGE IN CONNECTION WITH OR ARISING OUT OF OR RELATING TO THIS AGREEMENT (INCLUDING LOSS OF BUSINESS, REVENUE, PROFITS, USE, DATA, OR OTHER ECONOMIC ADVANTAGE), HOWEVER IT ARISES, WHETHER FOR BREACH OR IN TORT (INCLUDING NEGLIGENCE), EVEN IF THAT PARTY HAS BEEN PREVIOUSLY ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. LIABILITY FOR DAMAGES SHALL BE LIMITED AND EXCLUDED, EVEN IF ANY EXCLUSIVE REMEDY PROVIDED FOR IN THIS AGREEMENT FAILS OF ITS ESSENTIAL PURPOSE.
+6.  Limitation of Liability.  IN NO EVENT, INCLUDING ANY BREACH OF AGREEMENT,
+    WARRANTY OR REPRESENTATION MADE HEREUNDER, AND TO THE EXTENT NOT PROHIBITED BY
+    APPLICABLE LAW NEO TECHNOLOGY SHALL HAVE NO LIABILTY WHATSOEVER IN RELATION TO
+    THE CUSTOMER FOR CLAIMS ARISING OUT OF OR RELATING TO THIS AGREEMENT, WHETHER
+    FOR BREACH OR IN TORT (INCLUDING NEGLIGENCE).  IN ANY CASE AND FOR NO REASON,
+    NEO TECHNOLOGY WILL NOT BE LIABLE FOR ANY INDIRECT, PUNITIVE, SPECIAL,
+    INCIDENTAL, OR CONSEQUENTIAL DAMAGE IN CONNECTION WITH OR ARISING OUT OF OR
+    RELATING TO THIS AGREEMENT (INCLUDING LOSS OF BUSINESS, REVENUE, PROFITS, USE,
+    DATA, OR OTHER ECONOMIC ADVANTAGE), HOWEVER IT ARISES, WHETHER FOR BREACH OR IN
+    TORT (INCLUDING NEGLIGENCE), EVEN IF THAT PARTY HAS BEEN PREVIOUSLY ADVISED OF
+    THE POSSIBILITY OF SUCH DAMAGE.  LIABILITY FOR DAMAGES SHALL BE LIMITED AND
+    EXCLUDED, EVEN IF ANY EXCLUSIVE REMEDY PROVIDED FOR IN THIS AGREEMENT FAILS OF
+    ITS ESSENTIAL PURPOSE.
 
-7. Premature termination. The Agreement may be terminated immediately by either Party by notice in writing in case:
-a)	the other Party commits a material breach of any provision of the Agreement and fails to rectify such breach within thirty (30) days after notification thereof from the suffered Party; or
-b)	the other Party commits a non-remedial material breach of any provision of the Agreement; or
-c)	the other Party becomes insolvent, ceases its operations, dissolves, files for bankruptcy or bankruptcy protection, appoints receivers, or enters into an arrangement for the benefit of creditors.
+7.  Premature termination.  The Agreement may be terminated immediately by
+    either Party by notice in writing in case: a) the other Party commits a material
+    breach of any provision of the Agreement and fails to rectify such breach within
+    thirty (30) days after notification thereof from the suffered Party; or b) the
+    other Party commits a non-remedial material breach of any provision of the
+    Agreement; or c) the other Party becomes insolvent, ceases its operations,
+    dissolves, files for bankruptcy or bankruptcy protection, appoints receivers, or
+    enters into an arrangement for the benefit of creditors.
 
-8. Consequences upon termination. In event of termination of the Agreement, Customer’s right to use the Product shall automatically expire upon the day of termination. Within thirty (30) days from the day of termination, the Customer shall:
-a) return or, if not possible, delete and destroy all copies of Product from all computer systems and storage media and return to Neo Technology any and all material relating to the Product and copies of the documentation, including manuals, signs and all other such material provided hereunder; and
-b) deliver to Neo Technology all items within the Customer’s possession or control that contains confidential information proprietary to Neo Technology or otherwise provided by Neo Technology hereunder, and
-c) certify in writing that the Customer has complied with the obligations hereunder.
+8.  Consequences upon termination.  In event of termination of the Agreement,
+    Customer’s right to use the Product shall automatically expire upon the day of
+    termination.  Within thirty (30) days from the day of termination, the Customer
+    shall: a) return or, if not possible, delete and destroy all copies of Product
+    from all computer systems and storage media and return to Neo Technology any and
+    all material relating to the Product and copies of the documentation, including
+    manuals, signs and all other such material provided hereunder; and b) deliver to
+    Neo Technology all items within the Customer’s possession or control that
+    contains confidential information proprietary to Neo Technology or otherwise
+    provided by Neo Technology hereunder, and c) certify in writing that the
+    Customer has complied with the obligations hereunder.
 
-Notwithstanding any termination of the Agreement the provisions of Article 4 (Ownership), 5 (No Warranty), 6 (Limitation of Liability), 8 (Consequences upon termination) and 9 (Governing Law, Disputes) shall survive termination as well as any other term or condition which by its nature is clearly intended to survive termination of this Agreement.
+    Notwithstanding any termination of the Agreement the provisions of Article 4
+    (Ownership), 5 (No Warranty), 6 (Limitation of Liability), 8 (Consequences upon
+    termination) and 9 (Governing Law, Disputes) shall survive termination as well
+    as any other term or condition which by its nature is clearly intended to
+    survive termination of this Agreement.
 
-9. Governing Law, Disputes. This Agreement shall be governed by and construed under the laws of Sweden, irrespective of its choice of law provisions. Any dispute, controversy or claim arising out of or in connection with this Agreement, or the breach, termination or invalidity thereof, shall be finally settled by arbitration administered by the Arbitration Institute of the Stockholm Chamber of Commerce (“the SCC”). The Rules for Expedited Arbitrations of the Arbitration Institute of the Stockholm Chamber of Commerce shall apply, unless the SCC, taking into account the complexity of the case, the amount in dispute and other circumstances, determines, in its discretion, that the Arbitration Rules of the Arbitration Institute of the Stockholm Chamber of Commerce shall apply. In the latter case, the SCC shall also decide whether the arbitral tribunal shall be composed of one or three arbitrators. The seat of arbitration shall be Stockholm, Sweden. The language to be used in the arbitral proceedings shall be English.
+9.  Governing Law, Disputes.  This Agreement shall be governed by and construed
+    under the laws of Sweden, irrespective of its choice of law provisions.  Any
+    dispute, controversy or claim arising out of or in connection with this
+    Agreement, or the breach, termination or invalidity thereof, shall be finally
+    settled by arbitration administered by the Arbitration Institute of the
+    Stockholm Chamber of Commerce (“the SCC”).  The Rules for Expedited Arbitrations
+    of the Arbitration Institute of the Stockholm Chamber of Commerce shall apply,
+    unless the SCC, taking into account the complexity of the case, the amount in
+    dispute and other circumstances, determines, in its discretion, that the
+    Arbitration Rules of the Arbitration Institute of the Stockholm Chamber of
+    Commerce shall apply.  In the latter case, the SCC shall also decide whether the
+    arbitral tribunal shall be composed of one or three arbitrators.  The seat of
+    arbitration shall be Stockholm, Sweden.  The language to be used in the arbitral
+    proceedings shall be English.
 
-10. Entire Agreement. This Agreement shall constitute the entire agreement between the Parties with respect to the subject matter hereof and merges all prior and contemporaneous communications. It shall not be modified except by a written agreement signed on behalf of the Parties by their respective duly authorized representatives.
+10. Entire Agreement.  This Agreement shall constitute the entire agreement
+    between the Parties with respect to the subject matter hereof and merges all
+    prior and contemporaneous communications.  It shall not be modified except by a
+    written agreement signed on behalf of the Parties by their respective duly
+    authorized representatives.
 
-11. No Joint Venture. The Parties are independent contractors and nothing in this Agreement shall be deemed to create a de facto corporation, agency, partnership or joint venture relationship. Neither Party shall have the right to act for the other Party or to bind or commit other Party in any way.
+11. No Joint Venture.  The Parties are independent contractors and nothing in
+    this Agreement shall be deemed to create a de facto corporation, agency,
+    partnership or joint venture relationship.  Neither Party shall have the right
+    to act for the other Party or to bind or commit other Party in any way.
 
-12. Assignment. Neither this Agreement, nor any rights, licenses nor obligations hereunder, may be assigned by either Party without the prior written approval and consent of the other Party. Notwithstanding the foregoing, either Party may assign this Agreement or the licenses granted hereunder to any acquirer of all or of substantially all of such Party&apos;s assets or business or equity securities, who consents in writing to be bound by the terms of this Agreement. In the event this Agreement is assigned to an acquirer, the licenses granted hereunder will be limited to those deployed at the closing of the acquisition.
+12. Assignment.  Neither this Agreement, nor any rights, licenses nor
+    obligations hereunder, may be assigned by either Party without the prior written
+    approval and consent of the other Party.  Notwithstanding the foregoing, either
+    Party may assign this Agreement or the licenses granted hereunder to any
+    acquirer of all or of substantially all of such Party&apos;s assets or business or
+    equity securities, who consents in writing to be bound by the terms of this
+    Agreement.  In the event this Agreement is assigned to an acquirer, the licenses
+    granted hereunder will be limited to those deployed at the closing of the
+    acquisition.
          </text>
    </license>
 
@@ -161,7 +259,7 @@ Notwithstanding any termination of the Agreement the provisions of Article 4 (Ow
       <plugin id="org.eclipse.ltk.ui.refactoring"/>
       <plugin id="org.eclipse.osgi"/>
       <plugin id="org.eclipse.osgi.services"/>
-      <plugin id="org.eclipse.platform" fragment=""/>
+      <plugin id="org.eclipse.platform"/>
       <plugin id="org.eclipse.search"/>
       <plugin id="org.eclipse.swt"/>
       <plugin id="org.eclipse.swt.carbon.macosx" fragment="true"/>
@@ -179,7 +277,7 @@ Notwithstanding any termination of the Agreement the provisions of Article 4 (Ow
       <plugin id="org.eclipse.team.ui"/>
       <plugin id="org.eclipse.text"/>
       <plugin id="org.eclipse.ui"/>
-      <plugin id="org.eclipse.ui.carbon" fragment=""/>
+      <plugin id="org.eclipse.ui.carbon" fragment="true"/>
       <plugin id="org.eclipse.ui.cheatsheets"/>
       <plugin id="org.eclipse.ui.editors"/>
       <plugin id="org.eclipse.ui.forms"/>
