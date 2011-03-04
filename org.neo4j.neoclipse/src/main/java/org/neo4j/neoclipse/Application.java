@@ -39,6 +39,7 @@ public class Application extends WorkbenchAdvisor implements IApplication
         return new ApplicationWindowAdvisor( configurer );
     }
 
+    @Override
     public Object start( final IApplicationContext context ) throws Exception
     {
         Display display = PlatformUI.createDisplay();
@@ -53,6 +54,7 @@ public class Application extends WorkbenchAdvisor implements IApplication
         }
     }
 
+    @Override
     public void stop()
     {
         // TODO Auto-generated method stub

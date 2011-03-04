@@ -38,10 +38,7 @@ import org.neo4j.kernel.EmbeddedGraphDatabase;
 import org.neo4j.kernel.EmbeddedReadOnlyGraphDatabase;
 import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.preference.Preferences;
-import org.neo4j.neoclipse.view.ErrorMessage;
 import org.neo4j.neoclipse.view.UiHelper;
-import org.neo4j.remote.RemoteGraphDatabase;
-import org.neo4j.util.GraphDatabaseLifecycle;
 
 /**
  * This manager controls the neo4j service.
@@ -67,12 +64,13 @@ public class GraphDbServiceManager
     {
         final Runnable START = new Runnable()
         {
+            @Override
             public void run()
             {
                 if ( lifecycle != null )
                 {
                     throw new IllegalStateException(
-                            "Can't start new database: the old one isn't shutdown properly." );
+                    "Can't start new database: the old one isn't shutdown properly." );
                 }
                 logInfo( "trying to start/connect ..." );
                 String dbLocation;
@@ -89,19 +87,8 @@ public class GraphDbServiceManager
                     graphDb = new EmbeddedReadOnlyGraphDatabase( dbLocation );
                     logInfo( "connected to embedded read-only neo4j" );
                     break;
-                case REMOTE:
-                    try
-                    {
-                        graphDb = new RemoteGraphDatabase( getResourceUri() );
-                        logInfo( "connected to remote neo4j" );
-                    }
-                    catch ( URISyntaxException e )
-                    {
-                        ErrorMessage.showDialog( "URI syntax error", e );
-                    }
-                    break;
                 }
-                lifecycle = new GraphDatabaseLifecycle( graphDb );
+                lifecycle = new GraphDbLifecycle( graphDb );
                 logFine( "starting tx" );
                 tx = graphDb.beginTx();
                 fireServiceChangedEvent( GraphDbServiceStatus.STARTED );
@@ -110,13 +97,14 @@ public class GraphDbServiceManager
 
         final Runnable STOP = new Runnable()
         {
+            @Override
             public void run()
             {
                 logInfo( "stopping/disconnecting ..." );
                 if ( lifecycle == null )
                 {
                     throw new IllegalStateException(
-                            "Can not stop the database: there is no running database." );
+                    "Can not stop the database: there is no running database." );
                 }
                 fireServiceChangedEvent( GraphDbServiceStatus.STOPPING );
                 // TODO give the UI some time to deal with it here?
@@ -137,7 +125,7 @@ public class GraphDbServiceManager
                 catch ( Exception e )
                 {
                     throw new RuntimeException(
-                            "Can not stop the database. The reason is not known." );
+                    "Can not stop the database. The reason is not known." );
                 }
                 finally
                 {
@@ -149,6 +137,7 @@ public class GraphDbServiceManager
 
         final Runnable SHUTDOWN = new Runnable()
         {
+            @Override
             public void run()
             {
                 if ( lifecycle != null )
@@ -160,6 +149,7 @@ public class GraphDbServiceManager
 
         final Runnable COMMIT = new Runnable()
         {
+            @Override
             public void run()
             {
                 if ( serviceMode == GraphDbServiceMode.READ_WRITE_EMBEDDED )
@@ -178,6 +168,7 @@ public class GraphDbServiceManager
 
         final Runnable ROLLBACK = new Runnable()
         {
+            @Override
             public void run()
             {
                 tx.finish();
@@ -196,6 +187,7 @@ public class GraphDbServiceManager
             this.callable = callable;
         }
 
+        @Override
         public T call() throws Exception
         {
             GraphDatabaseService graphDb = null;
@@ -218,6 +210,7 @@ public class GraphDbServiceManager
             this.name = name;
         }
 
+        @Override
         public void run()
         {
             GraphDatabaseService graphDb = null;
@@ -242,6 +235,7 @@ public class GraphDbServiceManager
             this.name = name;
         }
 
+        @Override
         public void run()
         {
             logFine( "sending display task: " + name );
@@ -256,7 +250,7 @@ public class GraphDbServiceManager
      * The service instance.
      */
     protected GraphDbServiceMode serviceMode;
-    protected GraphDatabaseLifecycle lifecycle = null;
+    protected GraphDbLifecycle lifecycle = null;
 
     /**
      * The registered service change listeners.
@@ -308,11 +302,11 @@ public class GraphDbServiceManager
 
     public <T> Future<T> submitTask( final GraphCallable<T> callable,
             final String info )
-    {
+            {
         printTask( callable, "GC", info );
         TaskWrapper<T> wrapped = new TaskWrapper<T>( callable );
         return executor.submit( wrapped );
-    }
+            }
 
     public Future<?> submitTask( final Runnable runnable, final String info )
     {
@@ -374,7 +368,7 @@ public class GraphDbServiceManager
     public boolean isLocal()
     {
         return serviceMode == GraphDbServiceMode.READ_WRITE_EMBEDDED
-               || serviceMode == GraphDbServiceMode.READ_ONLY_EMBEDDED;
+        || serviceMode == GraphDbServiceMode.READ_ONLY_EMBEDDED;
     }
 
     public void setGraphServiceMode( final GraphDbServiceMode gdbServiceMode )
@@ -461,18 +455,18 @@ public class GraphDbServiceManager
             if ( workspace == null )
             {
                 throw new IllegalArgumentException(
-                        "The database location is not correctly set." );
+                "The database location is not correctly set." );
             }
             try
             {
                 File dbDir = new File( workspace.getURL().toURI().getPath()
-                                       + "/neo4j-db" );
+                        + "/neo4j-db" );
                 if ( !dbDir.exists() )
                 {
                     if ( !dbDir.mkdir() )
                     {
                         throw new IllegalArgumentException(
-                                "Could not create a database directory." );
+                        "Could not create a database directory." );
                     }
                     logInfo( "created: " + dbDir.getAbsolutePath() );
                 }
@@ -484,38 +478,27 @@ public class GraphDbServiceManager
             {
                 e.printStackTrace();
                 throw new IllegalArgumentException(
-                        "The database location is not correctly set." );
+                "The database location is not correctly set." );
             }
         }
         File dir = new File( location );
         if ( !dir.exists() )
         {
             throw new IllegalArgumentException(
-                    "The database location does not exist." );
+            "The database location does not exist." );
         }
         if ( !dir.isDirectory() )
         {
             throw new IllegalArgumentException(
-                    "The database location is not a directory." );
+            "The database location is not a directory." );
         }
         if ( !dir.canWrite() )
         {
             throw new IllegalAccessError(
-                    "Writes are not allowed to the database location." );
+            "Writes are not allowed to the database location." );
         }
         logFine( "using location: " + location );
         return location;
-    }
-
-    private String getResourceUri()
-    {
-        String resourceUri = preferenceStore.getString( Preferences.DATABASE_RESOURCE_URI );
-        if ( resourceUri == null || resourceUri.trim().length() == 0 )
-        {
-            throw new IllegalArgumentException(
-                    "There is no resource URI defined." );
-        }
-        return resourceUri;
     }
 
     /**
@@ -526,6 +509,7 @@ public class GraphDbServiceManager
     {
         submitTask( new Runnable()
         {
+            @Override
             public void run()
             {
                 fireTheServiceChangedEvent( status );

@@ -40,17 +40,19 @@ public class DefaultTraverser implements TraversalStrategy
 {
     private final Set<RelationshipType> relTypes = new RelationshipTypeHashSet();
 
+    @Override
     public Collection<Node> getNodes( final Node node, final int depth,
             final int nodeLimit )
-    {
+            {
         // TODO Auto-generated method stub
         return null;
-    }
+            }
 
+    @Override
     public Collection<Node> getNodes( final Node node,
             final Collection<? extends DirectedRelationship> directedRels,
             final int depth, final int nodeLimit )
-    {
+            {
         List<Node> nodes = new ArrayList<Node>();
         relTypes.clear();
         List<Object> traverseTypes = new ArrayList<Object>();
@@ -74,13 +76,14 @@ public class DefaultTraverser implements TraversalStrategy
         {
             Traverser trav = node.traverse( Order.BREADTH_FIRST,
                     new StopEvaluator()
-                    {
-                        public boolean isStopNode(
-                                final TraversalPosition currentPos )
-                        {
-                            return currentPos.depth() >= depth;
-                        }
-                    }, ReturnableEvaluator.ALL, relDirListArray );
+            {
+                @Override
+                public boolean isStopNode(
+                        final TraversalPosition currentPos )
+                {
+                    return currentPos.depth() >= depth;
+                }
+            }, ReturnableEvaluator.ALL, relDirListArray );
             for ( Node currentNode : trav )
             {
                 if ( nodes.size() >= nodeLimit )
@@ -97,11 +100,12 @@ public class DefaultTraverser implements TraversalStrategy
             // just return an empty array then
         }
         return nodes;
-    }
+            }
 
+    @Override
     public Collection<Relationship> getRelationships( final Node start,
             final Node end )
-    {
+            {
         List<Relationship> rels = new ArrayList<Relationship>();
         if ( relTypes.isEmpty() )
         {
@@ -125,5 +129,5 @@ public class DefaultTraverser implements TraversalStrategy
             }
         }
         return rels;
-    }
+            }
 }

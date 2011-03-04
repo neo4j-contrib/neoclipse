@@ -34,7 +34,7 @@ import org.neo4j.neoclipse.Activator;
  * @author Peter H&auml;nsgen
  */
 public abstract class AbstractPreferencePage extends FieldEditorPreferencePage
-        implements IWorkbenchPreferencePage
+implements IWorkbenchPreferencePage
 {
     /**
      * The constructor.
@@ -48,7 +48,8 @@ public abstract class AbstractPreferencePage extends FieldEditorPreferencePage
     /**
      * Initializes the page.
      */
-    public void init( IWorkbench workbench )
+    @Override
+    public void init( final IWorkbench workbench )
     {
         // this method is needed!
     }
@@ -59,7 +60,7 @@ public abstract class AbstractPreferencePage extends FieldEditorPreferencePage
     public void addSeparator()
     {
         Label spacer = new Label( getFieldEditorParent(), SWT.SEPARATOR
-                                                          | SWT.HORIZONTAL );
+                | SWT.HORIZONTAL );
         GridData spacerData = new GridData( GridData.FILL_HORIZONTAL );
         spacerData.horizontalSpan = 3;
         spacer.setLayoutData( spacerData );
@@ -81,7 +82,7 @@ public abstract class AbstractPreferencePage extends FieldEditorPreferencePage
         addSeparator();
     }
 
-    protected void addField( FieldEditor editor, String note )
+    protected void addField( final FieldEditor editor, final String note )
     {
         super.addField( editor );
         addNote( "Note:", note );

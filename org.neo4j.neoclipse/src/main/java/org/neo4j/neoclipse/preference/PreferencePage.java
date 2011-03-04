@@ -20,12 +20,8 @@ package org.neo4j.neoclipse.preference;
 
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.DirectoryFieldEditor;
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.IntegerFieldEditor;
 import org.eclipse.jface.preference.RadioGroupFieldEditor;
-import org.eclipse.jface.preference.StringFieldEditor;
-import org.eclipse.jface.util.PropertyChangeEvent;
-import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.graphdb.GraphDbServiceMode;
 
 /**
@@ -41,10 +37,7 @@ public class PreferencePage extends AbstractPreferencePage
     // database location
     private static final String NEO4J_DATABASE_LOCATION_LABEL = "Database location:";
     private static final String NEO4J_DATABASE_LOCATION_ERROR = "The database location is invalid.";
-    // resource uri
-    private static final String DATABASE_RESOURCE_URI_LABEL = "Database resource URI:";
     private DirectoryFieldEditor locationField;
-    private StringFieldEditor resourceUriField;
     private RadioGroupFieldEditor connectionMode;
     private IntegerFieldEditor maxNodesField;
 
@@ -57,10 +50,9 @@ public class PreferencePage extends AbstractPreferencePage
         // connection mode
         String[][] labels = {
                 { "read/write embedded",
-                        GraphDbServiceMode.READ_WRITE_EMBEDDED.name() },
-                { "read-only embedded",
-                        GraphDbServiceMode.READ_ONLY_EMBEDDED.name() },
-                { "remote", GraphDbServiceMode.REMOTE.name() } };
+                    GraphDbServiceMode.READ_WRITE_EMBEDDED.name() },
+                    { "read-only embedded",
+                        GraphDbServiceMode.READ_ONLY_EMBEDDED.name() } };
         connectionMode = new RadioGroupFieldEditor(
                 Preferences.CONNECTION_MODE, NEO4J_CONNECTION_MODE, 1, labels,
                 getFieldEditorParent() );
@@ -74,13 +66,6 @@ public class PreferencePage extends AbstractPreferencePage
         locationField.setErrorMessage( NEO4J_DATABASE_LOCATION_ERROR );
         addField( locationField );
 
-        // resource uri
-        resourceUriField = new StringFieldEditor(
-                Preferences.DATABASE_RESOURCE_URI, DATABASE_RESOURCE_URI_LABEL,
-                getFieldEditorParent() );
-        resourceUriField.setEmptyStringAllowed( true );
-        addField( resourceUriField, "experimental" );
-
         // show help view on startup
         BooleanFieldEditor helpOnStart = new BooleanFieldEditor(
                 Preferences.HELP_ON_START, HELP_ON_START_LABEL,
@@ -91,61 +76,5 @@ public class PreferencePage extends AbstractPreferencePage
                 "Maximum number of nodes", getFieldEditorParent(), 4 );
         maxNodesField.setEmptyStringAllowed( false );
         addField( maxNodesField );
-
-        // initialize UI
-        final IPreferenceStore preferenceStore = Activator.getDefault().getPreferenceStore();
-        String mode = preferenceStore.getString( Preferences.CONNECTION_MODE );
-        setStateForConnectionMode( mode );
-    }
-
-    private void enableEmbedded()
-    {
-        locationField.setEnabled( true, getFieldEditorParent() );
-        resourceUriField.setEnabled( false, getFieldEditorParent() );
-    }
-
-    private void enableRemote()
-    {
-        locationField.setEnabled( false, getFieldEditorParent() );
-        resourceUriField.setEnabled( true, getFieldEditorParent() );
-    }
-
-    private void setStateForConnectionMode( final GraphDbServiceMode mode )
-    {
-        switch ( mode )
-        {
-        case READ_WRITE_EMBEDDED:
-        case READ_ONLY_EMBEDDED:
-            enableEmbedded();
-            break;
-        case REMOTE:
-            enableRemote();
-            break;
-        }
-    }
-
-    private void setStateForConnectionMode( final String mode )
-    {
-        try
-        {
-            GraphDbServiceMode newConnectionMode;
-            newConnectionMode = GraphDbServiceMode.valueOf( mode );
-            setStateForConnectionMode( newConnectionMode );
-        }
-        catch ( IllegalArgumentException e )
-        {
-            // do nothing
-        }
-    }
-
-    @Override
-    public void propertyChange( final PropertyChangeEvent event )
-    {
-        super.propertyChange( event );
-        String property = event.getProperty();
-        if ( Preferences.CONNECTION_MODE.equals( property ) )
-        {
-            setStateForConnectionMode( (String) event.getNewValue() );
-        }
     }
 }
