@@ -36,8 +36,9 @@ public class NeoSearchResultContentProvider implements ITreeContentProvider
     /**
      * Called when the input has changed, does nothing.
      */
+    @Override
     public void inputChanged( final Viewer viewer, final Object oldInput,
-        final Object newInput )
+            final Object newInput )
     {
         // does nothing
     }
@@ -45,6 +46,7 @@ public class NeoSearchResultContentProvider implements ITreeContentProvider
     /**
      * Expects the results of a neo search.
      */
+    @Override
     public Object[] getElements( final Object inputElement )
     {
         NeoSearchResult result = (NeoSearchResult) inputElement;
@@ -66,6 +68,7 @@ public class NeoSearchResultContentProvider implements ITreeContentProvider
     /**
      * Returns an empty array, as there is no hierarchical structure.
      */
+    @Override
     public Object[] getChildren( final Object parentElement )
     {
         return new Object[0];
@@ -74,6 +77,7 @@ public class NeoSearchResultContentProvider implements ITreeContentProvider
     /**
      * Returns null, as there is no hierarchical structure.
      */
+    @Override
     public Object getParent( final Object element )
     {
         return null;
@@ -82,11 +86,13 @@ public class NeoSearchResultContentProvider implements ITreeContentProvider
     /**
      * Returns false, no hierarchical views supported.
      */
+    @Override
     public boolean hasChildren( final Object element )
     {
         return false;
     }
 
+    @Override
     public void dispose()
     {
         // nothing here

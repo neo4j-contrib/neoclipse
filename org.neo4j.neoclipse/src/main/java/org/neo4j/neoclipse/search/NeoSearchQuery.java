@@ -20,7 +20,6 @@ package org.neo4j.neoclipse.search;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -28,15 +27,14 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.search.ui.ISearchQuery;
 import org.eclipse.search.ui.ISearchResult;
-import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
-import org.neo4j.graphdb.Relationship;
+import org.neo4j.graphdb.index.Index;
+import org.neo4j.graphdb.index.IndexHits;
 import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.graphdb.GraphCallable;
 import org.neo4j.neoclipse.graphdb.GraphDbServiceManager;
 import org.neo4j.neoclipse.view.ErrorMessage;
-import org.neo4j.neoclipse.view.NeoGraphViewPart;
 import org.neo4j.neoclipse.view.UiHelper;
 
 /**
@@ -48,23 +46,18 @@ import org.neo4j.neoclipse.view.UiHelper;
 public class NeoSearchQuery implements ISearchQuery
 {
     /**
-     * The search expression.
-     */
-    private final NeoSearchExpression expression;
-    /**
      * The found matches.
      */
     private final NeoSearchResult result;
 
+    private final IndexSearch search;
+
     /**
      * The constructor.
-     * 
-     * @param graphView the current graph view
      */
-    public NeoSearchQuery( final NeoSearchExpression expression,
-            final NeoGraphViewPart graphView )
+    public NeoSearchQuery( final IndexSearch search )
     {
-        this.expression = expression;
+        this.search = search;
         // initialize an empty result
         result = new NeoSearchResult( this );
     }
@@ -74,12 +67,13 @@ public class NeoSearchQuery implements ISearchQuery
      */
     public String getExpression()
     {
-        return expression.getExpression();
+        return search.getSearchString();
     }
 
     /**
      * Returns true.
      */
+    @Override
     public boolean canRerun()
     {
         return true;
@@ -88,6 +82,7 @@ public class NeoSearchQuery implements ISearchQuery
     /**
      * Returns true.
      */
+    @Override
     public boolean canRunInBackground()
     {
         return true;
@@ -96,6 +91,7 @@ public class NeoSearchQuery implements ISearchQuery
     /**
      * Returns a label.
      */
+    @Override
     public String getLabel()
     {
         return "Neo4j Search";
@@ -104,6 +100,7 @@ public class NeoSearchQuery implements ISearchQuery
     /**
      * Returns the search result.
      */
+    @Override
     public ISearchResult getSearchResult()
     {
         return result;
@@ -112,26 +109,29 @@ public class NeoSearchQuery implements ISearchQuery
     /**
      * Executes the search.
      */
+    @Override
     public IStatus run( final IProgressMonitor monitor )
-            throws OperationCanceledException
+    throws OperationCanceledException
     {
         final GraphDbServiceManager gsm = Activator.getDefault().getGraphDbServiceManager();
         if ( !gsm.isRunning() )
         {
             return new Status( IStatus.ERROR, Activator.PLUGIN_ID,
-                    "There is no active Neo4j service." );
+            "There is no active Neo4j service." );
         }
 
         try
         {
             gsm.submitTask( new GraphCallable<Boolean>()
-            {
+                    {
+                @Override
                 public Boolean call( final GraphDatabaseService graphDb )
                 {
-                    final Iterable<Node> matches = getMatchingNodes( monitor,
-                            graphDb );
+                    final Iterable<Node> matches = getMatchingNodesFromIndices(
+                            monitor, graphDb );
                     UiHelper.asyncExec( new Runnable()
                     {
+                        @Override
                         public void run()
                         {
                             result.setMatches( matches );
@@ -139,11 +139,11 @@ public class NeoSearchQuery implements ISearchQuery
                     } );
                     return true;
                 }
-            }, "run search" ).get();
+                    }, "run search" ).get();
             if ( monitor.isCanceled() )
             {
                 return new Status( IStatus.CANCEL, Activator.PLUGIN_ID,
-                        "Cancelled." );
+                "Cancelled." );
             }
             else
             {
@@ -157,127 +157,20 @@ public class NeoSearchQuery implements ISearchQuery
         return null;
     }
 
-    /**
-     * Finds all nodes matching the search criteria.
-     * 
-     * @param graphDb TODO
-     */
-    protected Iterable<Node> getMatchingNodes( final IProgressMonitor monitor,
-            final GraphDatabaseService graphDb )
-    {
-        // monitor.beginTask( "Neo4j search operation started.",
-        // IProgressMonitor.UNKNOWN );
+    private Iterable<Node> getMatchingNodesFromIndices(
+            final IProgressMonitor monitor, final GraphDatabaseService graphDb )
+            {
         List<Node> matches = new LinkedList<Node>();
-        Node nodeFromId = null;
-        if ( expression.isPossibleId() )
+        for ( String indexName : search.getNodeIndexNames() )
         {
-            try
+            Index<Node> nodeIndex = graphDb.index().forNodes( indexName );
+            IndexHits<Node> hits = nodeIndex.get( search.getPropertyName(),
+                    search.getSearchString() );
+            for ( Node hit : hits )
             {
-                long id = Long.parseLong( expression.getExpression() );
-                nodeFromId = graphDb.getNodeById( id );
-                matches.add( nodeFromId );
-            }
-            catch ( RuntimeException e ) // NumberFormatException included
-            {
-                // do nothing
-            }
-        }
-        for ( Node node : graphDb.getAllNodes() )
-        {
-            if ( expression.matches( node.getId() ) )
-            {
-                matches.add( node );
-            }
-            else
-            {
-                // find at least one property whose value matches the
-                // given expression
-                for ( String key : node.getPropertyKeys() )
-                {
-                    Object value = node.getProperty( key );
-                    if ( expression.matches( value ) )
-                    {
-                        matches.add( node );
-                        break;
-                    }
-                }
+                matches.add( hit );
             }
         }
         return matches;
-    }
-
-    /**
-     * Finds all nodes matching the search criteria.
-     */
-    // protected Iterable<Node> getMatchingNodesByRecursion( final Node node,
-    // final IProgressMonitor monitor )
-    // {
-    // // TODO the Neo traverser API is not sufficient as it does not allow to
-    // // find ALL connected
-    // // nodes regardless of their relationship types
-    // // we have to implement a similar functionality ourselves...
-    // Set<Node> visitedNodes = new HashSet<Node>();
-    // List<Node> matches = new ArrayList<Node>();
-    // // try using as id, if possible
-    // if ( expression.isPossibleId() )
-    // {
-    // try
-    // {
-    // long id = Long.parseLong( expression.getExpression() );
-    // Node nodeFromId = neoService.getNodeById( id );
-    // matches.add( nodeFromId );
-    // visitedNodes.add( nodeFromId );
-    // }
-    // catch ( RuntimeException e ) // this also covers
-    // // NumberFormatException
-    // {
-    // // do nothing
-    // }
-    // }
-    // checkNode( node, visitedNodes, matches, monitor );
-    // return matches;
-    // }
-
-    /**
-     * Checks if a node matches the search criteria and visits all connected
-     * nodes.
-     */
-    protected void checkNode( final Node node, final Set<Node> visitedNodes,
-            final List<Node> matches, final IProgressMonitor monitor )
-    {
-        if ( monitor.isCanceled() )
-        {
-            return;
-        }
-        if ( !visitedNodes.add( node ) )
-        {
-            // we have already been here
-            return;
-        }
-        // for completeness, also check the id of the node
-        if ( expression.matches( node.getId() ) )
-        {
-            matches.add( node );
-        }
-        else
-        {
-            // find at least one property whose value matches the given
-            // expression
-            for ( String key : node.getPropertyKeys() )
-            {
-                Object value = node.getProperty( key );
-                if ( expression.matches( value ) )
-                {
-                    matches.add( node );
-                    break;
-                }
-            }
-        }
-        // recursively follow all connections
-        for ( Relationship r : node.getRelationships( Direction.BOTH ) )
-        {
-            Node end = r.getOtherNode( node );
-            checkNode( end, visitedNodes, matches, monitor );
-        }
     }
 }

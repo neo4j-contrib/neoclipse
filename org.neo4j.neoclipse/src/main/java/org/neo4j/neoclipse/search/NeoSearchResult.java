@@ -83,6 +83,7 @@ public class NeoSearchResult implements ISearchResult
     /**
      * Returns a neo image descriptor.
      */
+    @Override
     public ImageDescriptor getImageDescriptor()
     {
         return Icons.NEO.descriptor();
@@ -92,6 +93,7 @@ public class NeoSearchResult implements ISearchResult
      * Returns a label for the search result, which will be shown in the search
      * history.
      */
+    @Override
     public String getLabel()
     {
         return "Neo4j - '" + query.getExpression() + "'";
@@ -100,6 +102,7 @@ public class NeoSearchResult implements ISearchResult
     /**
      * Returns the query that produced this result.
      */
+    @Override
     public ISearchQuery getQuery()
     {
         return query;
@@ -108,6 +111,7 @@ public class NeoSearchResult implements ISearchResult
     /**
      * Returns the tooltip.
      */
+    @Override
     public String getTooltip()
     {
         return null;
@@ -116,6 +120,7 @@ public class NeoSearchResult implements ISearchResult
     /**
      * Adds a listener.
      */
+    @Override
     public void addListener( final ISearchResultListener listener )
     {
         if ( !listeners.contains( listener ) )
@@ -127,6 +132,7 @@ public class NeoSearchResult implements ISearchResult
     /**
      * Removes a listener.
      */
+    @Override
     public void removeListener( final ISearchResultListener listener )
     {
         listeners.remove( listener );
@@ -143,11 +149,13 @@ public class NeoSearchResult implements ISearchResult
             final ISearchResultListener l = listeners.get( i );
             ISafeRunnable job = new ISafeRunnable()
             {
+                @Override
                 public void handleException( final Throwable exception )
                 {
                     // already being logged in SafeRunner#run()
                 }
 
+                @Override
                 public void run() throws Exception
                 {
                     l.searchResultChanged( e );

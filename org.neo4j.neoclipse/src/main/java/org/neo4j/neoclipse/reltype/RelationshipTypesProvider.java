@@ -48,7 +48,7 @@ import org.neo4j.neoclipse.view.NeoGraphLabelProviderWrapper;
  * @author anders
  */
 public class RelationshipTypesProvider implements IContentProvider,
-        IStructuredContentProvider
+IStructuredContentProvider
 {
     private class ReltypeCtrlChangeListener implements NeoclipseEventListener
     {
@@ -126,9 +126,9 @@ public class RelationshipTypesProvider implements IContentProvider,
                     {
                         public Set<RelationshipType> call(
                                 final GraphDatabaseService graphDb )
-                        {
+                                {
                             return GraphDbUtil.getRelationshipTypesFromDb( graphDb );
-                        }
+                                }
                     }, "get relationship types" ).get();
         }
         catch ( Exception e )
@@ -170,7 +170,7 @@ public class RelationshipTypesProvider implements IContentProvider,
      */
     Collection<RelationshipTypeControl> getFilteredRelTypeControls(
             final Collection<RelationshipType> relTypes )
-    {
+            {
         Collection<RelationshipTypeControl> relTypeCtrls = new ArrayList<RelationshipTypeControl>();
         for ( RelationshipType relType : relTypes )
         {
@@ -181,7 +181,7 @@ public class RelationshipTypesProvider implements IContentProvider,
             }
         }
         return Collections.unmodifiableCollection( relTypeCtrls );
-    }
+            }
 
     /**
      * Get relationship types and direction from current filterset.
@@ -210,7 +210,7 @@ public class RelationshipTypesProvider implements IContentProvider,
     {
         if ( currentRelTypeCtrls.isEmpty() )
         {
-            throw new NotFoundException();
+            return Collections.emptySet();
         }
         return currentRelTypeCtrls.values();
     }

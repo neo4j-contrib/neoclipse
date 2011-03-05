@@ -326,7 +326,7 @@ public class GraphDbServiceManager
      * in the execution queue have executed.
      * 
      * @param runnable runnable to execute
-     * @param info short discription of the task
+     * @param info short description of the task
      */
     public void submitDisplayTask( final Runnable runnable, final String info )
     {

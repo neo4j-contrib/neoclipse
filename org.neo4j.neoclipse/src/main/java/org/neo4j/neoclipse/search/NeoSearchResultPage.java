@@ -65,7 +65,7 @@ public class NeoSearchResultPage extends Page implements ISearchResultPage
         // no, keep them together to get consistency in the GUI.
         viewer.setLabelProvider( NeoGraphLabelProviderWrapper.getInstance() );
         viewer
-            .addDoubleClickListener( new NeoSearchResultDoubleClickListener() );
+        .addDoubleClickListener( new NeoSearchResultDoubleClickListener() );
     }
 
     /**
@@ -92,6 +92,7 @@ public class NeoSearchResultPage extends Page implements ISearchResultPage
     /**
      * Returns the id.
      */
+    @Override
     public String getID()
     {
         return id;
@@ -100,6 +101,7 @@ public class NeoSearchResultPage extends Page implements ISearchResultPage
     /**
      * Sets the id.
      */
+    @Override
     public void setID( final String id )
     {
         this.id = id;
@@ -108,13 +110,14 @@ public class NeoSearchResultPage extends Page implements ISearchResultPage
     /**
      * Returns the label of the page.
      */
+    @Override
     public String getLabel()
     {
         NeoSearchResult result = (NeoSearchResult) viewer.getInput();
         if ( result != null )
         {
             return "Neo4j - Matches for '"
-                + ((NeoSearchQuery) result.getQuery()).getExpression() + "'";
+            + ((NeoSearchQuery) result.getQuery()).getExpression() + "'";
         }
         else
         {
@@ -125,6 +128,7 @@ public class NeoSearchResultPage extends Page implements ISearchResultPage
     /**
      * Sets the search result for a Neo search.
      */
+    @Override
     public void setInput( final ISearchResult result, final Object uiState )
     {
         setInput( result );
@@ -133,16 +137,18 @@ public class NeoSearchResultPage extends Page implements ISearchResultPage
             // observe changes in the result and update the view accordingly
             result.addListener( new ISearchResultListener()
             {
+                @Override
                 public void searchResultChanged( final SearchResultEvent e )
                 {
                     PlatformUI.getWorkbench().getDisplay().syncExec(
-                        new Runnable()
-                        {
-                            public void run()
+                            new Runnable()
                             {
-                                setInput( e.getSearchResult() );
-                            }
-                        } );
+                                @Override
+                                public void run()
+                                {
+                                    setInput( e.getSearchResult() );
+                                }
+                            } );
                 }
             } );
         }
@@ -159,6 +165,7 @@ public class NeoSearchResultPage extends Page implements ISearchResultPage
     /**
      * Sets the view.
      */
+    @Override
     public void setViewPart( final ISearchResultViewPart part )
     {
         // does nothing
@@ -167,6 +174,7 @@ public class NeoSearchResultPage extends Page implements ISearchResultPage
     /**
      * Not supported.
      */
+    @Override
     public Object getUIState()
     {
         return null;
@@ -175,6 +183,7 @@ public class NeoSearchResultPage extends Page implements ISearchResultPage
     /**
      * Not supported.
      */
+    @Override
     public void restoreState( final IMemento memento )
     {
         // not supported
@@ -183,6 +192,7 @@ public class NeoSearchResultPage extends Page implements ISearchResultPage
     /**
      * Not supported.
      */
+    @Override
     public void saveState( final IMemento memento )
     {
         // not supported
@@ -192,22 +202,23 @@ public class NeoSearchResultPage extends Page implements ISearchResultPage
      * The handler for double clicks on search result list entries.
      */
     static class NeoSearchResultDoubleClickListener implements
-        IDoubleClickListener
+    IDoubleClickListener
     {
         /**
          * Sets the selected node as input for the graph viewer.
          */
+        @Override
         public void doubleClick( final DoubleClickEvent event )
         {
             StructuredSelection sel = (StructuredSelection) event
-                .getSelection();
+            .getSelection();
             Object s = sel.getFirstElement();
             if ( s instanceof Node )
             {
                 // get the graph viewer
                 NeoGraphViewPart gv = (NeoGraphViewPart) PlatformUI
-                    .getWorkbench().getActiveWorkbenchWindow().getActivePage()
-                    .findView( NeoGraphViewPart.ID );
+                .getWorkbench().getActiveWorkbenchWindow().getActivePage()
+                .findView( NeoGraphViewPart.ID );
                 // TODO if it does not exist yet - create one? how?
                 if ( gv != null )
                 {
