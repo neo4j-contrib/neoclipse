@@ -28,11 +28,12 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.search.ui.ISearchQuery;
 import org.eclipse.search.ui.ISearchResult;
 import org.eclipse.search.ui.ISearchResultListener;
-import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.PropertyContainer;
 import org.neo4j.neoclipse.Icons;
 
 /**
  * This class represents the result of a Neo search.
+ * 
  * @author Peter H&auml;nsgen
  */
 public class NeoSearchResult implements ISearchResult
@@ -44,7 +45,7 @@ public class NeoSearchResult implements ISearchResult
     /**
      * The found matches.
      */
-    private Iterable<Node> matches;
+    private Iterable<PropertyContainer> matches;
     /**
      * The observers.
      */
@@ -66,7 +67,7 @@ public class NeoSearchResult implements ISearchResult
     /**
      * Returns the found nodes for the search expression.
      */
-    public Iterable<Node> getMatches()
+    public Iterable<PropertyContainer> getMatches()
     {
         return matches;
     }
@@ -74,7 +75,7 @@ public class NeoSearchResult implements ISearchResult
     /**
      * Sets the matches. The registered listeners will be notified.
      */
-    public void setMatches( final Iterable<Node> matches )
+    public void setMatches( final Iterable<PropertyContainer> matches )
     {
         this.matches = matches;
         fireSearchResultEvent();

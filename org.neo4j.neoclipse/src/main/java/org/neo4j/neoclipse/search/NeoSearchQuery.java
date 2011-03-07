@@ -29,8 +29,10 @@ import org.eclipse.search.ui.ISearchQuery;
 import org.eclipse.search.ui.ISearchResult;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.PropertyContainer;
 import org.neo4j.graphdb.index.Index;
 import org.neo4j.graphdb.index.IndexHits;
+import org.neo4j.graphdb.index.IndexManager;
 import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.graphdb.GraphCallable;
 import org.neo4j.neoclipse.graphdb.GraphDbServiceManager;
@@ -111,23 +113,23 @@ public class NeoSearchQuery implements ISearchQuery
      */
     @Override
     public IStatus run( final IProgressMonitor monitor )
-    throws OperationCanceledException
+            throws OperationCanceledException
     {
         final GraphDbServiceManager gsm = Activator.getDefault().getGraphDbServiceManager();
         if ( !gsm.isRunning() )
         {
             return new Status( IStatus.ERROR, Activator.PLUGIN_ID,
-            "There is no active Neo4j service." );
+                    "There is no active Neo4j service." );
         }
 
         try
         {
             gsm.submitTask( new GraphCallable<Boolean>()
-                    {
+            {
                 @Override
                 public Boolean call( final GraphDatabaseService graphDb )
                 {
-                    final Iterable<Node> matches = getMatchingNodesFromIndices(
+                    final Iterable<PropertyContainer> matches = getMatchingNodesFromIndices(
                             monitor, graphDb );
                     UiHelper.asyncExec( new Runnable()
                     {
@@ -139,11 +141,11 @@ public class NeoSearchQuery implements ISearchQuery
                     } );
                     return true;
                 }
-                    }, "run search" ).get();
+            }, "run search" ).get();
             if ( monitor.isCanceled() )
             {
                 return new Status( IStatus.CANCEL, Activator.PLUGIN_ID,
-                "Cancelled." );
+                        "Cancelled." );
             }
             else
             {
@@ -157,13 +159,18 @@ public class NeoSearchQuery implements ISearchQuery
         return null;
     }
 
-    private Iterable<Node> getMatchingNodesFromIndices(
+    private Iterable<PropertyContainer> getMatchingNodesFromIndices(
             final IProgressMonitor monitor, final GraphDatabaseService graphDb )
-            {
-        List<Node> matches = new LinkedList<Node>();
+    {
+        List<PropertyContainer> matches = new LinkedList<PropertyContainer>();
+        IndexManager indexManager = graphDb.index();
         for ( String indexName : search.getNodeIndexNames() )
         {
-            Index<Node> nodeIndex = graphDb.index().forNodes( indexName );
+            if ( !indexManager.existsForNodes( indexName ) )
+            {
+                continue;
+            }
+            Index<Node> nodeIndex = indexManager.forNodes( indexName );
             IndexHits<Node> hits = nodeIndex.get( search.getPropertyName(),
                     search.getSearchString() );
             for ( Node hit : hits )

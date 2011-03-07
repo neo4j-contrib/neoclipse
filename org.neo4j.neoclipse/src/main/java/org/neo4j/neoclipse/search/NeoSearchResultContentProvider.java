@@ -23,15 +23,16 @@ import java.util.List;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.PropertyContainer;
 
 /**
  * This is the content provider for populating the result list tree viewer.
+ * 
  * @author Peter H&auml;nsgen
  */
 public class NeoSearchResultContentProvider implements ITreeContentProvider
 {
-    private final List<Node> list = new ArrayList<Node>();
+    private final List<PropertyContainer> list = new ArrayList<PropertyContainer>();
 
     /**
      * Called when the input has changed, does nothing.
@@ -50,7 +51,7 @@ public class NeoSearchResultContentProvider implements ITreeContentProvider
     public Object[] getElements( final Object inputElement )
     {
         NeoSearchResult result = (NeoSearchResult) inputElement;
-        Iterable<Node> matches = result.getMatches();
+        Iterable<PropertyContainer> matches = result.getMatches();
         // TODO make search results being added to the list
         // and the UI updated during the search.
         list.clear();
@@ -58,9 +59,9 @@ public class NeoSearchResultContentProvider implements ITreeContentProvider
         // this iterator is performed.
         // so this should be run with frequent
         // updates of the UI somehow.
-        for ( Node node : matches )
+        for ( PropertyContainer entity : matches )
         {
-            list.add( node );
+            list.add( entity );
         }
         return list.toArray();
     }
