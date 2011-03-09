@@ -20,6 +20,7 @@ package org.neo4j.neoclipse.search;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.jface.dialogs.DialogPage;
@@ -40,6 +41,8 @@ import org.eclipse.swt.widgets.TreeItem;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.graphdb.GraphCallable;
+import org.neo4j.neoclipse.graphdb.GraphDbServiceEvent;
+import org.neo4j.neoclipse.graphdb.GraphDbServiceEventListener;
 import org.neo4j.neoclipse.graphdb.GraphDbServiceManager;
 
 /**
@@ -52,6 +55,8 @@ import org.neo4j.neoclipse.graphdb.GraphDbServiceManager;
  */
 public class NeoSearchPage extends DialogPage implements ISearchPage
 {
+    private static final int QUERY_MODE = 1;
+    private static final int EXACT_MODE = 0;
     public static final String ID = "org.neo4j.neoclipse.search.NeoSearchPage";
     /**
      * Choose the index to search.
@@ -60,16 +65,19 @@ public class NeoSearchPage extends DialogPage implements ISearchPage
     /**
      * The input field for the search expression.
      */
-    private Text expressionField;
+    private Text valueOrQueryField;
 
     /**
      * The container of this page.
      */
-    private ISearchPageContainer container;
-    private Text propertyField;
+    protected ISearchPageContainer container;
+    private Text keyField;
 
     private TreeItem nodeRoot;
     private TreeItem relRoot;
+    private Combo modeCombo;
+    private GraphDbServiceEventListener listener;
+    private GraphDbServiceManager gsm;
 
     /**
      * Initializes the content of the search page.
@@ -79,7 +87,7 @@ public class NeoSearchPage extends DialogPage implements ISearchPage
     {
         initializeDialogUnits( parent );
 
-        Composite comp = new Composite( parent, SWT.NONE );
+        final Composite comp = new Composite( parent, SWT.NONE );
         GridLayout layout = new GridLayout( 1, false );
         comp.setLayout( layout );
 
@@ -110,23 +118,48 @@ public class NeoSearchPage extends DialogPage implements ISearchPage
         modeLabel.setText( "Search mode:" );
         modeLabel.setLayoutData( new GridData( GridData.FILL_HORIZONTAL ) );
 
-        Combo modeCombo = new Combo( comp, SWT.READ_ONLY );
+        modeCombo = new Combo( comp, SWT.READ_ONLY );
+        modeCombo.add( "Exact matches", EXACT_MODE );
+        modeCombo.add( "Query", QUERY_MODE );
+        modeCombo.select( EXACT_MODE );
 
         Label propertyLabel = new Label( comp, SWT.NONE );
         propertyLabel.setText( "Key:" );
         propertyLabel.setLayoutData( new GridData( GridData.FILL_HORIZONTAL ) );
 
-        propertyField = new Text( comp, SWT.SINGLE | SWT.BORDER );
-        propertyField.setLayoutData( new GridData(
-                GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_END ) );
+        keyField = new Text( comp, SWT.SINGLE | SWT.BORDER );
+        keyField.setLayoutData( new GridData( GridData.HORIZONTAL_ALIGN_FILL
+                | GridData.VERTICAL_ALIGN_END ) );
 
         Label expressionLabel = new Label( comp, SWT.NONE );
         expressionLabel.setText( "Value/Query:" );
         expressionLabel.setLayoutData( new GridData( GridData.FILL_HORIZONTAL ) );
 
-        expressionField = new Text( comp, SWT.SINGLE | SWT.BORDER );
-        expressionField.setLayoutData( new GridData(
+        valueOrQueryField = new Text( comp, SWT.SINGLE | SWT.BORDER );
+        valueOrQueryField.setLayoutData( new GridData(
                 GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_END ) );
+
+        gsm = Activator.getDefault().getGraphDbServiceManager();
+
+        listener = new GraphDbServiceEventListener()
+        {
+            @Override
+            public void serviceChanged( final GraphDbServiceEvent event )
+            {
+                switch ( event.getStatus() )
+                {
+                case STARTED:
+                    loadIndices();
+                    break;
+                case STOPPED:
+                    clearIndices();
+                    break;
+                case SHUTTING_DOWN:
+                    break;
+                }
+            }
+        };
+        gsm.addServiceEventListener( listener );
 
         comp.getShell().addListener( SWT.Show, new Listener()
         {
@@ -158,12 +191,22 @@ public class NeoSearchPage extends DialogPage implements ISearchPage
     @Override
     public boolean performAction()
     {
-        String searchString = expressionField.getText();
-        String propertyName = propertyField.getText();
+        String searchString = valueOrQueryField.getText();
+        String propertyName = keyField.getText();
         if ( nodeRoot != null )
         {
-            IndexSearch search = IndexSearch.exact( propertyName, searchString,
-                    namesFromRoot( nodeRoot ), null );
+            IndexSearch search;
+            if ( modeCombo.getSelectionIndex() == QUERY_MODE )
+            {
+                search = IndexSearch.query( propertyName, searchString,
+                        namesFromRoot( nodeRoot ), namesFromRoot( relRoot ) );
+
+            }
+            else
+            {
+                search = IndexSearch.exact( propertyName, searchString,
+                        namesFromRoot( nodeRoot ), namesFromRoot( relRoot ) );
+            }
             NewSearchUI.runQueryInBackground( new NeoSearchQuery( search ) );
             return true;
         }
@@ -172,6 +215,10 @@ public class NeoSearchPage extends DialogPage implements ISearchPage
 
     private Iterable<String> namesFromRoot( final TreeItem treeItem )
     {
+        if ( treeItem == null )
+        {
+            return Collections.emptyList();
+        }
         List<String> names = new ArrayList<String>();
         for ( TreeItem item : treeItem.getItems() )
         {
@@ -183,10 +230,18 @@ public class NeoSearchPage extends DialogPage implements ISearchPage
         return names;
     }
 
+    private void clearIndices()
+    {
+        if ( getControl().isDisposed() || indexTree.isDisposed() )
+        {
+            return;
+        }
+        indexTree.removeAll();
+    }
+
     private void loadIndices()
     {
         // load indices
-        GraphDbServiceManager gsm = Activator.getDefault().getGraphDbServiceManager();
         if ( !gsm.isRunning() )
         {
             return;
@@ -216,34 +271,31 @@ public class NeoSearchPage extends DialogPage implements ISearchPage
             @Override
             public void run()
             {
+                if ( getControl().isDisposed() || !getControl().isVisible()
+                        || indexTree.isDisposed() )
+                {
+                    return;
+                }
                 indexTree.removeAll();
-                if ( nodeRoot == null )
+                if ( nodeIndexNames.length > 0 )
                 {
                     nodeRoot = new TreeItem( indexTree, SWT.None );
                     nodeRoot.setText( "Nodes" );
+                    for ( String name : nodeIndexNames )
+                    {
+                        TreeItem item = new TreeItem( nodeRoot, SWT.None );
+                        item.setText( name );
+                    }
                 }
-                else
-                {
-                    nodeRoot.removeAll();
-                }
-                for ( String name : nodeIndexNames )
-                {
-                    TreeItem item = new TreeItem( nodeRoot, SWT.None );
-                    item.setText( name );
-                }
-                if ( relRoot == null )
+                if ( relIndexNames.length > 0 )
                 {
                     relRoot = new TreeItem( indexTree, SWT.None );
                     relRoot.setText( "Relationships" );
-                }
-                else
-                {
-                    relRoot.removeAll();
-                }
-                for ( String name : relIndexNames )
-                {
-                    TreeItem item = new TreeItem( relRoot, SWT.None );
-                    item.setText( name );
+                    for ( String name : relIndexNames )
+                    {
+                        TreeItem item = new TreeItem( relRoot, SWT.None );
+                        item.setText( name );
+                    }
                 }
             }
         }, "Add index names to the UI." );

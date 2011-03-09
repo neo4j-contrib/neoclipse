@@ -27,35 +27,44 @@ public class IndexSearch
 {
     enum Mode
     {
-        EXACT_MATCH;
+        EXACT_MATCH,
+        QUERY;
     }
     private final Mode mode;
 
-    private final String propertyName;
-    private final String searchString;
+    private final String key;
+    private final String valueOrQuery;
     private final Iterable<String> nodeIndexNames;
     private final Iterable<String> relationshipIndexNames;
 
-    private IndexSearch( final Mode mode, final String propertyName,
-            final String searchString,
+    private IndexSearch( final Mode mode, final String key,
+            final String valueOrQuery,
             final Iterable<String> nodeIndexNames,
             final Iterable<String> relationshipIndexNames )
     {
         this.mode = mode;
-        this.propertyName = propertyName;
-        this.searchString = searchString;
+        this.key = key;
+        this.valueOrQuery = valueOrQuery;
         this.nodeIndexNames = nodeIndexNames;
         this.relationshipIndexNames = relationshipIndexNames;
     }
 
-    public static IndexSearch exact( final String propertyName,
-            final String searchString,
+    public static IndexSearch exact( final String key,
+            final String value,
             final Iterable<String> nodeIndexNames,
             final Iterable<String> relationshipIndexNames )
     {
-        return new IndexSearch( Mode.EXACT_MATCH, propertyName, searchString,
+        return new IndexSearch( Mode.EXACT_MATCH, key, value,
                 nodeIndexNames,
                 relationshipIndexNames );
+    }
+
+    public static IndexSearch query( final String key,
+            final String query, final Iterable<String> nodeIndexNames,
+            final Iterable<String> relationshipIndexNames )
+    {
+        return new IndexSearch( Mode.QUERY, key, query,
+                nodeIndexNames, relationshipIndexNames );
     }
 
     public Mode getMode()
@@ -65,12 +74,12 @@ public class IndexSearch
 
     public String getPropertyName()
     {
-        return propertyName;
+        return key;
     }
 
     public String getSearchString()
     {
-        return searchString;
+        return valueOrQuery;
     }
 
     public Iterable<String> getNodeIndexNames()

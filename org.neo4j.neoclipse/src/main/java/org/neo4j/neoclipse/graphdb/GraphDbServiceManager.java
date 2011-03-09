@@ -142,6 +142,7 @@ public class GraphDbServiceManager
             {
                 if ( lifecycle != null )
                 {
+                    fireServiceChangedEvent( GraphDbServiceStatus.SHUTTING_DOWN );
                     STOP.run();
                 }
             }
