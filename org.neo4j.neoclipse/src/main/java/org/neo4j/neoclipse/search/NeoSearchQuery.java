@@ -30,6 +30,7 @@ import org.eclipse.search.ui.ISearchResult;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.PropertyContainer;
+import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.index.Index;
 import org.neo4j.graphdb.index.IndexHits;
 import org.neo4j.graphdb.index.IndexManager;
@@ -69,7 +70,7 @@ public class NeoSearchQuery implements ISearchQuery
      */
     public String getExpression()
     {
-        return search.getSearchString();
+        return search.getValueOrQuery();
     }
 
     /**
@@ -171,9 +172,45 @@ public class NeoSearchQuery implements ISearchQuery
                 continue;
             }
             Index<Node> nodeIndex = indexManager.forNodes( indexName );
-            IndexHits<Node> hits = nodeIndex.get( search.getPropertyName(),
-                    search.getSearchString() );
+            Iterable<Node> hits;
+            switch ( search.getMode() )
+            {
+            case EXACT_MATCH:
+                hits = nodeIndex.get( search.getKey(), search.getValueOrQuery() );
+                break;
+            case QUERY:
+                hits = nodeIndex.query( search.getKey(),
+                        search.getValueOrQuery() );
+                break;
+            default:
+                hits = null;
+            }
             for ( Node hit : hits )
+            {
+                matches.add( hit );
+            }
+        }
+        for ( String indexName : search.getRelationshipIndexNames() )
+        {
+            if ( !indexManager.existsForRelationships( indexName ) )
+            {
+                continue;
+            }
+            Index<Relationship> relIndex = indexManager.forRelationships( indexName );
+            IndexHits<Relationship> hits;
+            switch ( search.getMode() )
+            {
+            case EXACT_MATCH:
+                hits = relIndex.get( search.getKey(), search.getValueOrQuery() );
+                break;
+            case QUERY:
+                hits = relIndex.query( search.getKey(),
+                        search.getValueOrQuery() );
+                break;
+            default:
+                hits = null;
+            }
+            for ( Relationship hit : hits )
             {
                 matches.add( hit );
             }

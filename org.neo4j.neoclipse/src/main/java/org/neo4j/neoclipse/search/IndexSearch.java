@@ -72,12 +72,12 @@ public class IndexSearch
         return mode;
     }
 
-    public String getPropertyName()
+    public String getKey()
     {
         return key;
     }
 
-    public String getSearchString()
+    public String getValueOrQuery()
     {
         return valueOrQuery;
     }
