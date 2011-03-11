@@ -34,12 +34,14 @@ import org.eclipse.ui.IMemento;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.Page;
 import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.Relationship;
 import org.neo4j.neoclipse.view.NeoGraphLabelProviderWrapper;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**
  * This class represents a page in the search view that displays Neo search
  * results, e.g. lists of Neo nodes matching a search criteria.
+ * 
  * @author Peter H&auml;nsgen
  */
 public class NeoSearchResultPage extends Page implements ISearchResultPage
@@ -62,8 +64,7 @@ public class NeoSearchResultPage extends Page implements ISearchResultPage
         viewer = new TreeViewer( parent, SWT.NONE );
         viewer.setContentProvider( new NeoSearchResultContentProvider() );
         viewer.setLabelProvider( NeoGraphLabelProviderWrapper.getInstance() );
-        viewer
-        .addDoubleClickListener( new NeoSearchResultDoubleClickListener() );
+        viewer.addDoubleClickListener( new NeoSearchResultDoubleClickListener() );
     }
 
     /**
@@ -115,7 +116,8 @@ public class NeoSearchResultPage extends Page implements ISearchResultPage
         if ( result != null )
         {
             return "Neo4j - Matches for '"
-            + ((NeoSearchQuery) result.getQuery()).getExpression() + "'";
+            + ( (NeoSearchQuery) result.getQuery() ).getExpression()
+            + "'";
         }
         else
         {
@@ -208,20 +210,23 @@ public class NeoSearchResultPage extends Page implements ISearchResultPage
         @Override
         public void doubleClick( final DoubleClickEvent event )
         {
-            StructuredSelection sel = (StructuredSelection) event
-            .getSelection();
+            StructuredSelection sel = (StructuredSelection) event.getSelection();
             Object s = sel.getFirstElement();
+            // get the graph viewer
+            NeoGraphViewPart gv = (NeoGraphViewPart) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(
+                    NeoGraphViewPart.ID );
+            if ( gv == null )
+            {
+                // TODO if it does not exist yet - create one? how?
+                return;
+            }
             if ( s instanceof Node )
             {
-                // get the graph viewer
-                NeoGraphViewPart gv = (NeoGraphViewPart) PlatformUI
-                .getWorkbench().getActiveWorkbenchWindow().getActivePage()
-                .findView( NeoGraphViewPart.ID );
-                // TODO if it does not exist yet - create one? how?
-                if ( gv != null )
-                {
-                    gv.showNode( (Node) s );
-                }
+                gv.showNode( (Node) s );
+            }
+            else if ( s instanceof Relationship )
+            {
+                gv.showNode( ( (Relationship) s ).getStartNode() );
             }
         }
     }
