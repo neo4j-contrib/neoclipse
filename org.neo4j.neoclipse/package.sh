@@ -1,6 +1,6 @@
 #!/bin/bash
 
-version=1.3.M03
+version=1.3.M04
 basedir=$PWD
 cd build/export
 builddir=$PWD

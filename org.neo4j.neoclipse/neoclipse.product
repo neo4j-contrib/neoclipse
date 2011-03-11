@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Neoclipse" uid="Neoclipse" id="org.neo4j.neoclipse.neoclipseProduct" application="org.neo4j.neoclipse.application" version="1.3.M03" useFeatures="false" includeLaunchers="true">
+<product name="Neoclipse" uid="Neoclipse" id="org.neo4j.neoclipse.neoclipseProduct" application="org.neo4j.neoclipse.application" version="1.3.M04" useFeatures="false" includeLaunchers="true">
 
    <aboutInfo>
       <image path="icons/splash.png"/>
