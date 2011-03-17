@@ -63,8 +63,8 @@ import org.neo4j.neoclipse.reltype.RelationshipTypeEditingSupport;
  * @author Anders Nawroth
  */
 public class NeoGraphLabelProvider extends LabelProvider implements
-        IConnectionStyleProvider, IColorProvider, ILabelProvider,
-        ITableLabelProvider, ITableColorProvider, InputChangeListener
+IConnectionStyleProvider, IColorProvider, ILabelProvider,
+ITableLabelProvider, ITableColorProvider, InputChangeListener
 {
     /**
      * Handler for node/relationship decoration..
@@ -93,7 +93,15 @@ public class NeoGraphLabelProvider extends LabelProvider implements
     public NeoGraphLabelProvider()
     {
         // read all preferences
-        refreshNodeIconLocation();
+        try
+        {
+            refreshNodeIconLocation();
+        }
+        catch ( Exception e )
+        {
+            // ignore problems with the icon location during startup
+            e.printStackTrace();
+        }
         refreshNodePropertyNames();
         refreshRelPropertyNames();
         refreshNodeIconPropertyNames();
@@ -212,7 +220,7 @@ public class NeoGraphLabelProvider extends LabelProvider implements
         {
             Node node = (Node) element;
             if ( viewSettings.isShowNodeIcons()
-                 && !"".equals( settings.getNodeIconLocation() ) )
+                    && !"".equals( settings.getNodeIconLocation() ) )
             {
                 return graphDecorator.getNodeImageFromProperty( node,
                         isReferenceNode( node ) );
@@ -334,7 +342,7 @@ public class NeoGraphLabelProvider extends LabelProvider implements
         {
             Relationship rel = (Relationship) o;
             if ( !viewSettings.isShowRelationshipColors()
-                 || !( o instanceof Relationship ) )
+                    || !( o instanceof Relationship ) )
             {
                 return graphDecorator.getRelationshipColor();
             }
@@ -449,7 +457,7 @@ public class NeoGraphLabelProvider extends LabelProvider implements
     public Color getForeground( final Object element, final int index )
     {
         if ( !viewSettings.isShowRelationshipColors() || index != 0
-             || !( element instanceof RelationshipTypeControl ) )
+                || !( element instanceof RelationshipTypeControl ) )
         {
             return graphDecorator.getRelationshipColor();
         }

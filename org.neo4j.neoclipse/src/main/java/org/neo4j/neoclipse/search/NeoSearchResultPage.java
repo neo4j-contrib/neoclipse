@@ -35,6 +35,10 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.Page;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
+import org.neo4j.neoclipse.Activator;
+import org.neo4j.neoclipse.graphdb.GraphDbServiceEvent;
+import org.neo4j.neoclipse.graphdb.GraphDbServiceEventListener;
+import org.neo4j.neoclipse.graphdb.GraphDbServiceManager;
 import org.neo4j.neoclipse.view.NeoGraphLabelProviderWrapper;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
@@ -54,6 +58,8 @@ public class NeoSearchResultPage extends Page implements ISearchResultPage
      * The list of found nodes.
      */
     private TreeViewer viewer;
+    private GraphDbServiceManager gsm;
+    private GraphDbServiceEventListener listener;
 
     /**
      * Creates the control
@@ -65,6 +71,29 @@ public class NeoSearchResultPage extends Page implements ISearchResultPage
         viewer.setContentProvider( new NeoSearchResultContentProvider() );
         viewer.setLabelProvider( NeoGraphLabelProviderWrapper.getInstance() );
         viewer.addDoubleClickListener( new NeoSearchResultDoubleClickListener() );
+
+        gsm = Activator.getDefault().getGraphDbServiceManager();
+
+        listener = new GraphDbServiceEventListener()
+        {
+            @Override
+            public void serviceChanged( final GraphDbServiceEvent event )
+            {
+                switch ( event.getStatus() )
+                {
+                case STOPPED:
+                    clearResult();
+                    break;
+                }
+            }
+        };
+        gsm.addServiceEventListener( listener );
+    }
+
+    private void clearResult()
+    {
+        // TODO this doesn't work
+        viewer.setInput( null );
     }
 
     /**

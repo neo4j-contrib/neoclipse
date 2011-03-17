@@ -20,6 +20,7 @@ package org.neo4j.neoclipse.graphdb;
 
 import java.io.File;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -452,35 +453,10 @@ public class GraphDbServiceManager
         if ( ( location == null ) || ( location.trim().length() == 0 ) )
         {
             // if there's really no db dir, create one in the workspace
-            Location workspace = Platform.getInstanceLocation();
-            if ( workspace == null )
-            {
-                throw new IllegalArgumentException(
-                "The database location is not correctly set." );
-            }
-            try
-            {
-                File dbDir = new File( workspace.getURL().toURI().getPath()
-                        + "/neo4j-db" );
-                if ( !dbDir.exists() )
-                {
-                    if ( !dbDir.mkdir() )
-                    {
-                        throw new IllegalArgumentException(
-                        "Could not create a database directory." );
-                    }
-                    logInfo( "created: " + dbDir.getAbsolutePath() );
-                }
-                location = dbDir.getAbsolutePath();
-                preferenceStore.setValue( Preferences.DATABASE_LOCATION,
-                        location );
-            }
-            catch ( URISyntaxException e )
-            {
-                e.printStackTrace();
-                throw new IllegalArgumentException(
-                "The database location is not correctly set." );
-            }
+            File dbDir = GraphDbServiceManager.dirInWorkspace( "neo4j-db" );
+            location = dbDir.getAbsolutePath();
+            preferenceStore.setValue( Preferences.DATABASE_LOCATION,
+                    location );
         }
         File dir = new File( location );
         if ( !dir.exists() )
@@ -500,6 +476,41 @@ public class GraphDbServiceManager
         }
         logFine( "using location: " + location );
         return location;
+    }
+
+    public static File dirInWorkspace( final String... elements )
+    {
+        Location workspace = Platform.getInstanceLocation();
+        if ( workspace == null )
+        {
+            throw new RuntimeException( "Can't find workspace." );
+        }
+        URL url = workspace.getURL();
+        String path;
+        try
+        {
+            path = url.toURI().getPath();
+        }
+        catch ( URISyntaxException e )
+        {
+            // workaround for Windows
+            System.out.println( "Using path workaround for path: " + url );
+            path = url.getPath();
+        }
+        for ( String element : elements )
+        {
+            path += File.separator + element;
+        }
+        File dir = new File( path );
+        if ( !dir.exists() )
+        {
+            if ( !dir.mkdirs() )
+            {
+                throw new IllegalArgumentException(
+                        "Could not create directory: " + dir );
+            }
+        }
+        return dir;
     }
 
     /**
