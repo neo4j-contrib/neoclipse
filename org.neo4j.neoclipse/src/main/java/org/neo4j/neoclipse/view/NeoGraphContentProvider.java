@@ -73,6 +73,7 @@ public class NeoGraphContentProvider implements
     /**
      * Returns the relationships between the given nodes.
      */
+    @Override
     public Object[] getRelationships( final Object source, final Object dest )
     {
         if ( source == null || dest == null )
@@ -86,6 +87,7 @@ public class NeoGraphContentProvider implements
             return Activator.getDefault().getGraphDbServiceManager().submitTask(
                     new Callable<Object[]>()
                     {
+                        @Override
                         public Object[] call() throws Exception
                         {
                             return traverser.getRelationships( start, end ).toArray();
@@ -106,6 +108,7 @@ public class NeoGraphContentProvider implements
     /**
      * Returns all nodes the given node is connected with.
      */
+    @Override
     public Object[] getElements( final Object inputElement )
     {
         if ( inputElement == null )
@@ -122,6 +125,7 @@ public class NeoGraphContentProvider implements
         {
             return gsm.submitTask( new GraphCallable<Object[]>()
             {
+                @Override
                 public Object[] call( final GraphDatabaseService graphDb )
                 {
                     return getTheElements( node, graphDb );
@@ -169,10 +173,12 @@ public class NeoGraphContentProvider implements
         return traverser.getNodes( node, relDirList, depth, max ).toArray();
     }
 
+    @Override
     public void dispose()
     {
     }
 
+    @Override
     public void inputChanged( final Viewer viewer, final Object oldInput,
             final Object newInput )
     {

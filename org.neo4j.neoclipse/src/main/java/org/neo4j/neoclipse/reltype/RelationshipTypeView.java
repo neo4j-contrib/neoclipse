@@ -39,7 +39,6 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
@@ -112,7 +111,6 @@ public class RelationshipTypeView extends ViewPart implements
     private FileDialog iconFileDialog;
     private Action deleteIncomingIcon;
     private Action deleteOutgoingIcon;
-    private IPreferenceStore preferenceStore;
     static
     {
         // build filters for file selection dialog.
@@ -186,7 +184,7 @@ public class RelationshipTypeView extends ViewPart implements
         getSite().getPage().addSelectionListener( NeoGraphViewPart.ID, this );
         getSite().setSelectionProvider( viewer );
         getSite().getPage().addSelectionListener( ID, this );
-        preferenceStore = Activator.getDefault().getPreferenceStore();
+        Activator.getDefault().getPreferenceStore();
     }
 
     /**
@@ -196,6 +194,7 @@ public class RelationshipTypeView extends ViewPart implements
     {
         viewer.addDoubleClickListener( new IDoubleClickListener()
         {
+            @Override
             public void doubleClick( final DoubleClickEvent event )
             {
                 markRelationshipAction.run();
@@ -212,6 +211,7 @@ public class RelationshipTypeView extends ViewPart implements
         menuMgr.setRemoveAllWhenShown( true );
         menuMgr.addMenuListener( new IMenuListener()
         {
+            @Override
             public void menuAboutToShow( final IMenuManager manager )
             {
                 RelationshipTypeView.this.fillContextMenu( manager );
@@ -513,6 +513,7 @@ public class RelationshipTypeView extends ViewPart implements
                     direction ) + ".";
             File[] deleteFiles = dest.listFiles( new FilenameFilter()
             {
+                @Override
                 public boolean accept( final File dir, final String name )
                 {
                     return name.startsWith( destFilename );
@@ -756,6 +757,7 @@ public class RelationshipTypeView extends ViewPart implements
     /**
      * Keep track of the graph view selections.
      */
+    @Override
     public void selectionChanged( final IWorkbenchPart part,
             final ISelection selection )
     {
@@ -820,6 +822,7 @@ public class RelationshipTypeView extends ViewPart implements
         /**
          * Respond to changes in the underlying relationship type provider.
          */
+        @Override
         public void stateChanged( final NeoclipseEvent event )
         {
             if ( getGraphView() != null )
@@ -837,6 +840,7 @@ public class RelationshipTypeView extends ViewPart implements
         /**
          * Respond to changes in the underlying relationship type provider.
          */
+        @Override
         public void stateChanged( final NeoclipseEvent event )
         {
             viewer.refresh();
@@ -848,10 +852,12 @@ public class RelationshipTypeView extends ViewPart implements
      */
     private class ServiceChangeHandler implements GraphDbServiceEventListener
     {
+        @Override
         public void serviceChanged( final GraphDbServiceEvent event )
         {
             UiHelper.asyncExec( new Runnable()
             {
+                @Override
                 public void run()
                 {
                     if ( event.getStatus() == GraphDbServiceStatus.STOPPED )
@@ -880,6 +886,7 @@ public class RelationshipTypeView extends ViewPart implements
     private class RelationshipColorChangeHandler implements
             NeoclipseEventListener
     {
+        @Override
         public void stateChanged( final NeoclipseEvent event )
         {
             viewer.refresh( true );

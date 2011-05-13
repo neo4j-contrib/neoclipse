@@ -61,6 +61,7 @@ public class ZoomAction extends AbstractGraphAction implements IMenuCreator
     /**
      * Returns a menu with the default zoom levels.
      */
+    @Override
     public Menu getMenu( final Control parent )
     {
         if ( menu == null )
@@ -76,6 +77,7 @@ public class ZoomAction extends AbstractGraphAction implements IMenuCreator
     /**
      * Returns a menu with the default zoom levels.
      */
+    @Override
     public Menu getMenu( final Menu parent )
     {
         if ( menu == null )
@@ -91,6 +93,7 @@ public class ZoomAction extends AbstractGraphAction implements IMenuCreator
     /**
      * Disposes the zoom level menu.
      */
+    @Override
     public void dispose()
     {
         if ( menu != null )

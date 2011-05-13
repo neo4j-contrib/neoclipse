@@ -36,11 +36,13 @@ public enum ColorCategory implements ColorSetting
         this.brightness = brightness;
     }
 
+    @Override
     public float getSaturation()
     {
         return saturation;
     }
 
+    @Override
     public float getBrightness()
     {
         return brightness;

@@ -25,27 +25,30 @@ import org.eclipse.core.runtime.ListenerList;
 /**
  * Class to handle a list of neoclipse event listeners in a type safe way.
  * Removal of listeners is not available.
+ * 
  * @author Anders Nawroth
  */
 public class NeoclipseListenerList implements Iterable<NeoclipseEventListener>
 {
-    private ListenerList list = new ListenerList( ListenerList.IDENTITY );
+    private final ListenerList list = new ListenerList( ListenerList.IDENTITY );
     private boolean inhibit = false;
 
     /**
      * Add an event listener.
+     * 
      * @param listener
      */
-    public void add( NeoclipseEventListener listener )
+    public void add( final NeoclipseEventListener listener )
     {
         list.add( listener );
     }
 
     /**
      * Notify listeners something changed.
+     * 
      * @param event
      */
-    public void notifyListeners( NeoclipseEvent event )
+    public void notifyListeners( final NeoclipseEvent event )
     {
         if ( inhibit )
         {
@@ -60,9 +63,10 @@ public class NeoclipseListenerList implements Iterable<NeoclipseEventListener>
     /**
      * Set the inhibit status. True means all notifications are inhibited until
      * the status is flipped back to false.
+     * 
      * @param inhibit
      */
-    public void setInhibit( boolean inhibit )
+    public void setInhibit( final boolean inhibit )
     {
         this.inhibit = inhibit;
     }
@@ -70,6 +74,7 @@ public class NeoclipseListenerList implements Iterable<NeoclipseEventListener>
     /**
      * Iterate over the listeners.
      */
+    @Override
     public Iterator<NeoclipseEventListener> iterator()
     {
         final Object[] listeners = list.getListeners();
@@ -77,19 +82,22 @@ public class NeoclipseListenerList implements Iterable<NeoclipseEventListener>
         {
             private int pos = 0;
 
+            @Override
             public boolean hasNext()
             {
                 return pos < listeners.length;
             }
 
+            @Override
             public NeoclipseEventListener next()
             {
                 return (NeoclipseEventListener) listeners[pos++];
             }
 
+            @Override
             public void remove()
             {
-                // nothing here
+                throw new UnsupportedOperationException();
             }
         };
     }

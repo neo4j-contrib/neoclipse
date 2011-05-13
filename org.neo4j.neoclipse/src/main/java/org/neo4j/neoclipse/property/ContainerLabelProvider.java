@@ -26,6 +26,7 @@ import org.neo4j.neoclipse.Icons;
 
 public class ContainerLabelProvider implements ILabelProvider
 {
+    @Override
     public Image getImage( final Object value )
     {
         if ( value instanceof RelationshipType )
@@ -35,26 +36,31 @@ public class ContainerLabelProvider implements ILabelProvider
         return Icons.TYPE_ID.image();
     }
 
+    @Override
     public String getText( final Object value )
     {
         return value.toString();
     }
 
+    @Override
     public void addListener( final ILabelProviderListener arg0 )
     {
         // TODO Auto-generated method stub
     }
 
+    @Override
     public void dispose()
     {
         // TODO Auto-generated method stub
     }
 
+    @Override
     public boolean isLabelProperty( final Object element, final String property )
     {
         return false;
     }
 
+    @Override
     public void removeListener( final ILabelProviderListener arg0 )
     {
         // TODO Auto-generated method stub

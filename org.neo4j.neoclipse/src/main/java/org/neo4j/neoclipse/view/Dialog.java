@@ -28,6 +28,7 @@ public class Dialog
     {
         UiHelper.asyncExec( new Runnable()
         {
+            @Override
             public void run()
             {
                 MessageDialog.openError( parent, title, message );
@@ -45,6 +46,7 @@ public class Dialog
     {
         UiHelper.asyncExec( new Runnable()
         {
+            @Override
             public void run()
             {
                 MessageDialog.openWarning( parent, title, message );

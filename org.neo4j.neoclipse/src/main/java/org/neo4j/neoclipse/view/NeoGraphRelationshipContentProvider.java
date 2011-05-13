@@ -59,16 +59,19 @@ public class NeoGraphRelationshipContentProvider implements
         this.view = view;
     }
 
+    @Override
     public Object getSource( final Object rel )
     {
         return ( (Relationship) rel ).getStartNode();
     }
 
+    @Override
     public Object getDestination( final Object rel )
     {
         return ( (Relationship) rel ).getEndNode();
     }
 
+    @Override
     public Object[] getElements( final Object input )
     {
         final int depth = view.getTraversalDepth() - 1;
@@ -107,6 +110,7 @@ public class NeoGraphRelationshipContentProvider implements
         Traverser trav = node.traverse( Order.BREADTH_FIRST,
                 new StopEvaluator()
                 {
+                    @Override
                     public boolean isStopNode(
                             final TraversalPosition currentPos )
                     {
@@ -139,11 +143,13 @@ public class NeoGraphRelationshipContentProvider implements
         return rels.toArray( EMPTY_REL_ARRAY );
     }
 
+    @Override
     public void dispose()
     {
         // TODO Auto-generated method stub
     }
 
+    @Override
     public void inputChanged( final Viewer viewer, final Object oldInput,
             final Object newInput )
     {

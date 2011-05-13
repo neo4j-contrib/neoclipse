@@ -43,11 +43,13 @@ public class RelationshipTypeHashSet implements Set<RelationshipType>
         set = new HashSet<String>();
     }
 
+    @Override
     public boolean add( final RelationshipType relType )
     {
         return set.add( relType.name() );
     }
 
+    @Override
     public boolean addAll( final Collection<? extends RelationshipType> relTypes )
     {
         boolean modified = false;
@@ -58,11 +60,13 @@ public class RelationshipTypeHashSet implements Set<RelationshipType>
         return modified;
     }
 
+    @Override
     public void clear()
     {
         set.clear();
     }
 
+    @Override
     public boolean contains( final Object relType )
     {
         if ( !(relType instanceof RelationshipType) )
@@ -72,6 +76,7 @@ public class RelationshipTypeHashSet implements Set<RelationshipType>
         return set.contains( ((RelationshipType) relType).name() );
     }
 
+    @Override
     public boolean containsAll( final Collection<?> relTypes )
     {
         for ( Object relType : relTypes )
@@ -84,11 +89,13 @@ public class RelationshipTypeHashSet implements Set<RelationshipType>
         return true;
     }
 
+    @Override
     public boolean isEmpty()
     {
         return set.isEmpty();
     }
 
+    @Override
     public Iterator<RelationshipType> iterator()
     {
         return new Iterator<RelationshipType>()
@@ -96,16 +103,19 @@ public class RelationshipTypeHashSet implements Set<RelationshipType>
             private final Iterator<String> iter = RelationshipTypeHashSet.this.set
                 .iterator();
 
+            @Override
             public boolean hasNext()
             {
                 return iter.hasNext();
             }
 
+            @Override
             public RelationshipType next()
             {
                 return DynamicRelationshipType.withName( iter.next() );
             }
 
+            @Override
             public void remove()
             {
                 iter.remove();
@@ -113,6 +123,7 @@ public class RelationshipTypeHashSet implements Set<RelationshipType>
         };
     }
 
+    @Override
     public boolean remove( final Object relType )
     {
         if ( !(relType instanceof RelationshipType) )
@@ -122,6 +133,7 @@ public class RelationshipTypeHashSet implements Set<RelationshipType>
         return set.remove( ((RelationshipType) relType).name() );
     }
 
+    @Override
     public boolean removeAll( final Collection<?> relTypes )
     {
         boolean modified = false;
@@ -135,16 +147,19 @@ public class RelationshipTypeHashSet implements Set<RelationshipType>
         return modified;
     }
 
+    @Override
     public boolean retainAll( final Collection<?> relTypes )
     {
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public int size()
     {
         return set.size();
     }
 
+    @Override
     public Object[] toArray()
     {
         List<RelationshipType> list = new ArrayList<RelationshipType>( size() );
@@ -155,6 +170,7 @@ public class RelationshipTypeHashSet implements Set<RelationshipType>
         return list.toArray();
     }
 
+    @Override
     public <T> T[] toArray( final T[] a )
     {
         List<RelationshipType> list = new ArrayList<RelationshipType>( size() );

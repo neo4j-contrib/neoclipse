@@ -22,6 +22,7 @@ import java.util.Comparator;
 
 public class RelationshipTypeSorter implements Comparator<String>
 {
+    @Override
     public int compare( final String left, final String right )
     {
         int result = left.compareToIgnoreCase( right );

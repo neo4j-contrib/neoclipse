@@ -155,6 +155,7 @@ public final class PropertyTransform
             /**
              * cell editor validator
              */
+            @Override
             public String isValid( final Object value )
             {
                 try
@@ -171,6 +172,7 @@ public final class PropertyTransform
             /**
              * dialog field validator
              */
+            @Override
             public String isValid( final String value )
             {
                 return isValid( (Object) value );

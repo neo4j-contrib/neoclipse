@@ -133,6 +133,7 @@ ITableLabelProvider, ITableColorProvider, InputChangeListener
             return Activator.getDefault().getGraphDbServiceManager().submitTask(
                     new GraphCallable<Boolean>()
                     {
+                        @Override
                         public Boolean call( final GraphDatabaseService graphDb )
                         {
                             Node referenceNode = graphDb.getReferenceNode();
@@ -169,6 +170,7 @@ ITableLabelProvider, ITableColorProvider, InputChangeListener
     /**
      * Handle change of node in graph view.
      */
+    @Override
     public void inputChange( final Node node )
     {
         inputNode = node;
@@ -336,6 +338,7 @@ ITableLabelProvider, ITableColorProvider, InputChangeListener
                 DecoratorPreferences.NODE_ICON_PROPERTY_NAMES ) );
     }
 
+    @Override
     public Color getColor( final Object o )
     {
         if ( o instanceof Relationship )
@@ -360,6 +363,7 @@ ITableLabelProvider, ITableColorProvider, InputChangeListener
         return null;
     }
 
+    @Override
     public int getConnectionStyle( final Object rel )
     {
         int style = 0;
@@ -374,11 +378,13 @@ ITableLabelProvider, ITableColorProvider, InputChangeListener
         return style;
     }
 
+    @Override
     public Color getHighlightColor( final Object rel )
     {
         return graphDecorator.getRelationshipHighlightColor( (Relationship) rel );
     }
 
+    @Override
     public int getLineWidth( final Object rel )
     {
         if ( rel instanceof Relationship && markedRels.contains( rel ) )
@@ -391,12 +397,14 @@ ITableLabelProvider, ITableColorProvider, InputChangeListener
         }
     }
 
+    @Override
     public IFigure getTooltip( final Object entity )
     {
         // got this working only for rels. use a Label (draw2d).
         return null;
     }
 
+    @Override
     public Color getBackground( final Object element )
     {
         if ( element instanceof Node && viewSettings.isShowNodeColors() )
@@ -410,6 +418,7 @@ ITableLabelProvider, ITableColorProvider, InputChangeListener
         return null;
     }
 
+    @Override
     public Color getForeground( final Object element )
     {
         if ( element instanceof Node )
@@ -421,6 +430,7 @@ ITableLabelProvider, ITableColorProvider, InputChangeListener
         return null;
     }
 
+    @Override
     public Image getColumnImage( final Object element, final int index )
     {
         if ( element instanceof RelationshipTypeControl )
@@ -438,6 +448,7 @@ ITableLabelProvider, ITableColorProvider, InputChangeListener
         return null;
     }
 
+    @Override
     public String getColumnText( final Object element, final int index )
     {
         if ( index == 0 && element instanceof RelationshipTypeControl )
@@ -448,12 +459,14 @@ ITableLabelProvider, ITableColorProvider, InputChangeListener
         return null;
     }
 
+    @Override
     public Color getBackground( final Object element, final int index )
     {
         // TODO Auto-generated method stub
         return null;
     }
 
+    @Override
     public Color getForeground( final Object element, final int index )
     {
         if ( !viewSettings.isShowRelationshipColors() || index != 0

@@ -448,6 +448,7 @@ public class SimpleGraphDecorator
         {
             return gsm.submitTask( new Callable<Color>()
             {
+                @Override
                 public Color call() throws Exception
                 {
                     Relationship randomRel = null;
@@ -782,6 +783,7 @@ public class SimpleGraphDecorator
         {
             img = gsm.submitTask( new Callable<Image>()
             {
+                @Override
                 public Image call() throws Exception
                 {
                     Image img = null;

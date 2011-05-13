@@ -145,6 +145,7 @@ public class Matrix extends NeoclipseExample
                 StopEvaluator.END_OF_GRAPH,
                 new ReturnableEvaluator()
                 {
+                    @Override
                     public boolean isReturnableNode(
                             final TraversalPosition currentPosition )
                     {

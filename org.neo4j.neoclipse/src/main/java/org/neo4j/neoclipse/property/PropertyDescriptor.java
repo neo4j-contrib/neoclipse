@@ -95,6 +95,7 @@ public class PropertyDescriptor implements IPropertyDescriptor
         this.category = category;
     }
 
+    @Override
     public CellEditor createPropertyEditor( Composite parent )
     {
         if ( propertyHandler != null )
@@ -104,11 +105,13 @@ public class PropertyDescriptor implements IPropertyDescriptor
         return null;
     }
 
+    @Override
     public String getCategory()
     {
         return category;
     }
 
+    @Override
     public String getDescription()
     {
         if ( cls != null )
@@ -119,26 +122,31 @@ public class PropertyDescriptor implements IPropertyDescriptor
         return "";
     }
 
+    @Override
     public String getDisplayName()
     {
         return name;
     }
 
+    @Override
     public String[] getFilterFlags()
     {
         return EMPTY_ARRAY;
     }
 
+    @Override
     public Object getHelpContextIds()
     {
         return null;
     }
 
+    @Override
     public Object getId()
     {
         return key;
     }
 
+    @Override
     public ILabelProvider getLabelProvider()
     {
         if ( NodePropertySource.NODE_CATEGORY == category
@@ -149,6 +157,7 @@ public class PropertyDescriptor implements IPropertyDescriptor
         return labelProvider;
     }
 
+    @Override
     public boolean isCompatibleWith( IPropertyDescriptor anotherProperty )
     {
         return false;

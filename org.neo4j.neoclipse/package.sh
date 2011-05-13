@@ -1,6 +1,6 @@
 #!/bin/bash
 
-version=1.3.M04
+version=1.3
 basedir=$PWD
 cd build/export
 builddir=$PWD
@@ -13,7 +13,7 @@ do
 	rm -f neoclipse/about.html
 	name=neoclipse-$version-$platform
 	mv neoclipse $name
-	echo "$platform"
+	echo "========== $platform =========="
   if [[ "$platform" == win* ]]
   	then zip -r9 $builddir/$name.zip $name
   	else tar -czf $builddir/$name.tar.gz $name

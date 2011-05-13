@@ -52,6 +52,7 @@ IStructuredContentProvider
 {
     private class ReltypeCtrlChangeListener implements NeoclipseEventListener
     {
+        @Override
         public void stateChanged( final NeoclipseEvent event )
         {
             notifyFilterListeners( event );
@@ -87,6 +88,7 @@ IStructuredContentProvider
      * the relationship types that was handled in the current database graph
      * view will be returned.
      */
+    @Override
     public Object[] getElements( final Object inputElement )
     {
         if ( viewAll )
@@ -124,6 +126,7 @@ IStructuredContentProvider
             return Activator.getDefault().getGraphDbServiceManager().submitTask(
                     new GraphCallable<Set<RelationshipType>>()
                     {
+                        @Override
                         public Set<RelationshipType> call(
                                 final GraphDatabaseService graphDb )
                                 {
@@ -244,10 +247,12 @@ IStructuredContentProvider
         currentRelTypeCtrls.clear();
     }
 
+    @Override
     public void dispose()
     {
     }
 
+    @Override
     public void inputChanged( final Viewer viewer, final Object oldInput,
             final Object newInput )
     {

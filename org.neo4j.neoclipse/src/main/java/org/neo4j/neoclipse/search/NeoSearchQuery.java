@@ -155,7 +155,18 @@ public class NeoSearchQuery implements ISearchQuery
         }
         catch ( Exception e )
         {
-            ErrorMessage.showDialog( "Search error", e );
+            String message = ErrorMessage.getErrorMessage( e );
+            if ( message.indexOf( "org.apache.lucene.index.CorruptIndexException: Unknown format version" ) != -1 )
+            {
+                ErrorMessage.showDialog(
+                        "Search error",
+                        "The index can't be read as the Neo4j database "
+                                + "isn't compatible with this version of Neoclipse." );
+            }
+            else
+            {
+                ErrorMessage.showDialog( "Search error", e );
+            }
         }
         return null;
     }
@@ -179,8 +190,15 @@ public class NeoSearchQuery implements ISearchQuery
                 hits = nodeIndex.get( search.getKey(), search.getValueOrQuery() );
                 break;
             case QUERY:
-                hits = nodeIndex.query( search.getKey(),
-                        search.getValueOrQuery() );
+                String key = search.getKey();
+                if ( key.trim().isEmpty() )
+                {
+                    hits = nodeIndex.query( search.getValueOrQuery() );
+                }
+                else
+                {
+                    hits = nodeIndex.query( key, search.getValueOrQuery() );
+                }
                 break;
             default:
                 hits = null;

@@ -25,11 +25,13 @@ import org.neo4j.neoclipse.property.PropertyTransform.PropertyHandler;
 
 public class PropertyLabelProvider implements ILabelProvider
 {
+    @Override
     public Image getImage( Object value )
     {
         return PropertyTransform.getHandler( value ).image();
     }
 
+    @Override
     public String getText( Object value )
     {
         PropertyHandler propertyHandler = PropertyTransform.getHandler( value );
@@ -43,21 +45,25 @@ public class PropertyLabelProvider implements ILabelProvider
         }
     }
 
+    @Override
     public void addListener( ILabelProviderListener arg0 )
     {
         // TODO Auto-generated method stub
     }
 
+    @Override
     public void dispose()
     {
         // TODO Auto-generated method stub
     }
 
+    @Override
     public boolean isLabelProperty( Object element, String property )
     {
         return true;
     }
 
+    @Override
     public void removeListener( ILabelProviderListener arg0 )
     {
         // TODO Auto-generated method stub

@@ -76,6 +76,7 @@ public class BrowserHistory
                 return Activator.getDefault().getGraphDbServiceManager().submitTask(
                         new GraphCallable<Node>()
                         {
+                            @Override
                             public Node call( final GraphDatabaseService graphDb )
                             {
                                 if ( graphDb != null )

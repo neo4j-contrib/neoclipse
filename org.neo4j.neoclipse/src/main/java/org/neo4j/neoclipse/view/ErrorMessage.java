@@ -24,7 +24,7 @@ public class ErrorMessage
 {
     private static final int MAX_DEPTH = 10;
 
-    private static String getErrorMessage( final Throwable exception )
+    public static String getErrorMessage( final Throwable exception )
     {
         String message = exception.getMessage();
         Throwable throwable = exception.getCause();
@@ -44,6 +44,7 @@ public class ErrorMessage
     {
         UiHelper.asyncExec( new Runnable()
         {
+            @Override
             public void run()
             {
                 MessageDialog.openInformation( null, heading, message );

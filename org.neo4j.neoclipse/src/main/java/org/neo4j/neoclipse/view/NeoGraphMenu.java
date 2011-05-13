@@ -464,6 +464,7 @@ public class NeoGraphMenu
      */
     private class RelTypeRefreshHandler implements NeoclipseEventListener
     {
+        @Override
         public void stateChanged( final NeoclipseEvent event )
         {
             actionMap.clear();
@@ -794,6 +795,7 @@ public class NeoGraphMenu
      */
     private class RelTypesChangeHandler implements NeoclipseEventListener
     {
+        @Override
         public void stateChanged( final NeoclipseEvent event )
         {
             if ( event.getSource() instanceof RelationshipType )
@@ -808,6 +810,7 @@ public class NeoGraphMenu
      */
     private class RelTypesColorChangeHandler implements NeoclipseEventListener
     {
+        @Override
         public void stateChanged( final NeoclipseEvent event )
         {
             if ( event.getSource() instanceof Boolean )

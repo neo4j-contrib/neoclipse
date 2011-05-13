@@ -2,19 +2,19 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Neoclipse
 Bundle-SymbolicName: org.neo4j.neoclipse;singleton:=true
-Bundle-Version: 1.3.0.M04
+Bundle-Version: 1.3.0
 Bundle-Activator: org.neo4j.neoclipse.Activator
 Bundle-Vendor: Neo4j.org
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ClassPath: .,
  lib/geronimo-jta_1.1_spec-1.1.1.jar,
- lib/neo4j-graph-algo-1.3.M04.jar,
- lib/neo4j-kernel-1.3.M04.jar,
- lib/neo4j-lucene-index-1.3.M04.jar,
- lib/neo4j-udc-1.3.M04-neo4j.jar,
  lib/org.apache.servicemix.bundles.lucene-3.0.1_2.jar,
- lib/neo4j-management-1.3.M04.jar
+ lib/neo4j-graph-algo-1.3.jar,
+ lib/neo4j-jmx-1.3.jar,
+ lib/neo4j-kernel-1.3.jar,
+ lib/neo4j-lucene-index-1.3.jar,
+ lib/neo4j-udc-1.3-neo4j.jar
 Import-Package: org.eclipse.core.commands.common,
  org.eclipse.core.runtime,
  org.eclipse.core.runtime.preferences,

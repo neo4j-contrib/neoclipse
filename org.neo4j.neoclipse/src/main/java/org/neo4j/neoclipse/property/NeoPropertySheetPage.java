@@ -120,6 +120,7 @@ public class NeoPropertySheetPage extends PropertySheetPage implements
     {
         UiHelper.asyncExec( new Runnable()
         {
+            @Override
             public void run()
             {
                 refresh();

@@ -42,11 +42,13 @@ public class RelationshipTypeHashMap<T> implements Map<RelationshipType,T>
         map = new HashMap<String,T>();
     }
 
+    @Override
     public void clear()
     {
         map.clear();
     }
 
+    @Override
     public boolean containsKey( final Object key )
     {
         if ( !(key instanceof RelationshipType) )
@@ -56,11 +58,13 @@ public class RelationshipTypeHashMap<T> implements Map<RelationshipType,T>
         return map.containsKey( ((RelationshipType) key).name() );
     }
 
+    @Override
     public boolean containsValue( final Object value )
     {
         return map.containsValue( value );
     }
 
+    @Override
     public Set<Entry<RelationshipType,T>> entrySet()
     {
         Set<Entry<RelationshipType,T>> entrySet = new HashSet<Entry<RelationshipType,T>>();
@@ -83,22 +87,26 @@ public class RelationshipTypeHashMap<T> implements Map<RelationshipType,T>
             this.value = value;
         }
 
+        @Override
         public RelationshipType getKey()
         {
             return key;
         }
 
+        @Override
         public T getValue()
         {
             return value;
         }
 
+        @Override
         public T setValue( final T value )
         {
             throw new UnsupportedOperationException();
         }
     }
 
+    @Override
     public T get( final Object key )
     {
         if ( !(key instanceof RelationshipType) )
@@ -108,11 +116,13 @@ public class RelationshipTypeHashMap<T> implements Map<RelationshipType,T>
         return map.get( ((RelationshipType) key).name() );
     }
 
+    @Override
     public boolean isEmpty()
     {
         return map.isEmpty();
     }
 
+    @Override
     public Set<RelationshipType> keySet()
     {
         Set<RelationshipType> keySet = new RelationshipTypeHashSet();
@@ -123,11 +133,13 @@ public class RelationshipTypeHashMap<T> implements Map<RelationshipType,T>
         return keySet;
     }
 
+    @Override
     public T put( final RelationshipType key, final T value )
     {
         return map.put( key.name(), value );
     }
 
+    @Override
     public void putAll( final Map<? extends RelationshipType,? extends T> t )
     {
         for ( Entry<? extends RelationshipType,? extends T> entry : t
@@ -137,6 +149,7 @@ public class RelationshipTypeHashMap<T> implements Map<RelationshipType,T>
         }
     }
 
+    @Override
     public T remove( final Object key )
     {
         if ( !(key instanceof RelationshipType) )
@@ -146,11 +159,13 @@ public class RelationshipTypeHashMap<T> implements Map<RelationshipType,T>
         return map.remove( ((RelationshipType) key).name() );
     }
 
+    @Override
     public int size()
     {
         return map.size();
     }
 
+    @Override
     public Collection<T> values()
     {
         return map.values();

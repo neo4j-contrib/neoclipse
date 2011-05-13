@@ -124,12 +124,12 @@ public class NeoSearchPage extends DialogPage implements ISearchPage
         modeCombo.select( EXACT_MODE );
 
         Label propertyLabel = new Label( comp, SWT.NONE );
-        propertyLabel.setText( "Key:" );
+        propertyLabel.setText( "Key: (leave empty for Compound Queries)" );
         propertyLabel.setLayoutData( new GridData( GridData.FILL_HORIZONTAL ) );
 
         keyField = new Text( comp, SWT.SINGLE | SWT.BORDER );
         keyField.setLayoutData( new GridData( GridData.HORIZONTAL_ALIGN_FILL
-                | GridData.VERTICAL_ALIGN_END ) );
+                                              | GridData.VERTICAL_ALIGN_END ) );
 
         Label expressionLabel = new Label( comp, SWT.NONE );
         expressionLabel.setText( "Value/Query:" );
@@ -272,7 +272,7 @@ public class NeoSearchPage extends DialogPage implements ISearchPage
             public void run()
             {
                 if ( getControl().isDisposed() || !getControl().isVisible()
-                        || indexTree.isDisposed() )
+                     || indexTree.isDisposed() )
                 {
                     return;
                 }

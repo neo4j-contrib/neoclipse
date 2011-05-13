@@ -27,6 +27,7 @@ import org.neo4j.neoclipse.view.NeoGraphViewPart;
 /**
  * This class represents a perspective for neo which consists of neo-specific
  * views.
+ * 
  * @author Peter H&auml;nsgen
  */
 public class NeoPerspectiveFactory implements IPerspectiveFactory
@@ -44,6 +45,7 @@ public class NeoPerspectiveFactory implements IPerspectiveFactory
     /**
      * Creates the perspective.
      */
+    @Override
     public void createInitialLayout( final IPageLayout layout )
     {
         String editorArea = layout.getEditorArea();
@@ -51,16 +53,16 @@ public class NeoPerspectiveFactory implements IPerspectiveFactory
         layout.setEditorAreaVisible( false );
         // neo graph view
         IFolderLayout graph = layout.createFolder( GRAPH_AREA,
-            IPageLayout.BOTTOM, 0.95f, editorArea );
+                IPageLayout.BOTTOM, 0.95f, editorArea );
         graph.addView( NeoGraphViewPart.ID );
         layout.getViewLayout( NeoGraphViewPart.ID ).setCloseable( false );
         // properties view
         IFolderLayout props = layout.createFolder( PROPERTIES_AREA,
-            IPageLayout.BOTTOM, 0.75f, GRAPH_AREA );
+                IPageLayout.BOTTOM, 0.75f, GRAPH_AREA );
         props.addView( IPageLayout.ID_PROP_SHEET );
         // relationship types view
         IFolderLayout types = layout.createFolder( "typesArea",
-            IPageLayout.RIGHT, 0.55f, PROPERTIES_AREA );
+                IPageLayout.RIGHT, 0.55f, PROPERTIES_AREA );
         types.addView( RelationshipTypeView.ID );
         // view shortcuts
         layout.addShowViewShortcut( NeoGraphViewPart.ID );

@@ -98,6 +98,7 @@ public class RelationshipTypeControl implements DirectedRelationship
     /* (non-Javadoc)
      * @see org.neo4j.neoclipse.reltype.DirectedRelationship#getRelType()
      */
+    @Override
     public RelationshipType getRelType()
     {
         return relType;
@@ -108,6 +109,7 @@ public class RelationshipTypeControl implements DirectedRelationship
      * 
      * @return
      */
+    @Override
     public boolean hasDirection()
     {
         return in || out;
@@ -116,6 +118,7 @@ public class RelationshipTypeControl implements DirectedRelationship
     /* (non-Javadoc)
      * @see org.neo4j.neoclipse.reltype.DirectedRelationship#getDirection()
      */
+    @Override
     public Direction getDirection()
     {
         if ( in && out )

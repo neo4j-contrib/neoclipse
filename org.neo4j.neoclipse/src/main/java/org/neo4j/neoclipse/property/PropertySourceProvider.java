@@ -25,6 +25,7 @@ import org.neo4j.graphdb.Relationship;
 
 /**
  * Resolves the properties for Neo nodes and relationships.
+ * 
  * @author Peter H&auml;nsgen
  */
 public class PropertySourceProvider implements IPropertySourceProvider
@@ -32,11 +33,12 @@ public class PropertySourceProvider implements IPropertySourceProvider
     private final NeoPropertySheetPage propertySheet;
 
     public PropertySourceProvider(
-        final NeoPropertySheetPage neoPropertySheetPage )
+            final NeoPropertySheetPage neoPropertySheetPage )
     {
         propertySheet = neoPropertySheetPage;
     }
 
+    @Override
     public IPropertySource getPropertySource( final Object source )
     {
         if ( source instanceof Node )
@@ -46,7 +48,7 @@ public class PropertySourceProvider implements IPropertySourceProvider
         else if ( source instanceof Relationship )
         {
             return new RelationshipPropertySource( (Relationship) source,
-                propertySheet );
+                    propertySheet );
         }
         else
         {

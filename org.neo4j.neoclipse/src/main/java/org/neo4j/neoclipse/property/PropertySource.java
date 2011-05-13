@@ -62,6 +62,7 @@ public class PropertySource implements IPropertySource
         this.propertySheet = propertySheet;
     }
 
+    @Override
     public Object getEditableValue()
     {
         return null;
@@ -70,6 +71,7 @@ public class PropertySource implements IPropertySource
     /**
      * Returns the descriptors for the properties of the relationship.
      */
+    @Override
     public IPropertyDescriptor[] getPropertyDescriptors()
     {
         final List<IPropertyDescriptor> descs = new ArrayList<IPropertyDescriptor>();
@@ -92,6 +94,7 @@ public class PropertySource implements IPropertySource
     /**
      * Returns the value of the given property.
      */
+    @Override
     public Object getPropertyValue( final Object id )
     {
         return getValue( id );
@@ -111,6 +114,7 @@ public class PropertySource implements IPropertySource
     /**
      * Checks if the property is set.
      */
+    @Override
     public boolean isPropertySet( final Object id )
     {
         return isSet( id );
@@ -129,6 +133,7 @@ public class PropertySource implements IPropertySource
         {
             return gsm.submitTask( new Callable<Boolean>()
             {
+                @Override
                 public Boolean call() throws Exception
                 {
                     return container.hasProperty( (String) id );
@@ -146,6 +151,7 @@ public class PropertySource implements IPropertySource
     /**
      * Does nothing.
      */
+    @Override
     public void resetPropertyValue( final Object id )
     {
     }
@@ -153,6 +159,7 @@ public class PropertySource implements IPropertySource
     /**
      * Sets property value.
      */
+    @Override
     public void setPropertyValue( final Object id, final Object value )
     {
         setProperty( (String) id, value );

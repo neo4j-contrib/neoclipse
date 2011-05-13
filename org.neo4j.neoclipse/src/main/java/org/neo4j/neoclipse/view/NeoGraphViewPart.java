@@ -116,33 +116,39 @@ public class NeoGraphViewPart extends ViewPart implements
     {
         EMPTY_SELECTION = new IStructuredSelection()
         {
+            @Override
             public boolean isEmpty()
             {
                 return true;
             }
 
+            @Override
             @SuppressWarnings( "rawtypes" )
             public List toList()
             {
                 return Collections.emptyList();
             }
 
+            @Override
             public Object[] toArray()
             {
                 return toList().toArray();
             }
 
+            @Override
             public int size()
             {
                 return 0;
             }
 
+            @Override
             @SuppressWarnings( "rawtypes" )
             public Iterator iterator()
             {
                 return null;
             }
 
+            @Override
             public Object getFirstElement()
             {
                 return null;
@@ -229,6 +235,7 @@ public class NeoGraphViewPart extends ViewPart implements
         Activator.getDefault().getGraphDbServiceManager().submitTask(
                 new Runnable()
                 {
+                    @Override
                     public void run()
                     {
                         notifyTheListeners( node );
@@ -299,6 +306,7 @@ public class NeoGraphViewPart extends ViewPart implements
             return Activator.getDefault().getGraphDbServiceManager().submitTask(
                     new GraphCallable<Node>()
                     {
+                        @Override
                         public Node call( final GraphDatabaseService graphDb )
                         {
                             Node refNode = graphDb.getReferenceNode();
@@ -330,6 +338,7 @@ public class NeoGraphViewPart extends ViewPart implements
     {
         UiHelper.asyncExec( new Runnable()
         {
+            @Override
             public void run()
             {
                 StringBuilder str = new StringBuilder( 64 );
@@ -355,6 +364,7 @@ public class NeoGraphViewPart extends ViewPart implements
     /**
      * Returns the graph viewer for zooming.
      */
+    @Override
     public AbstractZoomableViewer getZoomableViewer()
     {
         return viewer;
@@ -487,6 +497,7 @@ public class NeoGraphViewPart extends ViewPart implements
             Activator.getDefault().getGraphDbServiceManager().executeTask(
                     new GraphRunnable()
                     {
+                        @Override
                         public void run( final GraphDatabaseService graphDb )
                         {
                             Node node = graphDb.getReferenceNode();
@@ -512,6 +523,7 @@ public class NeoGraphViewPart extends ViewPart implements
             final GraphDbServiceManager gsm = Activator.getDefault().getGraphDbServiceManager();
             gsm.submitTask( new GraphRunnable()
             {
+                @Override
                 public void run( final GraphDatabaseService graphDb )
                 {
                     if ( graphDb == null )
@@ -543,6 +555,7 @@ public class NeoGraphViewPart extends ViewPart implements
                     setInput( node );
                     gsm.submitDisplayTask( new Runnable()
                     {
+                        @Override
                         public void run()
                         {
                             NeoGraphViewPart.this.refreshStatusBar();
@@ -567,6 +580,7 @@ public class NeoGraphViewPart extends ViewPart implements
             GraphDbServiceManager gsm = Activator.getDefault().getGraphDbServiceManager();
             gsm.submitTask( new GraphRunnable()
             {
+                @Override
                 public void run( final GraphDatabaseService graphDb )
                 {
                     if ( graphDb != null )
@@ -600,6 +614,7 @@ public class NeoGraphViewPart extends ViewPart implements
             Activator.getDefault().getGraphDbServiceManager().submitTask(
                     new Runnable()
                     {
+                        @Override
                         public void run()
                         {
                             setInput( node );
@@ -680,6 +695,7 @@ public class NeoGraphViewPart extends ViewPart implements
     {
         UiHelper.asyncExec( new Runnable()
         {
+            @Override
             public void run()
             {
                 disableDelete();
@@ -705,6 +721,7 @@ public class NeoGraphViewPart extends ViewPart implements
     {
         UiHelper.asyncExec( new Runnable()
         {
+            @Override
             public void run()
             {
                 disableDelete();
@@ -765,6 +782,7 @@ public class NeoGraphViewPart extends ViewPart implements
     {
         UiHelper.asyncExec( new Runnable()
         {
+            @Override
             public void run()
             {
                 viewer.setInput( node );
@@ -772,6 +790,7 @@ public class NeoGraphViewPart extends ViewPart implements
                 {
                     UiHelper.asyncExec( new Runnable()
                     {
+                        @Override
                         public void run()
                         {
                             notifyListeners( node );
@@ -803,10 +822,12 @@ public class NeoGraphViewPart extends ViewPart implements
         /**
          * Refreshes the input source of the view.
          */
+        @Override
         public void serviceChanged( final GraphDbServiceEvent event )
         {
             UiHelper.asyncExec( new Runnable()
             {
+                @Override
                 public void run()
                 {
                     handleServiceChange( event );
@@ -897,6 +918,7 @@ public class NeoGraphViewPart extends ViewPart implements
         /**
          * Sets the selected node as input for the viewer.
          */
+        @Override
         public void doubleClick( final DoubleClickEvent event )
         {
             StructuredSelection sel = (StructuredSelection) event.getSelection();
@@ -923,6 +945,7 @@ public class NeoGraphViewPart extends ViewPart implements
         /**
          * Handles selection, making the context menu look right.
          */
+        @Override
         public void selectionChanged( final IWorkbenchPart part,
                 final ISelection selection )
         {
@@ -959,6 +982,7 @@ public class NeoGraphViewPart extends ViewPart implements
         /**
          * Handles selection, just updating the relTypeView reference.
          */
+        @Override
         public void selectionChanged( final IWorkbenchPart part,
                 final ISelection selection )
         {
@@ -997,10 +1021,12 @@ public class NeoGraphViewPart extends ViewPart implements
         /**
          * Handle change in properties.
          */
+        @Override
         public void handleStateChanged( final ChangeEvent event )
         {
             UiHelper.asyncExec( new Runnable()
             {
+                @Override
                 public void run()
                 {
                     refresh( event.getSource(), true );
@@ -1021,10 +1047,12 @@ public class NeoGraphViewPart extends ViewPart implements
         /**
          * Forward event, then refresh view.
          */
+        @Override
         public void propertyChange( final PropertyChangeEvent event )
         {
             UiHelper.asyncExec( new Runnable()
             {
+                @Override
                 public void run()
                 {
                     handleChange( event );

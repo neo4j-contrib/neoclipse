@@ -48,11 +48,11 @@ public class DecoratorPreferenceInitializer extends
         pref.setDefault( DecoratorPreferences.SHOW_NODE_NAMES, true );
         pref.setDefault( DecoratorPreferences.SHOW_RELATIONSHIP_NAMES, true );
         pref.setDefault( DecoratorPreferences.SHOW_RELATIONSHIP_PROPERTIES,
-                false );
+                true );
         pref.setDefault( DecoratorPreferences.SHOW_RELATIONSHIP_COLORS, true );
         pref.setDefault( DecoratorPreferences.SHOW_RELATIONSHIP_IDS, false );
         pref.setDefault( DecoratorPreferences.SHOW_ARROWS, true );
-        pref.setDefault( DecoratorPreferences.SHOW_NODE_PROPERTIES, false );
+        pref.setDefault( DecoratorPreferences.SHOW_NODE_PROPERTIES, true );
         pref.setDefault( DecoratorPreferences.SHOW_NODE_ICONS, true );
         pref.setDefault( DecoratorPreferences.SHOW_NODE_IDS, false );
 
