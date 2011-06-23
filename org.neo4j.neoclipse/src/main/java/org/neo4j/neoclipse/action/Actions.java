@@ -41,6 +41,7 @@ public enum Actions
     // connect
     START( "Start/Connect database", Icons.START_ENABLED, Icons.START_DISABLED ),
     STOP( "Stop/Disconnect database", Icons.STOP_ENABLED, Icons.STOP_DISABLED ),
+    SYNC( "Sync database", Icons.SYNC_ENABLED, Icons.SYNC_DISABLED ),
     // add rel
     ADD_RELATIONSHIP(
             "Create relationship between two existing nodes",
@@ -100,7 +101,6 @@ public enum Actions
     DELETE( "Delete", Icons.DELETE_ENABLED, Icons.DELETE_DISABLED ),
     COMMIT( "Commit", Icons.COMMIT_ENABLED, Icons.COMMIT_DISABLED ),
     ROLLBACK( "Roll back", Icons.ROLLBACK_ENABLED, Icons.ROLLBACK_DISABLED ),
-    SYNC( "Sync", Icons.SYNC_ENABLED, Icons.SYNC_DISABLED ),
     // view node settings
     NODE_COLORS( "Node colors" ),
     NODE_ICONS( "Node icons" ),

@@ -48,10 +48,10 @@ import org.neo4j.neoclipse.action.browse.RefreshAction;
 import org.neo4j.neoclipse.action.browse.ShowReferenceNodeAction;
 import org.neo4j.neoclipse.action.connect.StartAction;
 import org.neo4j.neoclipse.action.connect.StopAction;
+import org.neo4j.neoclipse.action.connect.SyncAction;
 import org.neo4j.neoclipse.action.context.CommitAction;
 import org.neo4j.neoclipse.action.context.DeleteAction;
 import org.neo4j.neoclipse.action.context.RollbackAction;
-import org.neo4j.neoclipse.action.context.SyncAction;
 import org.neo4j.neoclipse.action.decorate.node.ShowNodeColorsAction;
 import org.neo4j.neoclipse.action.decorate.node.ShowNodeIconsAction;
 import org.neo4j.neoclipse.action.decorate.node.ShowNodeIdsAction;
@@ -115,8 +115,8 @@ public class NeoGraphMenu
                 {
                     Image image = new Image( Display.getCurrent(),
                             RELTYPE_IMG_SIZE, RELTYPE_IMG_SIZE );
-                    Color color = graphView.getLabelProvider().getColor(
-                            relType );
+                    Color color = graphView.getLabelProvider()
+                            .getColor( relType );
                     GC gc = new GC( image );
                     gc.setBackground( color );
                     gc.fillRectangle( RELTYPE_POSITION, RELTYPE_POSITION,
@@ -242,26 +242,26 @@ public class NeoGraphMenu
     private final RollbackAction rollbackAction;
     // menu managers
     private final MenuManager addRelMenuMgr = new MenuManager(
-            Actions.ADD_RELATIONSHIP.label(),
-            Actions.ADD_RELATIONSHIP.icon().descriptor(), "addRelSubmenu" );
+            Actions.ADD_RELATIONSHIP.label(), Actions.ADD_RELATIONSHIP.icon()
+                    .descriptor(), "addRelSubmenu" );
     private static final MenuManager addRelMenuMgrFake = new MenuManager(
             Actions.ADD_RELATIONSHIP.label(),
-            Actions.ADD_RELATIONSHIP.disabledIcon().descriptor(),
-            "addRelSubmenuFake" );
+            Actions.ADD_RELATIONSHIP.disabledIcon()
+                    .descriptor(), "addRelSubmenuFake" );
     private final MenuManager addOutNodeMenuMgr = new MenuManager(
-            Actions.ADD_OUTGOING_NODE.label(),
-            Actions.ADD_OUTGOING_NODE.icon().descriptor(), "addOutNodeSubmenu" );
+            Actions.ADD_OUTGOING_NODE.label(), Actions.ADD_OUTGOING_NODE.icon()
+                    .descriptor(), "addOutNodeSubmenu" );
     private static final MenuManager addOutNodeMenuMgrFake = new MenuManager(
             Actions.ADD_OUTGOING_NODE.label(),
-            Actions.ADD_OUTGOING_NODE.disabledIcon().descriptor(),
-            "addOutNodeSubmenuFake" );
+            Actions.ADD_OUTGOING_NODE.disabledIcon()
+                    .descriptor(), "addOutNodeSubmenuFake" );
     private final MenuManager addInNodeMenuMgr = new MenuManager(
-            Actions.ADD_INCOMING_NODE.label(),
-            Actions.ADD_INCOMING_NODE.icon().descriptor(), "addInNodeSubmenu" );
+            Actions.ADD_INCOMING_NODE.label(), Actions.ADD_INCOMING_NODE.icon()
+                    .descriptor(), "addInNodeSubmenu" );
     private static final MenuManager addInNodeMenuMgrFake = new MenuManager(
             Actions.ADD_INCOMING_NODE.label(),
-            Actions.ADD_INCOMING_NODE.disabledIcon().descriptor(),
-            "addInNodeSubmenuFake" );
+            Actions.ADD_INCOMING_NODE.disabledIcon()
+                    .descriptor(), "addInNodeSubmenuFake" );
     /**
      * Colored images for the different relationship types.
      */
@@ -326,7 +326,9 @@ public class NeoGraphMenu
         addNewActionSet = new ActionSet( relTypesProvider );
         makeContributions();
         registerChangeHandlers();
-        showRelationshipColors = graphView.getLabelProvider().getViewSettings().isShowRelationshipColors();
+        showRelationshipColors = graphView.getLabelProvider()
+                .getViewSettings()
+                .isShowRelationshipColors();
     }
 
     /**
@@ -356,7 +358,8 @@ public class NeoGraphMenu
         addInNodeMenuMgr.setVisible( in );
         addInNodeMenuMgrFake.setVisible( !in );
         // update
-        addInNodeMenuMgr.getParent().update( true );
+        addInNodeMenuMgr.getParent()
+                .update( true );
     }
 
     /**
@@ -490,11 +493,16 @@ public class NeoGraphMenu
     private void makeContributions()
     {
         // initialize actions
-        IToolBarManager tm = graphView.getViewSite().getActionBars().getToolBarManager();
-        IMenuManager mm = graphView.getViewSite().getActionBars().getMenuManager();
+        IToolBarManager tm = graphView.getViewSite()
+                .getActionBars()
+                .getToolBarManager();
+        IMenuManager mm = graphView.getViewSite()
+                .getActionBars()
+                .getMenuManager();
         MenuManager cm = new MenuManager();
         Menu menu = cm.createContextMenu( graphViewer.getControl() );
-        graphViewer.getControl().setMenu( menu );
+        graphViewer.getControl()
+                .setMenu( menu );
         contributeContextActions( cm );
         contributeConnectionActions( tm );
         contributeTransactionActions( tm );
@@ -517,8 +525,10 @@ public class NeoGraphMenu
         // platform actions
         contributePlatformActions( mm );
         // printing
-        graphView.getViewSite().getActionBars().setGlobalActionHandler(
-                ActionFactory.PRINT.getId(), new PrintGraphAction( graphView ) );
+        graphView.getViewSite()
+                .getActionBars()
+                .setGlobalActionHandler( ActionFactory.PRINT.getId(),
+                        new PrintGraphAction( graphView ) );
     }
 
     /**
@@ -559,7 +569,7 @@ public class NeoGraphMenu
         tm.add( commitAction );
         tm.add( rollbackAction );
         // TODO make it work
-        // tm.add( syncAction );
+        tm.add( syncAction );
         tm.add( SEPARATOR );
     }
 
@@ -676,7 +686,8 @@ public class NeoGraphMenu
             GroupMarker relationshipGroup = new GroupMarker(
                     relationshipGroupName );
             mm.add( relationshipGroup );
-            ViewSettings viewSettings = graphView.getLabelProvider().getViewSettings();
+            ViewSettings viewSettings = graphView.getLabelProvider()
+                    .getViewSettings();
             // relationship properties actions
             mm.appendToGroup( relationshipGroupName,
                     new ShowRelationshipPropertiesAction( graphView,
@@ -750,7 +761,8 @@ public class NeoGraphMenu
             @Override
             public void run()
             {
-                Activator.getDefault().showPreferenceDialog( false );
+                Activator.getDefault()
+                        .showPreferenceDialog( false );
             }
         };
         Actions.PREFERENCES.initialize( preferencesAction );
@@ -765,7 +777,8 @@ public class NeoGraphMenu
         addRelMenuMgr.removeAll();
         addOutNodeMenuMgr.removeAll();
         addInNodeMenuMgr.removeAll();
-        Set<RelationshipType> relTypes = RelationshipTypesProviderWrapper.getInstance().getCurrentRelationshipTypes();
+        Set<RelationshipType> relTypes = RelationshipTypesProviderWrapper.getInstance()
+                .getCurrentRelationshipTypes();
         for ( RelationshipType relType : relTypes )
         {
             actionMap.put( relType.name(), new ActionSet( relType ) );
@@ -787,7 +800,8 @@ public class NeoGraphMenu
         final ActionSet actionSet = new ActionSet( relType );
         final String name = relType.name();
         actionMap.put( name, actionSet );
-        actionSet.addAt( actionMap.headMap( name ).size() + 1 );
+        actionSet.addAt( actionMap.headMap( name )
+                .size() + 1 );
     }
 
     /**

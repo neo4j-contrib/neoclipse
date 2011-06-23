@@ -71,7 +71,7 @@ public class GraphDbServiceManager
                 if ( lifecycle != null )
                 {
                     throw new IllegalStateException(
-                    "Can't start new database: the old one isn't shutdown properly." );
+                            "Can't start new database: the old one isn't shutdown properly." );
                 }
                 logInfo( "trying to start/connect ..." );
                 String dbLocation;
@@ -90,8 +90,11 @@ public class GraphDbServiceManager
                     break;
                 }
                 lifecycle = new GraphDbLifecycle( graphDb );
-                logFine( "starting tx" );
-                tx = graphDb.beginTx();
+                if ( !isReadOnlyMode() )
+                {
+                    logFine( "starting tx" );
+                    tx = graphDb.beginTx();
+                }
                 fireServiceChangedEvent( GraphDbServiceStatus.STARTED );
             }
         };
@@ -105,14 +108,17 @@ public class GraphDbServiceManager
                 if ( lifecycle == null )
                 {
                     throw new IllegalStateException(
-                    "Can not stop the database: there is no running database." );
+                            "Can not stop the database: there is no running database." );
                 }
                 fireServiceChangedEvent( GraphDbServiceStatus.STOPPING );
                 // TODO give the UI some time to deal with it here?
                 try
                 {
-                    tx.failure();
-                    tx.finish();
+                    if ( !isReadOnlyMode() )
+                    {
+                        tx.failure();
+                        tx.finish();
+                    }
                 }
                 catch ( Exception e )
                 {
@@ -126,13 +132,23 @@ public class GraphDbServiceManager
                 catch ( Exception e )
                 {
                     throw new RuntimeException(
-                    "Can not stop the database. The reason is not known." );
+                            "Can not stop the database. The reason is not known." );
                 }
                 finally
                 {
                     lifecycle = null;
                     fireServiceChangedEvent( GraphDbServiceStatus.STOPPED );
                 }
+            }
+        };
+
+        final Runnable RESTART = new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                STOP.run();
+                START.run();
             }
         };
 
@@ -162,9 +178,13 @@ public class GraphDbServiceManager
                 {
                     logFine( "Committing while not in write mode." );
                 }
-                tx.finish();
-                tx = lifecycle.graphDb().beginTx();
-                fireServiceChangedEvent( GraphDbServiceStatus.COMMIT );
+                if ( !isReadOnlyMode() )
+                {
+                    tx.finish();
+                    tx = lifecycle.graphDb()
+                            .beginTx();
+                    fireServiceChangedEvent( GraphDbServiceStatus.COMMIT );
+                }
             }
         };
 
@@ -173,9 +193,13 @@ public class GraphDbServiceManager
             @Override
             public void run()
             {
-                tx.finish();
-                tx = lifecycle.graphDb().beginTx();
-                fireServiceChangedEvent( GraphDbServiceStatus.ROLLBACK );
+                if ( !isReadOnlyMode() )
+                {
+                    tx.finish();
+                    tx = lifecycle.graphDb()
+                            .beginTx();
+                    fireServiceChangedEvent( GraphDbServiceStatus.ROLLBACK );
+                }
             }
         };
     }
@@ -259,7 +283,8 @@ public class GraphDbServiceManager
      */
     private final ListenerList listeners = new ListenerList();
     private Transaction tx;
-    private final IPreferenceStore preferenceStore = Activator.getDefault().getPreferenceStore();
+    private final IPreferenceStore preferenceStore = Activator.getDefault()
+            .getPreferenceStore();
 
     /**
      * The constructor.
@@ -267,7 +292,8 @@ public class GraphDbServiceManager
     public GraphDbServiceManager()
     {
         serviceMode = GraphDbServiceMode.valueOf( preferenceStore.getString( Preferences.CONNECTION_MODE ) );
-        logInfo( "Starting " + this.getClass().getSimpleName() );
+        logInfo( "Starting " + this.getClass()
+                .getSimpleName() );
     }
 
     private void logFine( final String message )
@@ -288,7 +314,8 @@ public class GraphDbServiceManager
     private void printTask( final Object task, final String type,
             final String info )
     {
-        String name = task.getClass().getName();
+        String name = task.getClass()
+                .getName();
         if ( name.startsWith( NEOCLIPSE_PACKAGE ) )
         {
             name = name.substring( NEOCLIPSE_PACKAGE.length() );
@@ -304,11 +331,11 @@ public class GraphDbServiceManager
 
     public <T> Future<T> submitTask( final GraphCallable<T> callable,
             final String info )
-            {
+    {
         printTask( callable, "GC", info );
         TaskWrapper<T> wrapped = new TaskWrapper<T>( callable );
         return executor.submit( wrapped );
-            }
+    }
 
     public Future<?> submitTask( final Runnable runnable, final String info )
     {
@@ -370,7 +397,7 @@ public class GraphDbServiceManager
     public boolean isLocal()
     {
         return serviceMode == GraphDbServiceMode.READ_WRITE_EMBEDDED
-        || serviceMode == GraphDbServiceMode.READ_ONLY_EMBEDDED;
+               || serviceMode == GraphDbServiceMode.READ_ONLY_EMBEDDED;
     }
 
     public void setGraphServiceMode( final GraphDbServiceMode gdbServiceMode )
@@ -396,6 +423,16 @@ public class GraphDbServiceManager
     public Future<?> stopGraphDbService()
     {
         return submitTask( tasks().STOP, "stop db" );
+    }
+
+    /**
+     * Restarts the neo4j service.
+     * 
+     * @return
+     */
+    public Future<?> restartGraphDbService() throws Exception
+    {
+        return submitTask( tasks().RESTART, "restart db" );
     }
 
     /**
@@ -450,29 +487,29 @@ public class GraphDbServiceManager
     private String getDbLocation()
     {
         String location = preferenceStore.getString( Preferences.DATABASE_LOCATION );
-        if ( ( location == null ) || ( location.trim().length() == 0 ) )
+        if ( ( location == null ) || ( location.trim()
+                .length() == 0 ) )
         {
             // if there's really no db dir, create one in the workspace
             File dbDir = GraphDbServiceManager.dirInWorkspace( "neo4j-db" );
             location = dbDir.getAbsolutePath();
-            preferenceStore.setValue( Preferences.DATABASE_LOCATION,
-                    location );
+            preferenceStore.setValue( Preferences.DATABASE_LOCATION, location );
         }
         File dir = new File( location );
         if ( !dir.exists() )
         {
             throw new IllegalArgumentException(
-            "The database location does not exist." );
+                    "The database location does not exist." );
         }
         if ( !dir.isDirectory() )
         {
             throw new IllegalArgumentException(
-            "The database location is not a directory." );
+                    "The database location is not a directory." );
         }
         if ( !dir.canWrite() )
         {
             throw new IllegalAccessError(
-            "Writes are not allowed to the database location." );
+                    "Writes are not allowed to the database location." );
         }
         logFine( "using location: " + location );
         return location;
@@ -489,7 +526,8 @@ public class GraphDbServiceManager
         String path;
         try
         {
-            path = url.toURI().getPath();
+            path = url.toURI()
+                    .getPath();
         }
         catch ( URISyntaxException e )
         {
