@@ -10,11 +10,11 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ClassPath: .,
  lib/geronimo-jta_1.1_spec-1.1.1.jar,
  lib/lucene-core-3.1.0.jar,
- lib/neo4j-graph-algo-1.4.M04.jar,
- lib/neo4j-jmx-1.4.M04.jar,
- lib/neo4j-kernel-1.4.M04.jar,
- lib/neo4j-lucene-index-1.4.M04.jar,
- lib/neo4j-udc-1.4.M04-neo4j.jar
+ lib/neo4j-graph-algo-1.4.jar,
+ lib/neo4j-jmx-1.4.jar,
+ lib/neo4j-kernel-1.4.jar,
+ lib/neo4j-lucene-index-1.4.jar,
+ lib/neo4j-udc-1.4-neo4j.jar
 Import-Package: org.eclipse.core.commands.common,
  org.eclipse.core.runtime,
  org.eclipse.core.runtime.preferences,

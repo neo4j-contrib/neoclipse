@@ -5,11 +5,11 @@
   <parent>
     <artifactId>neoclipse</artifactId>
     <groupId>org.neo4j</groupId>
-    <version>1.4.M04</version>
+    <version>1.4</version>
   </parent>
   <groupId>org.neo4j</groupId>
   <artifactId>org.neo4j.neoclipse.doc</artifactId>
-  <version>1.4.M04</version>
+  <version>1.4</version>
   <name>Neoclipse Documentation Plugin</name>
   <packaging>eclipse-plugin</packaging>
 </project>
