@@ -101,6 +101,7 @@ public class RelationshipTypeView extends ViewPart implements
     private Action addRelationship;
     private Action addOutgoingNode;
     private Action addIncomingNode;
+    private Action addLoop;
     private Action addIncomingIcon;
     private Action addOutgoingIcon;
     private Action filterNone;
@@ -260,6 +261,7 @@ public class RelationshipTypeView extends ViewPart implements
         manager.add( addRelationship );
         manager.add( addOutgoingNode );
         manager.add( addIncomingNode );
+        manager.add( addLoop );
         manager.add( SEPARATOR );
         manager.add( newAction );
     }
@@ -375,6 +377,17 @@ public class RelationshipTypeView extends ViewPart implements
             }
         };
         Actions.ADD_INCOMING_NODE.initialize( addIncomingNode );
+        addLoop = new Action()
+        {
+            @Override
+            public void run()
+            {
+                GraphDbUtil.addLoopNodeAction(
+                        getCurrentSelectedRelTypes().iterator()
+                                .next(), getGraphView() );
+            }
+        };
+        Actions.ADD_LOOP.initialize( addLoop );
     }
 
     /**
@@ -627,6 +640,16 @@ public class RelationshipTypeView extends ViewPart implements
     {
         addRelationship.setEnabled( enabled );
     }
+    
+    /**
+     * Enable or disable adding a loop.
+     * 
+     * @param enabled
+     */
+    private void setEnableAddLoop (final boolean enabled )
+    {
+        addLoop.setEnabled( enabled );
+    }
 
     /**
      * Enable or disable setting of relationship type-dependent icons.
@@ -767,6 +790,7 @@ public class RelationshipTypeView extends ViewPart implements
         }
         setEnableAddRelationship( false );
         setEnableAddNode( false );
+        setEnableAddLoop( false );
         if ( part instanceof NeoGraphViewPart )
         {
             setGraphView( (NeoGraphViewPart) part );
@@ -808,6 +832,8 @@ public class RelationshipTypeView extends ViewPart implements
         List<Node> currentSelectedNodes = getGraphView().getCurrentSelectedNodes();
         setEnableAddRelationship( getCurrentSelectedRelTypes().size() == 1
                                   && currentSelectedNodes.size() == 2 );
+        setEnableAddLoop( getCurrentSelectedRelTypes().size() == 1
+                          && currentSelectedNodes.size() == 1 );
         setEnableAddNode( getCurrentSelectedRelTypes().size() == 1
                           && !currentSelectedNodes.isEmpty() );
         setEnableSetIcon( !getCurrentSelectedRelTypes().isEmpty() );

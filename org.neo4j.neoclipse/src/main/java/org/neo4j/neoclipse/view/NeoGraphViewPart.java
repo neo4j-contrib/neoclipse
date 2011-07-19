@@ -293,7 +293,8 @@ public class NeoGraphViewPart extends ViewPart implements
                                         || selectedRelationshipCount > 0 );
             boolean rel = selectedNodeCount == 2;
             boolean outIn = selectedNodeCount > 0;
-            menu.setEnabledRelActions( rel, outIn, outIn );
+            boolean self = selectedNodeCount == 1;
+            menu.setEnabledRelActions( rel, outIn, outIn, self );
         }
     }
 
@@ -894,7 +895,7 @@ public class NeoGraphViewPart extends ViewPart implements
                 {
                     // set up menus for read-only mode
                     menu.setEnableDeleteAction( false );
-                    menu.setEnabledRelActions( false, false, false );
+                    menu.setEnabledRelActions( false, false, false, false );
                     menu.setEnabledCommitAction( false );
                     menu.setEnabledRollbackAction( false );
                     menu.setEnabledSyncAction( true );

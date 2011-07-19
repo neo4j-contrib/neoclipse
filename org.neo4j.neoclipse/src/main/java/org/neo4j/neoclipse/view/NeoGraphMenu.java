@@ -98,6 +98,7 @@ public class NeoGraphMenu
         private final Action addRel;
         private final Action addOut;
         private final Action addIn;
+        private final Action addLoop;
 
         /**
          * Create normal actions from relationship type.
@@ -157,6 +158,15 @@ public class NeoGraphMenu
                 }
             };
             addIn.setEnabled( true );
+            addLoop = new Action( name, imgDesc )
+            {
+                @Override
+                public void run()
+                {
+                    GraphDbUtil.addLoopNodeAction( relType, graphView );
+                }
+            };
+            addLoop.setEnabled( true );
         }
 
         /**
@@ -173,6 +183,8 @@ public class NeoGraphMenu
                     NodeSpaceAction.OUTGOING_NODE, graphView );
             addIn = new NewRelationshipTypeAction( relTypesProvider,
                     NodeSpaceAction.INCOMING_NODE, graphView );
+            addLoop = new NewRelationshipTypeAction( relTypesProvider,
+                    NodeSpaceAction.LOOP, graphView );
         }
 
         /**
@@ -183,6 +195,7 @@ public class NeoGraphMenu
             addRelMenuMgr.add( addRel );
             addOutNodeMenuMgr.add( addOut );
             addInNodeMenuMgr.add( addIn );
+            addLoopMenuMgr.add( addLoop );
         }
 
         /**
@@ -196,6 +209,7 @@ public class NeoGraphMenu
             addOutNodeMenuMgr.insert( index,
                     new ActionContributionItem( addOut ) );
             addInNodeMenuMgr.insert( index, new ActionContributionItem( addIn ) );
+            addLoopMenuMgr.insert( index, new ActionContributionItem( addLoop ) );
         }
     }
 
@@ -211,7 +225,7 @@ public class NeoGraphMenu
     /**
      * Size of the dot that represents the relationship type.
      */
-    private static final int RELTYPE_DOT_SIZE = 6;
+    private static final int RELTYPE_DOT_SIZE = 8;
     /**
      * Position of dot.
      */
@@ -262,6 +276,12 @@ public class NeoGraphMenu
             Actions.ADD_INCOMING_NODE.label(),
             Actions.ADD_INCOMING_NODE.disabledIcon()
                     .descriptor(), "addInNodeSubmenuFake" );
+    private final MenuManager addLoopMenuMgr = new MenuManager(
+            Actions.ADD_LOOP.label(), Actions.ADD_LOOP.icon()
+                    .descriptor(), "addLoopSubmenu" );
+    private static final MenuManager addLoopMenuMgrFake = new MenuManager(
+            Actions.ADD_LOOP.label(), Actions.ADD_LOOP.disabledIcon()
+                    .descriptor(), "addLoopSubmenuFake" );
     /**
      * Colored images for the different relationship types.
      */
@@ -299,6 +319,7 @@ public class NeoGraphMenu
         addRelMenuMgrFake.add( dummyAction );
         addOutNodeMenuMgrFake.add( dummyAction );
         addInNodeMenuMgrFake.add( dummyAction );
+        addLoopMenuMgrFake.add( dummyAction );
     }
 
     /**
@@ -349,7 +370,7 @@ public class NeoGraphMenu
      * @param in enable add incoming relationships
      */
     public void setEnabledRelActions( final boolean add, final boolean out,
-            final boolean in )
+            final boolean in, final boolean self )
     {
         addRelMenuMgr.setVisible( add );
         addRelMenuMgrFake.setVisible( !add );
@@ -357,6 +378,8 @@ public class NeoGraphMenu
         addOutNodeMenuMgrFake.setVisible( !out );
         addInNodeMenuMgr.setVisible( in );
         addInNodeMenuMgrFake.setVisible( !in );
+        addLoopMenuMgr.setVisible( self );
+        addLoopMenuMgrFake.setVisible( !self );
         // update
         addInNodeMenuMgr.getParent()
                 .update( true );
@@ -555,6 +578,8 @@ public class NeoGraphMenu
         cm.add( addOutNodeMenuMgrFake );
         cm.add( addInNodeMenuMgr );
         cm.add( addInNodeMenuMgrFake );
+        cm.add( addLoopMenuMgr );
+        cm.add( addLoopMenuMgrFake );
         cm.add( SEPARATOR );
         cm.add( deleteAction );
     }
@@ -568,7 +593,6 @@ public class NeoGraphMenu
     {
         tm.add( commitAction );
         tm.add( rollbackAction );
-        // TODO make it work
         tm.add( syncAction );
         tm.add( SEPARATOR );
     }
@@ -777,6 +801,7 @@ public class NeoGraphMenu
         addRelMenuMgr.removeAll();
         addOutNodeMenuMgr.removeAll();
         addInNodeMenuMgr.removeAll();
+        addLoopMenuMgr.removeAll();
         Set<RelationshipType> relTypes = RelationshipTypesProviderWrapper.getInstance()
                 .getCurrentRelationshipTypes();
         for ( RelationshipType relType : relTypes )

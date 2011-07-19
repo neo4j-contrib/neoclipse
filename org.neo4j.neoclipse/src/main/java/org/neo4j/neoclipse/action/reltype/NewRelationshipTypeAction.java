@@ -41,7 +41,7 @@ public class NewRelationshipTypeAction extends AbstractBaseAction
      */
     public enum NodeSpaceAction
     {
-        NONE, RELATIONSHIP, OUTGOING_NODE, INCOMING_NODE
+        NONE, RELATIONSHIP, OUTGOING_NODE, INCOMING_NODE, LOOP
     }
 
     private static final String NEW_RELTYPE_DIALOG_TEXT = "Please enter the name of the new relationship type";
@@ -95,6 +95,9 @@ public class NewRelationshipTypeAction extends AbstractBaseAction
                     break;
                 case INCOMING_NODE:
                     GraphDbUtil.addIncomingNodeAction( relType, graphView );
+                    break;
+                case LOOP:
+                    GraphDbUtil.addLoopNodeAction( relType, graphView );
                     break;
             }
         }

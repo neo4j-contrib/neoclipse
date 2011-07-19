@@ -398,6 +398,24 @@ public class GraphDbUtil
     }
 
     /**
+     * Add loop to a node.
+     * 
+     * @param relTypes relationships types to use (should only be one item)
+     * @param graphView
+     */
+    public static void addLoopNodeAction( final RelationshipType relType,
+            final NeoGraphViewPart graphView )
+    {
+        List<Node> currentSelectedNodes = graphView.getCurrentSelectedNodes();
+        if ( !isOneOrMoreNodesSelected( currentSelectedNodes ) )
+        {
+            return;
+        }
+        List<Node> node = Collections.singletonList( currentSelectedNodes.get( 0 ));
+        createRelationship( node, node, relType, graphView );
+    }
+
+    /**
      * Test precondition for operations.
      * 
      * @return

@@ -108,6 +108,8 @@ public enum Icons
             path( "enabled/add-relationship-outgoing.gif" ) ),
     ADD_OUTGOING_DISABLED( "add_outgoing_disabled",
             path( "disabled/add-relationship-outgoing.gif" ) ),
+    ADD_LOOP_ENABLED( "add_loop_enabled", path( "enabled/add-loop.gif" ) ),
+    ADD_LOOP_DISABLED( "add_loop_disabled", path( "disabled/add-loop.gif" ) ),
     HIGHLIGHT_ENABLED( "highlight_enabled", path( "enabled/highlight.gif" ) ),
     HIGHLIGHT_DISABLED( "highlight_disabled", path( "disabled/highlight.gif" ) ),
     HIGHLIGHT_INCOMING_ENABLED( "highlight_incoming_enabled",
@@ -176,7 +178,8 @@ public enum Icons
     {
         if ( reg == null )
         {
-            reg = Activator.getDefault().getImageRegistry();
+            reg = Activator.getDefault()
+                    .getImageRegistry();
         }
         return reg;
     }
@@ -190,7 +193,8 @@ public enum Icons
     {
         if ( sharedImages == null )
         {
-            sharedImages = PlatformUI.getWorkbench().getSharedImages();
+            sharedImages = PlatformUI.getWorkbench()
+                    .getSharedImages();
         }
         return sharedImages;
     }
