@@ -61,9 +61,13 @@ public final class DecoratorPreferences
      */
     public static final String SHOW_RELATIONSHIP_NAMES = "showRelationshipNames";
     /**
-     * Keep track of relationship properties display on/off.
+     * Display relationship property keys or not.
      */
-    public static final String SHOW_RELATIONSHIP_PROPERTIES = "showRelationshipProperties";
+    public static final String SHOW_RELATIONSHIP_PROPERTY_KEYS = "showRelationshipPropertyKeys";
+    /**
+     * Filter relationship property keys or not.
+     */
+    public static final String FILTER_RELATIONSHIP_PROPERTIES = "filterRelationshipProperties";
     /**
      * Keep track of relationship id's display on/off.
      */
@@ -85,9 +89,13 @@ public final class DecoratorPreferences
      */
     public static final String SHOW_NODE_NAMES = "showNodeNames";
     /**
-     * Keep track of node properties display on/off.
+     * Display node property keys or not.
      */
-    public static final String SHOW_NODE_PROPERTIES = "showNodeProperties";
+    public static final String SHOW_NODE_PROPERTY_KEYS = "showNodePropertyKeys";
+    /**
+     * Filter node property keys or not.
+     */
+    public static final String FILTER_NODE_PROPERTIES = "filterNodeProperties";
     /**
      * Keep track of node icons display on/off.
      */

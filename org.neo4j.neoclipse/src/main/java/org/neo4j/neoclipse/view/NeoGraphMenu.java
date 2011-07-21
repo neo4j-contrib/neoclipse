@@ -52,16 +52,18 @@ import org.neo4j.neoclipse.action.connect.SyncAction;
 import org.neo4j.neoclipse.action.context.CommitAction;
 import org.neo4j.neoclipse.action.context.DeleteAction;
 import org.neo4j.neoclipse.action.context.RollbackAction;
+import org.neo4j.neoclipse.action.decorate.node.FilterNodePropertiesAction;
 import org.neo4j.neoclipse.action.decorate.node.ShowNodeColorsAction;
 import org.neo4j.neoclipse.action.decorate.node.ShowNodeIconsAction;
 import org.neo4j.neoclipse.action.decorate.node.ShowNodeIdsAction;
 import org.neo4j.neoclipse.action.decorate.node.ShowNodeLabelAction;
-import org.neo4j.neoclipse.action.decorate.node.ShowNodePropertiesAction;
+import org.neo4j.neoclipse.action.decorate.node.ShowNodePropertyKeysAction;
+import org.neo4j.neoclipse.action.decorate.rel.FilterRelationshipPropertiesAction;
 import org.neo4j.neoclipse.action.decorate.rel.ShowRelationshipColorsAction;
 import org.neo4j.neoclipse.action.decorate.rel.ShowRelationshipDirectionsAction;
 import org.neo4j.neoclipse.action.decorate.rel.ShowRelationshipIdsAction;
 import org.neo4j.neoclipse.action.decorate.rel.ShowRelationshipLabelAction;
-import org.neo4j.neoclipse.action.decorate.rel.ShowRelationshipPropertiesAction;
+import org.neo4j.neoclipse.action.decorate.rel.ShowRelationshipPropertyKeysAction;
 import org.neo4j.neoclipse.action.decorate.rel.ShowRelationshipTypesAction;
 import org.neo4j.neoclipse.action.layout.ShowGridLayoutAction;
 import org.neo4j.neoclipse.action.layout.ShowHorizontalShiftLayoutAction;
@@ -712,38 +714,41 @@ public class NeoGraphMenu
             mm.add( relationshipGroup );
             ViewSettings viewSettings = graphView.getLabelProvider()
                     .getViewSettings();
-            // relationship properties actions
-            mm.appendToGroup( relationshipGroupName,
-                    new ShowRelationshipPropertiesAction( graphView,
-                            viewSettings.isShowRelationshipProperties() ) );
-            // separator
-            {
-                mm.add( SEPARATOR );
-            }
             // relationship types actions
             mm.appendToGroup(
                     relationshipGroupName,
                     new ShowRelationshipTypesAction( graphView,
                             viewSettings.isShowRelationshipTypes() ) );
-            // relationship id's actions
-            mm.appendToGroup(
-                    relationshipGroupName,
-                    new ShowRelationshipIdsAction( graphView,
-                            viewSettings.isShowRelationshipIds() ) );
             // relationship labels actions
             mm.appendToGroup(
                     relationshipGroupName,
                     new ShowRelationshipLabelAction( graphView,
                             viewSettings.isShowRelationshipNames() ) );
+            mm.appendToGroup( relationshipGroupName,
+                    new FilterRelationshipPropertiesAction( graphView,
+                            viewSettings.isFilterRelationshipProperties() ) );
+            // relationship properties actions
+            mm.appendToGroup( relationshipGroupName,
+                    new ShowRelationshipPropertyKeysAction( graphView,
+                            viewSettings.isShowRelationshipPropertyKeys() ) );
+            // relationship id's actions
+            mm.appendToGroup(
+                    relationshipGroupName,
+                    new ShowRelationshipIdsAction( graphView,
+                            viewSettings.isShowRelationshipIds() ) );
+            // separator
+            {
+                mm.add( SEPARATOR );
+            }
+            // relationship directions actions
+            mm.appendToGroup( relationshipGroupName,
+                    new ShowRelationshipDirectionsAction( graphView,
+                            viewSettings.isShowArrows() ) );
             // relationship colors actions
             mm.appendToGroup(
                     relationshipGroupName,
                     new ShowRelationshipColorsAction( graphView,
                             viewSettings.isShowRelationshipColors() ) );
-            // relationship directions actions
-            mm.appendToGroup( relationshipGroupName,
-                    new ShowRelationshipDirectionsAction( graphView,
-                            viewSettings.isShowArrows() ) );
             // separator
             {
                 mm.add( SEPARATOR );
@@ -752,18 +757,18 @@ public class NeoGraphMenu
             GroupMarker nodeGroup = new GroupMarker( nodeGroupName );
             mm.add( nodeGroup );
             // properties action
-            mm.appendToGroup( nodeGroupName, new ShowNodePropertiesAction(
-                    graphView, viewSettings.isShowNodeProperties() ) );
+            mm.appendToGroup( nodeGroupName, new ShowNodeLabelAction(
+                    graphView, viewSettings.isShowNodeNames() ) );
+            mm.appendToGroup( nodeGroupName, new FilterNodePropertiesAction(
+                    graphView, viewSettings.isFilterNodeProperties() ) );
+            mm.appendToGroup( nodeGroupName, new ShowNodePropertyKeysAction(
+                    graphView, viewSettings.isShowNodePropertyKeys() ) );
+            mm.appendToGroup( nodeGroupName, new ShowNodeIdsAction( graphView,
+                    viewSettings.isShowNodeIds() ) );
             // separator
             {
                 mm.add( SEPARATOR );
             }
-            // relationship id's actions
-            mm.appendToGroup( nodeGroupName, new ShowNodeIdsAction( graphView,
-                    viewSettings.isShowNodeIds() ) );
-            // names actions
-            mm.appendToGroup( nodeGroupName, new ShowNodeLabelAction(
-                    graphView, viewSettings.isShowNodeNames() ) );
             // node colors actions
             mm.appendToGroup( nodeGroupName, new ShowNodeColorsAction(
                     graphView, viewSettings.isShowNodeColors() ) );

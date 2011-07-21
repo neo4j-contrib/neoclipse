@@ -207,7 +207,7 @@ public class SimpleGraphDecorator
         /**
          * Keep track of relationship properties display on/off.
          */
-        private boolean showRelationshipProperties;
+        private boolean showRelationshipPropertyKeys;
         /**
          * Keep track of relationship id's display on/off.
          */
@@ -229,10 +229,6 @@ public class SimpleGraphDecorator
          */
         private boolean showNodeNames;
         /**
-         * Keep track of node properties display on/off.
-         */
-        private boolean showNodeProperties;
-        /**
          * Keep track of node icons display on/off.
          */
         private boolean showNodeIcons;
@@ -244,24 +240,30 @@ public class SimpleGraphDecorator
          * Current preference store.
          */
         private final IPreferenceStore preferenceStore;
+        private boolean showNodePropertyKeys;
+        private boolean filterNodeProperties;
+        private boolean filterRelationshipProperties;
 
         /**
          * Create instance, load values from preference store.
          */
         public ViewSettings()
         {
-            preferenceStore = Activator.getDefault().getPreferenceStore();
+            preferenceStore = Activator.getDefault()
+                    .getPreferenceStore();
             showRelationshipTypes = preferenceStore.getBoolean( DecoratorPreferences.SHOW_RELATIONSHIP_TYPES );
             showRelationshipNames = preferenceStore.getBoolean( DecoratorPreferences.SHOW_RELATIONSHIP_NAMES );
-            showRelationshipProperties = preferenceStore.getBoolean( DecoratorPreferences.SHOW_RELATIONSHIP_PROPERTIES );
+            showRelationshipPropertyKeys = preferenceStore.getBoolean( DecoratorPreferences.SHOW_RELATIONSHIP_PROPERTY_KEYS );
             showRelationshipIds = preferenceStore.getBoolean( DecoratorPreferences.SHOW_RELATIONSHIP_IDS );
             showRelationshipColors = preferenceStore.getBoolean( DecoratorPreferences.SHOW_RELATIONSHIP_COLORS );
             showArrows = preferenceStore.getBoolean( DecoratorPreferences.SHOW_ARROWS );
             showNodeIds = preferenceStore.getBoolean( DecoratorPreferences.SHOW_NODE_IDS );
             showNodeNames = preferenceStore.getBoolean( DecoratorPreferences.SHOW_NODE_NAMES );
-            showNodeProperties = preferenceStore.getBoolean( DecoratorPreferences.SHOW_NODE_PROPERTIES );
             showNodeIcons = preferenceStore.getBoolean( DecoratorPreferences.SHOW_NODE_ICONS );
             showNodeColors = preferenceStore.getBoolean( DecoratorPreferences.SHOW_NODE_COLORS );
+            showNodePropertyKeys = preferenceStore.getBoolean( DecoratorPreferences.SHOW_NODE_PROPERTY_KEYS );
+            filterNodeProperties = preferenceStore.getBoolean( DecoratorPreferences.FILTER_NODE_PROPERTIES );
+            filterRelationshipProperties = preferenceStore.getBoolean( DecoratorPreferences.FILTER_RELATIONSHIP_PROPERTIES );
         }
 
         public boolean isShowRelationshipTypes()
@@ -292,18 +294,32 @@ public class SimpleGraphDecorator
                     showRelationshipNames );
         }
 
-        public boolean isShowRelationshipProperties()
+        public boolean isShowRelationshipPropertyKeys()
         {
-            return showRelationshipProperties;
+            return showRelationshipPropertyKeys;
         }
 
-        public void setShowRelationshipProperties(
-                final boolean showRelationshipProperties )
+        public void setShowRelationshipPropertyKeys(
+                final boolean showRelationshipPropertyKeys )
         {
-            this.showRelationshipProperties = showRelationshipProperties;
+            this.showRelationshipPropertyKeys = showRelationshipPropertyKeys;
             preferenceStore.setValue(
-                    DecoratorPreferences.SHOW_RELATIONSHIP_PROPERTIES,
-                    showRelationshipProperties );
+                    DecoratorPreferences.SHOW_RELATIONSHIP_PROPERTY_KEYS,
+                    showRelationshipPropertyKeys );
+        }
+
+        public boolean isFilterRelationshipProperties()
+        {
+            return filterRelationshipProperties;
+        }
+
+        public void setFilterRelationshipProperties(
+                final boolean filterRelationshipProperties )
+        {
+            this.filterRelationshipProperties = filterRelationshipProperties;
+            preferenceStore.setValue(
+                    DecoratorPreferences.FILTER_RELATIONSHIP_PROPERTIES,
+                    filterRelationshipProperties );
         }
 
         public boolean isShowRelationshipIds()
@@ -369,17 +385,30 @@ public class SimpleGraphDecorator
                     showNodeNames );
         }
 
-        public boolean isShowNodeProperties()
+        public boolean isShowNodePropertyKeys()
         {
-            return showNodeProperties;
+            return showNodePropertyKeys;
         }
 
-        public void setShowNodeProperties( final boolean showNodeProperties )
+        public void setShowNodePropertyKeys( final boolean showNodePropertyKeys )
         {
-            this.showNodeProperties = showNodeProperties;
+            this.showNodePropertyKeys = showNodePropertyKeys;
             preferenceStore.setValue(
-                    DecoratorPreferences.SHOW_NODE_PROPERTIES,
-                    showNodeProperties );
+                    DecoratorPreferences.SHOW_NODE_PROPERTY_KEYS,
+                    showNodePropertyKeys );
+        }
+
+        public boolean isFilterNodeProperties()
+        {
+            return filterNodeProperties;
+        }
+
+        public void setFilterNodeProperties( final boolean filterNodeProperties )
+        {
+            this.filterNodeProperties = filterNodeProperties;
+            preferenceStore.setValue(
+                    DecoratorPreferences.FILTER_NODE_PROPERTIES,
+                    filterNodeProperties );
         }
 
         public boolean isShowNodeIcons()
@@ -414,7 +443,8 @@ public class SimpleGraphDecorator
         {
             throw new IllegalArgumentException( "Null directions list given." );
         }
-        if ( settings.getDirections().isEmpty() )
+        if ( settings.getDirections()
+                .isEmpty() )
         {
             throw new IllegalArgumentException( "Empty directions list given." );
         }
@@ -443,7 +473,8 @@ public class SimpleGraphDecorator
      */
     private Color getNodeColor( final Node node, final boolean marked )
     {
-        GraphDbServiceManager gsm = Activator.getDefault().getGraphDbServiceManager();
+        GraphDbServiceManager gsm = Activator.getDefault()
+                .getGraphDbServiceManager();
         try
         {
             return gsm.submitTask( new Callable<Color>()
@@ -481,7 +512,8 @@ public class SimpleGraphDecorator
                     }
                     return getNodeColor();
                 }
-            }, "get node color" ).get();
+            }, "get node color" )
+                    .get();
         }
         catch ( Exception e )
         {
@@ -567,36 +599,45 @@ public class SimpleGraphDecorator
 
     public String getNodeText( final Node node, final boolean isReferenceNode )
     {
-        StringBuilder str = new StringBuilder( 48 );
-        if ( viewSettings.isShowNodeProperties() )
+        if ( viewSettings.isShowNodeNames() )
         {
-            return readAllProperties( node, viewSettings.isShowNodeIds() );
-        }
-        else
-        {
-            if ( viewSettings.isShowNodeNames()
-                 && !settings.getNodePropertyNames().isEmpty() )
+            if ( viewSettings.isShowNodePropertyKeys() )
             {
-                String propertyValue = readProperties( node,
-                        settings.getNodePropertyNames() );
-                if ( propertyValue == null )
+                if ( viewSettings.isFilterNodeProperties()
+                     && !settings.getNodePropertyNames()
+                             .isEmpty() )
                 {
-                    propertyValue = getSimpleNodeText( node, isReferenceNode );
+                    return readPropertiesWithKeys( node,
+                            settings.getNodePropertyNames(),
+                            viewSettings.isShowNodeIds() );
                 }
-                if ( propertyValue != null )
+                else
                 {
-                    if ( str.length() > 0 )
-                    {
-                        str.append( ", " );
-                    }
-                    str.append( propertyValue );
+                    return readPropertiesWithKeys( node,
+                            viewSettings.isShowNodeIds() );
                 }
             }
             else
             {
-                // don't look for the default property
-                str.append( getSimpleNodeText( node, isReferenceNode ) );
+                if ( viewSettings.isFilterNodeProperties()
+                     && !settings.getNodePropertyNames()
+                             .isEmpty() )
+                {
+                    return readProperties( node,
+                            settings.getNodePropertyNames(),
+                            viewSettings.isShowNodeIds() );
+                }
+                else
+                {
+                    return readProperties( node, viewSettings.isShowNodeIds() );
+                }
             }
+        }
+        else
+        {
+            // don't look for properties
+            StringBuilder str = new StringBuilder( 48 );
+            str.append( getSimpleNodeText( node, isReferenceNode ) );
             if ( viewSettings.isShowNodeIds() )
             {
                 if ( str.length() > 0 )
@@ -605,36 +646,58 @@ public class SimpleGraphDecorator
                 }
                 str.append( node.getId() );
             }
+            return str.toString();
         }
-        return str.toString();
     }
 
     private String readProperties( final PropertyContainer container,
-            final List<String> propertyNames )
+            final List<String> propertyNames, final boolean includeId )
+    {
+        Map<String, Object> props = GraphDbUtil.getProperties( container,
+                propertyNames );
+        return readPropertyValues( container, props, includeId );
+    }
+
+    private String readProperties( final PropertyContainer container,
+            final boolean includeId )
     {
         Map<String, Object> props = GraphDbUtil.getProperties( container );
+        return readPropertyValues( container, props, includeId );
+    }
+
+    private String readPropertyValues( final PropertyContainer container,
+            final Map<String, Object> props, final boolean includeId )
+    {
         List<String> values = new ArrayList<String>();
-        for ( String propertyName : propertyNames )
+        for ( Object propertyValue : props.values() )
         {
-            Object propertyValue = props.get( propertyName );
             if ( propertyValue == null )
             {
                 continue;
             }
             if ( propertyValue instanceof String )
             {
-                if ( "".equals( propertyValue ) )
+                if ( ( (String) propertyValue ).length() > 0 )
                 {
-                    // no empty strings here, thanks
-                    continue;
+                    values.add( (String) propertyValue );
                 }
-                values.add( (String) propertyValue );
             }
             else
             {
                 // get a proper String from other types
                 String render = PropertyTransform.render( propertyValue );
                 values.add( render );
+            }
+        }
+        if ( includeId )
+        {
+            if ( container instanceof Node )
+            {
+                values.add( String.valueOf( ( (Node) container ).getId() ) );
+            }
+            else if ( container instanceof Relationship )
+            {
+                values.add( String.valueOf( ( (Relationship) container ).getId() ) );
             }
         }
         if ( values.size() > 0 )
@@ -645,10 +708,24 @@ public class SimpleGraphDecorator
         return null;
     }
 
-    private String readAllProperties( final PropertyContainer container,
+    private String readPropertiesWithKeys( final PropertyContainer container,
             final boolean includeId )
     {
         Map<String, Object> props = GraphDbUtil.getProperties( container );
+        return readPropertiesAndKeys( container, includeId, props );
+    }
+
+    private String readPropertiesWithKeys( final PropertyContainer container,
+            List<String> propertyKeys, final boolean includeId )
+    {
+        Map<String, Object> props = GraphDbUtil.getProperties( container,
+                propertyKeys );
+        return readPropertiesAndKeys( container, includeId, props );
+    }
+
+    private String readPropertiesAndKeys( final PropertyContainer container,
+            final boolean includeId, Map<String, Object> props )
+    {
         SortedSet<String> values = new TreeSet<String>();
         for ( Entry<String, Object> entry : props.entrySet() )
         {
@@ -661,20 +738,23 @@ public class SimpleGraphDecorator
         {
             if ( container instanceof Node )
             {
-                str.append( "id: " ).append( ( (Node) container ).getId() ).append(
-                        '\n' );
+                str.append( "id: " )
+                        .append( ( (Node) container ).getId() )
+                        .append( '\n' );
             }
             else if ( container instanceof Relationship )
             {
-                str.append( "id: " ).append(
-                        ( (Relationship) container ).getId() ).append( '\n' );
+                str.append( "id: " )
+                        .append( ( (Relationship) container ).getId() )
+                        .append( '\n' );
             }
         }
         if ( values.size() > 0 )
         {
             for ( String value : values )
             {
-                str.append( value ).append( '\n' );
+                str.append( value )
+                        .append( '\n' );
             }
         }
         if ( str.length() > 1 )
@@ -689,49 +769,52 @@ public class SimpleGraphDecorator
         StringBuilder str = new StringBuilder( 48 );
         if ( viewSettings.isShowRelationshipTypes() )
         {
-            str.append( rel.getType().name() );
+            str.append( rel.getType()
+                    .name() );
         }
-        if ( viewSettings.isShowRelationshipProperties() )
+        if ( viewSettings.isShowRelationshipNames() )
         {
             if ( viewSettings.isShowRelationshipTypes() )
             {
                 str.append( '\n' );
             }
-            String propertyValue = readAllProperties( rel,
-                    viewSettings.isShowRelationshipIds() );
-            if ( propertyValue != null )
+            if ( viewSettings.isShowRelationshipPropertyKeys() )
             {
-                str.append( propertyValue );
+                if ( viewSettings.isFilterRelationshipProperties()
+                     && !settings.relPropertyNames.isEmpty() )
+                {
+                    str.append( readPropertiesWithKeys( rel,
+                            settings.relPropertyNames,
+                            viewSettings.isShowRelationshipIds() ) );
+                }
+                else
+                {
+                    str.append( readPropertiesWithKeys( rel,
+                            viewSettings.isShowRelationshipIds() ) );
+                }
             }
-            if ( str.length() > 0 && str.charAt( str.length() - 1 ) == '\n' )
+            else
             {
-                return str.substring( 0, str.length() - 1 );
+                if ( viewSettings.isFilterRelationshipProperties()
+                     && !settings.relPropertyNames.isEmpty() )
+                {
+                    str.append( readProperties( rel, settings.relPropertyNames,
+                            viewSettings.isShowRelationshipIds() ) );
+                }
+                else
+                {
+                    str.append( readProperties( rel,
+                            viewSettings.isShowRelationshipIds() ) );
+                }
             }
         }
-        else
+        else if ( viewSettings.isShowRelationshipIds() )
         {
-            if ( viewSettings.isShowRelationshipIds() )
+            if ( str.length() > 0 )
             {
-                if ( str.length() > 0 )
-                {
-                    str.append( ", " );
-                }
-                str.append( rel.getId() );
+                str.append( ", " );
             }
-            if ( viewSettings.isShowRelationshipNames()
-                 && !settings.getRelPropertyNames().isEmpty() )
-            {
-                String propertyValue = readProperties( rel,
-                        settings.getRelPropertyNames() );
-                if ( propertyValue != null )
-                {
-                    if ( str.length() > 0 )
-                    {
-                        str.append( ", " );
-                    }
-                    str.append( propertyValue );
-                }
-            }
+            str.append( rel.getId() );
         }
         return str.toString();
     }
@@ -778,7 +861,8 @@ public class SimpleGraphDecorator
             }
         }
         // look in relations
-        GraphDbServiceManager gsm = Activator.getDefault().getGraphDbServiceManager();
+        GraphDbServiceManager gsm = Activator.getDefault()
+                .getGraphDbServiceManager();
         try
         {
             img = gsm.submitTask( new Callable<Image>()
@@ -800,7 +884,8 @@ public class SimpleGraphDecorator
                     }
                     return img;
                 }
-            }, "find icons from relationships" ).get();
+            }, "find icons from relationships" )
+                    .get();
             if ( img != null )
             {
                 return img;

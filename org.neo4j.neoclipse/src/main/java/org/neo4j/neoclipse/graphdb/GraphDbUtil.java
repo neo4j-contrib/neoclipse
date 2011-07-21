@@ -105,8 +105,9 @@ public class GraphDbUtil
     {
         try
         {
-            Activator.getDefault().getGraphDbServiceManager().submitTask(
-                    new GraphRunnable()
+            Activator.getDefault()
+                    .getGraphDbServiceManager()
+                    .submitTask( new GraphRunnable()
                     {
                         @Override
                         public void run( final GraphDatabaseService graphDb )
@@ -114,7 +115,8 @@ public class GraphDbUtil
                             createTheRelationship( sourceNodes, destNodes,
                                     relType, graphView, graphDb );
                         }
-                    }, "create relationship" ).get();
+                    }, "create relationship" )
+                    .get();
         }
         catch ( Exception e )
         {
@@ -129,17 +131,17 @@ public class GraphDbUtil
         if ( relType == null )
         {
             throw new IllegalArgumentException(
-            "RelationshipType can not be null" );
+                    "RelationshipType can not be null" );
         }
         if ( sourceNodes == null && destNodes == null )
         {
             throw new IllegalArgumentException(
-            "Both soure and destination can not be null" );
+                    "Both soure and destination can not be null" );
         }
         if ( graphDb == null )
         {
             throw new IllegalStateException(
-            "No active GraphDatabaseService was found" );
+                    "No active GraphDatabaseService was found" );
         }
         Node newInputNode = null;
         Node createNode = null;
@@ -200,7 +202,7 @@ public class GraphDbUtil
     {
         return MessageDialog.openConfirm( null, CONFIRM_DELETE_TITLE,
                 "Do you really want to delete the selected " + count
-                + " items?" );
+                        + " items?" );
     }
 
     /**
@@ -220,8 +222,9 @@ public class GraphDbUtil
         }
         try
         {
-            Activator.getDefault().getGraphDbServiceManager().submitTask(
-                    new GraphRunnable()
+            Activator.getDefault()
+                    .getGraphDbServiceManager()
+                    .submitTask( new GraphRunnable()
                     {
                         @Override
                         public void run( final GraphDatabaseService graphDb )
@@ -229,7 +232,8 @@ public class GraphDbUtil
                             deleteThePropertyContainers( containers, graphView,
                                     graphDb );
                         }
-                    }, "delete property containers" ).get();
+                    }, "delete property containers" )
+                    .get();
         }
         catch ( Exception e )
         {
@@ -256,7 +260,7 @@ public class GraphDbUtil
                     {
                         boolean confirmed = MessageDialog.openConfirm( null,
                                 CONFIRM_DELETE_TITLE,
-                        "Do you really, really want to delete the REFERENCE NODE?" );
+                                "Do you really, really want to delete the REFERENCE NODE?" );
                         if ( !confirmed )
                         {
                             return;
@@ -264,8 +268,10 @@ public class GraphDbUtil
                     }
                     if ( node.equals( inputNode ) && node.hasRelationship() )
                     {
-                        newInputNode = node.getRelationships().iterator().next().getOtherNode(
-                                node );
+                        newInputNode = node.getRelationships()
+                                .iterator()
+                                .next()
+                                .getOtherNode( node );
                     }
                     for ( Relationship rel : node.getRelationships() )
                     {
@@ -411,7 +417,7 @@ public class GraphDbUtil
         {
             return;
         }
-        List<Node> node = Collections.singletonList( currentSelectedNodes.get( 0 ));
+        List<Node> node = Collections.singletonList( currentSelectedNodes.get( 0 ) );
         createRelationship( node, node, relType, graphView );
     }
 
@@ -461,15 +467,16 @@ public class GraphDbUtil
     {
         boolean confirmation = MessageDialog.openConfirm( null,
                 "Confirm removal",
-        "Do you really want to remove the selected property?" );
+                "Do you really want to remove the selected property?" );
         if ( !confirmation )
         {
             return;
         }
         try
         {
-            Activator.getDefault().getGraphDbServiceManager().submitTask(
-                    new Runnable()
+            Activator.getDefault()
+                    .getGraphDbServiceManager()
+                    .submitTask( new Runnable()
                     {
                         @Override
                         public void run()
@@ -506,8 +513,8 @@ public class GraphDbUtil
                     null,
                     "Key exists",
                     "The key \""
-                    + key
-                    + "\" already exists, do you want to overwrite the old value?" ) )
+                            + key
+                            + "\" already exists, do you want to overwrite the old value?" ) )
             {
                 return;
             }
@@ -528,7 +535,7 @@ public class GraphDbUtil
         catch ( IOException e )
         {
             Dialog.openError( "Error message",
-            "Error parsing the input value, no changes will be performed." );
+                    "Error parsing the input value, no changes will be performed." );
             return;
         }
         if ( setTheProperty( container, key, val ) )
@@ -560,15 +567,17 @@ public class GraphDbUtil
     {
         try
         {
-            Activator.getDefault().getGraphDbServiceManager().submitTask(
-                    new Runnable()
+            Activator.getDefault()
+                    .getGraphDbServiceManager()
+                    .submitTask( new Runnable()
                     {
                         @Override
                         public void run()
                         {
                             container.setProperty( key, value );
                         }
-                    }, "set property" ).get();
+                    }, "set property" )
+                    .get();
         }
         catch ( Exception e )
         {
@@ -599,8 +608,9 @@ public class GraphDbUtil
     {
         try
         {
-            Activator.getDefault().getGraphDbServiceManager().submitTask(
-                    new Runnable()
+            Activator.getDefault()
+                    .getGraphDbServiceManager()
+                    .submitTask( new Runnable()
                     {
                         @Override
                         public void run()
@@ -609,7 +619,8 @@ public class GraphDbUtil
                                     container.getProperty( key ) );
                             container.removeProperty( key );
                         }
-                    }, "rename property" ).get();
+                    }, "rename property" )
+                    .get();
         }
         catch ( Exception e )
         {
@@ -623,15 +634,17 @@ public class GraphDbUtil
     {
         try
         {
-            return Activator.getDefault().getGraphDbServiceManager().submitTask(
-                    new Callable<Object>()
+            return Activator.getDefault()
+                    .getGraphDbServiceManager()
+                    .submitTask( new Callable<Object>()
                     {
                         @Override
                         public Object call() throws Exception
                         {
                             return container.getProperty( key, null );
                         }
-                    }, "get property" ).get();
+                    }, "get property" )
+                    .get();
         }
         catch ( Exception e )
         {
@@ -642,11 +655,12 @@ public class GraphDbUtil
 
     public static Map<String, Object> getProperties(
             final PropertyContainer container )
-            {
+    {
         try
         {
-            return Activator.getDefault().getGraphDbServiceManager().submitTask(
-                    new Callable<Map<String, Object>>()
+            return Activator.getDefault()
+                    .getGraphDbServiceManager()
+                    .submitTask( new Callable<Map<String, Object>>()
                     {
                         @Override
                         public Map<String, Object> call() throws Exception
@@ -658,14 +672,47 @@ public class GraphDbUtil
                             }
                             return props;
                         }
-                    }, "get properties" ).get();
+                    }, "get properties" )
+                    .get();
         }
         catch ( Exception e )
         {
             ErrorMessage.showDialog( "Get properties", e );
         }
         return null;
-            }
+    }
+
+    public static Map<String, Object> getProperties(
+            final PropertyContainer container, final List<String> propertyKeys )
+    {
+        try
+        {
+            return Activator.getDefault()
+                    .getGraphDbServiceManager()
+                    .submitTask( new Callable<Map<String, Object>>()
+                    {
+                        @Override
+                        public Map<String, Object> call() throws Exception
+                        {
+                            Map<String, Object> props = new HashMap<String, Object>();
+                            for ( String key : propertyKeys )
+                            {
+                                if ( container.hasProperty( key ) )
+                                {
+                                    props.put( key, container.getProperty( key ) );
+                                }
+                            }
+                            return props;
+                        }
+                    }, "get properties" )
+                    .get();
+        }
+        catch ( Exception e )
+        {
+            ErrorMessage.showDialog( "Get properties", e );
+        }
+        return null;
+    }
 
     /**
      * Get all relationships from the database. Note that relationship types not
@@ -676,7 +723,7 @@ public class GraphDbUtil
      */
     public static Set<RelationshipType> getRelationshipTypesFromDb(
             final GraphDatabaseService graphDb )
-            {
+    {
         if ( graphDb == null )
         {
             return Collections.emptySet();
@@ -688,5 +735,5 @@ public class GraphDbUtil
             relationshipTypes.add( relType );
         }
         return relationshipTypes;
-            }
+    }
 }

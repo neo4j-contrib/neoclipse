@@ -38,7 +38,7 @@ public class DecoratorPreferenceInitializer extends
     public void initializeDefaultPreferences()
     {
         IPreferenceStore pref = Activator.getDefault().getPreferenceStore();
-        pref.setDefault( DecoratorPreferences.NODE_PROPERTY_NAMES, "" );
+        pref.setDefault( DecoratorPreferences.NODE_PROPERTY_NAMES, "name" );
         pref.setDefault( DecoratorPreferences.RELATIONSHIP_PROPERTY_NAMES, "" );
         pref.setDefault( DecoratorPreferences.NODE_ICON_LOCATION, "" );
         pref.setDefault( DecoratorPreferences.NODE_ICON_PROPERTY_NAMES, "" );
@@ -47,12 +47,13 @@ public class DecoratorPreferenceInitializer extends
         pref.setDefault( DecoratorPreferences.SHOW_NODE_COLORS, true );
         pref.setDefault( DecoratorPreferences.SHOW_NODE_NAMES, true );
         pref.setDefault( DecoratorPreferences.SHOW_RELATIONSHIP_NAMES, true );
-        pref.setDefault( DecoratorPreferences.SHOW_RELATIONSHIP_PROPERTIES,
-                true );
+        pref.setDefault( DecoratorPreferences.SHOW_RELATIONSHIP_PROPERTY_KEYS, true );
+        pref.setDefault( DecoratorPreferences.FILTER_RELATIONSHIP_PROPERTIES, false );
         pref.setDefault( DecoratorPreferences.SHOW_RELATIONSHIP_COLORS, true );
         pref.setDefault( DecoratorPreferences.SHOW_RELATIONSHIP_IDS, false );
         pref.setDefault( DecoratorPreferences.SHOW_ARROWS, true );
-        pref.setDefault( DecoratorPreferences.SHOW_NODE_PROPERTIES, true );
+        pref.setDefault( DecoratorPreferences.SHOW_NODE_PROPERTY_KEYS, true );
+        pref.setDefault( DecoratorPreferences.FILTER_NODE_PROPERTIES, false );
         pref.setDefault( DecoratorPreferences.SHOW_NODE_ICONS, true );
         pref.setDefault( DecoratorPreferences.SHOW_NODE_IDS, false );
 
