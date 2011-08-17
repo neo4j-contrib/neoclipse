@@ -16,6 +16,7 @@ This software is realeased under the Neo4j Software License for Neoclipse Versio
    </configIni>
 
    <launcherArgs>
+      <programArgs>-data @noDefault</programArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
 

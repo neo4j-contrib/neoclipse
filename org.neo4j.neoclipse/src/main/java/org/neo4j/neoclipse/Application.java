@@ -18,8 +18,13 @@
  */
 package org.neo4j.neoclipse;
 
+import java.io.File;
+import java.net.URL;
+
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
+import org.eclipse.osgi.service.datalocation.Location;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
@@ -42,6 +47,31 @@ public class Application extends WorkbenchAdvisor implements IApplication
     @Override
     public Object start( final IApplicationContext context ) throws Exception
     {
+        try
+        {
+            Location workspaceLocation = Platform.getInstanceLocation();
+            if ( !workspaceLocation.isSet() )
+            {
+                Location installLocation = Platform.getInstallLocation();
+                String dataPath = installLocation.getURL()
+                        .getPath() + "neoclipse-workspace" + File.separator;
+                File dir = new File( dataPath );
+                if ( !dir.exists() )
+                {
+                    if ( !dir.mkdirs() )
+                    {
+                        throw new RuntimeException(
+                                "Could not create the directory: " + dir );
+                    }
+                }
+                URL dataLocation = new URL( "file", null, dataPath );
+                workspaceLocation.set( dataLocation, false );
+            }
+        }
+        catch ( Exception e )
+        {
+            e.printStackTrace();
+        }
         Display display = PlatformUI.createDisplay();
         int returnCode = PlatformUI.createAndRunWorkbench( display, this );
         if ( returnCode == PlatformUI.RETURN_RESTART )
@@ -80,15 +110,19 @@ public class Application extends WorkbenchAdvisor implements IApplication
     {
         super.postStartup();
         // show help on startup if the user wants it
-        boolean showHelp = Activator.getDefault().getPreferenceStore().getBoolean(
-                Preferences.HELP_ON_START );
+        boolean showHelp = Activator.getDefault()
+                .getPreferenceStore()
+                .getBoolean( Preferences.HELP_ON_START );
         if ( showHelp )
         {
-            IWorkbenchHelpSystem helpSystem = PlatformUI.getWorkbench().getHelpSystem();
+            IWorkbenchHelpSystem helpSystem = PlatformUI.getWorkbench()
+                    .getHelpSystem();
             helpSystem.displayDynamicHelp();
 
-            NeoGraphViewPart graphView = (NeoGraphViewPart) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(
-                    NeoGraphViewPart.ID );
+            NeoGraphViewPart graphView = (NeoGraphViewPart) PlatformUI.getWorkbench()
+                    .getActiveWorkbenchWindow()
+                    .getActivePage()
+                    .findView( NeoGraphViewPart.ID );
             if ( graphView != null )
             {
                 graphView.setFocus();
