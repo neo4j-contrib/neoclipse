@@ -3,9 +3,9 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<url>http://wiki.neo4j.org/content/Neoclipse</url>
   <parent>
-    <groupId>org.neo4j</groupId>
-    <artifactId>parent-pom</artifactId>
-    <version>23</version>
+    <groupId>org.neo4j.build</groupId>
+    <artifactId>parent-central</artifactId>
+    <version>25</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.neo4j</groupId>
