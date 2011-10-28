@@ -14,7 +14,7 @@ Bundle-ClassPath: .,
  lib/neo4j-jmx-1.5.M02.jar,
  lib/neo4j-kernel-1.5.M02.jar,
  lib/neo4j-lucene-index-1.5.M02.jar,
- lib/neo4j-udc-1.5.M02-neo4j.jar
+ lib/neo4j-udc-1.5.02-neo4j.jar
 Import-Package: org.eclipse.core.commands.common,
  org.eclipse.core.runtime,
  org.eclipse.core.runtime.preferences,
