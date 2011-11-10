@@ -1,6 +1,6 @@
 #!/bin/bash
 
-version=1.5.M02
+version=1.5
 basedir=$PWD
 cd build/export
 builddir=$PWD

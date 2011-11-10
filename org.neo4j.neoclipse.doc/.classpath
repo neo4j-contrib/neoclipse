@@ -5,10 +5,10 @@
 	<classpathentry kind="con" path="org.maven.ide.eclipse.MAVEN2_CLASSPATH_CONTAINER"/>
 	<classpathentry kind="lib" path="/org.neo4j.neoclipse/lib/geronimo-jta_1.1_spec-1.1.1.jar"/>
 	<classpathentry kind="lib" path="/org.neo4j.neoclipse/lib/lucene-core-3.1.0.jar"/>
-	<classpathentry kind="lib" path="/org.neo4j.neoclipse/lib/neo4j-graph-algo-1.5.M02.jar"/>
-	<classpathentry kind="lib" path="/org.neo4j.neoclipse/lib/neo4j-jmx-1.5.M02.jar"/>
-	<classpathentry kind="lib" path="/org.neo4j.neoclipse/lib/neo4j-kernel-1.5.M02.jar"/>
-	<classpathentry kind="lib" path="/org.neo4j.neoclipse/lib/neo4j-lucene-index-1.5.M02.jar"/>
-	<classpathentry kind="lib" path="/org.neo4j.neoclipse/lib/neo4j-udc-1.5.M02.jar"/>
+	<classpathentry kind="lib" path="/org.neo4j.neoclipse/lib/neo4j-graph-algo-1.5.jar"/>
+	<classpathentry kind="lib" path="/org.neo4j.neoclipse/lib/neo4j-jmx-1.5.jar"/>
+	<classpathentry kind="lib" path="/org.neo4j.neoclipse/lib/neo4j-kernel-1.5.jar"/>
+	<classpathentry kind="lib" path="/org.neo4j.neoclipse/lib/neo4j-lucene-index-1.5.jar"/>
+	<classpathentry kind="lib" path="/org.neo4j.neoclipse/lib/neo4j-udc-1.5.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
