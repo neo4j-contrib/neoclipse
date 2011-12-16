@@ -27,20 +27,18 @@ import org.neo4j.neoclipse.Icons;
 public enum Actions
 {
     // platform
-    PREFERENCES( "Preferences", Icons.PREFERENCES_ENABLED,
-            Icons.PREFERENCES_DISABLED ),
-    PROPERTIES( "Properties view", Icons.PROPERTIES_ENABLED,
-            Icons.PROPERTIES_DISABLED ),
+    PREFERENCES( "Preferences", Icons.PREFERENCES_ENABLED, Icons.PREFERENCES_DISABLED ),
+    PROPERTIES( "Properties view", Icons.PROPERTIES_ENABLED, Icons.PROPERTIES_DISABLED ),
     GRAPH_VIEW( "Graph view", Icons.GRAPH_ENABLED, Icons.GRAPH_DISABLED ),
-    RELTYPES_VIEW( "Relationship types view", Icons.TYPES_ENABLED,
-            Icons.TYPES_DISABLED ),
+    RELTYPES_VIEW( "Relationship types view", Icons.TYPES_ENABLED, Icons.TYPES_DISABLED ),
     HELP_VIEW( "Help view", Icons.HELP_VIEW ),
-    HELP_WINDOW( "Help window", Icons.HELP_WINDOW_ENABLED,
-            Icons.HELP_WINDOW_DISABLED ),
+    HELP_WINDOW( "Help window", Icons.HELP_WINDOW_ENABLED, Icons.HELP_WINDOW_DISABLED ),
     SEARCH( "Search", Icons.SEARCH_ENABLED, Icons.SEARCH_DISABLED ),
+    DATABASE_LOCATION( "Database location", Icons.DATABASE_LOCATION_ENABLED, Icons.DATABASE_LOCATION_DISABLED ),
+    
     // connect
     START( "Start/Connect database", Icons.START_ENABLED, Icons.START_DISABLED ),
-    STOP( "Stop/Disconnect database", Icons.STOP_ENABLED, Icons.STOP_DISABLED ),
+    STOP( "Stop/Disconnect database", Icons.STOP_ENABLED, Icons.STOP_DISABLED ), 
     SYNC( "Sync database", Icons.SYNC_ENABLED, Icons.SYNC_DISABLED ),
     // add rel
     ADD_RELATIONSHIP(

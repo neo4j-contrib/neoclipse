@@ -42,6 +42,7 @@ import org.neo4j.neoclipse.property.PropertyTransform.PropertyHandler;
 import org.neo4j.neoclipse.view.Dialog;
 import org.neo4j.neoclipse.view.ErrorMessage;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
+import org.neo4j.tooling.GlobalGraphOperations;
 
 /**
  * Utility class to handle node space manipulations.
@@ -730,7 +731,7 @@ public class GraphDbUtil
         }
         Set<RelationshipType> relationshipTypes;
         relationshipTypes = new HashSet<RelationshipType>();
-        for ( RelationshipType relType : graphDb.getRelationshipTypes() )
+        for ( RelationshipType relType : GlobalGraphOperations.at(graphDb).getAllRelationshipTypes())
         {
             relationshipTypes.add( relType );
         }

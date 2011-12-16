@@ -23,8 +23,10 @@ import org.eclipse.jface.action.ICoolBarManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.ToolBarContributionItem;
 import org.eclipse.jface.action.ToolBarManager;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.search.ui.NewSearchUI;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
@@ -34,170 +36,158 @@ import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.application.WorkbenchWindowAdvisor;
 import org.eclipse.ui.help.IWorkbenchHelpSystem;
 import org.neo4j.neoclipse.action.Actions;
+import org.neo4j.neoclipse.preference.Preferences;
 import org.neo4j.neoclipse.reltype.RelationshipTypeView;
 import org.neo4j.neoclipse.search.NeoSearchPage;
 
 /**
  * Configure the workbench window.
+ * 
  * @author Anders Nawroth
+ * @author Radhakrishna Kalyan
  */
-public class ApplicationWindowAdvisor extends WorkbenchWindowAdvisor
-{
-    private ApplicationActionBarAdvisor actionBarAdvisor;
+public class ApplicationWindowAdvisor extends WorkbenchWindowAdvisor {
+	private ApplicationActionBarAdvisor actionBarAdvisor;
 
-    public ApplicationWindowAdvisor( final IWorkbenchWindowConfigurer configurer )
-    {
-        super( configurer );
-    }
+	public ApplicationWindowAdvisor(final IWorkbenchWindowConfigurer configurer) {
+		super(configurer);
+	}
 
-    @Override
-    public ActionBarAdvisor createActionBarAdvisor(
-        final IActionBarConfigurer configurer )
-    {
-        actionBarAdvisor = new ApplicationActionBarAdvisor( configurer );
-        return actionBarAdvisor;
-    }
+	@Override
+	public ActionBarAdvisor createActionBarAdvisor(final IActionBarConfigurer configurer) {
+		actionBarAdvisor = new ApplicationActionBarAdvisor(configurer);
+		return actionBarAdvisor;
+	}
 
-    @Override
-    public void preWindowOpen()
-    {
-        IWorkbenchWindowConfigurer configurer = getWindowConfigurer();
-        configurer.setShowCoolBar( true );
-        configurer.setShowMenuBar( false );
-        configurer.setShowStatusLine( true );
-    }
+	@Override
+	public void preWindowOpen() {
+		final IWorkbenchWindowConfigurer configurer = getWindowConfigurer();
+		configurer.setShowCoolBar(true);
+		configurer.setShowMenuBar(false);
+		configurer.setShowStatusLine(true);
+	}
 
-    @Override
-    public void postWindowOpen()
-    {
-        super.postWindowOpen();
-        IWorkbenchWindowConfigurer configurer = getWindowConfigurer();
-        ICoolBarManager coolBar = configurer.getActionBarConfigurer()
-            .getCoolBarManager();
-        coolBar.removeAll();
-        actionBarAdvisor.fillCoolBar( coolBar );
-        coolBar.update( true );
-    }
+	@Override
+	public void postWindowOpen() {
+		super.postWindowOpen();
+		final IWorkbenchWindowConfigurer configurer = getWindowConfigurer();
+		final ICoolBarManager coolBar = configurer.getActionBarConfigurer().getCoolBarManager();
+		coolBar.removeAll();
+		actionBarAdvisor.fillCoolBar(coolBar);
+		coolBar.update(true);
+	}
 
-    private static class ApplicationActionBarAdvisor extends ActionBarAdvisor
-    {
-        private Action preferencesAction;
-        private Action propertiesAction;
-        private Action reltypesAction;
-        private Action helpViewAction;
-        private Action helpWindowAction;
-        private Action searchAction;
+	private static class ApplicationActionBarAdvisor extends ActionBarAdvisor {
+		private Action preferencesAction;
+		private Action propertiesAction;
+		private Action reltypesAction;
+		private Action helpViewAction;
+		private Action helpWindowAction;
+		private Action searchAction;
+		private Action databaseLocationAction;
 
-        public ApplicationActionBarAdvisor( IActionBarConfigurer configurer )
-        {
-            super( configurer );
-        }
+		public ApplicationActionBarAdvisor(IActionBarConfigurer configurer) {
+			super(configurer);
+		}
 
-        @Override
-        protected void makeActions( final IWorkbenchWindow window )
-        {
-            preferencesAction = new Action()
-            {
-                @Override
-                public void run()
-                {
-                    Activator.getDefault().showPreferenceDialog( false );
-                }
-            };
-            Actions.PREFERENCES.initialize( preferencesAction );
+		@Override
+		protected void makeActions(final IWorkbenchWindow window) {
+			preferencesAction = new Action() {
+				@Override
+				public void run() {
+					Activator.getDefault().showPreferenceDialog(false);
+				}
+			};
+			Actions.PREFERENCES.initialize(preferencesAction);
 
-            propertiesAction = new Action()
-            {
-                @Override
-                public void run()
-                {
-                    try
-                    {
-                        PlatformUI.getWorkbench().getActiveWorkbenchWindow()
-                            .getActivePage().showView(
-                                "org.eclipse.ui.views.PropertySheet" );
-                    }
-                    catch ( PartInitException e )
-                    {
-                        e.printStackTrace();
-                    }
-                }
-            };
-            Actions.PROPERTIES.initialize( propertiesAction );
+			propertiesAction = new Action() {
+				@Override
+				public void run() {
+					try {
+						PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+								.showView("org.eclipse.ui.views.PropertySheet");
+					} catch (final PartInitException e) {
+						e.printStackTrace();
+					}
+				}
+			};
+			Actions.PROPERTIES.initialize(propertiesAction);
 
-            reltypesAction = new Action()
-            {
-                @Override
-                public void run()
-                {
-                    try
-                    {
-                        PlatformUI.getWorkbench().getActiveWorkbenchWindow()
-                            .getActivePage().showView( RelationshipTypeView.ID );
-                    }
-                    catch ( PartInitException e )
-                    {
-                        e.printStackTrace();
-                    }
-                }
-            };
-            Actions.RELTYPES_VIEW.initialize( reltypesAction );
+			reltypesAction = new Action() {
+				@Override
+				public void run() {
+					try {
+						PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+								.showView(RelationshipTypeView.ID);
+					} catch (final PartInitException e) {
+						e.printStackTrace();
+					}
+				}
+			};
+			Actions.RELTYPES_VIEW.initialize(reltypesAction);
 
-            searchAction = new Action()
-            {
-                @Override
-                public void run()
-                {
-                    NewSearchUI.openSearchDialog( window, NeoSearchPage.ID );
-                }
-            };
-            Actions.SEARCH.initialize( searchAction );
+			searchAction = new Action() {
+				@Override
+				public void run() {
+					NewSearchUI.openSearchDialog(window, NeoSearchPage.ID);
+				}
+			};
+			Actions.SEARCH.initialize(searchAction);
 
-            helpViewAction = new Action()
-            {
-                @Override
-                public void run()
-                {
-                    try
-                    {
-                        final IWorkbenchHelpSystem helpSystem = PlatformUI
-                            .getWorkbench().getHelpSystem();
-                        helpSystem.displayDynamicHelp();
-                    }
-                    catch ( Throwable e )
-                    {
-                        e.printStackTrace();
-                    }
-                }
-            };
-            Actions.HELP_VIEW.initialize( helpViewAction );
+			helpViewAction = new Action() {
+				@Override
+				public void run() {
+					try {
+						final IWorkbenchHelpSystem helpSystem = PlatformUI.getWorkbench().getHelpSystem();
+						helpSystem.displayDynamicHelp();
+					} catch (final Throwable e) {
+						e.printStackTrace();
+					}
+				}
+			};
+			Actions.HELP_VIEW.initialize(helpViewAction);
 
-            helpWindowAction = new Action()
-            {
-                @Override
-                public void run()
-                {
-                    final IWorkbenchHelpSystem helpSystem = PlatformUI
-                        .getWorkbench().getHelpSystem();
-                    helpSystem.displayHelp();
-                }
-            };
-            Actions.HELP_WINDOW.initialize( helpWindowAction );
-        }
+			helpWindowAction = new Action() {
+				@Override
+				public void run() {
+					final IWorkbenchHelpSystem helpSystem = PlatformUI.getWorkbench().getHelpSystem();
+					helpSystem.displayHelp();
+				}
+			};
+			Actions.HELP_WINDOW.initialize(helpWindowAction);
 
-        @Override
-        protected void fillCoolBar( final ICoolBarManager coolBar )
-        {
-            IToolBarManager main = new ToolBarManager( SWT.FLAT | SWT.RIGHT );
-            main.add( preferencesAction );
-            coolBar.add( new ToolBarContributionItem( main, "main" ) );
-            IToolBarManager views = new ToolBarManager( SWT.FLAT | SWT.RIGHT );
-            views.add( propertiesAction );
-            views.add( reltypesAction );
-            views.add( searchAction );
-            views.add( helpViewAction );
-            views.add( helpWindowAction );
-            coolBar.add( new ToolBarContributionItem( views, "views" ) );
-        }
-    }
+			databaseLocationAction = new Action() {
+				@Override
+				public void run() {
+					final DirectoryDialog dialog = new DirectoryDialog(window.getShell(), SWT.OPEN | SWT.SHEET);
+					dialog.setText("Neo4j Database Location");
+					dialog.setMessage("Please choose the database location.");
+					final String dbLocation = dialog.open();
+					final IPreferenceStore pref = Activator.getDefault().getPreferenceStore();
+
+					if (dbLocation != null && !dbLocation.trim().isEmpty()) {
+						pref.setValue(Preferences.DATABASE_LOCATION, dbLocation);
+						pref.setValue(Preferences.DATABASE_RESOURCE_URI, dbLocation);
+					}
+
+				}
+			};
+			Actions.DATABASE_LOCATION.initialize(databaseLocationAction);
+		}
+
+		@Override
+		protected void fillCoolBar(final ICoolBarManager coolBar) {
+			final IToolBarManager main = new ToolBarManager(SWT.FLAT | SWT.RIGHT);
+			main.add(preferencesAction);
+			main.add(databaseLocationAction);
+			coolBar.add(new ToolBarContributionItem(main, "main"));
+			final IToolBarManager views = new ToolBarManager(SWT.FLAT | SWT.RIGHT);
+			views.add(propertiesAction);
+			views.add(reltypesAction);
+			views.add(searchAction);
+			views.add(helpViewAction);
+			views.add(helpWindowAction);
+			coolBar.add(new ToolBarContributionItem(views, "views"));
+		}
+	}
 }
