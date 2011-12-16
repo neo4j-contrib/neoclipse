@@ -11,7 +11,7 @@
   <groupId>org.neo4j</groupId>
   <artifactId>neoclipse</artifactId>
   <name>Neoclipse Project</name>
-  <version>1.6-SNAPSHOT</version>
+  <version>1.5</version>
   <packaging>pom</packaging>
   <modules>
     <module>org.neo4j.neoclipse</module>
