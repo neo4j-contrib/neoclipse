@@ -38,6 +38,7 @@ public enum Actions
     HELP_WINDOW( "Help window", Icons.HELP_WINDOW_ENABLED,
             Icons.HELP_WINDOW_DISABLED ),
     SEARCH( "Search", Icons.SEARCH_ENABLED, Icons.SEARCH_DISABLED ),
+    DATABASE_LOCATION( "Database location", Icons.DATABASE_LOCATION_ENABLED, Icons.DATABASE_LOCATION_DISABLED ),
     // connect
     START( "Start/Connect database", Icons.START_ENABLED, Icons.START_DISABLED ),
     STOP( "Stop/Disconnect database", Icons.STOP_ENABLED, Icons.STOP_DISABLED ),

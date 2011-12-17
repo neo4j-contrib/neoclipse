@@ -51,6 +51,8 @@ public enum Icons
             path( "disabled/help_window.gif" ) ),
     SEARCH_ENABLED( "search_enabled", path( "enabled/search.gif" ) ),
     SEARCH_DISABLED( "search_disabled", path( "disabled/search.gif" ) ),
+    DATABASE_LOCATION_ENABLED( "database_location_enabled", path( "enabled/database.gif" ) ),
+    DATABASE_LOCATION_DISABLED( "database_location_disabled", path( "disabled/database.gif" ) ),
     // connectivity
     START_ENABLED( "start_enabled", path( "enabled/start.gif" ) ),
     STOP_ENABLED( "stop_enabled", path( "enabled/stop.gif" ) ),
