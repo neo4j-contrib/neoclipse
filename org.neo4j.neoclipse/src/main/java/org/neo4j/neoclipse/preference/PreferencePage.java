@@ -19,7 +19,6 @@
 package org.neo4j.neoclipse.preference;
 
 import org.eclipse.jface.preference.BooleanFieldEditor;
-import org.eclipse.jface.preference.DirectoryFieldEditor;
 import org.eclipse.jface.preference.IntegerFieldEditor;
 import org.eclipse.jface.preference.RadioGroupFieldEditor;
 import org.neo4j.neoclipse.graphdb.GraphDbServiceMode;
@@ -29,15 +28,12 @@ import org.neo4j.neoclipse.graphdb.GraphDbServiceMode;
  * 
  * @author Peter H&auml;nsgen
  * @author Anders Nawroth
+ * @author Radhakrishna Kalyan
  */
 public class PreferencePage extends AbstractPreferencePage
 {
     private static final String NEO4J_CONNECTION_MODE = "Connection mode:";
     private static final String HELP_ON_START_LABEL = "Show help view on startup";
-    // database location
-    private static final String NEO4J_DATABASE_LOCATION_LABEL = "Database location:";
-    private static final String NEO4J_DATABASE_LOCATION_ERROR = "The database location is invalid.";
-    private DirectoryFieldEditor locationField;
     private RadioGroupFieldEditor connectionMode;
     private IntegerFieldEditor maxNodesField;
 
@@ -58,13 +54,6 @@ public class PreferencePage extends AbstractPreferencePage
                 getFieldEditorParent() );
         addField( connectionMode );
 
-        // location
-        locationField = new DirectoryFieldEditor(
-                Preferences.DATABASE_LOCATION, NEO4J_DATABASE_LOCATION_LABEL,
-                getFieldEditorParent() );
-        locationField.setEmptyStringAllowed( false );
-        locationField.setErrorMessage( NEO4J_DATABASE_LOCATION_ERROR );
-        addField( locationField );
 
         // show help view on startup
         BooleanFieldEditor helpOnStart = new BooleanFieldEditor(

@@ -46,6 +46,7 @@ import org.neo4j.neoclipse.action.browse.GoBackAction;
 import org.neo4j.neoclipse.action.browse.GoForwardAction;
 import org.neo4j.neoclipse.action.browse.RefreshAction;
 import org.neo4j.neoclipse.action.browse.ShowReferenceNodeAction;
+import org.neo4j.neoclipse.action.connect.DatabaseLocationAction;
 import org.neo4j.neoclipse.action.connect.StartAction;
 import org.neo4j.neoclipse.action.connect.StopAction;
 import org.neo4j.neoclipse.action.connect.SyncAction;
@@ -303,6 +304,7 @@ public class NeoGraphMenu
     private final StartAction startAction;
     private final StopAction stopAction;
     private final SyncAction syncAction;
+    private final DatabaseLocationAction dataBaseLocationAction;
     static
     {
         // create gray default color
@@ -345,6 +347,7 @@ public class NeoGraphMenu
         syncAction = new SyncAction( graphView );
         refNodeAction = new ShowReferenceNodeAction( graphView );
         refreshAction = new RefreshAction( graphView );
+        dataBaseLocationAction = new DatabaseLocationAction( graphView );
         RelationshipTypesProvider relTypesProvider = RelationshipTypesProviderWrapper.getInstance();
         addNewActionSet = new ActionSet( relTypesProvider );
         makeContributions();
@@ -475,6 +478,7 @@ public class NeoGraphMenu
     public void setEnabledStartAction( final boolean enabled )
     {
         startAction.setEnabled( enabled );
+        dataBaseLocationAction.setEnabled( enabled );
     }
 
     /**
@@ -606,6 +610,7 @@ public class NeoGraphMenu
      */
     private void contributeConnectionActions( final IToolBarManager tm )
     {
+        tm.add( dataBaseLocationAction );
         tm.add( startAction );
         tm.add( stopAction );
         tm.add( SEPARATOR );

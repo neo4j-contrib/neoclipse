@@ -28,6 +28,7 @@ import org.eclipse.core.runtime.Preferences.PropertyChangeEvent;
 import org.eclipse.draw2d.ChangeEvent;
 import org.eclipse.draw2d.ChangeListener;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
@@ -473,6 +474,8 @@ public class NeoGraphViewPart extends ViewPart implements
             getPropertySheetPage().selectionChanged( NeoGraphViewPart.this,
                     EMPTY_SELECTION );
         }
+        setStatusLineMessage( "Connected to "
+                              + Activator.getDefault().getPreferenceStore().getString( Preferences.DATABASE_LOCATION ) );
     }
 
     /**
@@ -736,7 +739,6 @@ public class NeoGraphViewPart extends ViewPart implements
                     // gets deleted or disappears in a rollback
                     showSomeNode();
                 }
-                refreshStatusBar();
             }
         } );
     }
@@ -1093,6 +1095,7 @@ public class NeoGraphViewPart extends ViewPart implements
         private void handleChange( final PropertyChangeEvent event )
         {
             String property = event.getProperty();
+            IPreferenceStore preferenceStore = Activator.getDefault().getPreferenceStore();
             if ( Preferences.CONNECTION_MODE.equals( property ) )
             {
                 GraphDbServiceMode newConnectionMode;
@@ -1110,6 +1113,7 @@ public class NeoGraphViewPart extends ViewPart implements
                 // TODO UGLY
                 traversalDepth = 0;
                 incTraversalDepth();
+                setStatusLineMessage( "Connected to " + preferenceStore.getString( Preferences.DATABASE_LOCATION ) );
             }
             else
             {
@@ -1120,5 +1124,11 @@ public class NeoGraphViewPart extends ViewPart implements
                 }
             }
         }
+
+    }
+
+    public void setStatusLineMessage( String message )
+    {
+        getViewSite().getActionBars().getStatusLineManager().setMessage( message == null ? "" : message );
     }
 }
