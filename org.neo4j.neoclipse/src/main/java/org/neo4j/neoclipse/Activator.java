@@ -19,9 +19,14 @@
 package org.neo4j.neoclipse;
 
 import org.eclipse.jface.preference.PreferenceDialog;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.neo4j.neoclipse.connection.AliasManager;
+import org.neo4j.neoclipse.connection.ConnectionsView;
 import org.neo4j.neoclipse.graphdb.GraphDbServiceManager;
+import org.neo4j.neoclipse.view.NeoGraphViewPart;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -37,6 +42,10 @@ public class Activator extends AbstractUIPlugin
      * The graphdb manager.
      */
     protected GraphDbServiceManager graphDbManager;
+    private AliasManager neo4JConnectionManager;
+    private ConnectionsView connectionsView;
+    private NeoGraphViewPart neoGraphViewPart;
+
     /**
      * The shared instance.
      */
@@ -51,6 +60,7 @@ public class Activator extends AbstractUIPlugin
         super.start( context );
         PLUGIN = this;
         graphDbManager = new GraphDbServiceManager();
+        neo4JConnectionManager = new AliasManager();
     }
 
     /**
@@ -61,6 +71,7 @@ public class Activator extends AbstractUIPlugin
     {
         graphDbManager.shutdownGraphDbService();
         graphDbManager.stopExecutingTasks();
+        neo4JConnectionManager.closeAllConnections();
         PLUGIN = null;
         super.stop( context );
     }
@@ -92,8 +103,7 @@ public class Activator extends AbstractUIPlugin
     public int showPreferenceDialog( final boolean filtered )
     {
         PreferenceDialog pref = PreferencesUtil.createPreferenceDialogOn( null,
-                "org.neo4j.neoclipse.preference.NeoPreferencePage",
-                ( filtered ? new String[] {} : null ), null );
+                "org.neo4j.neoclipse.preference.NeoPreferencePage", ( filtered ? new String[] {} : null ), null );
         if ( pref != null )
         {
             return pref.open();
@@ -110,12 +120,91 @@ public class Activator extends AbstractUIPlugin
     public int showDecoratorPreferenceDialog( final boolean filtered )
     {
         PreferenceDialog pref = PreferencesUtil.createPreferenceDialogOn( null,
-                "org.neo4j.neoclipse.preference.NeoDecoratorPreferencePage",
-                ( filtered ? new String[] {} : null ), null );
+                "org.neo4j.neoclipse.preference.NeoDecoratorPreferencePage", ( filtered ? new String[] {} : null ),
+                null );
         if ( pref != null )
         {
             return pref.open();
         }
         return 1;
     }
+
+    public AliasManager getAliasManager()
+    {
+        return neo4JConnectionManager;
+    }
+
+    public ConnectionsView getConnectionsView()
+    {
+        return getConnectionsView( true );
+    }
+
+    private IWorkbenchPage getActivePage()
+    {
+        if ( getWorkbench() != null && getWorkbench().getActiveWorkbenchWindow() != null )
+        {
+            return getWorkbench().getActiveWorkbenchWindow().getActivePage();
+        }
+        return null;
+    }
+
+    public ConnectionsView getConnectionsView( boolean create )
+    {
+        if ( connectionsView == null )
+        {
+            IWorkbenchPage page = getActivePage();
+            if ( page != null )
+            {
+                connectionsView = (ConnectionsView) page.findView( ConnectionsView.class.getName() );
+                if ( connectionsView == null && create )
+                {
+                    try
+                    {
+                        connectionsView = (ConnectionsView) page.showView( ConnectionsView.class.getName() );
+                    }
+                    catch ( PartInitException e )
+                    {
+                        throw new RuntimeException( e );
+                    }
+                }
+            }
+        }
+
+        return connectionsView;
+    }
+
+    public void setConnectionsView( ConnectionsView connectionsView )
+    {
+        this.connectionsView = connectionsView;
+    }
+
+    public NeoGraphViewPart getNeoGraphViewPart()
+    {
+        if ( neoGraphViewPart == null )
+        {
+            IWorkbenchPage page = getActivePage();
+            if ( page != null )
+            {
+                neoGraphViewPart = (NeoGraphViewPart) page.findView( NeoGraphViewPart.class.getName() );
+                if ( neoGraphViewPart == null )
+                {
+                    try
+                    {
+                        neoGraphViewPart = (NeoGraphViewPart) page.showView( NeoGraphViewPart.class.getName() );
+                    }
+                    catch ( PartInitException e )
+                    {
+                        throw new RuntimeException( e );
+                    }
+                }
+            }
+        }
+        return neoGraphViewPart;
+    }
+
+    public void setNeoGraphViewPart( NeoGraphViewPart neoGraphViewPart )
+    {
+        this.neoGraphViewPart = neoGraphViewPart;
+    }
+
 }

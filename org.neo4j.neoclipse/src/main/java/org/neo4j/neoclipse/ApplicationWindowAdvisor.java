@@ -34,11 +34,13 @@ import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.application.WorkbenchWindowAdvisor;
 import org.eclipse.ui.help.IWorkbenchHelpSystem;
 import org.neo4j.neoclipse.action.Actions;
+import org.neo4j.neoclipse.connection.ConnectionsView;
 import org.neo4j.neoclipse.reltype.RelationshipTypeView;
 import org.neo4j.neoclipse.search.NeoSearchPage;
 
 /**
  * Configure the workbench window.
+ * 
  * @author Anders Nawroth
  */
 public class ApplicationWindowAdvisor extends WorkbenchWindowAdvisor
@@ -51,8 +53,7 @@ public class ApplicationWindowAdvisor extends WorkbenchWindowAdvisor
     }
 
     @Override
-    public ActionBarAdvisor createActionBarAdvisor(
-        final IActionBarConfigurer configurer )
+    public ActionBarAdvisor createActionBarAdvisor( final IActionBarConfigurer configurer )
     {
         actionBarAdvisor = new ApplicationActionBarAdvisor( configurer );
         return actionBarAdvisor;
@@ -72,8 +73,7 @@ public class ApplicationWindowAdvisor extends WorkbenchWindowAdvisor
     {
         super.postWindowOpen();
         IWorkbenchWindowConfigurer configurer = getWindowConfigurer();
-        ICoolBarManager coolBar = configurer.getActionBarConfigurer()
-            .getCoolBarManager();
+        ICoolBarManager coolBar = configurer.getActionBarConfigurer().getCoolBarManager();
         coolBar.removeAll();
         actionBarAdvisor.fillCoolBar( coolBar );
         coolBar.update( true );
@@ -87,6 +87,7 @@ public class ApplicationWindowAdvisor extends WorkbenchWindowAdvisor
         private Action helpViewAction;
         private Action helpWindowAction;
         private Action searchAction;
+        private Action connectionsAction;
 
         public ApplicationActionBarAdvisor( IActionBarConfigurer configurer )
         {
@@ -113,8 +114,7 @@ public class ApplicationWindowAdvisor extends WorkbenchWindowAdvisor
                 {
                     try
                     {
-                        PlatformUI.getWorkbench().getActiveWorkbenchWindow()
-                            .getActivePage().showView(
+                        PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(
                                 "org.eclipse.ui.views.PropertySheet" );
                     }
                     catch ( PartInitException e )
@@ -132,8 +132,8 @@ public class ApplicationWindowAdvisor extends WorkbenchWindowAdvisor
                 {
                     try
                     {
-                        PlatformUI.getWorkbench().getActiveWorkbenchWindow()
-                            .getActivePage().showView( RelationshipTypeView.ID );
+                        PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(
+                                RelationshipTypeView.ID );
                     }
                     catch ( PartInitException e )
                     {
@@ -160,8 +160,7 @@ public class ApplicationWindowAdvisor extends WorkbenchWindowAdvisor
                 {
                     try
                     {
-                        final IWorkbenchHelpSystem helpSystem = PlatformUI
-                            .getWorkbench().getHelpSystem();
+                        final IWorkbenchHelpSystem helpSystem = PlatformUI.getWorkbench().getHelpSystem();
                         helpSystem.displayDynamicHelp();
                     }
                     catch ( Throwable e )
@@ -177,12 +176,29 @@ public class ApplicationWindowAdvisor extends WorkbenchWindowAdvisor
                 @Override
                 public void run()
                 {
-                    final IWorkbenchHelpSystem helpSystem = PlatformUI
-                        .getWorkbench().getHelpSystem();
+                    final IWorkbenchHelpSystem helpSystem = PlatformUI.getWorkbench().getHelpSystem();
                     helpSystem.displayHelp();
                 }
             };
             Actions.HELP_WINDOW.initialize( helpWindowAction );
+
+            connectionsAction = new Action()
+            {
+                @Override
+                public void run()
+                {
+                    try
+                    {
+                        PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(
+                                ConnectionsView.ID );
+                    }
+                    catch ( PartInitException e )
+                    {
+                        e.printStackTrace();
+                    }
+                }
+            };
+            Actions.NEW_CONNECTION.initialize( connectionsAction );
         }
 
         @Override
@@ -192,6 +208,7 @@ public class ApplicationWindowAdvisor extends WorkbenchWindowAdvisor
             main.add( preferencesAction );
             coolBar.add( new ToolBarContributionItem( main, "main" ) );
             IToolBarManager views = new ToolBarManager( SWT.FLAT | SWT.RIGHT );
+            views.add( connectionsAction );
             views.add( propertiesAction );
             views.add( reltypesAction );
             views.add( searchAction );

@@ -70,8 +70,7 @@ public class GraphDbServiceManager
             {
                 if ( lifecycle != null )
                 {
-                    throw new IllegalStateException(
-                            "Can't start new database: the old one isn't shutdown properly." );
+                    throw new IllegalStateException( "Can't start new database: the old one isn't shutdown properly." );
                 }
                 logInfo( "trying to start/connect ..." );
                 String dbLocation;
@@ -107,8 +106,7 @@ public class GraphDbServiceManager
                 logInfo( "stopping/disconnecting ..." );
                 if ( lifecycle == null )
                 {
-                    throw new IllegalStateException(
-                            "Can not stop the database: there is no running database." );
+                    throw new IllegalStateException( "Can not stop the database: there is no running database." );
                 }
                 fireServiceChangedEvent( GraphDbServiceStatus.STOPPING );
                 // TODO give the UI some time to deal with it here?
@@ -131,8 +129,7 @@ public class GraphDbServiceManager
                 }
                 catch ( Exception e )
                 {
-                    throw new RuntimeException(
-                            "Can not stop the database. The reason is not known." );
+                    throw new RuntimeException( "Can not stop the database. The reason is not known." );
                 }
                 finally
                 {
@@ -181,8 +178,7 @@ public class GraphDbServiceManager
                 if ( !isReadOnlyMode() )
                 {
                     tx.finish();
-                    tx = lifecycle.graphDb()
-                            .beginTx();
+                    tx = lifecycle.graphDb().beginTx();
                     fireServiceChangedEvent( GraphDbServiceStatus.COMMIT );
                 }
             }
@@ -196,8 +192,7 @@ public class GraphDbServiceManager
                 if ( !isReadOnlyMode() )
                 {
                     tx.finish();
-                    tx = lifecycle.graphDb()
-                            .beginTx();
+                    tx = lifecycle.graphDb().beginTx();
                     fireServiceChangedEvent( GraphDbServiceStatus.ROLLBACK );
                 }
             }
@@ -283,8 +278,7 @@ public class GraphDbServiceManager
      */
     private final ListenerList listeners = new ListenerList();
     private Transaction tx;
-    private final IPreferenceStore preferenceStore = Activator.getDefault()
-            .getPreferenceStore();
+    private final IPreferenceStore preferenceStore = Activator.getDefault().getPreferenceStore();
 
     /**
      * The constructor.
@@ -292,8 +286,7 @@ public class GraphDbServiceManager
     public GraphDbServiceManager()
     {
         serviceMode = GraphDbServiceMode.valueOf( preferenceStore.getString( Preferences.CONNECTION_MODE ) );
-        logInfo( "Starting " + this.getClass()
-                .getSimpleName() );
+        logInfo( "Starting " + this.getClass().getSimpleName() );
     }
 
     private void logFine( final String message )
@@ -311,11 +304,9 @@ public class GraphDbServiceManager
         return tasks;
     }
 
-    private void printTask( final Object task, final String type,
-            final String info )
+    private void printTask( final Object task, final String type, final String info )
     {
-        String name = task.getClass()
-                .getName();
+        String name = task.getClass().getName();
         if ( name.startsWith( NEOCLIPSE_PACKAGE ) )
         {
             name = name.substring( NEOCLIPSE_PACKAGE.length() );
@@ -329,8 +320,7 @@ public class GraphDbServiceManager
         return executor.submit( task );
     }
 
-    public <T> Future<T> submitTask( final GraphCallable<T> callable,
-            final String info )
+    public <T> Future<T> submitTask( final GraphCallable<T> callable, final String info )
     {
         printTask( callable, "GC", info );
         TaskWrapper<T> wrapped = new TaskWrapper<T>( callable );
@@ -468,8 +458,7 @@ public class GraphDbServiceManager
     /**
      * Registers a service listener.
      */
-    public void addServiceEventListener(
-            final GraphDbServiceEventListener listener )
+    public void addServiceEventListener( final GraphDbServiceEventListener listener )
     {
         listeners.add( listener );
     }
@@ -477,8 +466,7 @@ public class GraphDbServiceManager
     /**
      * Unregisters a service listener.
      */
-    public void removeServiceEventListener(
-            final GraphDbServiceEventListener listener )
+    public void removeServiceEventListener( final GraphDbServiceEventListener listener )
     {
         listeners.remove( listener );
     }
@@ -487,8 +475,7 @@ public class GraphDbServiceManager
     private String getDbLocation()
     {
         String location = preferenceStore.getString( Preferences.DATABASE_LOCATION );
-        if ( ( location == null ) || ( location.trim()
-                .length() == 0 ) )
+        if ( ( location == null ) || ( location.trim().length() == 0 ) )
         {
             // if there's really no db dir, create one in the workspace
             File dbDir = GraphDbServiceManager.dirInWorkspace( "neo4j-db" );
@@ -498,18 +485,15 @@ public class GraphDbServiceManager
         File dir = new File( location );
         if ( !dir.exists() )
         {
-            throw new IllegalArgumentException(
-                    "The database location does not exist." );
+            throw new IllegalArgumentException( "The database location does not exist." );
         }
         if ( !dir.isDirectory() )
         {
-            throw new IllegalArgumentException(
-                    "The database location is not a directory." );
+            throw new IllegalArgumentException( "The database location is not a directory." );
         }
         if ( !dir.canWrite() )
         {
-            throw new IllegalAccessError(
-                    "Writes are not allowed to the database location." );
+            throw new IllegalAccessError( "Writes are not allowed to the database location." );
         }
         logFine( "using location: " + location );
         return location;
@@ -526,8 +510,7 @@ public class GraphDbServiceManager
         String path;
         try
         {
-            path = url.toURI()
-                    .getPath();
+            path = url.toURI().getPath();
         }
         catch ( URISyntaxException e )
         {
@@ -544,8 +527,7 @@ public class GraphDbServiceManager
         {
             if ( !dir.mkdirs() )
             {
-                throw new IllegalArgumentException(
-                        "Could not create directory: " + dir );
+                throw new IllegalArgumentException( "Could not create directory: " + dir );
             }
         }
         return dir;

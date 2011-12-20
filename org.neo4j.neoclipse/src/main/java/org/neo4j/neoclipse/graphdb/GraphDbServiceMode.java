@@ -22,5 +22,17 @@ public enum GraphDbServiceMode
 {
     READ_ONLY_EMBEDDED,
     READ_WRITE_EMBEDDED,
-    REMOTE
+    REMOTE;
+
+    public static GraphDbServiceMode getValue( String serviceMode )
+    {
+        try
+        {
+            return GraphDbServiceMode.valueOf( serviceMode );
+        }
+        catch ( Exception e )
+        {
+            return READ_ONLY_EMBEDDED;
+        }
+    }
 }
