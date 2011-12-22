@@ -1,0 +1,60 @@
+<html>
+<head>
+<!--
+
+ * Copyright (C) 2007 SQL Explorer Development Team
+ * http://sourceforge.net/projects/eclipsesql
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+-->
+	<title />
+</head>
+<body bgcolor="white">
+
+Provides parsers and tokenizers for reading SQL and breaking that SQL up into 
+individual queries.
+
+
+<h2>Package Specification</h2>
+
+	<p>The main goal of this package is to provide a facility for easily reading and
+	interpretting a) SQL commands and b) extensions called Structured Comments.</p>
+	
+	<p>Tokenization is done by the Tokenizer class, which scans a StringBuffer and
+	spits out Tokenizer.Token objects; Token is a CharSequence which points onto
+	the original StringBuffer in an attempt to save memory and time.</p>
+
+	<p>Query parsers must all implement QueryParser, although it is suggested that any
+	future implementations extend AbstractQueryParser to take some of the routine work
+	out of implementation.  Derived from here is BasicQueryParser, the backwards 
+	compatible implementation and AbstractSyntaxQueryParser - a base class for syntax
+	aware parsers.  The QueryParsers spit out Query objects, which are also CharSequence
+	based.</p>
+	
+	<p>AbstractSyntaxQueryParser provides both look ahead and look behind caching of
+	Tokens, storage for a list of Query objects, and automatically employs a
+	StructuredCommentParser if the preferences permit it.</p>
+	
+	<p>StructuredCommentParser is used to read special markup inside comments; this
+	allows extensions to the SQL without necessarily requiring incompatibility with 
+	pre-existing RDBMS implementations, and also provides a structured means to add
+	new language features without conflicting with the underlying RDBMS.</p>
+	
+	<p>Command and its derived classes are the implemention of the structured comment
+	extensions.</p>
+	
+</body>
+</html>

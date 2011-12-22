@@ -20,7 +20,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
@@ -28,6 +27,8 @@ import org.eclipse.ui.part.ViewPart;
 import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.connection.actions.NewAliasAction;
 import org.neo4j.neoclipse.connection.actions.NewEditorAction;
+import org.neo4j.neoclipse.graphdb.GraphDbServiceStatus;
+import org.neo4j.neoclipse.view.UiHelper;
 
 public class ConnectionsView extends ViewPart implements ConnectionListener
 {
@@ -36,8 +37,6 @@ public class ConnectionsView extends ViewPart implements ConnectionListener
     private static final Set<Alias> EMPTY_ALIASES = new HashSet<Alias>();
 
     private TreeViewer _treeViewer;
-
-    private Clipboard clipboard;
 
     public ConnectionsView()
     {
@@ -50,7 +49,7 @@ public class ConnectionsView extends ViewPart implements ConnectionListener
     {
         Activator.getDefault().getAliasManager().addListener( this );
 
-        _treeViewer = new TreeViewer( parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL );
+        _treeViewer = new TreeViewer( parent, SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL );
         getSite().setSelectionProvider( _treeViewer );
 
         IToolBarManager toolBarMgr = getViewSite().getActionBars().getToolBarManager();
@@ -61,7 +60,6 @@ public class ConnectionsView extends ViewPart implements ConnectionListener
         _treeViewer.setContentProvider( new ConnectionTreeContentProvider() );
         _treeViewer.setLabelProvider( new ConnectionTreeLabelProvider() );
         _treeViewer.setInput( Activator.getDefault().getAliasManager() );
-
         // doubleclick on alias opens session
         _treeViewer.addDoubleClickListener( new IDoubleClickListener()
         {
@@ -109,17 +107,6 @@ public class ConnectionsView extends ViewPart implements ConnectionListener
 
         parent.layout();
 
-    }
-
-    @Override
-    public void dispose()
-    {
-        if ( clipboard != null )
-        {
-            clipboard.dispose();
-            clipboard = null;
-        }
-        super.dispose();
     }
 
     public TreeViewer getTreeViewer()
@@ -172,31 +159,11 @@ public class ConnectionsView extends ViewPart implements ConnectionListener
         return null;
     }
 
-    /**
-     * @return the clipboard
-     */
-    public Clipboard getClipboard()
-    {
-        if ( clipboard == null )
-        {
-            clipboard = new Clipboard( getSite().getShell().getDisplay() );
-        }
-        return clipboard;
-    }
-
-    /**
-     * @param clipboard the clipboard to set
-     */
-    public void setClipboard( Clipboard clipboard )
-    {
-        this.clipboard = clipboard;
-    }
-
     @Override
     public void modelChanged()
     {
 
-        getSite().getShell().getDisplay().asyncExec( new Runnable()
+        UiHelper.asyncExec( new Runnable()
         {
             @Override
             public void run()
@@ -227,6 +194,13 @@ public class ConnectionsView extends ViewPart implements ConnectionListener
                 }
             }
         }
+
+        Alias alias = getSelectedAlias();
+        if ( alias != null )
+        {
+            Activator.getDefault().getGraphDbServiceManager().fireServiceChangedEvent( GraphDbServiceStatus.DB_SELECT );
+            Activator.getDefault().setStatusLineMessage( alias.getNeo4JDbLocation() );
+        }
     }
 
     Object[] getSelected()
@@ -249,7 +223,7 @@ public class ConnectionsView extends ViewPart implements ConnectionListener
         // TODO new Cypher Editor
     }
 
-    public Set<Alias> getSelectedAliases()
+    private Set<Alias> getSelectedAliases()
     {
         IStructuredSelection selection = (IStructuredSelection) _treeViewer.getSelection();
         if ( selection == null )
@@ -276,4 +250,5 @@ public class ConnectionsView extends ViewPart implements ConnectionListener
     {
         return getFirstOf( getSelectedAliases() );
     }
+
 }

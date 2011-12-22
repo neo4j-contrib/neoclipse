@@ -12,5 +12,6 @@
 	<classpathentry kind="lib" path="lib/neo4j-jmx-1.6.M01.jar"/>
 	<classpathentry kind="lib" path="lib/neo4j-lucene-index-1.6.M01.jar"/>
 	<classpathentry kind="lib" path="lib/neo4j-udc-1.6.M01.jar"/>
+	<classpathentry kind="lib" path="lib/dom4j.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

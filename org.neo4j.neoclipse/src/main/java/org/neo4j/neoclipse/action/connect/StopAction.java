@@ -42,16 +42,15 @@ public class StopAction extends AbstractGraphAction
     public void run()
     {
         graphView.cleanTransactionBeforeShutdown();
-        GraphDbServiceManager gsm = Activator.getDefault()
-                .getGraphDbServiceManager();
+        GraphDbServiceManager gsm = Activator.getDefault().getGraphDbServiceManager();
         try
         {
-            gsm.stopGraphDbService()
-                    .get();
+            gsm.stopGraphDbService().get();
         }
         catch ( Exception e )
         {
             ErrorMessage.showDialog( "Database problem", e );
         }
+        Activator.getDefault().getAliasManager().modelChanged();
     }
 }

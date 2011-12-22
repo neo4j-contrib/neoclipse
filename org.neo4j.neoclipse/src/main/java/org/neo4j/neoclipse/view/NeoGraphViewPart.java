@@ -342,7 +342,7 @@ public class NeoGraphViewPart extends ViewPart implements IZoomableWorkbenchPart
                 str.append( "Traversal depth: " ).append( traversalDepth );
                 str.append( "   Nodes: " ).append( viewer.getGraphControl().getNodes().size() );
                 str.append( "   Relationships: " ).append( viewer.getGraphControl().getConnections().size() );
-                getViewSite().getActionBars().getStatusLineManager().setMessage( str.toString() );
+                Activator.getDefault().setStatusLineMessage( str.toString() );
             }
         } );
     }
@@ -445,8 +445,6 @@ public class NeoGraphViewPart extends ViewPart implements IZoomableWorkbenchPart
         {
             getPropertySheetPage().selectionChanged( NeoGraphViewPart.this, EMPTY_SELECTION );
         }
-        setStatusLineMessage( "Connected to "
-                              + Activator.getDefault().getPreferenceStore().getString( Preferences.DATABASE_LOCATION ) );
     }
 
     /**
@@ -830,7 +828,12 @@ public class NeoGraphViewPart extends ViewPart implements IZoomableWorkbenchPart
 
         private void handleServiceChange( final GraphDbServiceEvent event )
         {
-            if ( event.getStatus() == GraphDbServiceStatus.STOPPING )
+            if ( event.getStatus() == GraphDbServiceStatus.DB_SELECT
+                 && !Activator.getDefault().getGraphDbServiceManager().isRunning() )
+            {
+                menu.setEnabledStartAction( true );
+            }
+            else if ( event.getStatus() == GraphDbServiceStatus.STOPPING )
             {
                 browserHistory.clear();
                 updateNavStatus();
@@ -1069,7 +1072,7 @@ public class NeoGraphViewPart extends ViewPart implements IZoomableWorkbenchPart
                 // TODO UGLY
                 traversalDepth = 0;
                 incTraversalDepth();
-                setStatusLineMessage( "Connected to " + preferenceStore.getString( Preferences.DATABASE_LOCATION ) );
+
             }
             else
             {
@@ -1082,8 +1085,4 @@ public class NeoGraphViewPart extends ViewPart implements IZoomableWorkbenchPart
 
     }
 
-    public void setStatusLineMessage( String message )
-    {
-        getViewSite().getActionBars().getStatusLineManager().setMessage( message == null ? "" : message );
-    }
 }

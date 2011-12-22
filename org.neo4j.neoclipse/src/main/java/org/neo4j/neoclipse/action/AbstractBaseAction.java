@@ -58,4 +58,9 @@ abstract public class AbstractBaseAction extends Action
         return Activator.getDefault().getNeoGraphViewPart();
     }
 
+    public boolean isAvailable()
+    {
+        return true;
+    }
+
 }

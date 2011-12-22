@@ -1,0 +1,131 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="net.sourceforge.sqlexplorer">
+<annotation>
+      <appInfo>
+         <meta.schema plugin="net.sourceforge.sqlexplorer" id="dataSetTableContextAction" name="Table Context Menu Action"/>
+      </appInfo>
+      <documentation>
+         This extension point allows you to add custom actions to the context menu for a DataSetTable.
+      </documentation>
+   </annotation>
+
+   <element name="action">
+      <annotation>
+         <documentation>
+            This extension point allows you to add custom actions to the context menu for a DataSetTable.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="name" type="string" use="required">
+            <annotation>
+               <documentation>
+                  Name of the extension action.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  Identifier of the extension action.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  A fully qualified name of a class which extends &lt;samp&gt;net.sourceforge.sqlexplorer.dataset.actions.AbstractDataSetTableContextAction&lt;/samp&gt;
+               </documentation>
+               <appInfo>
+                  <meta.attribute kind="java" basedOn="net.sourceforge.sqlexplorer.dataset.actions.AbstractDataSetTableContextAction"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+         <attribute name="group" type="string">
+            <annotation>
+               <documentation>
+                  Use &apos;export&apos; to include action in export submenu
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="extension">
+      <complexType>
+         <sequence minOccurs="1" maxOccurs="unbounded">
+            <element ref="action"/>
+         </sequence>
+         <attribute name="point" type="string">
+            <annotation>
+               <documentation>
+                  A fully qualified identifier of the target extension point.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  An optional identifier of the extension instance.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  An optional name of the extension instance.
+               </documentation>
+               <appInfo>
+                  <meta.attribute translatable="true"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="since"/>
+      </appInfo>
+      <documentation>
+         version 3.0.0
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="examples"/>
+      </appInfo>
+      <documentation>
+         // TODO
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="apiInfo"/>
+      </appInfo>
+      <documentation>
+         None.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="implementation"/>
+      </appInfo>
+      <documentation>
+         None.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="copyright"/>
+      </appInfo>
+      <documentation>
+         (c) Davy Vanherbergen, 2006, All rights reserved.
+      </documentation>
+   </annotation>
+
+</schema>

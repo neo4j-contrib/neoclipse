@@ -34,10 +34,10 @@ public enum Actions
     HELP_VIEW( "Help view", Icons.HELP_VIEW ),
     HELP_WINDOW( "Help window", Icons.HELP_WINDOW_ENABLED, Icons.HELP_WINDOW_DISABLED ),
     SEARCH( "Search", Icons.SEARCH_ENABLED, Icons.SEARCH_DISABLED ),
-    DATABASE_LOCATION( "Database location", Icons.DATABASE_LOCATION_ENABLED, Icons.DATABASE_LOCATION_DISABLED ),
+    CONNECTIONS( "Database location", Icons.CONNECTIONS_ENABLED, Icons.CONNECTIONS_DISABLED ),
 
     // connect
-    NEW_CONNECTION( "New Connection", Icons.NEW_CONNECTION_ENABLED, Icons.NEW_CONNECTION_DISABLED ),
+    NEW_CONNECTION( "New Connection", Icons.NEW_ALIAS_ENABLED, Icons.NEW_ALIAS_DISABLED ),
     START( "Start/Connect database", Icons.START_ENABLED, Icons.START_DISABLED ),
     STOP( "Stop/Disconnect database", Icons.STOP_ENABLED, Icons.STOP_DISABLED ),
     SYNC( "Sync database", Icons.SYNC_ENABLED, Icons.SYNC_DISABLED ),

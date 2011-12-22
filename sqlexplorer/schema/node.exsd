@@ -1,0 +1,170 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="net.sourceforge.sqlexplorer">
+<annotation>
+      <appInfo>
+         <meta.schema plugin="net.sourceforge.sqlexplorer" id="node" name="Database Structure Node"/>
+      </appInfo>
+      <documentation>
+         Create a new node in the database structure view.  A node can be added on 2 different levels: as a child of the database node (same level as catalog/schema nodes) or as a child of a catalog/schema node.
+      </documentation>
+   </annotation>
+
+   <element name="node">
+      <annotation>
+         <documentation>
+            This extension points allows you to add customs nodes to the database strucuture view.
+         </documentation>
+      </annotation>
+      <complexType>
+         <attribute name="name" type="string" use="required">
+            <annotation>
+               <documentation>
+                  Name of the node.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  Identifier of the extension node.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  A fully qualified name of a class which extends &lt;samp&gt;net.sourceforge.sqlexplorer.dbstructure.nodes.AbstractNode&lt;/samp&gt;
+               </documentation>
+               <appInfo>
+                  <meta.attribute kind="java" basedOn="net.sourceforge.sqlexplorer.dbstructure.nodes.AbstractNode"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+         <attribute name="database-product-name" type="string" use="required">
+            <annotation>
+               <documentation>
+                  Name of database for which this tab is valid as seen in the Database Product Name property in the Connection Info view.  &apos;*&apos; can be used as a wildcard.  Use a comma seperated list to specify multiple databases.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="parent-node" use="required">
+            <annotation>
+               <documentation>
+                  Parent node for this node.
+               </documentation>
+            </annotation>
+            <simpleType>
+               <restriction base="string">
+                  <enumeration value="root">
+                  </enumeration>
+                  <enumeration value="schema">
+                  </enumeration>
+                  <enumeration value="catalog">
+                  </enumeration>
+                  <enumeration value="schema+catalog">
+                  </enumeration>
+                  <enumeration value="table">
+                  </enumeration>
+               </restriction>
+            </simpleType>
+         </attribute>
+         <attribute name="table-type" type="string">
+            <annotation>
+               <documentation>
+                  Table type for this extenstion node. The type should match one of the types returned by SQLMetaData.  e.g. TABLE, VIEW, LOCAL TEMPORARY, ...
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="icon" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appInfo>
+                  <meta.attribute kind="resource"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="extension">
+      <complexType>
+         <sequence minOccurs="1" maxOccurs="unbounded">
+            <element ref="node"/>
+         </sequence>
+         <attribute name="point" type="string">
+            <annotation>
+               <documentation>
+                  A fully qualified identifier of the target extension point.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  An optional identifier of the extension instance.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  An optional name of the extension instance.
+               </documentation>
+               <appInfo>
+                  <meta.attribute translatable="true"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="since"/>
+      </appInfo>
+      <documentation>
+         version 3.0.0
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="examples"/>
+      </appInfo>
+      <documentation>
+         // TODO
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="apiInfo"/>
+      </appInfo>
+      <documentation>
+         Even though the table-type needs to match the database specific table types like &apos;TABLE&apos;, &apos;VIEW&apos;, etc.. the node itself should always return type + &quot;_FOLDER&quot; in the getType() method.
+For example, a custom view node would be defined with table-type = VIEW and in the node itself, the method getType() will return &quot;VIEW_FOLDER&quot;.  This is to allow extension actions to find the correct node to act upon.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="implementation"/>
+      </appInfo>
+      <documentation>
+         None.
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appInfo>
+         <meta.section type="copyright"/>
+      </appInfo>
+      <documentation>
+         (c) Davy Vanherbergen, 2006, All rights reserved.
+      </documentation>
+   </annotation>
+
+</schema>

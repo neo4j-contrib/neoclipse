@@ -24,6 +24,9 @@ import org.eclipse.ui.actions.ActionGroup;
 import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.action.connect.StartAction;
 import org.neo4j.neoclipse.action.connect.StopAction;
+import org.neo4j.neoclipse.connection.actions.NewAliasAction;
+import org.neo4j.neoclipse.connection.actions.NewDeleteAction;
+import org.neo4j.neoclipse.graphdb.GraphDbServiceManager;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**
@@ -46,16 +49,30 @@ public class ConnectionTreeActionGroup extends ActionGroup
 
         ConnectionsView view = Activator.getDefault().getConnectionsView();
         NeoGraphViewPart neoGraphView = Activator.getDefault().getNeoGraphViewPart();
+        GraphDbServiceManager graphDbServiceManager = Activator.getDefault().getGraphDbServiceManager();
 
         Object[] selection = ( view == null ) ? null : view.getSelected();
-
-        if ( selection[0] instanceof Alias )
+        if ( selection == null || selection.length != 1 )
         {
-            Alias alias = (Alias) selection[0];
+            addAction( menu, new NewAliasAction() );
+            return;
+        }
 
-            addAction( menu, new StartAction( neoGraphView ) );
+        Alias alias = (Alias) selection[0];
+        if ( graphDbServiceManager.isRunning() && graphDbServiceManager.getCurrentAlias().equals( alias ) )
+        {
             addAction( menu, new StopAction( neoGraphView ) );
+        }
+        else if ( !graphDbServiceManager.isRunning() )
+        {
+            addAction( menu, new StartAction( neoGraphView ) );
+            addAction( menu, new NewDeleteAction() );
 
+        }
+        else
+        {
+            addAction( menu, new NewAliasAction() );
+            addAction( menu, new NewDeleteAction() );
         }
     }
 

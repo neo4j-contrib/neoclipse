@@ -2,7 +2,9 @@ package org.neo4j.neoclipse.connection;
 
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
+import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.Icons;
+import org.neo4j.neoclipse.graphdb.GraphDbServiceManager;
 
 /**
  * Label provider for database structure outline.
@@ -12,9 +14,9 @@ import org.neo4j.neoclipse.Icons;
 public class ConnectionTreeLabelProvider extends LabelProvider
 {
 
-    private Image _inactiveAliasImage = Icons.NEW_CONNECTION_DISABLED.image();
+    private Image _inactiveAliasImage = Icons.NEW_ALIAS_DISABLED.image();
 
-    private Image _activeAliasImage = Icons.NEW_CONNECTION_ENABLED.image();
+    private Image _activeAliasImage = Icons.NEW_ALIAS_ENABLED.image();
 
     @Override
     public void dispose()
@@ -33,7 +35,8 @@ public class ConnectionTreeLabelProvider extends LabelProvider
         if ( element instanceof Alias )
         {
             Alias alias = (Alias) element;
-            if ( alias.getNeo4JDbLocation() != null )
+            GraphDbServiceManager graphDbServiceManager = Activator.getDefault().getGraphDbServiceManager();
+            if ( graphDbServiceManager.isRunning() && graphDbServiceManager.getCurrentAlias().equals( alias ) )
             {
                 return _activeAliasImage;
 

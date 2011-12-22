@@ -1,0 +1,35 @@
+
+== STARTUP PERFORMANCE ==
+* make dictionary persistent, and only update on request (by right-clicking and choosing refresh in db structure view)
+* creating first editor is a bit slow..
+
+== DATASET ==
+* add export option: insert statement file
+* better row/column/cells copy support
+
+== EDITOR STUFF ==
+* review/fix sql editor content assist
+* check preferences are being stored/restored properly after application exit
+* fix/check color coding/font settings
+* add drag support for nodes from structure tree into sqleditor (select few columns and drop into editor to generate select statement)
+* create extendible 'snippets' popup that allows you to choose a db specific keyword and paste/drop it into the editor.
+  These could be organized by type, e.g. functions, rules, hints, ...   This way, you wouldn't have to remember every db specific
+  implementation for TO_DATE('2000-01-01', 'YYYY-MM-DD') for example.
+
+== GENERAL ==
+* add help documentation in plugin
+* add 'do not ask again' to some of the prompts
+* create installer for standalone app
+* create update manager for RCP
+
+== OTHER (db specific?) ==
+* create/modify table wizard
+* drop table, other.. action
+* rename action
+* create index wizard
+* more folders for all types of databases
+
+== Driver preferences ==
+* when driver is modified, validate classpath and try loading selected class
+* copy driver modifies the original driver if an error occurred (e.g. invalid class)
+

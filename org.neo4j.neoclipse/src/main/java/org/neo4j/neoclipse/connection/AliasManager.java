@@ -1,8 +1,15 @@
 package org.neo4j.neoclipse.connection;
 
+import java.io.File;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.TreeMap;
+
+import org.dom4j.Element;
+import org.dom4j.tree.DefaultElement;
+import org.neo4j.neoclipse.ApplicationFiles;
+import org.neo4j.neoclipse.XMLUtils;
 
 /**
  * Maintains the list of Neo4JConnection Alias
@@ -19,12 +26,76 @@ public class AliasManager implements ConnectionListener
     // Connection Listeners
     private LinkedList<ConnectionListener> connectionListeners = new LinkedList<ConnectionListener>();
 
+    public void loadAliases()
+    {
+        aliases.clear();
+
+        Element root = XMLUtils.readRoot( new File( ApplicationFiles.USER_ALIAS_FILE_NAME ) );
+        if ( root != null )
+        {
+            if ( root.getName().equals( "aliases" ) )
+            {
+                root = convertToV350( root );
+            }
+            List<Element> list = root.elements( Alias.ALIAS );
+            if ( list != null )
+            {
+                for ( Element elem : list )
+                {
+                    addAlias( new Alias( elem ) );
+                }
+            }
+        }
+    }
+
+    /**
+     * Saves all the Aliases to the users preferences
+     * 
+     */
+    public void saveAliases()
+    {
+        DefaultElement root = new DefaultElement( Alias.ALIASES );
+        for ( Alias alias : aliases.values() )
+        {
+            root.add( alias.describeAsXml() );
+        }
+
+        XMLUtils.save( root, new File( ApplicationFiles.USER_ALIAS_FILE_NAME ) );
+    }
+
+    /**
+     * Upgrades a v3 definition (java beans style) to v3.5.0beta2 and onwards
+     * 
+     * @param beans
+     * @return
+     */
+    protected Element convertToV350( Element beans )
+    {
+        Element result = new DefaultElement( Alias.ALIASES );
+
+        for ( Element bean : beans.elements( "alias" ) )
+        {
+            Element alias = result.addElement( Alias.ALIAS );
+            alias.addElement( Alias.NAME ).setText( checkNull( bean.elementText( "name" ) ) );
+            alias.addElement( Alias.URL ).setText( checkNull( bean.elementText( "url" ) ) );
+            alias.addElement( Alias.USER_NAME ).setText( checkNull( bean.elementText( "userName" ) ) );
+            alias.addElement( Alias.PASSWORD ).setText( checkNull( bean.elementText( "password" ) ) );
+        }
+
+        return result;
+    }
+
+    private String checkNull( String pString )
+    {
+        return pString == null ? "" : pString;
+    }
+
     /**
      * Adds an Neo4JConnection
      * 
      * @param Alias
      */
-    public void addAlias( Alias connection ) throws Exception
+    public void addAlias( Alias connection )
     {
         aliases.put( connection.getName(), connection );
     }

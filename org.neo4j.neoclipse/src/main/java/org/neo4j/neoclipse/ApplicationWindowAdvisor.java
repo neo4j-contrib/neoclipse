@@ -198,7 +198,7 @@ public class ApplicationWindowAdvisor extends WorkbenchWindowAdvisor
                     }
                 }
             };
-            Actions.NEW_CONNECTION.initialize( connectionsAction );
+            Actions.CONNECTIONS.initialize( connectionsAction );
         }
 
         @Override

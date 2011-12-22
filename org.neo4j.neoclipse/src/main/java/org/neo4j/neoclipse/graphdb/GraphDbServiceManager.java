@@ -38,6 +38,7 @@ import org.neo4j.graphdb.Transaction;
 import org.neo4j.kernel.EmbeddedGraphDatabase;
 import org.neo4j.kernel.EmbeddedReadOnlyGraphDatabase;
 import org.neo4j.neoclipse.Activator;
+import org.neo4j.neoclipse.connection.Alias;
 import org.neo4j.neoclipse.preference.Preferences;
 import org.neo4j.neoclipse.view.UiHelper;
 
@@ -51,8 +52,8 @@ public class GraphDbServiceManager
 {
     private static final String NEOCLIPSE_PACKAGE = "org.neo4j.neoclipse.";
     private static Logger logger = Logger.getLogger( GraphDbServiceManager.class.getName() );
+    private Alias currentAlias;
 
-    static
     {
         logger.setUseParentHandlers( false );
         logger.setLevel( Level.INFO );
@@ -78,12 +79,12 @@ public class GraphDbServiceManager
                 switch ( serviceMode )
                 {
                 case READ_WRITE_EMBEDDED:
-                    dbLocation = getDbLocation();
+                    dbLocation = getCurrentDbLocation();
                     graphDb = new EmbeddedGraphDatabase( dbLocation );
                     logInfo( "connected to embedded neo4j" );
                     break;
                 case READ_ONLY_EMBEDDED:
-                    dbLocation = getDbLocation();
+                    dbLocation = getCurrentDbLocation();
                     graphDb = new EmbeddedReadOnlyGraphDatabase( dbLocation );
                     logInfo( "connected to embedded read-only neo4j" );
                     break;
@@ -400,8 +401,9 @@ public class GraphDbServiceManager
      * 
      * @return
      */
-    public Future<?> startGraphDbService() throws Exception
+    public Future<?> startGraphDbService( Alias alias ) throws Exception
     {
+        currentAlias = alias;
         return submitTask( tasks().START, "start db" );
     }
 
@@ -471,10 +473,10 @@ public class GraphDbServiceManager
         listeners.remove( listener );
     }
 
-    // determine the neo4j directory from the preferences
-    private String getDbLocation()
+    // determine the neo4j directory from the selected alias
+    private String getCurrentDbLocation()
     {
-        String location = preferenceStore.getString( Preferences.DATABASE_LOCATION );
+        String location = currentAlias.getNeo4JDbLocation();
         if ( ( location == null ) || ( location.trim().length() == 0 ) )
         {
             // if there's really no db dir, create one in the workspace
@@ -537,7 +539,7 @@ public class GraphDbServiceManager
      * Notifies all registered listeners about the new service status. Actually
      * just queues up the task so running tasks can finish first.
      */
-    protected void fireServiceChangedEvent( final GraphDbServiceStatus status )
+    public void fireServiceChangedEvent( final GraphDbServiceStatus status )
     {
         submitTask( new Runnable()
         {
@@ -562,4 +564,10 @@ public class GraphDbServiceManager
             }
         }
     }
+
+    public Alias getCurrentAlias()
+    {
+        return currentAlias;
+    }
+
 }

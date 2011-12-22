@@ -46,7 +46,6 @@ import org.neo4j.neoclipse.action.browse.GoBackAction;
 import org.neo4j.neoclipse.action.browse.GoForwardAction;
 import org.neo4j.neoclipse.action.browse.RefreshAction;
 import org.neo4j.neoclipse.action.browse.ShowReferenceNodeAction;
-import org.neo4j.neoclipse.action.connect.DatabaseLocationAction;
 import org.neo4j.neoclipse.action.connect.StartAction;
 import org.neo4j.neoclipse.action.connect.StopAction;
 import org.neo4j.neoclipse.action.connect.SyncAction;
@@ -117,14 +116,11 @@ public class NeoGraphMenu
                 imgDesc = relTypeImages.get( relType );
                 if ( imgDesc == null )
                 {
-                    Image image = new Image( Display.getCurrent(),
-                            RELTYPE_IMG_SIZE, RELTYPE_IMG_SIZE );
-                    Color color = graphView.getLabelProvider()
-                            .getColor( relType );
+                    Image image = new Image( Display.getCurrent(), RELTYPE_IMG_SIZE, RELTYPE_IMG_SIZE );
+                    Color color = graphView.getLabelProvider().getColor( relType );
                     GC gc = new GC( image );
                     gc.setBackground( color );
-                    gc.fillRectangle( RELTYPE_POSITION, RELTYPE_POSITION,
-                            RELTYPE_DOT_SIZE, RELTYPE_DOT_SIZE );
+                    gc.fillRectangle( RELTYPE_POSITION, RELTYPE_POSITION, RELTYPE_DOT_SIZE, RELTYPE_DOT_SIZE );
                     gc.dispose();
                     imgDesc = ImageDescriptor.createFromImage( image );
                     relTypeImages.put( relType, imgDesc );
@@ -180,14 +176,10 @@ public class NeoGraphMenu
          */
         public ActionSet( final RelationshipTypesProvider relTypesProvider )
         {
-            addRel = new NewRelationshipTypeAction( relTypesProvider,
-                    NodeSpaceAction.RELATIONSHIP, graphView );
-            addOut = new NewRelationshipTypeAction( relTypesProvider,
-                    NodeSpaceAction.OUTGOING_NODE, graphView );
-            addIn = new NewRelationshipTypeAction( relTypesProvider,
-                    NodeSpaceAction.INCOMING_NODE, graphView );
-            addLoop = new NewRelationshipTypeAction( relTypesProvider,
-                    NodeSpaceAction.LOOP, graphView );
+            addRel = new NewRelationshipTypeAction( relTypesProvider, NodeSpaceAction.RELATIONSHIP, graphView );
+            addOut = new NewRelationshipTypeAction( relTypesProvider, NodeSpaceAction.OUTGOING_NODE, graphView );
+            addIn = new NewRelationshipTypeAction( relTypesProvider, NodeSpaceAction.INCOMING_NODE, graphView );
+            addLoop = new NewRelationshipTypeAction( relTypesProvider, NodeSpaceAction.LOOP, graphView );
         }
 
         /**
@@ -209,8 +201,7 @@ public class NeoGraphMenu
         public void addAt( final int index )
         {
             addRelMenuMgr.insert( index, new ActionContributionItem( addRel ) );
-            addOutNodeMenuMgr.insert( index,
-                    new ActionContributionItem( addOut ) );
+            addOutNodeMenuMgr.insert( index, new ActionContributionItem( addOut ) );
             addInNodeMenuMgr.insert( index, new ActionContributionItem( addIn ) );
             addLoopMenuMgr.insert( index, new ActionContributionItem( addLoop ) );
         }
@@ -219,8 +210,7 @@ public class NeoGraphMenu
     /**
      * A map to keep the actions sorted by relationship type name.
      */
-    private final SortedMap<String, ActionSet> actionMap = new TreeMap<String, ActionSet>(
-            new RelationshipTypeSorter() );
+    private final SortedMap<String, ActionSet> actionMap = new TreeMap<String, ActionSet>( new RelationshipTypeSorter() );
     /**
      * Size of colored squares for relationship types.
      */
@@ -258,33 +248,22 @@ public class NeoGraphMenu
     private final CommitAction commitAction;
     private final RollbackAction rollbackAction;
     // menu managers
-    private final MenuManager addRelMenuMgr = new MenuManager(
-            Actions.ADD_RELATIONSHIP.label(), Actions.ADD_RELATIONSHIP.icon()
-                    .descriptor(), "addRelSubmenu" );
-    private static final MenuManager addRelMenuMgrFake = new MenuManager(
-            Actions.ADD_RELATIONSHIP.label(),
-            Actions.ADD_RELATIONSHIP.disabledIcon()
-                    .descriptor(), "addRelSubmenuFake" );
-    private final MenuManager addOutNodeMenuMgr = new MenuManager(
-            Actions.ADD_OUTGOING_NODE.label(), Actions.ADD_OUTGOING_NODE.icon()
-                    .descriptor(), "addOutNodeSubmenu" );
-    private static final MenuManager addOutNodeMenuMgrFake = new MenuManager(
-            Actions.ADD_OUTGOING_NODE.label(),
-            Actions.ADD_OUTGOING_NODE.disabledIcon()
-                    .descriptor(), "addOutNodeSubmenuFake" );
-    private final MenuManager addInNodeMenuMgr = new MenuManager(
-            Actions.ADD_INCOMING_NODE.label(), Actions.ADD_INCOMING_NODE.icon()
-                    .descriptor(), "addInNodeSubmenu" );
-    private static final MenuManager addInNodeMenuMgrFake = new MenuManager(
-            Actions.ADD_INCOMING_NODE.label(),
-            Actions.ADD_INCOMING_NODE.disabledIcon()
-                    .descriptor(), "addInNodeSubmenuFake" );
-    private final MenuManager addLoopMenuMgr = new MenuManager(
-            Actions.ADD_LOOP.label(), Actions.ADD_LOOP.icon()
-                    .descriptor(), "addLoopSubmenu" );
-    private static final MenuManager addLoopMenuMgrFake = new MenuManager(
-            Actions.ADD_LOOP.label(), Actions.ADD_LOOP.disabledIcon()
-                    .descriptor(), "addLoopSubmenuFake" );
+    private final MenuManager addRelMenuMgr = new MenuManager( Actions.ADD_RELATIONSHIP.label(),
+            Actions.ADD_RELATIONSHIP.icon().descriptor(), "addRelSubmenu" );
+    private static final MenuManager addRelMenuMgrFake = new MenuManager( Actions.ADD_RELATIONSHIP.label(),
+            Actions.ADD_RELATIONSHIP.disabledIcon().descriptor(), "addRelSubmenuFake" );
+    private final MenuManager addOutNodeMenuMgr = new MenuManager( Actions.ADD_OUTGOING_NODE.label(),
+            Actions.ADD_OUTGOING_NODE.icon().descriptor(), "addOutNodeSubmenu" );
+    private static final MenuManager addOutNodeMenuMgrFake = new MenuManager( Actions.ADD_OUTGOING_NODE.label(),
+            Actions.ADD_OUTGOING_NODE.disabledIcon().descriptor(), "addOutNodeSubmenuFake" );
+    private final MenuManager addInNodeMenuMgr = new MenuManager( Actions.ADD_INCOMING_NODE.label(),
+            Actions.ADD_INCOMING_NODE.icon().descriptor(), "addInNodeSubmenu" );
+    private static final MenuManager addInNodeMenuMgrFake = new MenuManager( Actions.ADD_INCOMING_NODE.label(),
+            Actions.ADD_INCOMING_NODE.disabledIcon().descriptor(), "addInNodeSubmenuFake" );
+    private final MenuManager addLoopMenuMgr = new MenuManager( Actions.ADD_LOOP.label(),
+            Actions.ADD_LOOP.icon().descriptor(), "addLoopSubmenu" );
+    private static final MenuManager addLoopMenuMgrFake = new MenuManager( Actions.ADD_LOOP.label(),
+            Actions.ADD_LOOP.disabledIcon().descriptor(), "addLoopSubmenuFake" );
     /**
      * Colored images for the different relationship types.
      */
@@ -304,12 +283,10 @@ public class NeoGraphMenu
     private final StartAction startAction;
     private final StopAction stopAction;
     private final SyncAction syncAction;
-    private final DatabaseLocationAction dataBaseLocationAction;
     static
     {
         // create gray default color
-        Image image = new Image( Display.getCurrent(), RELTYPE_IMG_SIZE,
-                RELTYPE_IMG_SIZE );
+        Image image = new Image( Display.getCurrent(), RELTYPE_IMG_SIZE, RELTYPE_IMG_SIZE );
         Color color = new Color( Display.getCurrent(), 96, 96, 96 );
         GC gc = new GC( image );
         gc.setBackground( color );
@@ -347,14 +324,11 @@ public class NeoGraphMenu
         syncAction = new SyncAction( graphView );
         refNodeAction = new ShowReferenceNodeAction( graphView );
         refreshAction = new RefreshAction( graphView );
-        dataBaseLocationAction = new DatabaseLocationAction( graphView );
         RelationshipTypesProvider relTypesProvider = RelationshipTypesProviderWrapper.getInstance();
         addNewActionSet = new ActionSet( relTypesProvider );
         makeContributions();
         registerChangeHandlers();
-        showRelationshipColors = graphView.getLabelProvider()
-                .getViewSettings()
-                .isShowRelationshipColors();
+        showRelationshipColors = graphView.getLabelProvider().getViewSettings().isShowRelationshipColors();
     }
 
     /**
@@ -374,8 +348,7 @@ public class NeoGraphMenu
      * @param out enable add outgoing relationships
      * @param in enable add incoming relationships
      */
-    public void setEnabledRelActions( final boolean add, final boolean out,
-            final boolean in, final boolean self )
+    public void setEnabledRelActions( final boolean add, final boolean out, final boolean in, final boolean self )
     {
         addRelMenuMgr.setVisible( add );
         addRelMenuMgrFake.setVisible( !add );
@@ -386,8 +359,7 @@ public class NeoGraphMenu
         addLoopMenuMgr.setVisible( self );
         addLoopMenuMgrFake.setVisible( !self );
         // update
-        addInNodeMenuMgr.getParent()
-                .update( true );
+        addInNodeMenuMgr.getParent().update( true );
     }
 
     /**
@@ -478,7 +450,6 @@ public class NeoGraphMenu
     public void setEnabledStartAction( final boolean enabled )
     {
         startAction.setEnabled( enabled );
-        dataBaseLocationAction.setEnabled( enabled );
     }
 
     /**
@@ -522,16 +493,11 @@ public class NeoGraphMenu
     private void makeContributions()
     {
         // initialize actions
-        IToolBarManager tm = graphView.getViewSite()
-                .getActionBars()
-                .getToolBarManager();
-        IMenuManager mm = graphView.getViewSite()
-                .getActionBars()
-                .getMenuManager();
+        IToolBarManager tm = graphView.getViewSite().getActionBars().getToolBarManager();
+        IMenuManager mm = graphView.getViewSite().getActionBars().getMenuManager();
         MenuManager cm = new MenuManager();
         Menu menu = cm.createContextMenu( graphViewer.getControl() );
-        graphViewer.getControl()
-                .setMenu( menu );
+        graphViewer.getControl().setMenu( menu );
         contributeContextActions( cm );
         contributeConnectionActions( tm );
         contributeTransactionActions( tm );
@@ -554,10 +520,8 @@ public class NeoGraphMenu
         // platform actions
         contributePlatformActions( mm );
         // printing
-        graphView.getViewSite()
-                .getActionBars()
-                .setGlobalActionHandler( ActionFactory.PRINT.getId(),
-                        new PrintGraphAction( graphView ) );
+        graphView.getViewSite().getActionBars().setGlobalActionHandler( ActionFactory.PRINT.getId(),
+                new PrintGraphAction( graphView ) );
     }
 
     /**
@@ -610,7 +574,6 @@ public class NeoGraphMenu
      */
     private void contributeConnectionActions( final IToolBarManager tm )
     {
-        tm.add( dataBaseLocationAction );
         tm.add( startAction );
         tm.add( stopAction );
         tm.add( SEPARATOR );
@@ -666,8 +629,7 @@ public class NeoGraphMenu
      * @param tm current tool bar manager
      * @param mm current menu manager
      */
-    private void contributeLayoutActions( final IToolBarManager tm,
-            final IMenuManager mm )
+    private void contributeLayoutActions( final IToolBarManager tm, final IMenuManager mm )
     {
         {
             String groupName = "layout";
@@ -675,28 +637,23 @@ public class NeoGraphMenu
             tm.add( layoutGroup );
             mm.add( layoutGroup );
             // spring layout
-            ShowSpringLayoutAction springLayoutAction = new ShowSpringLayoutAction(
-                    graphView );
+            ShowSpringLayoutAction springLayoutAction = new ShowSpringLayoutAction( graphView );
             tm.appendToGroup( groupName, springLayoutAction );
             mm.appendToGroup( groupName, springLayoutAction );
             // tree layout
-            ShowTreeLayoutAction treeLayoutAction = new ShowTreeLayoutAction(
-                    graphView );
+            ShowTreeLayoutAction treeLayoutAction = new ShowTreeLayoutAction( graphView );
             tm.appendToGroup( groupName, treeLayoutAction );
             mm.appendToGroup( groupName, treeLayoutAction );
             // radial layout
-            ShowRadialLayoutAction radialLayoutAction = new ShowRadialLayoutAction(
-                    graphView );
+            ShowRadialLayoutAction radialLayoutAction = new ShowRadialLayoutAction( graphView );
             tm.appendToGroup( groupName, radialLayoutAction );
             mm.appendToGroup( groupName, radialLayoutAction );
             // grid layout
-            ShowGridLayoutAction gridLayoutAction = new ShowGridLayoutAction(
-                    graphView );
+            ShowGridLayoutAction gridLayoutAction = new ShowGridLayoutAction( graphView );
             tm.appendToGroup( groupName, gridLayoutAction );
             mm.appendToGroup( groupName, gridLayoutAction );
             // horizontal tree layout
-            ShowHorizontalTreeLayoutAction horizontalTreeLayoutAction = new ShowHorizontalTreeLayoutAction(
-                    graphView );
+            ShowHorizontalTreeLayoutAction horizontalTreeLayoutAction = new ShowHorizontalTreeLayoutAction( graphView );
             mm.appendToGroup( groupName, horizontalTreeLayoutAction );
             // horizontal shift layout
             ShowHorizontalShiftLayoutAction horizontalShiftLayoutAction = new ShowHorizontalShiftLayoutAction(
@@ -714,46 +671,33 @@ public class NeoGraphMenu
     {
         {
             String relationshipGroupName = "relationship-labels";
-            GroupMarker relationshipGroup = new GroupMarker(
-                    relationshipGroupName );
+            GroupMarker relationshipGroup = new GroupMarker( relationshipGroupName );
             mm.add( relationshipGroup );
-            ViewSettings viewSettings = graphView.getLabelProvider()
-                    .getViewSettings();
+            ViewSettings viewSettings = graphView.getLabelProvider().getViewSettings();
             // relationship types actions
-            mm.appendToGroup(
-                    relationshipGroupName,
-                    new ShowRelationshipTypesAction( graphView,
-                            viewSettings.isShowRelationshipTypes() ) );
-            // relationship labels actions
-            mm.appendToGroup(
-                    relationshipGroupName,
-                    new ShowRelationshipLabelAction( graphView,
-                            viewSettings.isShowRelationshipNames() ) );
             mm.appendToGroup( relationshipGroupName,
-                    new FilterRelationshipPropertiesAction( graphView,
-                            viewSettings.isFilterRelationshipProperties() ) );
+                    new ShowRelationshipTypesAction( graphView, viewSettings.isShowRelationshipTypes() ) );
+            // relationship labels actions
+            mm.appendToGroup( relationshipGroupName,
+                    new ShowRelationshipLabelAction( graphView, viewSettings.isShowRelationshipNames() ) );
+            mm.appendToGroup( relationshipGroupName,
+                    new FilterRelationshipPropertiesAction( graphView, viewSettings.isFilterRelationshipProperties() ) );
             // relationship properties actions
             mm.appendToGroup( relationshipGroupName,
-                    new ShowRelationshipPropertyKeysAction( graphView,
-                            viewSettings.isShowRelationshipPropertyKeys() ) );
+                    new ShowRelationshipPropertyKeysAction( graphView, viewSettings.isShowRelationshipPropertyKeys() ) );
             // relationship id's actions
-            mm.appendToGroup(
-                    relationshipGroupName,
-                    new ShowRelationshipIdsAction( graphView,
-                            viewSettings.isShowRelationshipIds() ) );
+            mm.appendToGroup( relationshipGroupName,
+                    new ShowRelationshipIdsAction( graphView, viewSettings.isShowRelationshipIds() ) );
             // separator
             {
                 mm.add( SEPARATOR );
             }
             // relationship directions actions
             mm.appendToGroup( relationshipGroupName,
-                    new ShowRelationshipDirectionsAction( graphView,
-                            viewSettings.isShowArrows() ) );
+                    new ShowRelationshipDirectionsAction( graphView, viewSettings.isShowArrows() ) );
             // relationship colors actions
-            mm.appendToGroup(
-                    relationshipGroupName,
-                    new ShowRelationshipColorsAction( graphView,
-                            viewSettings.isShowRelationshipColors() ) );
+            mm.appendToGroup( relationshipGroupName,
+                    new ShowRelationshipColorsAction( graphView, viewSettings.isShowRelationshipColors() ) );
             // separator
             {
                 mm.add( SEPARATOR );
@@ -762,24 +706,20 @@ public class NeoGraphMenu
             GroupMarker nodeGroup = new GroupMarker( nodeGroupName );
             mm.add( nodeGroup );
             // properties action
-            mm.appendToGroup( nodeGroupName, new ShowNodeLabelAction(
-                    graphView, viewSettings.isShowNodeNames() ) );
-            mm.appendToGroup( nodeGroupName, new FilterNodePropertiesAction(
-                    graphView, viewSettings.isFilterNodeProperties() ) );
-            mm.appendToGroup( nodeGroupName, new ShowNodePropertyKeysAction(
-                    graphView, viewSettings.isShowNodePropertyKeys() ) );
-            mm.appendToGroup( nodeGroupName, new ShowNodeIdsAction( graphView,
-                    viewSettings.isShowNodeIds() ) );
+            mm.appendToGroup( nodeGroupName, new ShowNodeLabelAction( graphView, viewSettings.isShowNodeNames() ) );
+            mm.appendToGroup( nodeGroupName,
+                    new FilterNodePropertiesAction( graphView, viewSettings.isFilterNodeProperties() ) );
+            mm.appendToGroup( nodeGroupName,
+                    new ShowNodePropertyKeysAction( graphView, viewSettings.isShowNodePropertyKeys() ) );
+            mm.appendToGroup( nodeGroupName, new ShowNodeIdsAction( graphView, viewSettings.isShowNodeIds() ) );
             // separator
             {
                 mm.add( SEPARATOR );
             }
             // node colors actions
-            mm.appendToGroup( nodeGroupName, new ShowNodeColorsAction(
-                    graphView, viewSettings.isShowNodeColors() ) );
+            mm.appendToGroup( nodeGroupName, new ShowNodeColorsAction( graphView, viewSettings.isShowNodeColors() ) );
             // node icons actions
-            mm.appendToGroup( nodeGroupName, new ShowNodeIconsAction(
-                    graphView, viewSettings.isShowNodeIcons() ) );
+            mm.appendToGroup( nodeGroupName, new ShowNodeIconsAction( graphView, viewSettings.isShowNodeIcons() ) );
         }
     }
 
@@ -795,8 +735,7 @@ public class NeoGraphMenu
             @Override
             public void run()
             {
-                Activator.getDefault()
-                        .showPreferenceDialog( false );
+                Activator.getDefault().showPreferenceDialog( false );
             }
         };
         Actions.PREFERENCES.initialize( preferencesAction );
@@ -812,8 +751,7 @@ public class NeoGraphMenu
         addOutNodeMenuMgr.removeAll();
         addInNodeMenuMgr.removeAll();
         addLoopMenuMgr.removeAll();
-        Set<RelationshipType> relTypes = RelationshipTypesProviderWrapper.getInstance()
-                .getCurrentRelationshipTypes();
+        Set<RelationshipType> relTypes = RelationshipTypesProviderWrapper.getInstance().getCurrentRelationshipTypes();
         for ( RelationshipType relType : relTypes )
         {
             actionMap.put( relType.name(), new ActionSet( relType ) );
@@ -835,8 +773,7 @@ public class NeoGraphMenu
         final ActionSet actionSet = new ActionSet( relType );
         final String name = relType.name();
         actionMap.put( name, actionSet );
-        actionSet.addAt( actionMap.headMap( name )
-                .size() + 1 );
+        actionSet.addAt( actionMap.headMap( name ).size() + 1 );
     }
 
     /**
@@ -873,4 +810,5 @@ public class NeoGraphMenu
             }
         }
     }
+
 }

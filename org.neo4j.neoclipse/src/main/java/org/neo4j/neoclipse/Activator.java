@@ -18,15 +18,24 @@
  */
 package org.neo4j.neoclipse;
 
+import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.jface.preference.PreferenceDialog;
+import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.IViewSite;
+import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.IWorkbenchPartSite;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.neo4j.neoclipse.connection.AliasManager;
 import org.neo4j.neoclipse.connection.ConnectionsView;
 import org.neo4j.neoclipse.graphdb.GraphDbServiceManager;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
+import org.neo4j.neoclipse.view.UiHelper;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -41,10 +50,10 @@ public class Activator extends AbstractUIPlugin
     /**
      * The graphdb manager.
      */
-    protected GraphDbServiceManager graphDbManager;
-    private AliasManager neo4JConnectionManager;
-    private ConnectionsView connectionsView;
-    private NeoGraphViewPart neoGraphViewPart;
+    private GraphDbServiceManager graphDbServiceManager;
+    private AliasManager aliasManager;
+    private ConnectionsView connectionsView; // Self register
+    private NeoGraphViewPart neoGraphViewPart; // Self register
 
     /**
      * The shared instance.
@@ -59,8 +68,9 @@ public class Activator extends AbstractUIPlugin
     {
         super.start( context );
         PLUGIN = this;
-        graphDbManager = new GraphDbServiceManager();
-        neo4JConnectionManager = new AliasManager();
+        graphDbServiceManager = new GraphDbServiceManager();
+        aliasManager = new AliasManager();
+        aliasManager.loadAliases();
     }
 
     /**
@@ -69,9 +79,11 @@ public class Activator extends AbstractUIPlugin
     @Override
     public void stop( final BundleContext context ) throws Exception
     {
-        graphDbManager.shutdownGraphDbService();
-        graphDbManager.stopExecutingTasks();
-        neo4JConnectionManager.closeAllConnections();
+        graphDbServiceManager.shutdownGraphDbService();
+        graphDbServiceManager.stopExecutingTasks();
+        aliasManager.saveAliases();
+        aliasManager.closeAllConnections();
+
         PLUGIN = null;
         super.stop( context );
     }
@@ -91,7 +103,7 @@ public class Activator extends AbstractUIPlugin
      */
     public GraphDbServiceManager getGraphDbServiceManager()
     {
-        return graphDbManager;
+        return graphDbServiceManager;
     }
 
     /**
@@ -131,7 +143,7 @@ public class Activator extends AbstractUIPlugin
 
     public AliasManager getAliasManager()
     {
-        return neo4JConnectionManager;
+        return aliasManager;
     }
 
     public ConnectionsView getConnectionsView()
@@ -207,4 +219,40 @@ public class Activator extends AbstractUIPlugin
         this.neoGraphViewPart = neoGraphViewPart;
     }
 
+    public void setStatusLineMessage( final String message )
+    {
+        UiHelper.asyncExec( new Runnable()
+        {
+            @Override
+            public void run()
+            {
+
+                IWorkbench wb = PlatformUI.getWorkbench();
+                IWorkbenchWindow win = wb.getActiveWorkbenchWindow();
+
+                IWorkbenchPage page = win.getActivePage();
+
+                IWorkbenchPart part = page.getActivePart();
+                IWorkbenchPartSite site = part.getSite();
+
+                IViewSite vSite = (IViewSite) site;
+
+                IActionBars actionBars = vSite.getActionBars();
+                if ( actionBars == null )
+                {
+                    return;
+                }
+
+                IStatusLineManager statusLineManager = actionBars.getStatusLineManager();
+
+                if ( statusLineManager == null )
+                {
+                    return;
+                }
+
+                statusLineManager.setMessage( message );
+
+            }
+        } );
+    }
 }

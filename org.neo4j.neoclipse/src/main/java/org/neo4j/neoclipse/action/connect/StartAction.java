@@ -21,6 +21,7 @@ package org.neo4j.neoclipse.action.connect;
 import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.action.AbstractGraphAction;
 import org.neo4j.neoclipse.action.Actions;
+import org.neo4j.neoclipse.connection.Alias;
 import org.neo4j.neoclipse.graphdb.GraphDbServiceManager;
 import org.neo4j.neoclipse.view.ErrorMessage;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
@@ -35,7 +36,7 @@ public class StartAction extends AbstractGraphAction
     public StartAction( final NeoGraphViewPart neoGraphViewPart )
     {
         super( Actions.START, neoGraphViewPart );
-        setEnabled( true );
+        setEnabled( false );
     }
 
     @Override
@@ -43,13 +44,21 @@ public class StartAction extends AbstractGraphAction
     {
         try
         {
+            Alias selectedAlias = Activator.getDefault().getConnectionsView().getSelectedAlias();
+            if ( selectedAlias == null )
+            {
+                ErrorMessage.showDialog( "Database problem", "PLease select the database to start." );
+                return;
+            }
+
             GraphDbServiceManager gsm = Activator.getDefault().getGraphDbServiceManager();
-            gsm.startGraphDbService().get();
+            gsm.startGraphDbService( selectedAlias ).get();
             graphView.showSomeNode();
         }
         catch ( Exception e )
         {
             ErrorMessage.showDialog( "Database problem", e );
         }
+        Activator.getDefault().getAliasManager().modelChanged();
     }
 }

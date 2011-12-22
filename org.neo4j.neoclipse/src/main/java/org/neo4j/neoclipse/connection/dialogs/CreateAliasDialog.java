@@ -238,8 +238,8 @@ public class CreateAliasDialog extends TitleAreaDialog
         String connectionMode = Activator.getDefault().getPreferenceStore().getString( Preferences.CONNECTION_MODE );
         Alias connection;
 
-        connection = new Alias( nameField.getText(), dbLocationField.getStringValue(),
-                GraphDbServiceMode.getValue( connectionMode ) );
+        connection = new Alias( nameField.getText(), dbLocationField.getStringValue(), userField.getText(),
+                passwordField.getText(), GraphDbServiceMode.getValue( connectionMode ) );
         Activator.getDefault().getAliasManager().addConnection( connection );
         Activator.getDefault().getAliasManager().modelChanged();
         close();
