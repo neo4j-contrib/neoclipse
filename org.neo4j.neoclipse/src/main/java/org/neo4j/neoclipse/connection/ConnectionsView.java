@@ -31,7 +31,6 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.part.ViewPart;
 import org.neo4j.neoclipse.Activator;
@@ -113,46 +112,6 @@ public class ConnectionsView extends ViewPart implements NeoclipseEventListener
         return _treeViewer;
     }
 
-    public void refresh()
-    {
-        Display.getDefault().asyncExec( new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                if ( !_treeViewer.getTree().isDisposed() )
-                {
-                    _treeViewer.refresh();
-                }
-            }
-        } );
-    }
-
-    private void refreshToolbar()
-    {
-        IToolBarManager toolbar = getViewSite().getActionBars().getToolBarManager();
-        IContributionItem[] items = toolbar.getItems();
-        for ( IContributionItem item : items )
-        {
-            if ( item instanceof ActionContributionItem )
-            {
-                ActionContributionItem contrib = (ActionContributionItem) item;
-                IAction contribAction = contrib.getAction();
-                if ( contribAction instanceof AbstractConnectionTreeAction )
-                {
-                    AbstractConnectionTreeAction action = (AbstractConnectionTreeAction) contribAction;
-                    action.setEnabled( action.isAvailable() );
-                }
-            }
-        }
-
-    }
-
-    public void openNewEditor()
-    {
-        // TODO new Cypher Editor
-    }
-
     public Alias getSelectedAlias()
     {
         IStructuredSelection selection = (IStructuredSelection) _treeViewer.getSelection();
@@ -181,6 +140,26 @@ public class ConnectionsView extends ViewPart implements NeoclipseEventListener
                 }
             }
         } );
+
+    }
+
+    private void refreshToolbar()
+    {
+        IToolBarManager toolbar = getViewSite().getActionBars().getToolBarManager();
+        IContributionItem[] items = toolbar.getItems();
+        for ( IContributionItem item : items )
+        {
+            if ( item instanceof ActionContributionItem )
+            {
+                ActionContributionItem contrib = (ActionContributionItem) item;
+                IAction contribAction = contrib.getAction();
+                if ( contribAction instanceof AbstractConnectionTreeAction )
+                {
+                    AbstractConnectionTreeAction action = (AbstractConnectionTreeAction) contribAction;
+                    action.setEnabled( action.isAvailable() );
+                }
+            }
+        }
 
     }
 

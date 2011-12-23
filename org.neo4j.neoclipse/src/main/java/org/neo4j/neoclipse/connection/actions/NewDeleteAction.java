@@ -53,7 +53,7 @@ public class NewDeleteAction extends AbstractConnectionTreeAction
                 return;
             }
             Activator.getDefault().getAliasManager().removeAlias( selectedAlias );
-            getConnectionView().refresh();
+            Activator.getDefault().getAliasManager().notifyListners();
         }
         catch ( Exception e )
         {

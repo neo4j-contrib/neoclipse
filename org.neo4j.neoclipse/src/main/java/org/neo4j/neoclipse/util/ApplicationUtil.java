@@ -34,12 +34,12 @@ public class ApplicationUtil
 
     public static File dirInWorkspace( final String... elements )
     {
-        Location workspace = Platform.getInstanceLocation();
+        Location workspace = Platform.getUserLocation();
         if ( workspace == null )
         {
             throw new RuntimeException( "Can't find workspace." );
         }
-        URL url = workspace.getURL();
+        URL url = workspace.getDefault();
         String path;
         try
         {

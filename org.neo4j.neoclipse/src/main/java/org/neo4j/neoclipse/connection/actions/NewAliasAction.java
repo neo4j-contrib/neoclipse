@@ -19,6 +19,7 @@
 package org.neo4j.neoclipse.connection.actions;
 
 import org.eclipse.swt.widgets.Display;
+import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.action.Actions;
 import org.neo4j.neoclipse.connection.AbstractConnectionTreeAction;
 import org.neo4j.neoclipse.connection.dialogs.CreateAliasDialog;
@@ -41,6 +42,6 @@ public class NewAliasAction extends AbstractConnectionTreeAction
         CreateAliasDialog dlg = new CreateAliasDialog( Display.getCurrent().getActiveShell(),
                 CreateAliasDialog.Type.CREATE );
         dlg.open();
-        getConnectionView().refresh();
+        Activator.getDefault().getAliasManager().notifyListners();
     }
 }

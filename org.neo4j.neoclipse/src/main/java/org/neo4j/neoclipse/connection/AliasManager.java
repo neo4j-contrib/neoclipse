@@ -26,8 +26,6 @@ import java.util.Set;
 
 import org.dom4j.Element;
 import org.dom4j.tree.DefaultElement;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.swt.widgets.Display;
 import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.event.NeoclipseEventListener;
 import org.neo4j.neoclipse.event.NeoclipseListenerList;
@@ -100,9 +98,7 @@ public class AliasManager
         GraphDbServiceManager graphDbServiceManager = Activator.getDefault().getGraphDbServiceManager();
         if ( graphDbServiceManager.isRunning() && graphDbServiceManager.getCurrentAlias().equals( alias ) )
         {
-            MessageDialog.openWarning( Display.getCurrent().getActiveShell(), "Delete Connection",
-                    "Please stop the service before deleting." );
-            return;
+            throw new IllegalStateException( "Please stop the service before deleting." );
         }
 
         aliases.remove( alias );

@@ -62,14 +62,14 @@ public class ConnectionTreeActionGroup extends ActionGroup
         {
             addAction( menu, new StopAction( neoGraphView ) );
         }
-        else if ( !graphDbServiceManager.isRunning() )
-        {
-            addAction( menu, new StartAction( neoGraphView ) );
-            addAction( menu, new NewDeleteAction() );
-
-        }
         else
         {
+            if ( !graphDbServiceManager.isRunning() )
+
+            {
+                addAction( menu, new StartAction( neoGraphView ) );
+
+            }
             addAction( menu, new NewAliasAction() );
             addAction( menu, new NewDeleteAction() );
         }

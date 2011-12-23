@@ -21,6 +21,7 @@ package org.neo4j.neoclipse.connection.actions;
 import org.eclipse.ui.IViewActionDelegate;
 import org.neo4j.neoclipse.action.Actions;
 import org.neo4j.neoclipse.connection.AbstractConnectionTreeAction;
+import org.neo4j.neoclipse.view.ErrorMessage;
 
 /**
  * @author Radhakrishna Kalyan
@@ -34,13 +35,13 @@ public class NewEditorAction extends AbstractConnectionTreeAction implements IVi
     public NewEditorAction()
     {
         super( Actions.NEW_CYPHER_EDITOR );
+        setEnabled( isAvailable() );
     }
 
     @Override
     public void run()
     {
-        getConnectionView().openNewEditor();
-        getConnectionView().refresh();
+        ErrorMessage.showDialog( "NO-SQL Editor", "Currently Not supported" );
     }
 
     @Override
