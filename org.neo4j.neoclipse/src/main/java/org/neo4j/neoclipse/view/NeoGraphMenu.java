@@ -89,6 +89,7 @@ import org.neo4j.neoclipse.reltype.RelationshipTypesProviderWrapper;
  * Handle tool bar, view menu and context menu of the graph view.
  * 
  * @author Anders Nawroth
+ * @author Radhakrishna Kalyan
  */
 public class NeoGraphMenu
 {

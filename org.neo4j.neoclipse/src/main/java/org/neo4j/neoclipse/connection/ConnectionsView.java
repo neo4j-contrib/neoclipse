@@ -18,9 +18,6 @@
  */
 package org.neo4j.neoclipse.connection;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IContributionItem;
@@ -40,6 +37,8 @@ import org.eclipse.ui.part.ViewPart;
 import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.connection.actions.NewAliasAction;
 import org.neo4j.neoclipse.connection.actions.NewEditorAction;
+import org.neo4j.neoclipse.event.NeoclipseEvent;
+import org.neo4j.neoclipse.event.NeoclipseEventListener;
 import org.neo4j.neoclipse.graphdb.GraphDbServiceStatus;
 import org.neo4j.neoclipse.view.UiHelper;
 
@@ -47,11 +46,10 @@ import org.neo4j.neoclipse.view.UiHelper;
  * 
  * @author Radhakrishna Kalyan
  */
-public class ConnectionsView extends ViewPart implements ConnectionListener
+public class ConnectionsView extends ViewPart implements NeoclipseEventListener
 {
 
     public static final String ID = ConnectionsView.class.getCanonicalName();
-    private static final Set<Alias> EMPTY_ALIASES = new HashSet<Alias>();
 
     private TreeViewer _treeViewer;
 
@@ -130,24 +128,6 @@ public class ConnectionsView extends ViewPart implements ConnectionListener
         } );
     }
 
-    @Override
-    public void modelChanged()
-    {
-
-        UiHelper.asyncExec( new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                if ( !_treeViewer.getTree().isDisposed() )
-                {
-                    _treeViewer.refresh();
-                    refreshToolbar();
-                }
-            }
-        } );
-    }
-
     private void refreshToolbar()
     {
         IToolBarManager toolbar = getViewSite().getActionBars().getToolBarManager();
@@ -184,6 +164,24 @@ public class ConnectionsView extends ViewPart implements ConnectionListener
     public void setFocus()
     {
         _treeViewer.getControl().setFocus();
+    }
+
+    @Override
+    public void stateChanged( NeoclipseEvent event )
+    {
+        UiHelper.asyncExec( new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                if ( !_treeViewer.getTree().isDisposed() )
+                {
+                    _treeViewer.refresh();
+                    refreshToolbar();
+                }
+            }
+        } );
+
     }
 
 }

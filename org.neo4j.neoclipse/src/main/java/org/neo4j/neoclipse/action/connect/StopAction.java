@@ -51,6 +51,6 @@ public class StopAction extends AbstractGraphAction
         {
             ErrorMessage.showDialog( "Database problem", e );
         }
-        Activator.getDefault().getAliasManager().modelChanged();
+        Activator.getDefault().getAliasManager().notifyListners();
     }
 }

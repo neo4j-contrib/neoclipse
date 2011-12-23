@@ -42,6 +42,7 @@ import org.neo4j.neoclipse.search.NeoSearchPage;
  * Configure the workbench window.
  * 
  * @author Anders Nawroth
+ * @author Radhakrishna Kalyan
  */
 public class ApplicationWindowAdvisor extends WorkbenchWindowAdvisor
 {

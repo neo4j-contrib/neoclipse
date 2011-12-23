@@ -21,7 +21,6 @@ package org.neo4j.neoclipse.connection;
 import java.io.File;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -30,9 +29,11 @@ import org.dom4j.tree.DefaultElement;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
 import org.neo4j.neoclipse.Activator;
-import org.neo4j.neoclipse.ApplicationUtils;
-import org.neo4j.neoclipse.XMLUtils;
+import org.neo4j.neoclipse.event.NeoclipseEventListener;
+import org.neo4j.neoclipse.event.NeoclipseListenerList;
 import org.neo4j.neoclipse.graphdb.GraphDbServiceManager;
+import org.neo4j.neoclipse.util.ApplicationUtil;
+import org.neo4j.neoclipse.util.XMLUtils;
 
 /**
  * Maintains the list of Neo4JConnection Alias
@@ -40,17 +41,17 @@ import org.neo4j.neoclipse.graphdb.GraphDbServiceManager;
  * @author Radhakrishna Kalyan
  * 
  */
-public class AliasManager implements ConnectionListener
+public class AliasManager
 {
 
     private final Set<Alias> aliases = new HashSet<Alias>();
-    private final List<ConnectionListener> connectionListeners = new LinkedList<ConnectionListener>();
+    private final NeoclipseListenerList connectionListeners = new NeoclipseListenerList();
 
     public void loadAliases()
     {
         aliases.clear();
 
-        Element root = XMLUtils.readRoot( new File( ApplicationUtils.USER_ALIAS_FILE_NAME ) );
+        Element root = XMLUtils.readRoot( new File( ApplicationUtil.USER_ALIAS_FILE_NAME ) );
         if ( root != null )
         {
             List<Element> elements = root.elements( Alias.ALIAS );
@@ -77,15 +78,23 @@ public class AliasManager implements ConnectionListener
             root.add( alias.describeAsXml() );
         }
 
-        XMLUtils.save( root, new File( ApplicationUtils.USER_ALIAS_FILE_NAME ) );
+        XMLUtils.save( root, new File( ApplicationUtil.USER_ALIAS_FILE_NAME ) );
     }
 
+    /**
+     * Add Alias to the set
+     * 
+     */
     public void addAlias( Alias alias )
     {
         aliases.add( alias );
-        modelChanged();
+        notifyListners();
     }
 
+    /**
+     * Remove Alias from the set
+     * 
+     */
     public void removeAlias( Alias alias )
     {
         GraphDbServiceManager graphDbServiceManager = Activator.getDefault().getGraphDbServiceManager();
@@ -97,7 +106,7 @@ public class AliasManager implements ConnectionListener
         }
 
         aliases.remove( alias );
-        modelChanged();
+        notifyListners();
     }
 
     public Collection<Alias> getAliases()
@@ -105,22 +114,14 @@ public class AliasManager implements ConnectionListener
         return aliases;
     }
 
-    public void registerConnetionListener( ConnectionListener listener )
+    public void registerConnetionListener( NeoclipseEventListener listener )
     {
         connectionListeners.add( listener );
     }
 
-    /**
-     * Called to notify that the list of connections has changed; passes this
-     * onto the listeners
-     */
-    @Override
-    public void modelChanged()
+    public void notifyListners()
     {
-        for ( ConnectionListener listener : connectionListeners )
-        {
-            listener.modelChanged();
-        }
+        connectionListeners.notifyListeners();
     }
 
 }

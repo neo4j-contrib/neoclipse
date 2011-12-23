@@ -29,6 +29,7 @@ import org.eclipse.ui.PlatformUI;
  * 
  * @author Peter H&auml;nsgen
  * @author Anders Nawroth
+ * @author Radhakrishna Kalyan
  */
 public enum Icons
 {

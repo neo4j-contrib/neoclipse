@@ -24,7 +24,7 @@ import java.util.Map;
 
 import org.dom4j.Element;
 import org.dom4j.tree.DefaultElement;
-import org.neo4j.neoclipse.ApplicationUtils;
+import org.neo4j.neoclipse.util.ApplicationUtil;
 
 /**
  * Our Neo4JConnection, which adds the connection to our GraphDatabaseService
@@ -64,7 +64,7 @@ public class Alias
             File dir = new File( uri );
             if ( !dir.exists() )
             {
-                dir = ApplicationUtils.dirInWorkspace( uri );
+                dir = ApplicationUtil.dirInWorkspace( uri );
                 uri = dir.getAbsolutePath();
             }
             if ( !dir.isDirectory() )
@@ -77,11 +77,11 @@ public class Alias
             }
         }
 
-        if ( !ApplicationUtils.isBlank( user ) )
+        if ( !ApplicationUtil.isBlank( user ) )
         {
             userName = user;
         }
-        if ( !ApplicationUtils.isBlank( user ) )
+        if ( !ApplicationUtil.isBlank( user ) )
         {
             password = pass;
         }
@@ -102,11 +102,11 @@ public class Alias
         connectionMode = ConnectionMode.getValue( uri );
         String user = root.elementText( USER_NAME );
         String pass = root.elementText( PASSWORD );
-        if ( !ApplicationUtils.isBlank( user ) )
+        if ( !ApplicationUtil.isBlank( user ) )
         {
             userName = user;
         }
-        if ( !ApplicationUtils.isBlank( pass ) )
+        if ( !ApplicationUtil.isBlank( pass ) )
         {
             password = pass;
         }
@@ -154,10 +154,10 @@ public class Alias
     public Element describeAsXml()
     {
         DefaultElement root = new DefaultElement( ALIAS );
-        root.addElement( NAME ).setText( ApplicationUtils.returnEmptyIfBlank( name ) );
-        root.addElement( URI ).setText( ApplicationUtils.returnEmptyIfBlank( uri ) );
-        root.addElement( USER_NAME ).setText( ApplicationUtils.returnEmptyIfBlank( userName ) );
-        root.addElement( PASSWORD ).setText( ApplicationUtils.returnEmptyIfBlank( password ) );
+        root.addElement( NAME ).setText( ApplicationUtil.returnEmptyIfBlank( name ) );
+        root.addElement( URI ).setText( ApplicationUtil.returnEmptyIfBlank( uri ) );
+        root.addElement( USER_NAME ).setText( ApplicationUtil.returnEmptyIfBlank( userName ) );
+        root.addElement( PASSWORD ).setText( ApplicationUtil.returnEmptyIfBlank( password ) );
         // TODO add configuration settings
         return root;
     }

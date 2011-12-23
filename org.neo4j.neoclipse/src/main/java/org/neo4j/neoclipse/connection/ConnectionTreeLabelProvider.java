@@ -32,10 +32,6 @@ import org.neo4j.neoclipse.graphdb.GraphDbServiceManager;
 public class ConnectionTreeLabelProvider extends LabelProvider
 {
 
-    private Image _inactiveAliasImage = Icons.NEW_ALIAS_DISABLED.image();
-
-    private Image _activeAliasImage = Icons.NEW_ALIAS_ENABLED.image();
-
     @Override
     public void dispose()
     {
@@ -56,12 +52,12 @@ public class ConnectionTreeLabelProvider extends LabelProvider
             GraphDbServiceManager graphDbServiceManager = Activator.getDefault().getGraphDbServiceManager();
             if ( graphDbServiceManager.isRunning() && graphDbServiceManager.getCurrentAlias().equals( alias ) )
             {
-                return _activeAliasImage;
+                return Icons.NEW_ALIAS_ENABLED.image();
 
             }
 
         }
-        return _inactiveAliasImage;
+        return Icons.NEW_ALIAS_DISABLED.image();
     }
 
     /**
@@ -77,7 +73,6 @@ public class ConnectionTreeLabelProvider extends LabelProvider
             Alias alias = (Alias) element;
 
             String label = alias.getName();
-            int numSessions = 0;
 
             return label + "( " + alias.getUri() + " )";
 

@@ -28,7 +28,6 @@ import org.eclipse.core.runtime.Preferences.PropertyChangeEvent;
 import org.eclipse.draw2d.ChangeEvent;
 import org.eclipse.draw2d.ChangeListener;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
@@ -73,6 +72,7 @@ import org.neo4j.neoclipse.reltype.RelationshipTypeView;
  * 
  * @author Peter H&auml;nsgen
  * @author Anders Nawroth
+ * @author Radhakrishna Kalyan
  */
 public class NeoGraphViewPart extends ViewPart implements IZoomableWorkbenchPart
 {
@@ -1062,7 +1062,6 @@ public class NeoGraphViewPart extends ViewPart implements IZoomableWorkbenchPart
         private void handleChange( final PropertyChangeEvent event )
         {
             String property = event.getProperty();
-            IPreferenceStore preferenceStore = Activator.getDefault().getPreferenceStore();
             if ( Preferences.CONNECTION_MODE.equals( property ) )
             {
                 GraphDbServiceMode newConnectionMode;
@@ -1071,15 +1070,6 @@ public class NeoGraphViewPart extends ViewPart implements IZoomableWorkbenchPart
                 cleanTransactionBeforeShutdown();
                 sm.setGraphServiceMode( newConnectionMode );
                 // TODO refresh what needs to be refreshed here
-            }
-            else if ( Preferences.DATABASE_LOCATION.equals( property ) )
-            {
-                // handle change in database location
-                // cleanTransactionBeforeShutdown();
-                // TODO UGLY
-                traversalDepth = 0;
-                incTraversalDepth();
-
             }
             else
             {

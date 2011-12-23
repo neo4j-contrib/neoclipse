@@ -60,6 +60,18 @@ public class NeoclipseListenerList implements Iterable<NeoclipseEventListener>
         }
     }
 
+    public void notifyListeners()
+    {
+        if ( inhibit )
+        {
+            return;
+        }
+        for ( NeoclipseEventListener listener : this )
+        {
+            listener.stateChanged( null );
+        }
+    }
+
     /**
      * Set the inhibit status. True means all notifications are inhibited until
      * the status is flipped back to false.

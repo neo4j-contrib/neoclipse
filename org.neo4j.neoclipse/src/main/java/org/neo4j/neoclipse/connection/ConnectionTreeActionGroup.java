@@ -33,7 +33,7 @@ import org.neo4j.neoclipse.view.NeoGraphViewPart;
  * ActionGroup for Database Structure View. This group controls what context
  * menu actions are being shown for which node.
  * 
- * @author Davy Vanherbergen
+ * @author Radhakrishna Kalyan
  */
 public class ConnectionTreeActionGroup extends ActionGroup
 {
@@ -58,7 +58,6 @@ public class ConnectionTreeActionGroup extends ActionGroup
             return;
         }
 
-        // Alias alias = (Alias) selection[0];
         if ( graphDbServiceManager.isRunning() && graphDbServiceManager.getCurrentAlias().equals( alias ) )
         {
             addAction( menu, new StopAction( neoGraphView ) );

@@ -39,14 +39,11 @@ public class ConnectionTreeContentProvider implements ITreeContentProvider
     @Override
     public Object[] getChildren( Object parentElement )
     {
-
         if ( parentElement instanceof AliasManager )
         {
             AliasManager aliases = (AliasManager) parentElement;
-
             Object[] children = aliases.getAliases().toArray();
             return children;
-
         }
 
         return null;
@@ -61,8 +58,6 @@ public class ConnectionTreeContentProvider implements ITreeContentProvider
     @Override
     public Object getParent( Object element )
     {
-
-        // this is root node
         if ( element instanceof AliasManager )
         {
             return null;
@@ -79,7 +74,6 @@ public class ConnectionTreeContentProvider implements ITreeContentProvider
     public boolean hasChildren( Object element )
     {
         Object[] tmp = getChildren( element );
-
         return tmp != null && tmp.length != 0;
     }
 

@@ -16,13 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.neo4j.neoclipse;
+package org.neo4j.neoclipse.util;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.InputStream;
 
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
@@ -32,7 +29,7 @@ import org.dom4j.io.XMLWriter;
 import org.neo4j.neoclipse.view.ErrorMessage;
 
 /**
- * helper class for reading and writing XML files
+ * Helper class for reading and writing XML files
  * 
  * @author Radhakrishna Kalyan
  * 
@@ -66,23 +63,14 @@ public class XMLUtils
         }
         try
         {
-            return readRoot( new FileInputStream( pFile ) );
+            SAXReader reader = new SAXReader();
+            return reader.read( pFile ).getRootElement();
         }
         catch ( DocumentException e )
         {
             ErrorMessage.showDialog( "Cannot load: " + pFile.getAbsolutePath(), e );
         }
-        catch ( FileNotFoundException ignored )
-        {
-            // impossible :-)
 
-        }
         return null;
-    }
-
-    public static Element readRoot( InputStream pFile ) throws DocumentException
-    {
-        SAXReader reader = new SAXReader();
-        return reader.read( pFile ).getRootElement();
     }
 }

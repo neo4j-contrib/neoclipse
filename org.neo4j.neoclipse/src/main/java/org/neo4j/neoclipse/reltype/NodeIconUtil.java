@@ -23,8 +23,8 @@ import java.io.File;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.neo4j.neoclipse.Activator;
-import org.neo4j.neoclipse.ApplicationUtils;
 import org.neo4j.neoclipse.preference.DecoratorPreferences;
+import org.neo4j.neoclipse.util.ApplicationUtil;
 
 public class NodeIconUtil
 {
@@ -44,7 +44,7 @@ public class NodeIconUtil
         String location = getPreferenceStore().getString( DecoratorPreferences.NODE_ICON_LOCATION );
         if ( ( location == null ) || ( location.trim().length() == 0 ) )
         {
-            File iconsDir = ApplicationUtils.dirInWorkspace( "neoclipse", "icons" );
+            File iconsDir = ApplicationUtil.dirInWorkspace( "neoclipse", "icons" );
             location = iconsDir.getAbsolutePath();
             preferenceStore.setValue( DecoratorPreferences.NODE_ICON_LOCATION, location );
         }

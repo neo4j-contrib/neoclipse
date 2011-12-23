@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.neo4j.neoclipse;
+package org.neo4j.neoclipse.util;
 
 import java.io.File;
 import java.net.URISyntaxException;
@@ -25,7 +25,7 @@ import java.net.URL;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osgi.service.datalocation.Location;
 
-public class ApplicationUtils
+public class ApplicationUtil
 {
 
     /** Name of file that contains connection aliases. */
