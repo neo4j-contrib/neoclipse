@@ -24,7 +24,7 @@ import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.action.Actions;
 import org.neo4j.neoclipse.connection.AbstractConnectionTreeAction;
 import org.neo4j.neoclipse.connection.Alias;
-import org.neo4j.neoclipse.graphdb.GraphDbServiceManager;
+import org.neo4j.neoclipse.view.ErrorMessage;
 
 /**
  * @author Radhakrishna Kalyan
@@ -41,30 +41,23 @@ public class NewDeleteAction extends AbstractConnectionTreeAction
     @Override
     public void run()
     {
-        Alias selectedAlias = getConnectionView().getSelectedAlias();
-        if ( selectedAlias == null )
+        try
         {
-            MessageDialog.openWarning( Display.getCurrent().getActiveShell(), "Delete Connection",
-                    "Please select a connection to delete" );
-            return;
-        }
+            Alias selectedAlias = getConnectionView().getSelectedAlias();
 
-        GraphDbServiceManager graphDbServiceManager = Activator.getDefault().getGraphDbServiceManager();
-        if ( graphDbServiceManager.isRunning() && graphDbServiceManager.getCurrentAlias().equals( selectedAlias ) )
+            boolean okToDelete = MessageDialog.openConfirm( Display.getCurrent().getActiveShell(), "Delete Connection",
+                    "Are you sure you want to delete the connection?" );
+
+            if ( !okToDelete && selectedAlias != null )
+            {
+                return;
+            }
+            Activator.getDefault().getAliasManager().removeAlias( selectedAlias );
+            getConnectionView().refresh();
+        }
+        catch ( Exception e )
         {
-            MessageDialog.openWarning( Display.getCurrent().getActiveShell(), "Delete Connection",
-                    "Please stop the service before deleting." );
-            return;
+            ErrorMessage.showDialog( "Delete Connection", "Could not able to delete. " + e.getLocalizedMessage() );
         }
-
-        boolean okToDelete = MessageDialog.openConfirm( Display.getCurrent().getActiveShell(), "Delete Connection",
-                "Are you sure you want to delete the connection?" );
-
-        if ( !okToDelete )
-        {
-            return;
-        }
-        selectedAlias.remove();
-        getConnectionView().refresh();
     }
 }

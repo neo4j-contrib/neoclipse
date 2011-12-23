@@ -18,6 +18,10 @@
  */
 package org.neo4j.neoclipse.connection;
 
+/**
+ * 
+ * @author Radhakrishna Kalyan
+ */
 public enum ConnectionMode
 {
     LOCAL,
@@ -30,7 +34,7 @@ public enum ConnectionMode
             throw new IllegalArgumentException( "URL invalid." );
         }
 
-        // FIXME if there is any other way.
+        // If any other protocol is supported then it must go here.
         if ( url.startsWith( "http" ) )
         {
             return REMOTE;

@@ -23,8 +23,10 @@ import org.neo4j.neoclipse.action.Actions;
 import org.neo4j.neoclipse.connection.AbstractConnectionTreeAction;
 
 /**
- * @author Davy Vanherbergen
+ * @author Radhakrishna Kalyan
  * 
+ *         TODO : Need to create a cypher editor. This class need to be
+ *         implemented further.
  */
 public class NewEditorAction extends AbstractConnectionTreeAction implements IViewActionDelegate
 {
@@ -41,18 +43,11 @@ public class NewEditorAction extends AbstractConnectionTreeAction implements IVi
         getConnectionView().refresh();
     }
 
-    /**
-     * Only show action when there is at least 1 item selected
-     * 
-     * @see net.sourceforge.sqlexplorer.connections.actions.AbstractConnectionTreeAction#isAvailable()
-     */
     @Override
     public boolean isAvailable()
     {
-        if ( getConnectionView() == null )
-        {
-            return false;
-        }
-        return getConnectionView().getSelectedAlias() != null;
+
+        return false;
+
     }
 }

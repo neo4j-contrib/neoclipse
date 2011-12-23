@@ -18,10 +18,7 @@
  */
 package org.neo4j.neoclipse.connection;
 
-import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.eclipse.jface.action.ActionContributionItem;
@@ -31,8 +28,6 @@ import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.viewers.DoubleClickEvent;
-import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -48,6 +43,10 @@ import org.neo4j.neoclipse.connection.actions.NewEditorAction;
 import org.neo4j.neoclipse.graphdb.GraphDbServiceStatus;
 import org.neo4j.neoclipse.view.UiHelper;
 
+/**
+ * 
+ * @author Radhakrishna Kalyan
+ */
 public class ConnectionsView extends ViewPart implements ConnectionListener
 {
 
@@ -65,7 +64,7 @@ public class ConnectionsView extends ViewPart implements ConnectionListener
     @Override
     public void createPartControl( Composite parent )
     {
-        Activator.getDefault().getAliasManager().addListener( this );
+        Activator.getDefault().getAliasManager().registerConnetionListener( this );
 
         _treeViewer = new TreeViewer( parent, SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL );
         getSite().setSelectionProvider( _treeViewer );
@@ -78,24 +77,6 @@ public class ConnectionsView extends ViewPart implements ConnectionListener
         _treeViewer.setContentProvider( new ConnectionTreeContentProvider() );
         _treeViewer.setLabelProvider( new ConnectionTreeLabelProvider() );
         _treeViewer.setInput( Activator.getDefault().getAliasManager() );
-        // doubleclick on alias opens session
-        _treeViewer.addDoubleClickListener( new IDoubleClickListener()
-        {
-            @Override
-            public void doubleClick( DoubleClickEvent event )
-            {
-                IStructuredSelection selection = (IStructuredSelection) event.getSelection();
-                if ( selection != null )
-                {
-                    Object selected = selection.getFirstElement();
-                    if ( selected instanceof Alias )
-                    {
-                        Alias alias = (Alias) selection.getFirstElement();
-                        // TODO Execute StartAction
-                    }
-                }
-            }
-        } );
 
         _treeViewer.addSelectionChangedListener( new ISelectionChangedListener()
         {
@@ -103,6 +84,8 @@ public class ConnectionsView extends ViewPart implements ConnectionListener
             public void selectionChanged( SelectionChangedEvent event )
             {
                 refreshToolbar();
+                Activator.getDefault().fireServiceChangedEvent( GraphDbServiceStatus.DB_SELECT );
+
             }
         } );
 
@@ -147,36 +130,6 @@ public class ConnectionsView extends ViewPart implements ConnectionListener
         } );
     }
 
-    /**
-     * @see org.eclipse.ui.IWorkbenchPart#setFocus()
-     */
-    @Override
-    public void setFocus()
-    {
-
-    }
-
-    /**
-     * Helper method which returns the first element of a set, or null if the
-     * set is empty (or if the set is null)
-     * 
-     * @param set the set to look into (may be null)
-     * @return
-     */
-    private <T> T getFirstOf( Collection<T> set )
-    {
-        if ( set == null )
-        {
-            return null;
-        }
-        Iterator<T> iter = set.iterator();
-        if ( iter.hasNext() )
-        {
-            return iter.next();
-        }
-        return null;
-    }
-
     @Override
     public void modelChanged()
     {
@@ -213,27 +166,6 @@ public class ConnectionsView extends ViewPart implements ConnectionListener
             }
         }
 
-        Alias alias = getSelectedAlias();
-        if ( alias != null )
-        {
-            Activator.getDefault().getGraphDbServiceManager().fireServiceChangedEvent( GraphDbServiceStatus.DB_SELECT );
-            Activator.getDefault().setStatusLineMessage( alias.getUri() );
-        }
-    }
-
-    Object[] getSelected()
-    {
-        IStructuredSelection selection = (IStructuredSelection) _treeViewer.getSelection();
-        if ( selection == null )
-        {
-            return null;
-        }
-        Object[] result = selection.toArray();
-        if ( result.length == 0 )
-        {
-            return null;
-        }
-        return result;
     }
 
     public void openNewEditor()
@@ -241,32 +173,17 @@ public class ConnectionsView extends ViewPart implements ConnectionListener
         // TODO new Cypher Editor
     }
 
-    private Set<Alias> getSelectedAliases()
-    {
-        IStructuredSelection selection = (IStructuredSelection) _treeViewer.getSelection();
-        if ( selection == null )
-        {
-            return EMPTY_ALIASES;
-        }
-
-        LinkedHashSet<Alias> result = new LinkedHashSet<Alias>();
-        Iterator<?> iter = selection.iterator();
-        while ( iter.hasNext() )
-        {
-            Object obj = iter.next();
-            if ( obj instanceof Alias )
-            {
-                result.add( (Alias) obj );
-            }
-
-        }
-
-        return result;
-    }
-
     public Alias getSelectedAlias()
     {
-        return getFirstOf( getSelectedAliases() );
+        IStructuredSelection selection = (IStructuredSelection) _treeViewer.getSelection();
+        return (Alias) selection.getFirstElement();
+
+    }
+
+    @Override
+    public void setFocus()
+    {
+        _treeViewer.getControl().setFocus();
     }
 
 }

@@ -20,14 +20,19 @@ package org.neo4j.neoclipse.connection;
 
 import java.io.File;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.TreeMap;
+import java.util.Set;
 
 import org.dom4j.Element;
 import org.dom4j.tree.DefaultElement;
-import org.neo4j.neoclipse.ApplicationFiles;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.widgets.Display;
+import org.neo4j.neoclipse.Activator;
+import org.neo4j.neoclipse.ApplicationUtils;
 import org.neo4j.neoclipse.XMLUtils;
+import org.neo4j.neoclipse.graphdb.GraphDbServiceManager;
 
 /**
  * Maintains the list of Neo4JConnection Alias
@@ -38,31 +43,25 @@ import org.neo4j.neoclipse.XMLUtils;
 public class AliasManager implements ConnectionListener
 {
 
-    // List of Neo4JConnectiones, indexed by Neo4JConnection name
-    private TreeMap<String, Alias> aliases = new TreeMap<String, Alias>();
-
-    // Connection Listeners
-    private LinkedList<ConnectionListener> connectionListeners = new LinkedList<ConnectionListener>();
+    private final Set<Alias> aliases = new HashSet<Alias>();
+    private final List<ConnectionListener> connectionListeners = new LinkedList<ConnectionListener>();
 
     public void loadAliases()
     {
         aliases.clear();
 
-        Element root = XMLUtils.readRoot( new File( ApplicationFiles.USER_ALIAS_FILE_NAME ) );
+        Element root = XMLUtils.readRoot( new File( ApplicationUtils.USER_ALIAS_FILE_NAME ) );
         if ( root != null )
         {
+            List<Element> elements = root.elements( Alias.ALIAS );
             if ( root.getName().equals( Alias.ALIASES ) )
             {
-                root = convertToV350( root );
-            }
-            List<Element> list = root.elements( Alias.ALIAS );
-            if ( list != null )
-            {
-                for ( Element elem : list )
+                for ( Element aliasElement : elements )
                 {
-                    addAlias( new Alias( elem ) );
+                    addAlias( new Alias( aliasElement ) );
                 }
             }
+
         }
     }
 
@@ -73,128 +72,42 @@ public class AliasManager implements ConnectionListener
     public void saveAliases()
     {
         DefaultElement root = new DefaultElement( Alias.ALIASES );
-        for ( Alias alias : aliases.values() )
+        for ( Alias alias : aliases )
         {
             root.add( alias.describeAsXml() );
         }
 
-        XMLUtils.save( root, new File( ApplicationFiles.USER_ALIAS_FILE_NAME ) );
+        XMLUtils.save( root, new File( ApplicationUtils.USER_ALIAS_FILE_NAME ) );
     }
 
-    /**
-     * Upgrades a v3 definition (java beans style) to v3.5.0beta2 and onwards
-     * 
-     * @param beans
-     * @return
-     */
-    protected Element convertToV350( Element beans )
+    public void addAlias( Alias alias )
     {
-        Element result = new DefaultElement( Alias.ALIASES );
+        aliases.add( alias );
+        modelChanged();
+    }
 
-        for ( Element bean : beans.elements( Alias.ALIAS ) )
+    public void removeAlias( Alias alias )
+    {
+        GraphDbServiceManager graphDbServiceManager = Activator.getDefault().getGraphDbServiceManager();
+        if ( graphDbServiceManager.isRunning() && graphDbServiceManager.getCurrentAlias().equals( alias ) )
         {
-            Element alias = result.addElement( Alias.ALIAS );
-            alias.addElement( Alias.NAME ).setText( checkNull( bean.elementText( Alias.NAME ) ) );
-            alias.addElement( Alias.URI ).setText( checkNull( bean.elementText( Alias.URI ) ) );
-            alias.addElement( Alias.USER_NAME ).setText( checkNull( bean.elementText( Alias.USER_NAME ) ) );
-            alias.addElement( Alias.PASSWORD ).setText( checkNull( bean.elementText( Alias.PASSWORD ) ) );
+            MessageDialog.openWarning( Display.getCurrent().getActiveShell(), "Delete Connection",
+                    "Please stop the service before deleting." );
+            return;
         }
 
-        return result;
+        aliases.remove( alias );
+        modelChanged();
     }
 
-    private String checkNull( String pString )
-    {
-        return pString == null ? "" : pString;
-    }
-
-    /**
-     * Adds an Neo4JConnection
-     * 
-     * @param Alias
-     */
-    public void addAlias( Alias connection )
-    {
-        aliases.put( connection.getName(), connection );
-    }
-
-    /**
-     * Removes an Neo4JConnection with a given name
-     * 
-     * @param aliasName
-     */
-    public void removeAlias( String aliasName )
-    {
-        Alias connection = aliases.remove( aliasName );
-        if ( connection != null )
-        {
-            // connection.closeConnection();
-        }
-    }
-
-    /**
-     * Locates an Neo4JConnection by name
-     * 
-     * @param aliasName
-     * @return
-     */
-    public Alias getAlias( String aliasName )
-    {
-        return aliases.get( aliasName );
-    }
-
-    /**
-     * Provides a list of all Neo4JConnectiones
-     * 
-     * @return
-     */
     public Collection<Alias> getAliases()
     {
-        return aliases.values();
+        return aliases;
     }
 
-    /**
-     * Returns true if the Neo4JConnection is in our list
-     * 
-     * @param alias
-     * @return
-     */
-    public boolean contains( Alias alias )
-    {
-        return aliases.values().contains( alias );
-    }
-
-    /**
-     * Closes all connections in all Neo4JConnectiones; note that
-     * ConnectionListeners are NOT invoked
-     * 
-     */
-    public void closeAllConnections() throws Exception
-    {
-        for ( Alias connection : aliases.values() )
-        {
-            // connection.closeConnection();
-        }
-    }
-
-    /**
-     * Adds a listener for the connections
-     * 
-     * @param listener
-     */
-    public void addListener( ConnectionListener listener )
+    public void registerConnetionListener( ConnectionListener listener )
     {
         connectionListeners.add( listener );
-    }
-
-    /**
-     * Removes a listener
-     * 
-     * @param listener
-     */
-    public void removeListener( ConnectionListener listener )
-    {
-        connectionListeners.remove( listener );
     }
 
     /**
@@ -210,8 +123,4 @@ public class AliasManager implements ConnectionListener
         }
     }
 
-    public void addConnection( Alias connection )
-    {
-        aliases.put( connection.getName(), connection );
-    }
 }

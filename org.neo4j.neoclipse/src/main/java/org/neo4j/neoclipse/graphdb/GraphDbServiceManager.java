@@ -18,9 +18,6 @@
  */
 package org.neo4j.neoclipse.graphdb;
 
-import java.io.File;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -30,9 +27,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.eclipse.core.runtime.ListenerList;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.osgi.service.datalocation.Location;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Transaction;
 import org.neo4j.kernel.EmbeddedGraphDatabase;
@@ -48,6 +43,7 @@ import org.neo4j.neoclipse.view.UiHelper;
  * 
  * @author Peter H&auml;nsgen
  * @author Anders Nawroth
+ * @author Radhakrishan Kalyan
  */
 public class GraphDbServiceManager
 {
@@ -70,9 +66,10 @@ public class GraphDbServiceManager
             @Override
             public void run()
             {
-                if ( lifecycle != null )
+                if ( isRunning() )
                 {
-                    throw new IllegalStateException( "Can't start new database: the old one isn't shutdown properly." );
+                    throw new IllegalStateException(
+                            "Can't start new database: There is already a serice running or isn't properly shutdown." );
                 }
                 logInfo( "trying to start/connect ..." );
                 GraphDatabaseService graphDb = null;
@@ -82,6 +79,8 @@ public class GraphDbServiceManager
                 {
                 case REMOTE:
                 {
+                    // TODO : Uncomment the below code when neo4j-rest will be
+                    // fixed.
                     // graphDb = new RestGraphDatabase( currentAlias.getUri(),
                     // currentAlias.getUserName(),
                     // currentAlias.getPassword() );
@@ -295,8 +294,8 @@ public class GraphDbServiceManager
     /**
      * The service instance.
      */
-    protected GraphDbServiceMode serviceMode;
-    protected GraphDbLifecycle lifecycle = null;
+    private GraphDbServiceMode serviceMode;
+    private GraphDbLifecycle lifecycle = null;
 
     /**
      * The registered service change listeners.
@@ -419,10 +418,19 @@ public class GraphDbServiceManager
      * 
      * @return
      */
-    public Future<?> startGraphDbService( Alias alias ) throws Exception
+    public Future<?> startGraphDbService( Alias alias )
     {
+        if ( alias == null )
+        {
+            throw new IllegalAccessError( "PLease select the database to start." );
+        }
+        if ( isRunning() )
+        {
+            throw new IllegalAccessError( "Database is already running." );
+        }
         currentAlias = alias;
-        return submitTask( tasks().START, "start db" );
+        Future<?> submitTask = submitTask( tasks().START, "start db" );
+        return submitTask;
     }
 
     /**
@@ -489,71 +497,6 @@ public class GraphDbServiceManager
     public void removeServiceEventListener( final GraphDbServiceEventListener listener )
     {
         listeners.remove( listener );
-    }
-
-    // // determine the neo4j directory from the selected alias
-    // private String getCurrentDbLocation()
-    // {
-    // String location = currentAlias.getUri();
-    // if ( ( location == null ) || ( location.trim().length() == 0 ) )
-    // {
-    // // if there's really no db dir, create one in the workspace
-    // File dbDir = GraphDbServiceManager.dirInWorkspace( "neo4j-db" );
-    // location = dbDir.getAbsolutePath();
-    // preferenceStore.setValue( Preferences.DATABASE_LOCATION, location );
-    // }
-    // File dir = new File( location );
-    // if ( !dir.exists() )
-    // {
-    // throw new IllegalArgumentException(
-    // "The database location does not exist." );
-    // }
-    // if ( !dir.isDirectory() )
-    // {
-    // throw new IllegalArgumentException(
-    // "The database location is not a directory." );
-    // }
-    // if ( !dir.canWrite() )
-    // {
-    // throw new IllegalAccessError(
-    // "Writes are not allowed to the database location." );
-    // }
-    // logFine( "using location: " + location );
-    // return location;
-    // }
-
-    public static File dirInWorkspace( final String... elements )
-    {
-        Location workspace = Platform.getInstanceLocation();
-        if ( workspace == null )
-        {
-            throw new RuntimeException( "Can't find workspace." );
-        }
-        URL url = workspace.getURL();
-        String path;
-        try
-        {
-            path = url.toURI().getPath();
-        }
-        catch ( URISyntaxException e )
-        {
-            // workaround for Windows
-            System.out.println( "Using path workaround for path: " + url );
-            path = url.getPath();
-        }
-        for ( String element : elements )
-        {
-            path += File.separator + element;
-        }
-        File dir = new File( path );
-        if ( !dir.exists() )
-        {
-            if ( !dir.mkdirs() )
-            {
-                throw new IllegalArgumentException( "Could not create directory: " + dir );
-            }
-        }
-        return dir;
     }
 
     /**

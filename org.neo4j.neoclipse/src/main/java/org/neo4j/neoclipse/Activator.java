@@ -31,9 +31,11 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.neo4j.neoclipse.connection.Alias;
 import org.neo4j.neoclipse.connection.AliasManager;
 import org.neo4j.neoclipse.connection.ConnectionsView;
 import org.neo4j.neoclipse.graphdb.GraphDbServiceManager;
+import org.neo4j.neoclipse.graphdb.GraphDbServiceStatus;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
 import org.neo4j.neoclipse.view.UiHelper;
 import org.osgi.framework.BundleContext;
@@ -82,7 +84,6 @@ public class Activator extends AbstractUIPlugin
         graphDbServiceManager.shutdownGraphDbService();
         graphDbServiceManager.stopExecutingTasks();
         aliasManager.saveAliases();
-        aliasManager.closeAllConnections();
 
         PLUGIN = null;
         super.stop( context );
@@ -255,4 +256,16 @@ public class Activator extends AbstractUIPlugin
             }
         } );
     }
+
+    public Alias getSelectedAlias()
+    {
+        return getConnectionsView().getSelectedAlias();
+    }
+
+    public void fireServiceChangedEvent( GraphDbServiceStatus status )
+    {
+        getGraphDbServiceManager().fireServiceChangedEvent( status );
+
+    }
+
 }

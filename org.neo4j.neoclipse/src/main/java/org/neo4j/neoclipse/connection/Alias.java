@@ -18,12 +18,13 @@
  */
 package org.neo4j.neoclipse.connection;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.dom4j.Element;
 import org.dom4j.tree.DefaultElement;
-import org.neo4j.neoclipse.Activator;
+import org.neo4j.neoclipse.ApplicationUtils;
 
 /**
  * Our Neo4JConnection, which adds the connection to our GraphDatabaseService
@@ -43,7 +44,7 @@ public class Alias
     /*package*/static final String PASSWORD = "password";
 
     private final String name;
-    private final String uri;
+    private String uri;
     private String userName;
     private String password;
     private long createdTime;
@@ -57,11 +58,30 @@ public class Alias
         name = aliasName;
         uri = dbPath;
         connectionMode = ConnectionMode.getValue( dbPath );
-        if ( !isBlank( user ) )
+
+        if ( connectionMode == ConnectionMode.LOCAL )
+        {
+            File dir = new File( uri );
+            if ( !dir.exists() )
+            {
+                dir = ApplicationUtils.dirInWorkspace( uri );
+                uri = dir.getAbsolutePath();
+            }
+            if ( !dir.isDirectory() )
+            {
+                throw new IllegalArgumentException( "The database location is not a directory." );
+            }
+            if ( !dir.canWrite() )
+            {
+                throw new IllegalAccessError( "Permission Denied for write to the database location." );
+            }
+        }
+
+        if ( !ApplicationUtils.isBlank( user ) )
         {
             userName = user;
         }
-        if ( !isBlank( user ) )
+        if ( !ApplicationUtils.isBlank( user ) )
         {
             password = pass;
         }
@@ -82,14 +102,16 @@ public class Alias
         connectionMode = ConnectionMode.getValue( uri );
         String user = root.elementText( USER_NAME );
         String pass = root.elementText( PASSWORD );
-        if ( !isBlank( user ) )
+        if ( !ApplicationUtils.isBlank( user ) )
         {
             userName = user;
         }
-        if ( !isBlank( pass ) )
+        if ( !ApplicationUtils.isBlank( pass ) )
         {
             password = pass;
         }
+
+        // TODO Need to add Configuration
 
     }
 
@@ -106,11 +128,6 @@ public class Alias
     public String getUri()
     {
         return uri;
-    }
-
-    public void remove()
-    {
-        Activator.getDefault().getAliasManager().removeAlias( getName() );
     }
 
     public String getUserName()
@@ -137,22 +154,12 @@ public class Alias
     public Element describeAsXml()
     {
         DefaultElement root = new DefaultElement( ALIAS );
-        root.addElement( NAME ).setText( checkBlank( name ) );
-        root.addElement( URI ).setText( checkBlank( uri ) );
-        root.addElement( USER_NAME ).setText( checkBlank( userName ) );
-        root.addElement( PASSWORD ).setText( checkBlank( password ) );
+        root.addElement( NAME ).setText( ApplicationUtils.returnEmptyIfBlank( name ) );
+        root.addElement( URI ).setText( ApplicationUtils.returnEmptyIfBlank( uri ) );
+        root.addElement( USER_NAME ).setText( ApplicationUtils.returnEmptyIfBlank( userName ) );
+        root.addElement( PASSWORD ).setText( ApplicationUtils.returnEmptyIfBlank( password ) );
         // TODO add configuration settings
         return root;
-    }
-
-    private String checkBlank( String pString )
-    {
-        return pString == null ? "" : pString;
-    }
-
-    private boolean isBlank( String string )
-    {
-        return ( string == null || string.trim().isEmpty() );
     }
 
     public Map<String, String> getConfigurationMap()

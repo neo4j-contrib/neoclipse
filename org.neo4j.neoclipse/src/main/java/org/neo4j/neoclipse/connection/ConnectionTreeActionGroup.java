@@ -51,14 +51,14 @@ public class ConnectionTreeActionGroup extends ActionGroup
         NeoGraphViewPart neoGraphView = Activator.getDefault().getNeoGraphViewPart();
         GraphDbServiceManager graphDbServiceManager = Activator.getDefault().getGraphDbServiceManager();
 
-        Object[] selection = ( view == null ) ? null : view.getSelected();
-        if ( selection == null || selection.length != 1 )
+        Alias alias = view.getSelectedAlias();
+        if ( alias == null )
         {
             addAction( menu, new NewAliasAction() );
             return;
         }
 
-        Alias alias = (Alias) selection[0];
+        // Alias alias = (Alias) selection[0];
         if ( graphDbServiceManager.isRunning() && graphDbServiceManager.getCurrentAlias().equals( alias ) )
         {
             addAction( menu, new StopAction( neoGraphView ) );

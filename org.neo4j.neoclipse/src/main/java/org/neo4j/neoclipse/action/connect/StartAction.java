@@ -30,6 +30,7 @@ import org.neo4j.neoclipse.view.NeoGraphViewPart;
  * Action to start the database.
  * 
  * @author Anders Nawroth
+ * @author Radhakrishna Kalyan
  */
 public class StartAction extends AbstractGraphAction
 {
@@ -45,12 +46,6 @@ public class StartAction extends AbstractGraphAction
         try
         {
             Alias selectedAlias = Activator.getDefault().getConnectionsView().getSelectedAlias();
-            if ( selectedAlias == null )
-            {
-                ErrorMessage.showDialog( "Database problem", "PLease select the database to start." );
-                return;
-            }
-
             GraphDbServiceManager gsm = Activator.getDefault().getGraphDbServiceManager();
             gsm.startGraphDbService( selectedAlias ).get();
             graphView.showSomeNode();

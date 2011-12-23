@@ -232,47 +232,32 @@ public class CreateAliasDialog extends TitleAreaDialog
     protected void okPressed()
     {
 
-        // String connectionMode =
-        // Activator.getDefault().getPreferenceStore().getString(
-        // Preferences.CONNECTION_MODE );
-        Alias connection;
-
-        connection = new Alias( nameField.getText(), urlField.getStringValue(), userField.getText(),
+        Alias alias = new Alias( nameField.getText(), urlField.getStringValue(), userField.getText(),
                 passwordField.getText() );
-        Activator.getDefault().getAliasManager().addConnection( connection );
-        Activator.getDefault().getAliasManager().modelChanged();
+        Activator.getDefault().getAliasManager().addAlias( alias );
         close();
-
-    }
-
-    private void setDialogComplete( boolean value )
-    {
-
-        Button okBtn = getButton( IDialogConstants.OK_ID );
-        if ( okBtn != null )
-        {
-            okBtn.setEnabled( value );
-        }
     }
 
     @Override
     protected void setShellStyle( int newShellStyle )
     {
 
-        super.setShellStyle( newShellStyle | SWT.RESIZE );// Make the dialog
-        // resizable
+        super.setShellStyle( newShellStyle | SWT.RESIZE );
     }
 
     private void validate()
     {
+        boolean enableDisable = false;
 
         if ( !urlField.getStringValue().trim().isEmpty() && ( nameField.getText().trim().length() > 0 ) )
         {
-            setDialogComplete( true );
+            enableDisable = true;
         }
-        else
+
+        Button okBtn = getButton( IDialogConstants.OK_ID );
+        if ( okBtn != null )
         {
-            setDialogComplete( false );
+            okBtn.setEnabled( enableDisable );
         }
     }
 

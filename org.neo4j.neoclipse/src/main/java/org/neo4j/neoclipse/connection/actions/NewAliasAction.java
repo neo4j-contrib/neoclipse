@@ -24,7 +24,7 @@ import org.neo4j.neoclipse.connection.AbstractConnectionTreeAction;
 import org.neo4j.neoclipse.connection.dialogs.CreateAliasDialog;
 
 /**
- * @author Davy Vanherbergen
+ * @author Radhakrishna Kalyan
  * 
  */
 public class NewAliasAction extends AbstractConnectionTreeAction

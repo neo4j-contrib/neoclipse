@@ -23,7 +23,7 @@ import java.io.File;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.neo4j.neoclipse.Activator;
-import org.neo4j.neoclipse.graphdb.GraphDbServiceManager;
+import org.neo4j.neoclipse.ApplicationUtils;
 import org.neo4j.neoclipse.preference.DecoratorPreferences;
 
 public class NodeIconUtil
@@ -41,15 +41,12 @@ public class NodeIconUtil
 
     public static File getIconLocation()
     {
-        String location = getPreferenceStore().getString(
-                DecoratorPreferences.NODE_ICON_LOCATION );
+        String location = getPreferenceStore().getString( DecoratorPreferences.NODE_ICON_LOCATION );
         if ( ( location == null ) || ( location.trim().length() == 0 ) )
         {
-            File iconsDir = GraphDbServiceManager.dirInWorkspace( "neoclipse",
-                    "icons" );
+            File iconsDir = ApplicationUtils.dirInWorkspace( "neoclipse", "icons" );
             location = iconsDir.getAbsolutePath();
-            preferenceStore.setValue( DecoratorPreferences.NODE_ICON_LOCATION,
-                    location );
+            preferenceStore.setValue( DecoratorPreferences.NODE_ICON_LOCATION, location );
         }
 
         File dest = new File( location );
@@ -60,15 +57,13 @@ public class NodeIconUtil
         if ( !dest.exists() || !dest.isDirectory() )
         {
             MessageDialog.openInformation( null, "Icon location problem",
-            "Please make sure that the node icon location is correctly set." );
+                    "Please make sure that the node icon location is correctly set." );
             Activator.getDefault().showDecoratorPreferenceDialog( false );
-            location = getPreferenceStore().getString(
-                    DecoratorPreferences.NODE_ICON_LOCATION );
+            location = getPreferenceStore().getString( DecoratorPreferences.NODE_ICON_LOCATION );
             dest = new File( location );
             if ( !dest.exists() || !dest.isDirectory() )
             {
-                MessageDialog.openError( null, "Error message",
-                "The icon location can not be found." );
+                MessageDialog.openError( null, "Error message", "The icon location can not be found." );
                 return null;
             }
         }

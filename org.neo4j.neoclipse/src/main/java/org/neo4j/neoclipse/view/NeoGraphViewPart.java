@@ -51,6 +51,7 @@ import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.NotFoundException;
 import org.neo4j.graphdb.Relationship;
 import org.neo4j.neoclipse.Activator;
+import org.neo4j.neoclipse.connection.Alias;
 import org.neo4j.neoclipse.event.NeoclipseEvent;
 import org.neo4j.neoclipse.event.NeoclipseEventListener;
 import org.neo4j.neoclipse.event.NeoclipseListenerList;
@@ -828,10 +829,15 @@ public class NeoGraphViewPart extends ViewPart implements IZoomableWorkbenchPart
 
         private void handleServiceChange( final GraphDbServiceEvent event )
         {
+            Alias alias = Activator.getDefault().getSelectedAlias();
             if ( event.getStatus() == GraphDbServiceStatus.DB_SELECT
                  && !Activator.getDefault().getGraphDbServiceManager().isRunning() )
             {
                 menu.setEnabledStartAction( true );
+                if ( alias != null )
+                {
+                    Activator.getDefault().setStatusLineMessage( alias.getUri() );
+                }
             }
             else if ( event.getStatus() == GraphDbServiceStatus.STOPPING )
             {
@@ -848,6 +854,7 @@ public class NeoGraphViewPart extends ViewPart implements IZoomableWorkbenchPart
                 {
                     setInput( null );
                 }
+
             }
             else if ( event.getStatus() == GraphDbServiceStatus.STARTED )
             {
