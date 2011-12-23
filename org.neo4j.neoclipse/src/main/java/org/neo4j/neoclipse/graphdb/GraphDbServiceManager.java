@@ -37,6 +37,7 @@ import org.neo4j.neoclipse.connection.Alias;
 import org.neo4j.neoclipse.connection.ConnectionMode;
 import org.neo4j.neoclipse.preference.Preferences;
 import org.neo4j.neoclipse.view.UiHelper;
+import org.neo4j.rest.graphdb.RestGraphDatabase;
 
 /**
  * This manager controls the neo4j service.
@@ -79,16 +80,11 @@ public class GraphDbServiceManager
                 {
                 case REMOTE:
                 {
-                    // TODO : Uncomment the below code when neo4j-rest will be
-                    // fixed.
-                    // graphDb = new RestGraphDatabase( currentAlias.getUri(),
-                    // currentAlias.getUserName(),
-                    // currentAlias.getPassword() );
-                    // logInfo(
-                    // "connected to remote neo4j using neo4j rest api." );
-                    // break;
+                    graphDb = new RestGraphDatabase( currentAlias.getUri(), currentAlias.getUserName(),
+                            currentAlias.getPassword() );
+                    logInfo( "connected to remote neo4j using neo4j rest api." );
+                    break;
 
-                    throw new UnsupportedOperationException( "Remote connection currently not supported." );
                 }
                 case LOCAL:
                 {

@@ -4,17 +4,17 @@
 	<classpathentry kind="src" output="target/test-classes" path="src/test/java"/>
 	<classpathentry exported="true" kind="lib" path="lib/jersey-core-1.9.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jersey-client-1.9.1.jar" sourcepath="C:/eclipse-jee-indigo/~/.m2/repository/com/sun/jersey/jersey-client/1.9.1/jersey-client-1.9.1-sources.jar"/>
+	<classpathentry kind="lib" path="lib/neo4j-jmx-1.6.M02.jar"/>
+	<classpathentry kind="lib" path="lib/neo4j-kernel-1.6.M02.jar" sourcepath="C:/eclipse-jee-indigo/~/.m2/repository/org/neo4j/neo4j-kernel/1.6.M02/neo4j-kernel-1.6.M02-sources.jar"/>
+	<classpathentry kind="lib" path="lib/neo4j-lucene-index-1.6.M02.jar"/>
+	<classpathentry kind="lib" path="lib/neo4j-udc-1.6.M02.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 	<classpathentry kind="con" path="org.maven.ide.eclipse.MAVEN2_CLASSPATH_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
-	<classpathentry kind="lib" path="lib/neo4j-kernel-1.6.M01.jar" sourcepath="C:/Users/Koosie/.m2/repository/org/neo4j/neo4j-kernel/1.6.M01/neo4j-kernel-1.6.M01-sources.jar"/>
 	<classpathentry kind="lib" path="lib/geronimo-jta_1.1_spec-1.1.1.jar"/>
 	<classpathentry kind="lib" path="lib/lucene-core-3.1.0.jar"/>
-	<classpathentry kind="lib" path="lib/neo4j-graph-algo-1.6.M01.jar"/>
-	<classpathentry kind="lib" path="lib/neo4j-jmx-1.6.M01.jar"/>
-	<classpathentry kind="lib" path="lib/neo4j-lucene-index-1.6.M01.jar"/>
-	<classpathentry kind="lib" path="lib/neo4j-udc-1.6.M01.jar"/>
 	<classpathentry kind="lib" path="lib/dom4j.jar"/>
 	<classpathentry kind="lib" path="lib/neo4j-rest-graphdb-1.6-SNAPSHOT.jar" sourcepath="/neo4j-rest-graphdb"/>
+	<classpathentry kind="lib" path="lib/neo4j-graph-algo-1.6.M02.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
