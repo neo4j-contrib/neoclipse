@@ -39,6 +39,7 @@ import org.neo4j.kernel.EmbeddedGraphDatabase;
 import org.neo4j.kernel.EmbeddedReadOnlyGraphDatabase;
 import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.connection.Alias;
+import org.neo4j.neoclipse.connection.ConnectionMode;
 import org.neo4j.neoclipse.preference.Preferences;
 import org.neo4j.neoclipse.view.UiHelper;
 
@@ -74,21 +75,44 @@ public class GraphDbServiceManager
                     throw new IllegalStateException( "Can't start new database: the old one isn't shutdown properly." );
                 }
                 logInfo( "trying to start/connect ..." );
-                String dbLocation;
                 GraphDatabaseService graphDb = null;
-                switch ( serviceMode )
+                ConnectionMode connectionMode = currentAlias.getConnectionMode();
+
+                switch ( connectionMode )
                 {
-                case READ_WRITE_EMBEDDED:
-                    dbLocation = getCurrentDbLocation();
-                    graphDb = new EmbeddedGraphDatabase( dbLocation );
-                    logInfo( "connected to embedded neo4j" );
-                    break;
-                case READ_ONLY_EMBEDDED:
-                    dbLocation = getCurrentDbLocation();
-                    graphDb = new EmbeddedReadOnlyGraphDatabase( dbLocation );
-                    logInfo( "connected to embedded read-only neo4j" );
+                case REMOTE:
+                {
+                    // graphDb = new RestGraphDatabase( currentAlias.getUri(),
+                    // currentAlias.getUserName(),
+                    // currentAlias.getPassword() );
+                    // logInfo(
+                    // "connected to remote neo4j using neo4j rest api." );
+                    // break;
+
+                    throw new UnsupportedOperationException( "Remote connection currently not supported." );
+                }
+                case LOCAL:
+                {
+                    if ( isReadOnlyMode() )
+                    {
+                        graphDb = new EmbeddedReadOnlyGraphDatabase( currentAlias.getUri(),
+                                currentAlias.getConfigurationMap() );
+                        logInfo( "connected to embedded read-only neo4j" );
+                    }
+                    else
+                    {
+                        graphDb = new EmbeddedGraphDatabase( currentAlias.getUri(), currentAlias.getConfigurationMap() );
+                        logInfo( "connected to embedded neo4j" );
+                    }
                     break;
                 }
+                default:
+                {
+                    throw new UnsupportedOperationException( "Connection mode is required" );
+                }
+
+                }
+
                 lifecycle = new GraphDbLifecycle( graphDb );
                 if ( !isReadOnlyMode() )
                 {
@@ -385,12 +409,6 @@ public class GraphDbServiceManager
         return serviceMode == GraphDbServiceMode.READ_ONLY_EMBEDDED;
     }
 
-    public boolean isLocal()
-    {
-        return serviceMode == GraphDbServiceMode.READ_WRITE_EMBEDDED
-               || serviceMode == GraphDbServiceMode.READ_ONLY_EMBEDDED;
-    }
-
     public void setGraphServiceMode( final GraphDbServiceMode gdbServiceMode )
     {
         serviceMode = gdbServiceMode;
@@ -473,33 +491,36 @@ public class GraphDbServiceManager
         listeners.remove( listener );
     }
 
-    // determine the neo4j directory from the selected alias
-    private String getCurrentDbLocation()
-    {
-        String location = currentAlias.getNeo4JDbLocation();
-        if ( ( location == null ) || ( location.trim().length() == 0 ) )
-        {
-            // if there's really no db dir, create one in the workspace
-            File dbDir = GraphDbServiceManager.dirInWorkspace( "neo4j-db" );
-            location = dbDir.getAbsolutePath();
-            preferenceStore.setValue( Preferences.DATABASE_LOCATION, location );
-        }
-        File dir = new File( location );
-        if ( !dir.exists() )
-        {
-            throw new IllegalArgumentException( "The database location does not exist." );
-        }
-        if ( !dir.isDirectory() )
-        {
-            throw new IllegalArgumentException( "The database location is not a directory." );
-        }
-        if ( !dir.canWrite() )
-        {
-            throw new IllegalAccessError( "Writes are not allowed to the database location." );
-        }
-        logFine( "using location: " + location );
-        return location;
-    }
+    // // determine the neo4j directory from the selected alias
+    // private String getCurrentDbLocation()
+    // {
+    // String location = currentAlias.getUri();
+    // if ( ( location == null ) || ( location.trim().length() == 0 ) )
+    // {
+    // // if there's really no db dir, create one in the workspace
+    // File dbDir = GraphDbServiceManager.dirInWorkspace( "neo4j-db" );
+    // location = dbDir.getAbsolutePath();
+    // preferenceStore.setValue( Preferences.DATABASE_LOCATION, location );
+    // }
+    // File dir = new File( location );
+    // if ( !dir.exists() )
+    // {
+    // throw new IllegalArgumentException(
+    // "The database location does not exist." );
+    // }
+    // if ( !dir.isDirectory() )
+    // {
+    // throw new IllegalArgumentException(
+    // "The database location is not a directory." );
+    // }
+    // if ( !dir.canWrite() )
+    // {
+    // throw new IllegalAccessError(
+    // "Writes are not allowed to the database location." );
+    // }
+    // logFine( "using location: " + location );
+    // return location;
+    // }
 
     public static File dirInWorkspace( final String... elements )
     {

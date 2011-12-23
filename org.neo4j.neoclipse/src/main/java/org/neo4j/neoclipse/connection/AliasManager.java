@@ -1,3 +1,21 @@
+/**
+ * Licensed to Neo Technology under one or more contributor
+ * license agreements. See the NOTICE file distributed with
+ * this work for additional information regarding copyright
+ * ownership. Neo Technology licenses this file to you under
+ * the Apache License, Version 2.0 (the "License"); you may
+ * not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 package org.neo4j.neoclipse.connection;
 
 import java.io.File;
@@ -33,7 +51,7 @@ public class AliasManager implements ConnectionListener
         Element root = XMLUtils.readRoot( new File( ApplicationFiles.USER_ALIAS_FILE_NAME ) );
         if ( root != null )
         {
-            if ( root.getName().equals( "aliases" ) )
+            if ( root.getName().equals( Alias.ALIASES ) )
             {
                 root = convertToV350( root );
             }
@@ -73,13 +91,13 @@ public class AliasManager implements ConnectionListener
     {
         Element result = new DefaultElement( Alias.ALIASES );
 
-        for ( Element bean : beans.elements( "alias" ) )
+        for ( Element bean : beans.elements( Alias.ALIAS ) )
         {
             Element alias = result.addElement( Alias.ALIAS );
-            alias.addElement( Alias.NAME ).setText( checkNull( bean.elementText( "name" ) ) );
-            alias.addElement( Alias.URL ).setText( checkNull( bean.elementText( "url" ) ) );
-            alias.addElement( Alias.USER_NAME ).setText( checkNull( bean.elementText( "userName" ) ) );
-            alias.addElement( Alias.PASSWORD ).setText( checkNull( bean.elementText( "password" ) ) );
+            alias.addElement( Alias.NAME ).setText( checkNull( bean.elementText( Alias.NAME ) ) );
+            alias.addElement( Alias.URI ).setText( checkNull( bean.elementText( Alias.URI ) ) );
+            alias.addElement( Alias.USER_NAME ).setText( checkNull( bean.elementText( Alias.USER_NAME ) ) );
+            alias.addElement( Alias.PASSWORD ).setText( checkNull( bean.elementText( Alias.PASSWORD ) ) );
         }
 
         return result;

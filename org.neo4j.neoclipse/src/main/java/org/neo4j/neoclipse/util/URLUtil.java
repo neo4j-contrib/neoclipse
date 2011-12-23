@@ -61,11 +61,11 @@ public class URLUtil
     private static URL baseURL;
 
     /**
-     * Return a URL to a file located in your plugin fragment
+     * Return a URI to a file located in your plugin fragment
      * 
      * @param yourPluginId e.g net.sourceforge.sqlexplorer.oracle
      * @param filePath path to file within your fragment e.g. icons/test.gif
-     * @return URL to the file.
+     * @return URI to the file.
      */
     public static URL getFragmentResourceURL( String yourPluginId, String filePath )
     {

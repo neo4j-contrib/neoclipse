@@ -18,12 +18,24 @@
  */
 package org.neo4j.neoclipse.connection;
 
-/**
- * 
- * @author Radhakrishna Kalyan
- */
-public interface ConnectionListener
+public enum ConnectionMode
 {
+    LOCAL,
+    REMOTE;
 
-    public void modelChanged();
+    public static ConnectionMode getValue( String url )
+    {
+        if ( url == null || url.trim().isEmpty() )
+        {
+            throw new IllegalArgumentException( "URL invalid." );
+        }
+
+        // FIXME if there is any other way.
+        if ( url.startsWith( "http" ) )
+        {
+            return REMOTE;
+        }
+
+        return LOCAL;
+    }
 }

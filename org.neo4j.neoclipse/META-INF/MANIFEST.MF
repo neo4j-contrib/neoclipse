@@ -15,7 +15,10 @@ Bundle-ClassPath: .,
  lib/neo4j-kernel-1.6.M01.jar,
  lib/neo4j-lucene-index-1.6.M01.jar,
  lib/neo4j-udc-1.6.M01.jar,
- lib/dom4j.jar
+ lib/dom4j.jar,
+ lib/neo4j-rest-graphdb-1.6-SNAPSHOT.jar,
+ lib/jersey-client-1.9.1.jar,
+ lib/jersey-core-1.9.jar
 Import-Package: org.eclipse.core.commands.common,
  org.eclipse.core.runtime,
  org.eclipse.core.runtime.preferences,

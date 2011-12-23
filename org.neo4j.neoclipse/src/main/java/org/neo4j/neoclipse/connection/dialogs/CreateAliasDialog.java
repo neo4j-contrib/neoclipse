@@ -1,3 +1,21 @@
+/**
+ * Licensed to Neo Technology under one or more contributor
+ * license agreements. See the NOTICE file distributed with
+ * this work for additional information regarding copyright
+ * ownership. Neo Technology licenses this file to you under
+ * the Apache License, Version 2.0 (the "License"); you may
+ * not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 package org.neo4j.neoclipse.connection.dialogs;
 
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -18,7 +36,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.connection.Alias;
-import org.neo4j.neoclipse.graphdb.GraphDbServiceMode;
 import org.neo4j.neoclipse.preference.Preferences;
 
 /**
@@ -33,14 +50,12 @@ public class CreateAliasDialog extends TitleAreaDialog
     public enum Type
     {
         CREATE,
-        CHANGE,
-        COPY
     }
 
     private Type type;
 
     private Text nameField;
-    private DirectoryFieldEditor dbLocationField;
+    private DirectoryFieldEditor urlField;
     private Text userField;
     private Text passwordField;
 
@@ -58,14 +73,6 @@ public class CreateAliasDialog extends TitleAreaDialog
         if ( type == Type.CREATE )
         {
             shell.setText( "Create new connection" );
-        }
-        else if ( type == Type.CHANGE )
-        {
-            shell.setText( "Change connection" );
-        }
-        else if ( type == Type.COPY )
-        {
-            shell.setText( "AliasDialog.Copy.Title" );
         }
     }
 
@@ -86,16 +93,6 @@ public class CreateAliasDialog extends TitleAreaDialog
         if ( type == Type.CREATE )
         {
             setTitle( "Create new connection" );
-        }
-        else if ( type == Type.CHANGE )
-        {
-            setTitle( "Change connection" );
-            setMessage( "AliasDialog.Change.SubTitle" );
-        }
-        else if ( type == Type.COPY )
-        {
-            setTitle( "AliasDialog.Copy.Title" );
-            setMessage( "AliasDialog.Copy.SubTitle" );
         }
 
         return contents;
@@ -152,8 +149,8 @@ public class CreateAliasDialog extends TitleAreaDialog
             };
         } );
 
-        dbLocationField = new DirectoryFieldEditor( Preferences.DATABASE_LOCATION, "Directory Location *", nameGroup );
-        dbLocationField.getTextControl( nameGroup ).addKeyListener( new KeyListener()
+        urlField = new DirectoryFieldEditor( Preferences.DATABASE_LOCATION, "URI *", nameGroup );
+        urlField.getTextControl( nameGroup ).addKeyListener( new KeyListener()
         {
 
             @Override
@@ -168,7 +165,7 @@ public class CreateAliasDialog extends TitleAreaDialog
                 CreateAliasDialog.this.validate();
             }
         } );
-        dbLocationField.setPropertyChangeListener( new IPropertyChangeListener()
+        urlField.setPropertyChangeListener( new IPropertyChangeListener()
         {
 
             @Override
@@ -181,7 +178,7 @@ public class CreateAliasDialog extends TitleAreaDialog
 
         new Label( nameGroup, SWT.NONE );
         Label label3 = new Label( nameGroup, SWT.WRAP );
-        label3.setText( ( "i.e http://<host>:<port>/<db> or C:/neo4j/db " ) );
+        label3.setText( ( "i.e http://localhost:7474/db/testdb or C:/neo4j/db " ) );
         data = new GridData( GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL );
         data.horizontalSpan = 2;
         data.widthHint = SIZING_TEXT_FIELD_WIDTH;
@@ -235,11 +232,13 @@ public class CreateAliasDialog extends TitleAreaDialog
     protected void okPressed()
     {
 
-        String connectionMode = Activator.getDefault().getPreferenceStore().getString( Preferences.CONNECTION_MODE );
+        // String connectionMode =
+        // Activator.getDefault().getPreferenceStore().getString(
+        // Preferences.CONNECTION_MODE );
         Alias connection;
 
-        connection = new Alias( nameField.getText(), dbLocationField.getStringValue(), userField.getText(),
-                passwordField.getText(), GraphDbServiceMode.getValue( connectionMode ) );
+        connection = new Alias( nameField.getText(), urlField.getStringValue(), userField.getText(),
+                passwordField.getText() );
         Activator.getDefault().getAliasManager().addConnection( connection );
         Activator.getDefault().getAliasManager().modelChanged();
         close();
@@ -267,7 +266,7 @@ public class CreateAliasDialog extends TitleAreaDialog
     private void validate()
     {
 
-        if ( !dbLocationField.getStringValue().trim().isEmpty() && ( nameField.getText().trim().length() > 0 ) )
+        if ( !urlField.getStringValue().trim().isEmpty() && ( nameField.getText().trim().length() > 0 ) )
         {
             setDialogComplete( true );
         }
