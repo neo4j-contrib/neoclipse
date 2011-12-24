@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Neoclipse" uid="Neoclipse" id="org.neo4j.neoclipse.neoclipseProduct" application="org.neo4j.neoclipse.application" version="1.6-SNAPSHOT" useFeatures="false" includeLaunchers="true">
+<product name="Neoclipse" uid="Neoclipse" id="org.neo4j.neoclipse.neoclipseProduct" application="org.neo4j.neoclipse.application" version="1.6" useFeatures="false" includeLaunchers="true">
 
    <aboutInfo>
       <image path="icons/splash.png"/>
@@ -23,6 +23,7 @@ This software is realeased under the Neo4j Software License for Neoclipse Versio
    <windowImages i16="icons/obj16/neo-16.png" i32="icons/obj16/neo-32.png" i48="icons/obj16/neo-48.png" i64="icons/obj16/neo-64.png" i128="icons/obj16/neo-128.png"/>
 
    <splash
+      location="org.neo4j.neoclipse"
       startupProgressRect="0,280,455,15"
       startupMessageRect="7,250,441,20"
       startupForegroundColor="FFFFFF" />
