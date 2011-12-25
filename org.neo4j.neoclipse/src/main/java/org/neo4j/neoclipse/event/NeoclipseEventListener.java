@@ -22,6 +22,7 @@ import java.util.EventListener;
 
 /**
  * A simple listener interface to go with the NeoclipseEvent class.
+ * 
  * @author Anders Nawroth
  */
 public interface NeoclipseEventListener extends EventListener

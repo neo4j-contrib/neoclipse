@@ -18,9 +18,6 @@
  */
 package org.neo4j.neoclipse.graphdb;
 
-import java.io.File;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -30,14 +27,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.eclipse.core.runtime.ListenerList;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.osgi.service.datalocation.Location;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Transaction;
 import org.neo4j.kernel.EmbeddedGraphDatabase;
 import org.neo4j.kernel.EmbeddedReadOnlyGraphDatabase;
 import org.neo4j.neoclipse.Activator;
+import org.neo4j.neoclipse.connection.Alias;
+import org.neo4j.neoclipse.connection.ConnectionMode;
 import org.neo4j.neoclipse.preference.Preferences;
 import org.neo4j.neoclipse.view.UiHelper;
 
@@ -46,13 +43,14 @@ import org.neo4j.neoclipse.view.UiHelper;
  * 
  * @author Peter H&auml;nsgen
  * @author Anders Nawroth
+ * @author Radhakrishan Kalyan
  */
 public class GraphDbServiceManager
 {
     private static final String NEOCLIPSE_PACKAGE = "org.neo4j.neoclipse.";
     private static Logger logger = Logger.getLogger( GraphDbServiceManager.class.getName() );
+    private Alias currentAlias;
 
-    static
     {
         logger.setUseParentHandlers( false );
         logger.setLevel( Level.INFO );
@@ -71,24 +69,48 @@ public class GraphDbServiceManager
                 if ( lifecycle != null )
                 {
                     throw new IllegalStateException(
-                            "Can't start new database: the old one isn't shutdown properly." );
+                            "Can't start new database: There is already a serice running or isn't properly shutdown." );
                 }
                 logInfo( "trying to start/connect ..." );
-                String dbLocation;
                 GraphDatabaseService graphDb = null;
-                switch ( serviceMode )
+                ConnectionMode connectionMode = currentAlias.getConnectionMode();
+
+                switch ( connectionMode )
                 {
-                case READ_WRITE_EMBEDDED:
-                    dbLocation = getDbLocation();
-                    graphDb = new EmbeddedGraphDatabase( dbLocation );
-                    logInfo( "connected to embedded neo4j" );
-                    break;
-                case READ_ONLY_EMBEDDED:
-                    dbLocation = getDbLocation();
-                    graphDb = new EmbeddedReadOnlyGraphDatabase( dbLocation );
-                    logInfo( "connected to embedded read-only neo4j" );
+                case REMOTE:
+                {
+                    // UN- COMMENT BELOW COMMENTED LINES WHEN REST IS SUPPORTED
+                    throw new UnsupportedOperationException( "Currently remote connections are not supported." );
+                    // graphDb = new RestGraphDatabase( currentAlias.getUri(),
+                    // currentAlias.getUserName(),
+                    // currentAlias.getPassword() );
+                    // logInfo(
+                    // "connected to remote neo4j using neo4j rest api." );
+                    // break;
+
+                }
+                case LOCAL:
+                {
+                    if ( isReadOnlyMode() )
+                    {
+                        graphDb = new EmbeddedReadOnlyGraphDatabase( currentAlias.getUri(),
+                                currentAlias.getConfigurationMap() );
+                        logInfo( "connected to embedded read-only neo4j" );
+                    }
+                    else
+                    {
+                        graphDb = new EmbeddedGraphDatabase( currentAlias.getUri(), currentAlias.getConfigurationMap() );
+                        logInfo( "connected to embedded neo4j" );
+                    }
                     break;
                 }
+                default:
+                {
+                    throw new UnsupportedOperationException( "Connection mode is required" );
+                }
+
+                }
+
                 lifecycle = new GraphDbLifecycle( graphDb );
                 if ( !isReadOnlyMode() )
                 {
@@ -107,8 +129,7 @@ public class GraphDbServiceManager
                 logInfo( "stopping/disconnecting ..." );
                 if ( lifecycle == null )
                 {
-                    throw new IllegalStateException(
-                            "Can not stop the database: there is no running database." );
+                    throw new IllegalStateException( "Can not stop the database: there is no running database." );
                 }
                 fireServiceChangedEvent( GraphDbServiceStatus.STOPPING );
                 // TODO give the UI some time to deal with it here?
@@ -131,8 +152,7 @@ public class GraphDbServiceManager
                 }
                 catch ( Exception e )
                 {
-                    throw new RuntimeException(
-                            "Can not stop the database. The reason is not known." );
+                    throw new RuntimeException( "Can not stop the database. The reason is not known." );
                 }
                 finally
                 {
@@ -181,8 +201,7 @@ public class GraphDbServiceManager
                 if ( !isReadOnlyMode() )
                 {
                     tx.finish();
-                    tx = lifecycle.graphDb()
-                            .beginTx();
+                    tx = lifecycle.graphDb().beginTx();
                     fireServiceChangedEvent( GraphDbServiceStatus.COMMIT );
                 }
             }
@@ -196,8 +215,7 @@ public class GraphDbServiceManager
                 if ( !isReadOnlyMode() )
                 {
                     tx.finish();
-                    tx = lifecycle.graphDb()
-                            .beginTx();
+                    tx = lifecycle.graphDb().beginTx();
                     fireServiceChangedEvent( GraphDbServiceStatus.ROLLBACK );
                 }
             }
@@ -275,16 +293,15 @@ public class GraphDbServiceManager
     /**
      * The service instance.
      */
-    protected GraphDbServiceMode serviceMode;
-    protected GraphDbLifecycle lifecycle = null;
+    private GraphDbServiceMode serviceMode;
+    private GraphDbLifecycle lifecycle = null;
 
     /**
      * The registered service change listeners.
      */
     private final ListenerList listeners = new ListenerList();
     private Transaction tx;
-    private final IPreferenceStore preferenceStore = Activator.getDefault()
-            .getPreferenceStore();
+    private final IPreferenceStore preferenceStore = Activator.getDefault().getPreferenceStore();
 
     /**
      * The constructor.
@@ -292,8 +309,7 @@ public class GraphDbServiceManager
     public GraphDbServiceManager()
     {
         serviceMode = GraphDbServiceMode.valueOf( preferenceStore.getString( Preferences.CONNECTION_MODE ) );
-        logInfo( "Starting " + this.getClass()
-                .getSimpleName() );
+        logInfo( "Starting " + this.getClass().getSimpleName() );
     }
 
     private void logFine( final String message )
@@ -311,11 +327,9 @@ public class GraphDbServiceManager
         return tasks;
     }
 
-    private void printTask( final Object task, final String type,
-            final String info )
+    private void printTask( final Object task, final String type, final String info )
     {
-        String name = task.getClass()
-                .getName();
+        String name = task.getClass().getName();
         if ( name.startsWith( NEOCLIPSE_PACKAGE ) )
         {
             name = name.substring( NEOCLIPSE_PACKAGE.length() );
@@ -329,8 +343,7 @@ public class GraphDbServiceManager
         return executor.submit( task );
     }
 
-    public <T> Future<T> submitTask( final GraphCallable<T> callable,
-            final String info )
+    public <T> Future<T> submitTask( final GraphCallable<T> callable, final String info )
     {
         printTask( callable, "GC", info );
         TaskWrapper<T> wrapped = new TaskWrapper<T>( callable );
@@ -394,12 +407,6 @@ public class GraphDbServiceManager
         return serviceMode == GraphDbServiceMode.READ_ONLY_EMBEDDED;
     }
 
-    public boolean isLocal()
-    {
-        return serviceMode == GraphDbServiceMode.READ_WRITE_EMBEDDED
-               || serviceMode == GraphDbServiceMode.READ_ONLY_EMBEDDED;
-    }
-
     public void setGraphServiceMode( final GraphDbServiceMode gdbServiceMode )
     {
         serviceMode = gdbServiceMode;
@@ -410,9 +417,19 @@ public class GraphDbServiceManager
      * 
      * @return
      */
-    public Future<?> startGraphDbService() throws Exception
+    public Future<?> startGraphDbService( Alias alias )
     {
-        return submitTask( tasks().START, "start db" );
+        if ( alias == null )
+        {
+            throw new IllegalAccessError( "PLease select the database to start." );
+        }
+        if ( isRunning() )
+        {
+            throw new IllegalAccessError( "Database is already running." );
+        }
+        currentAlias = alias;
+        Future<?> submitTask = submitTask( tasks().START, "start db" );
+        return submitTask;
     }
 
     /**
@@ -468,8 +485,7 @@ public class GraphDbServiceManager
     /**
      * Registers a service listener.
      */
-    public void addServiceEventListener(
-            final GraphDbServiceEventListener listener )
+    public void addServiceEventListener( final GraphDbServiceEventListener listener )
     {
         listeners.add( listener );
     }
@@ -477,85 +493,16 @@ public class GraphDbServiceManager
     /**
      * Unregisters a service listener.
      */
-    public void removeServiceEventListener(
-            final GraphDbServiceEventListener listener )
+    public void removeServiceEventListener( final GraphDbServiceEventListener listener )
     {
         listeners.remove( listener );
-    }
-
-    // determine the neo4j directory from the preferences
-    private String getDbLocation()
-    {
-        String location = preferenceStore.getString( Preferences.DATABASE_LOCATION );
-        if ( ( location == null ) || ( location.trim()
-                .length() == 0 ) )
-        {
-            // if there's really no db dir, create one in the workspace
-            File dbDir = GraphDbServiceManager.dirInWorkspace( "neo4j-db" );
-            location = dbDir.getAbsolutePath();
-            preferenceStore.setValue( Preferences.DATABASE_LOCATION, location );
-        }
-        File dir = new File( location );
-        if ( !dir.exists() )
-        {
-            throw new IllegalArgumentException(
-                    "The database location does not exist." );
-        }
-        if ( !dir.isDirectory() )
-        {
-            throw new IllegalArgumentException(
-                    "The database location is not a directory." );
-        }
-        if ( !dir.canWrite() )
-        {
-            throw new IllegalAccessError(
-                    "Writes are not allowed to the database location." );
-        }
-        logFine( "using location: " + location );
-        return location;
-    }
-
-    public static File dirInWorkspace( final String... elements )
-    {
-        Location workspace = Platform.getInstanceLocation();
-        if ( workspace == null )
-        {
-            throw new RuntimeException( "Can't find workspace." );
-        }
-        URL url = workspace.getURL();
-        String path;
-        try
-        {
-            path = url.toURI()
-                    .getPath();
-        }
-        catch ( URISyntaxException e )
-        {
-            // workaround for Windows
-            System.out.println( "Using path workaround for path: " + url );
-            path = url.getPath();
-        }
-        for ( String element : elements )
-        {
-            path += File.separator + element;
-        }
-        File dir = new File( path );
-        if ( !dir.exists() )
-        {
-            if ( !dir.mkdirs() )
-            {
-                throw new IllegalArgumentException(
-                        "Could not create directory: " + dir );
-            }
-        }
-        return dir;
     }
 
     /**
      * Notifies all registered listeners about the new service status. Actually
      * just queues up the task so running tasks can finish first.
      */
-    protected void fireServiceChangedEvent( final GraphDbServiceStatus status )
+    public void fireServiceChangedEvent( final GraphDbServiceStatus status )
     {
         submitTask( new Runnable()
         {
@@ -580,4 +527,10 @@ public class GraphDbServiceManager
             }
         }
     }
+
+    public Alias getCurrentAlias()
+    {
+        return currentAlias;
+    }
+
 }

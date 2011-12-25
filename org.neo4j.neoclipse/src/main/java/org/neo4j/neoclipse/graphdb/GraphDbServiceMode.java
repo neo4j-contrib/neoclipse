@@ -22,5 +22,5 @@ public enum GraphDbServiceMode
 {
     READ_ONLY_EMBEDDED,
     READ_WRITE_EMBEDDED,
-    REMOTE
+
 }

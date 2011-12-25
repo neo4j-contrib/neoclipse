@@ -29,6 +29,7 @@ import org.neo4j.neoclipse.view.NeoGraphViewPart;
  * Action to stop the database.
  * 
  * @author Anders Nawroth
+ * @author Radhakrishna Kalyan
  */
 public class StopAction extends AbstractGraphAction
 {
@@ -38,20 +39,24 @@ public class StopAction extends AbstractGraphAction
         setEnabled( false );
     }
 
+    protected StopAction( Actions actions, NeoGraphViewPart neoGraphViewPart )
+    {
+        super( actions, neoGraphViewPart );
+    }
+
     @Override
     public void run()
     {
         graphView.cleanTransactionBeforeShutdown();
-        GraphDbServiceManager gsm = Activator.getDefault()
-                .getGraphDbServiceManager();
+        GraphDbServiceManager gsm = Activator.getDefault().getGraphDbServiceManager();
         try
         {
-            gsm.stopGraphDbService()
-                    .get();
+            gsm.stopGraphDbService().get();
         }
         catch ( Exception e )
         {
             ErrorMessage.showDialog( "Database problem", e );
         }
+        Activator.getDefault().getAliasManager().notifyListners();
     }
 }

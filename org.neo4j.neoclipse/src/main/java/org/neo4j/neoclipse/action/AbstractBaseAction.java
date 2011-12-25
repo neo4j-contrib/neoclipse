@@ -20,9 +20,13 @@ package org.neo4j.neoclipse.action;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.neo4j.neoclipse.Activator;
+import org.neo4j.neoclipse.connection.ConnectionsView;
+import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
 /**
  * Base class for actions.
+ * 
  * @author Anders Nawroth
  */
 abstract public class AbstractBaseAction extends Action
@@ -43,4 +47,20 @@ abstract public class AbstractBaseAction extends Action
         super( action.label(), style );
         action.initialize( this );
     }
+
+    protected ConnectionsView getConnectionView()
+    {
+        return Activator.getDefault().getConnectionsView();
+    }
+
+    protected NeoGraphViewPart getNeoGraphViewPart()
+    {
+        return Activator.getDefault().getNeoGraphViewPart();
+    }
+
+    public boolean isAvailable()
+    {
+        return true;
+    }
+
 }

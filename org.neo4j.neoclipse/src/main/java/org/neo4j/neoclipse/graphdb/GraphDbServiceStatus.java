@@ -31,5 +31,6 @@ public enum GraphDbServiceStatus
     COMMIT,
     ROLLBACK,
     STOPPING,
-    SHUTTING_DOWN;
+    SHUTTING_DOWN,
+    DB_SELECT;
 }

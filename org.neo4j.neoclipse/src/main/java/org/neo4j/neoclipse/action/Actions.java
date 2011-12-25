@@ -27,73 +27,57 @@ import org.neo4j.neoclipse.Icons;
 public enum Actions
 {
     // platform
-    PREFERENCES( "Preferences", Icons.PREFERENCES_ENABLED,
-            Icons.PREFERENCES_DISABLED ),
-    PROPERTIES( "Properties view", Icons.PROPERTIES_ENABLED,
-            Icons.PROPERTIES_DISABLED ),
+    PREFERENCES( "Preferences", Icons.PREFERENCES_ENABLED, Icons.PREFERENCES_DISABLED ),
+    PROPERTIES( "Properties view", Icons.PROPERTIES_ENABLED, Icons.PROPERTIES_DISABLED ),
     GRAPH_VIEW( "Graph view", Icons.GRAPH_ENABLED, Icons.GRAPH_DISABLED ),
-    RELTYPES_VIEW( "Relationship types view", Icons.TYPES_ENABLED,
-            Icons.TYPES_DISABLED ),
+    RELTYPES_VIEW( "Relationship types view", Icons.TYPES_ENABLED, Icons.TYPES_DISABLED ),
     HELP_VIEW( "Help view", Icons.HELP_VIEW ),
-    HELP_WINDOW( "Help window", Icons.HELP_WINDOW_ENABLED,
-            Icons.HELP_WINDOW_DISABLED ),
+    HELP_WINDOW( "Help window", Icons.HELP_WINDOW_ENABLED, Icons.HELP_WINDOW_DISABLED ),
     SEARCH( "Search", Icons.SEARCH_ENABLED, Icons.SEARCH_DISABLED ),
-    DATABASE_LOCATION( "Database location", Icons.DATABASE_LOCATION_ENABLED, Icons.DATABASE_LOCATION_DISABLED ),
+    CONNECTIONS( "Database location", Icons.CONNECTIONS_ENABLED, Icons.CONNECTIONS_DISABLED ),
+
     // connect
+    NEW_CONNECTION( "New Connection", Icons.NEW_ALIAS_ENABLED, Icons.NEW_ALIAS_DISABLED ),
     START( "Start/Connect database", Icons.START_ENABLED, Icons.START_DISABLED ),
     STOP( "Stop/Disconnect database", Icons.STOP_ENABLED, Icons.STOP_DISABLED ),
     SYNC( "Sync database", Icons.SYNC_ENABLED, Icons.SYNC_DISABLED ),
     // add rel
-    ADD_RELATIONSHIP(
-            "Create relationship between two existing nodes",
-            "Create a directed relationship from the first selected node to the second.",
-            Icons.ADD_ENABLED, Icons.ADD_DISABLED ),
-    ADD_LOOP( "Add loop to node", "Add a relationship to the same node.",
-            Icons.ADD_LOOP_ENABLED, Icons.ADD_LOOP_DISABLED ),
+    ADD_RELATIONSHIP( "Create relationship between two existing nodes",
+            "Create a directed relationship from the first selected node to the second.", Icons.ADD_ENABLED,
+            Icons.ADD_DISABLED ),
+    ADD_LOOP( "Add loop to node", "Add a relationship to the same node.", Icons.ADD_LOOP_ENABLED,
+            Icons.ADD_LOOP_DISABLED ),
     ADD_INCOMING_ICON( "Set end node icon for type", Icons.ADD_ICON_INCOMING ),
     ADD_OUTGOING_ICON( "Set start node icon for type", Icons.ADD_ICON_OUTGOING ),
-    DELETE_INCOMING_ICON( "Remove end node icon for type",
-            Icons.DELETE_ICON_INCOMING ),
-    DELETE_OUTGOING_ICON( "Remove start node icon for type",
-            Icons.DELETE_ICON_OUTGOING ),
+    DELETE_INCOMING_ICON( "Remove end node icon for type", Icons.DELETE_ICON_INCOMING ),
+    DELETE_OUTGOING_ICON( "Remove start node icon for type", Icons.DELETE_ICON_OUTGOING ),
     // add node
-    ADD_INCOMING_NODE( "Create new node as start node",
-            "Create a new node with a relationship; "
-                    + "the new node is the start node of the relationship(s).",
+    ADD_INCOMING_NODE( "Create new node as start node", "Create a new node with a relationship; "
+                                                        + "the new node is the start node of the relationship(s).",
             Icons.ADD_INCOMING_ENABLED, Icons.ADD_INCOMING_DISABLED ),
-    ADD_OUTGOING_NODE( "Create new node as end node",
-            "Create a new node with a relationship; "
-                    + "the new node is the end node of the relationship(s).",
+    ADD_OUTGOING_NODE( "Create new node as end node", "Create a new node with a relationship; "
+                                                      + "the new node is the end node of the relationship(s).",
             Icons.ADD_OUTGOING_ENABLED, Icons.ADD_OUTGOING_DISABLED ),
     // add reltype
-    NEW_RELATIONSHIP_TYPE( "Create new relationship type",
-            "Create a new relationship type.", Icons.NEW_TYPE_ENABLED,
+    NEW_RELATIONSHIP_TYPE( "Create new relationship type", "Create a new relationship type.", Icons.NEW_TYPE_ENABLED,
             Icons.NEW_TYPE_DISABLED ),
     // filter
-    FILTER_NONE( "Follow no direction",
-            "Follow no relationships regardless of direction.",
+    FILTER_NONE( "Follow no direction", "Follow no relationships regardless of direction.", Icons.FILTER_ENABLED,
+            Icons.FILTER_DISABLED ),
+    FILTER_ALL( "Follow BOTH directions", "Follow all relationships regardless of their direction.",
             Icons.FILTER_ENABLED, Icons.FILTER_DISABLED ),
-    FILTER_ALL( "Follow BOTH directions",
-            "Follow all relationships regardless of their direction.",
+    FILTER_OUTGOING( "Follow OUTGOING direction", "Follow only relationships in the outgoing direction.",
             Icons.FILTER_ENABLED, Icons.FILTER_DISABLED ),
-    FILTER_OUTGOING( "Follow OUTGOING direction",
-            "Follow only relationships in the outgoing direction.",
-            Icons.FILTER_ENABLED, Icons.FILTER_DISABLED ),
-    FILTER_INCOMING( "Follow INCOMING direction",
-            "Follow only relationships in the incoming direction.",
+    FILTER_INCOMING( "Follow INCOMING direction", "Follow only relationships in the incoming direction.",
             Icons.FILTER_ENABLED, Icons.FILTER_DISABLED ),
     // highlight
-    HIGHLIGHT_RELATIONSHIPS( "Highlight relationships",
-            "Highlight relationships of the selected types.",
+    HIGHLIGHT_RELATIONSHIPS( "Highlight relationships", "Highlight relationships of the selected types.",
             Icons.HIGHLIGHT_ENABLED, Icons.HIGHLIGHT_DISABLED ),
-    HIGHLIGHT_INCOMING( "Highlight end nodes",
-            "Highlight end nodes for relationships of the selected types.",
+    HIGHLIGHT_INCOMING( "Highlight end nodes", "Highlight end nodes for relationships of the selected types.",
             Icons.HIGHLIGHT_INCOMING_ENABLED, Icons.HIGHLIGHT_INCOMING_DISABLED ),
-    HIGHLIGHT_OUTGOING( "Highlight start nodes",
-            "Highlight start nodes for relationships of the selected types.",
+    HIGHLIGHT_OUTGOING( "Highlight start nodes", "Highlight start nodes for relationships of the selected types.",
             Icons.HIGHLIGHT_OUTGOING_ENABLED, Icons.HIGHLIGHT_OUTGOING_DISABLED ),
-    HIGHLIGHT_CLEAR( "Remove highlighting",
-            "Remove all curent highlighting of nodes and relationships.",
+    HIGHLIGHT_CLEAR( "Remove highlighting", "Remove all curent highlighting of nodes and relationships.",
             Icons.CLEAR_ENABLED, Icons.CLEAR_DISABLED ),
     // navigation
     GO_BACK( "Go back", Icons.BACK_ENABLED, Icons.BACK_DISABLED ),
@@ -127,10 +111,8 @@ public enum Actions
     SPRING_LAYOUT( "Spring layout", Icons.SPRING ),
     TREE_LAYOUT( "Tree layout", Icons.TREE ),
     // traversal depth
-    DECREASE_TRAVERSAL_DEPTH( "Decrease traversal depth", Icons.MINUS_ENABLED,
-            Icons.MINUS_DISABLED ),
-    INCREASE_TRAVERSAL_DEPTH( "Increase traversal depth", Icons.PLUS_ENABLED,
-            Icons.PLUS_DISABLED ),
+    DECREASE_TRAVERSAL_DEPTH( "Decrease traversal depth", Icons.MINUS_ENABLED, Icons.MINUS_DISABLED ),
+    INCREASE_TRAVERSAL_DEPTH( "Increase traversal depth", Icons.PLUS_ENABLED, Icons.PLUS_DISABLED ),
     // zoom
     ZOOM( "Zoom", Icons.ZOOM ),
     // property
@@ -138,8 +120,9 @@ public enum Actions
     REMOVE( "Remove", Icons.DELETE_ENABLED, Icons.DELETE_DISABLED ),
     PASTE( "Paste", Icons.PASTE_ENABLED, Icons.PASTE_DISABLED ),
     RENAME( "Rename", Icons.RENAME_ENABLED, Icons.RENAME_DISABLED ),
-    ADD_NODE_LABEL( "Add key to node labels", Icons.ADD_NODE_LABEL_ENABLED,
-            Icons.ADD_NODE_LABEL_DISABLED );
+    ADD_NODE_LABEL( "Add key to node labels", Icons.ADD_NODE_LABEL_ENABLED, Icons.ADD_NODE_LABEL_DISABLED ),
+    NEW_CYPHER_EDITOR( "New Cypher Editor", Icons.CYPHER_EDITOR_ENABLED, Icons.CYPHER_EDITOR_DISABLED ),
+    FORCE_START( "Force Start", Icons.FORCE_START_ENABLED, Icons.FORCE_START_DISABLED ), ;
 
     private final String label;
     private final String tooltip;
@@ -153,8 +136,7 @@ public enum Actions
         this.icon = icon;
     }
 
-    private Actions( final String label, final String tooltip,
-            final Icons icon, final Icons disabledIcon )
+    private Actions( final String label, final String tooltip, final Icons icon, final Icons disabledIcon )
     {
         this( label, tooltip, icon );
         this.disabledIcon = disabledIcon;
@@ -172,8 +154,7 @@ public enum Actions
         this.icon = icon;
     }
 
-    private Actions( final String label, final Icons icon,
-            final Icons disabledIcon )
+    private Actions( final String label, final Icons icon, final Icons disabledIcon )
     {
         this( label, icon );
         this.disabledIcon = disabledIcon;

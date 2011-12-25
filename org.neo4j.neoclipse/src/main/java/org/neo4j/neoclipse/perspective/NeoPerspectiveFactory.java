@@ -21,6 +21,7 @@ package org.neo4j.neoclipse.perspective;
 import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
+import org.neo4j.neoclipse.connection.ConnectionsView;
 import org.neo4j.neoclipse.reltype.RelationshipTypeView;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
@@ -52,21 +53,24 @@ public class NeoPerspectiveFactory implements IPerspectiveFactory
         // do not show an editor (for now), take full space for views only
         layout.setEditorAreaVisible( false );
         // neo graph view
-        IFolderLayout graph = layout.createFolder( GRAPH_AREA,
-                IPageLayout.BOTTOM, 0.95f, editorArea );
+        IFolderLayout graph = layout.createFolder( GRAPH_AREA, IPageLayout.BOTTOM, 0.95f, editorArea );
         graph.addView( NeoGraphViewPart.ID );
         layout.getViewLayout( NeoGraphViewPart.ID ).setCloseable( false );
         // properties view
-        IFolderLayout props = layout.createFolder( PROPERTIES_AREA,
-                IPageLayout.BOTTOM, 0.75f, GRAPH_AREA );
+        IFolderLayout props = layout.createFolder( PROPERTIES_AREA, IPageLayout.BOTTOM, 0.75f, GRAPH_AREA );
         props.addView( IPageLayout.ID_PROP_SHEET );
         // relationship types view
-        IFolderLayout types = layout.createFolder( "typesArea",
-                IPageLayout.RIGHT, 0.55f, PROPERTIES_AREA );
+        IFolderLayout types = layout.createFolder( "typesArea", IPageLayout.RIGHT, 0.55f, PROPERTIES_AREA );
         types.addView( RelationshipTypeView.ID );
+
+        // // Connection view
+        IFolderLayout connection = layout.createFolder( "connectionsArea", IPageLayout.LEFT, 0.20f, GRAPH_AREA );
+        connection.addView( ConnectionsView.ID );
+
         // view shortcuts
         layout.addShowViewShortcut( NeoGraphViewPart.ID );
         layout.addShowViewShortcut( IPageLayout.ID_PROP_SHEET );
         layout.addShowViewShortcut( RelationshipTypeView.ID );
+        layout.addShowViewShortcut( ConnectionsView.ID );
     }
 }

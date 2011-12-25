@@ -13,7 +13,8 @@
             class="org.neo4j.neoclipse.view.NeoGraphViewPart"
             icon="icons/enabled/neo.gif"
             id="org.neo4j.neoclipse.view.NeoGraphViewPart"
-            name="Database graph">
+            name="Database graph"
+            restorable="true">
       </view>
       <view
             category="org.neo4j.neoclipse"
@@ -21,6 +22,15 @@
             icon="icons/enabled/types.gif"
             id="org.neo4j.neoclipse.reltype.RelationshipTypeView"
             name="Relationship types">
+      </view>
+       <view
+             allowMultiple="false"
+             category="org.neo4j.neoclipse"
+             class="org.neo4j.neoclipse.connection.ConnectionsView"
+             icon="icons/enabled/newconnection.gif"
+             id="org.neo4j.neoclipse.connection.ConnectionsView"
+             name="Connections"
+             restorable="true">
       </view>
    </extension>
    <extension

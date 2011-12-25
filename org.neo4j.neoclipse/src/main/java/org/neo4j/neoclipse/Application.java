@@ -26,6 +26,7 @@ import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.osgi.service.datalocation.Location;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.application.WorkbenchAdvisor;
@@ -38,8 +39,7 @@ import org.neo4j.neoclipse.view.NeoGraphViewPart;
 public class Application extends WorkbenchAdvisor implements IApplication
 {
     @Override
-    public WorkbenchWindowAdvisor createWorkbenchWindowAdvisor(
-            final IWorkbenchWindowConfigurer configurer )
+    public WorkbenchWindowAdvisor createWorkbenchWindowAdvisor( final IWorkbenchWindowConfigurer configurer )
     {
         return new ApplicationWindowAdvisor( configurer );
     }
@@ -53,15 +53,13 @@ public class Application extends WorkbenchAdvisor implements IApplication
             if ( !workspaceLocation.isSet() )
             {
                 Location installLocation = Platform.getInstallLocation();
-                String dataPath = installLocation.getURL()
-                        .getPath() + "neoclipse-workspace" + File.separator;
+                String dataPath = installLocation.getURL().getPath() + "neoclipse-workspace" + File.separator;
                 File dir = new File( dataPath );
                 if ( !dir.exists() )
                 {
                     if ( !dir.mkdirs() )
                     {
-                        throw new RuntimeException(
-                                "Could not create the directory: " + dir );
+                        throw new RuntimeException( "Could not create the directory: " + dir );
                     }
                 }
                 URL dataLocation = new URL( "file", null, dataPath );
@@ -72,22 +70,43 @@ public class Application extends WorkbenchAdvisor implements IApplication
         {
             e.printStackTrace();
         }
+
         Display display = PlatformUI.createDisplay();
-        int returnCode = PlatformUI.createAndRunWorkbench( display, this );
-        if ( returnCode == PlatformUI.RETURN_RESTART )
+        try
         {
-            return IApplication.EXIT_RESTART;
-        }
-        else
-        {
+            int returnCode = PlatformUI.createAndRunWorkbench( display, this );
+            if ( returnCode == PlatformUI.RETURN_RESTART )
+            {
+                return IApplication.EXIT_RESTART;
+            }
             return IApplication.EXIT_OK;
+        }
+        finally
+        {
+            display.dispose();
         }
     }
 
     @Override
     public void stop()
     {
-        // TODO Auto-generated method stub
+        if ( !PlatformUI.isWorkbenchRunning() )
+        {
+            return;
+        }
+        final IWorkbench workbench = PlatformUI.getWorkbench();
+        final Display display = workbench.getDisplay();
+        display.syncExec( new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                if ( !display.isDisposed() )
+                {
+                    workbench.close();
+                }
+            }
+        } );
     }
 
     @Override
@@ -110,19 +129,14 @@ public class Application extends WorkbenchAdvisor implements IApplication
     {
         super.postStartup();
         // show help on startup if the user wants it
-        boolean showHelp = Activator.getDefault()
-                .getPreferenceStore()
-                .getBoolean( Preferences.HELP_ON_START );
+        boolean showHelp = Activator.getDefault().getPreferenceStore().getBoolean( Preferences.HELP_ON_START );
         if ( showHelp )
         {
-            IWorkbenchHelpSystem helpSystem = PlatformUI.getWorkbench()
-                    .getHelpSystem();
+            IWorkbenchHelpSystem helpSystem = PlatformUI.getWorkbench().getHelpSystem();
             helpSystem.displayDynamicHelp();
 
-            NeoGraphViewPart graphView = (NeoGraphViewPart) PlatformUI.getWorkbench()
-                    .getActiveWorkbenchWindow()
-                    .getActivePage()
-                    .findView( NeoGraphViewPart.ID );
+            NeoGraphViewPart graphView = (NeoGraphViewPart) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(
+                    NeoGraphViewPart.ID );
             if ( graphView != null )
             {
                 graphView.setFocus();
