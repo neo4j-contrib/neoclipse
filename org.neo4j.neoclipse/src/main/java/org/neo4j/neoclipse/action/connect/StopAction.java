@@ -29,6 +29,7 @@ import org.neo4j.neoclipse.view.NeoGraphViewPart;
  * Action to stop the database.
  * 
  * @author Anders Nawroth
+ * @author Radhakrishna Kalyan
  */
 public class StopAction extends AbstractGraphAction
 {
@@ -36,6 +37,11 @@ public class StopAction extends AbstractGraphAction
     {
         super( Actions.STOP, neoGraphViewPart );
         setEnabled( false );
+    }
+
+    protected StopAction( Actions actions, NeoGraphViewPart neoGraphViewPart )
+    {
+        super( actions, neoGraphViewPart );
     }
 
     @Override

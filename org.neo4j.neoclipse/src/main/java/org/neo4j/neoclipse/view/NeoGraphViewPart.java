@@ -849,6 +849,7 @@ public class NeoGraphViewPart extends ViewPart implements IZoomableWorkbenchPart
                 menu.setEnabledStopAction( false );
                 menu.setEnabledShowRefNodeAction( false );
                 menu.setEnabledRefreshAction( false );
+                menu.setEnableDeleteAction( false );
                 // when called during shutdown the content provider may already
                 // have been disposed
                 if ( getViewer().getContentProvider() != null )

@@ -25,6 +25,8 @@ import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -34,11 +36,16 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.part.ViewPart;
 import org.neo4j.neoclipse.Activator;
+import org.neo4j.neoclipse.connection.actions.ForceStartHandler;
 import org.neo4j.neoclipse.connection.actions.NewAliasAction;
 import org.neo4j.neoclipse.connection.actions.NewEditorAction;
 import org.neo4j.neoclipse.event.NeoclipseEvent;
 import org.neo4j.neoclipse.event.NeoclipseEventListener;
+import org.neo4j.neoclipse.event.NeoclipseListenerList;
+import org.neo4j.neoclipse.graphdb.GraphDbServiceManager;
 import org.neo4j.neoclipse.graphdb.GraphDbServiceStatus;
+import org.neo4j.neoclipse.view.ErrorMessage;
+import org.neo4j.neoclipse.view.NeoGraphViewPart;
 import org.neo4j.neoclipse.view.UiHelper;
 
 /**
@@ -49,13 +56,14 @@ public class ConnectionsView extends ViewPart implements NeoclipseEventListener
 {
 
     public static final String ID = ConnectionsView.class.getCanonicalName();
-
+    private final NeoclipseListenerList connectionListeners = new NeoclipseListenerList();
     private TreeViewer _treeViewer;
 
     public ConnectionsView()
     {
         super();
         Activator.getDefault().setConnectionsView( this );
+        connectionListeners.add( new ForceStartHandler() );
     }
 
     @Override
@@ -74,6 +82,25 @@ public class ConnectionsView extends ViewPart implements NeoclipseEventListener
         _treeViewer.setContentProvider( new ConnectionTreeContentProvider() );
         _treeViewer.setLabelProvider( new ConnectionTreeLabelProvider() );
         _treeViewer.setInput( Activator.getDefault().getAliasManager() );
+
+        // doubleclick on alias opens session
+        _treeViewer.addDoubleClickListener( new IDoubleClickListener()
+        {
+            @Override
+            public void doubleClick( DoubleClickEvent event )
+            {
+                IStructuredSelection selection = (IStructuredSelection) event.getSelection();
+                if ( selection != null )
+                {
+                    Object selected = selection.getFirstElement();
+                    if ( selected instanceof Alias )
+                    {
+                        Alias alias = (Alias) selection.getFirstElement();
+                        startOrStopConnection( alias );
+                    }
+                }
+            }
+        } );
 
         _treeViewer.addSelectionChangedListener( new ISelectionChangedListener()
         {
@@ -104,6 +131,45 @@ public class ConnectionsView extends ViewPart implements NeoclipseEventListener
         _treeViewer.setAutoExpandLevel( 2 );
 
         parent.layout();
+
+    }
+
+    public void startOrStopConnection( final Alias alias )
+    {
+        UiHelper.asyncExec( new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                GraphDbServiceManager gsm = Activator.getDefault().getGraphDbServiceManager();
+                NeoGraphViewPart graphView = Activator.getDefault().getNeoGraphViewPart();
+                try
+                {
+                    if ( gsm.isRunning() )
+                    {
+                        if ( !gsm.getCurrentAlias().equals( alias ) )
+                        {
+                            ErrorMessage.showDialog( "Database problem", "Connection is already open." );
+                        }
+                        else
+                        {
+                            graphView.cleanTransactionBeforeShutdown();
+                            gsm.stopGraphDbService().get();
+                        }
+                    }
+                    else if ( !gsm.isRunning() )
+                    {
+                        gsm.startGraphDbService( alias ).get();
+                        graphView.showSomeNode();
+                    }
+                }
+                catch ( Exception e )
+                {
+                    ErrorMessage.showDialog( "Database problem", e );
+                }
+                Activator.getDefault().getAliasManager().notifyListners();
+            }
+        } );
 
     }
 
@@ -163,4 +229,8 @@ public class ConnectionsView extends ViewPart implements NeoclipseEventListener
 
     }
 
+    public void notifyListners()
+    {
+        connectionListeners.notifyListeners();
+    }
 }

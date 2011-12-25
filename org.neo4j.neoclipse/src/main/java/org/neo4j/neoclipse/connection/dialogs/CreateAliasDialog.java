@@ -36,6 +36,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.connection.Alias;
+import org.neo4j.neoclipse.connection.ConnectionsView;
 import org.neo4j.neoclipse.preference.Preferences;
 
 /**
@@ -53,9 +54,9 @@ public class CreateAliasDialog extends TitleAreaDialog
     }
 
     private Type type;
-
     private Text nameField;
     private DirectoryFieldEditor urlField;
+    private Button autoConnectButton;
     private Text userField;
     private Text passwordField;
 
@@ -178,7 +179,7 @@ public class CreateAliasDialog extends TitleAreaDialog
 
         new Label( nameGroup, SWT.NONE );
         Label label3 = new Label( nameGroup, SWT.WRAP );
-        label3.setText( ( "i.e http://localhost:7474/db/testdb or C:/neo4j/db " ) );
+        label3.setText( ( "i.e http://localhost:7474/db/data/ or C:/neo4j/db " ) );
         data = new GridData( GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL );
         data.horizontalSpan = 2;
         data.widthHint = SIZING_TEXT_FIELD_WIDTH;
@@ -195,6 +196,11 @@ public class CreateAliasDialog extends TitleAreaDialog
         data = new GridData( GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL );
         data.horizontalSpan = 2;
         connectionPropertiesComposite.setLayoutData( data );
+
+        autoConnectButton = new Button( connectionPropertiesComposite, SWT.CHECK );
+        GridData gd_autoLogonButton = new GridData( 158, SWT.DEFAULT );
+        autoConnectButton.setLayoutData( gd_autoLogonButton );
+        autoConnectButton.setText( "Auto Connect" );
 
         Label label4 = new Label( nameGroup, SWT.WRAP );
         label4.setText( ( "User" ) );
@@ -235,13 +241,18 @@ public class CreateAliasDialog extends TitleAreaDialog
         Alias alias = new Alias( nameField.getText(), urlField.getStringValue(), userField.getText(),
                 passwordField.getText() );
         Activator.getDefault().getAliasManager().addAlias( alias );
+        ConnectionsView connectionsView = Activator.getDefault().getConnectionsView();
+        if ( autoConnectButton.getSelection() )
+        {
+            connectionsView.startOrStopConnection( alias );
+        }
+
         close();
     }
 
     @Override
     protected void setShellStyle( int newShellStyle )
     {
-
         super.setShellStyle( newShellStyle | SWT.RESIZE );
     }
 

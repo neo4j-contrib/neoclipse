@@ -24,6 +24,7 @@ import org.eclipse.ui.actions.ActionGroup;
 import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.action.connect.StartAction;
 import org.neo4j.neoclipse.action.connect.StopAction;
+import org.neo4j.neoclipse.connection.actions.ForceStartAction;
 import org.neo4j.neoclipse.connection.actions.NewAliasAction;
 import org.neo4j.neoclipse.connection.actions.NewDeleteAction;
 import org.neo4j.neoclipse.graphdb.GraphDbServiceManager;
@@ -65,10 +66,12 @@ public class ConnectionTreeActionGroup extends ActionGroup
         else
         {
             if ( !graphDbServiceManager.isRunning() )
-
             {
                 addAction( menu, new StartAction( neoGraphView ) );
-
+            }
+            else
+            {
+                addAction( menu, new ForceStartAction( neoGraphView ) );
             }
             addAction( menu, new NewAliasAction() );
             addAction( menu, new NewDeleteAction() );

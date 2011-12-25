@@ -146,7 +146,11 @@ public enum Icons
     NEW_TYPE_ENABLED( "new_type_enabled", path( "enabled/add-type.gif" ) ),
     NEW_TYPE_DISABLED( "new_type_disabled", path( "disabled/add-type.gif" ) ),
     CYPHER_EDITOR_ENABLED( "cypher_editor_enabled", path( "enabled/cypher_editor.gif" ) ),
-    CYPHER_EDITOR_DISABLED( "cypher_editor_disabled", path( "disabled/cypher_editor.gif" ) ), ;
+    CYPHER_EDITOR_DISABLED( "cypher_editor_disabled", path( "disabled/cypher_editor.gif" ) ),
+    FORCE_START_DISABLED( "force_start_disabled", path( "disabled/force_start.gif" ) ),
+    FORCE_START_ENABLED( "force_start_enabled", path( "enabled/force_start.gif" ) ),
+
+    ;
 
     private static final String ICON_LOCATION = "icons/";
     private static ImageRegistry reg = null;
