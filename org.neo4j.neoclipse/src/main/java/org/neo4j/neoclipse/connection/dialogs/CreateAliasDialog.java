@@ -38,6 +38,7 @@ import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.connection.Alias;
 import org.neo4j.neoclipse.connection.ConnectionsView;
 import org.neo4j.neoclipse.preference.Preferences;
+import org.neo4j.neoclipse.view.ErrorMessage;
 
 /**
  * @author Radhakrishna Kalyan
@@ -238,16 +239,22 @@ public class CreateAliasDialog extends TitleAreaDialog
     protected void okPressed()
     {
 
-        Alias alias = new Alias( nameField.getText(), urlField.getStringValue(), userField.getText(),
-                passwordField.getText() );
-        Activator.getDefault().getAliasManager().addAlias( alias );
-        ConnectionsView connectionsView = Activator.getDefault().getConnectionsView();
-        if ( autoConnectButton.getSelection() )
+        try
         {
-            connectionsView.startOrStopConnection( alias );
+            Alias alias = new Alias( nameField.getText(), urlField.getStringValue(), userField.getText(),
+                    passwordField.getText() );
+            Activator.getDefault().getAliasManager().addAlias( alias );
+            ConnectionsView connectionsView = Activator.getDefault().getConnectionsView();
+            if ( autoConnectButton.getSelection() )
+            {
+                connectionsView.startOrStopConnection( alias );
+            }
+            close();
         }
-
-        close();
+        catch ( Exception e )
+        {
+            ErrorMessage.showDialog( "New connection problem", e );
+        }
     }
 
     @Override

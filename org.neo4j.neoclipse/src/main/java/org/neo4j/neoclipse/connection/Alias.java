@@ -64,7 +64,10 @@ public class Alias
             File dir = new File( uri );
             if ( !dir.exists() )
             {
-                dir = ApplicationUtil.dirInWorkspace( uri );
+                if ( !dir.mkdirs() )
+                {
+                    throw new IllegalArgumentException( "Could not create directory: " + dir );
+                }
                 uri = dir.getAbsolutePath();
             }
             if ( !dir.isDirectory() )
