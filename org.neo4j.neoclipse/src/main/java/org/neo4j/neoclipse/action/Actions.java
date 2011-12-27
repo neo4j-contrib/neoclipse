@@ -38,6 +38,7 @@ public enum Actions
 
     // connect
     NEW_CONNECTION( "New Connection", Icons.NEW_ALIAS_ENABLED, Icons.NEW_ALIAS_DISABLED ),
+    EDIT_CONNECTION( "Edit Connection", Icons.EDIT_ALIAS_ENABLED, Icons.EDIT_ALIAS_DISABLED ),
     START( "Start/Connect database", Icons.START_ENABLED, Icons.START_DISABLED ),
     STOP( "Stop/Disconnect database", Icons.STOP_ENABLED, Icons.STOP_DISABLED ),
     SYNC( "Sync database", Icons.SYNC_ENABLED, Icons.SYNC_DISABLED ),

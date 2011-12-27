@@ -20,13 +20,15 @@ package org.neo4j.neoclipse.connection;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.ui.actions.ActionGroup;
 import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.action.connect.StartAction;
 import org.neo4j.neoclipse.action.connect.StopAction;
+import org.neo4j.neoclipse.connection.actions.DeleteAliasAction;
+import org.neo4j.neoclipse.connection.actions.EditAliasAction;
 import org.neo4j.neoclipse.connection.actions.ForceStartAction;
 import org.neo4j.neoclipse.connection.actions.NewAliasAction;
-import org.neo4j.neoclipse.connection.actions.NewDeleteAction;
 import org.neo4j.neoclipse.graphdb.GraphDbServiceManager;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
@@ -68,13 +70,16 @@ public class ConnectionTreeActionGroup extends ActionGroup
             if ( !graphDbServiceManager.isRunning() )
             {
                 addAction( menu, new StartAction( neoGraphView ) );
+                menu.add( new Separator() );
             }
             else
             {
                 addAction( menu, new ForceStartAction( neoGraphView ) );
+                menu.add( new Separator() );
             }
             addAction( menu, new NewAliasAction() );
-            addAction( menu, new NewDeleteAction() );
+            addAction( menu, new EditAliasAction() );
+            addAction( menu, new DeleteAliasAction() );
         }
     }
 

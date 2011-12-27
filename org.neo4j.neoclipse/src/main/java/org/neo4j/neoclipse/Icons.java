@@ -52,6 +52,8 @@ public enum Icons
     // connectivity
     NEW_ALIAS_ENABLED( "new_alias_enabled", path( "enabled/new_alias.gif" ) ),
     NEW_ALIAS_DISABLED( "new_alias_disabled", path( "disabled/new_alias.gif" ) ),
+    EDIT_ALIAS_ENABLED( "edit_alias_enabled", path( "enabled/edit_alias.gif" ) ),
+    EDIT_ALIAS_DISABLED( "edit_alias_disabled", path( "disabled/edit_alias.gif" ) ),
     START_ENABLED( "start_enabled", path( "enabled/start.gif" ) ),
     STOP_ENABLED( "stop_enabled", path( "enabled/stop.gif" ) ),
     START_DISABLED( "start_disabled", path( "disabled/start.gif" ) ),

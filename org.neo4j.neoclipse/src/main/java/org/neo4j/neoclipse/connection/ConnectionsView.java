@@ -149,7 +149,8 @@ public class ConnectionsView extends ViewPart implements NeoclipseEventListener
                     {
                         if ( !gsm.getCurrentAlias().equals( alias ) )
                         {
-                            ErrorMessage.showDialog( "Database problem", "Another Database view is already active. Please close it before starting another one." );
+                            ErrorMessage.showDialog( "Database problem",
+                                    "Another Database view is already active. Please close it before starting another one." );
                         }
                         else
                         {

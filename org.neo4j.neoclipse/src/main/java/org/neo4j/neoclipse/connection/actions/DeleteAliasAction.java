@@ -30,10 +30,10 @@ import org.neo4j.neoclipse.view.ErrorMessage;
  * @author Radhakrishna Kalyan
  * 
  */
-public class NewDeleteAction extends AbstractConnectionTreeAction
+public class DeleteAliasAction extends AbstractConnectionTreeAction
 {
 
-    public NewDeleteAction()
+    public DeleteAliasAction()
     {
         super( Actions.DELETE );
     }

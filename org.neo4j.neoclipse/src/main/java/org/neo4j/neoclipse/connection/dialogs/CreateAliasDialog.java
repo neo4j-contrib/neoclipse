@@ -38,6 +38,7 @@ import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.connection.Alias;
 import org.neo4j.neoclipse.connection.ConnectionsView;
 import org.neo4j.neoclipse.preference.Preferences;
+import org.neo4j.neoclipse.util.ApplicationUtil;
 import org.neo4j.neoclipse.view.ErrorMessage;
 
 /**
@@ -51,10 +52,23 @@ public class CreateAliasDialog extends TitleAreaDialog
 
     public enum Type
     {
-        CREATE,
+        CREATE( "New" ),
+        EDIT( "Edit" );
+
+        private String name;
+
+        Type( String str )
+        {
+            name = str;
+        }
+
+        public String getName()
+        {
+            return name;
+        }
     }
 
-    private Type type;
+    private final Type type;
     private Text nameField;
     private DirectoryFieldEditor urlField;
     private Button autoConnectButton;
@@ -76,6 +90,10 @@ public class CreateAliasDialog extends TitleAreaDialog
         {
             shell.setText( "Create new connection" );
         }
+        else if ( type == Type.EDIT )
+        {
+            shell.setText( "Edit connection" );
+        }
     }
 
     @Override
@@ -95,6 +113,18 @@ public class CreateAliasDialog extends TitleAreaDialog
         if ( type == Type.CREATE )
         {
             setTitle( "Create new connection" );
+        }
+        else if ( type == Type.EDIT )
+        {
+            setTitle( "Edit connection" );
+            Alias selectedAlias = Activator.getDefault().getConnectionsView().getSelectedAlias();
+            nameField.setEnabled( false );
+            autoConnectButton.setVisible( false );
+            nameField.setText( selectedAlias.getName() );
+            urlField.setStringValue( selectedAlias.getUri() );
+            userField.setText( ApplicationUtil.returnEmptyIfBlank( selectedAlias.getUserName() ) );
+            passwordField.setEchoChar( '*' );
+            passwordField.setText( ApplicationUtil.returnEmptyIfBlank( selectedAlias.getPassword() ) );
         }
 
         return contents;
@@ -243,6 +273,11 @@ public class CreateAliasDialog extends TitleAreaDialog
         {
             Alias alias = new Alias( nameField.getText(), urlField.getStringValue(), userField.getText(),
                     passwordField.getText() );
+            if ( type == Type.EDIT )
+            {
+                Alias selectedAlias = Activator.getDefault().getConnectionsView().getSelectedAlias();
+                Activator.getDefault().getAliasManager().removeAlias( selectedAlias );
+            }
             Activator.getDefault().getAliasManager().addAlias( alias );
             ConnectionsView connectionsView = Activator.getDefault().getConnectionsView();
             if ( autoConnectButton.getSelection() )
@@ -253,7 +288,7 @@ public class CreateAliasDialog extends TitleAreaDialog
         }
         catch ( Exception e )
         {
-            ErrorMessage.showDialog( "New connection problem", e );
+            ErrorMessage.showDialog( type.getName() + " connection problem", e );
         }
     }
 
