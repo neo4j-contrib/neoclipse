@@ -113,14 +113,12 @@ public class NeoSearchQuery implements ISearchQuery
      * Executes the search.
      */
     @Override
-    public IStatus run( final IProgressMonitor monitor )
-            throws OperationCanceledException
+    public IStatus run( final IProgressMonitor monitor ) throws OperationCanceledException
     {
         final GraphDbServiceManager gsm = Activator.getDefault().getGraphDbServiceManager();
         if ( !gsm.isRunning() )
         {
-            return new Status( IStatus.ERROR, Activator.PLUGIN_ID,
-                    "There is no active Neo4j service." );
+            return new Status( IStatus.ERROR, Activator.PLUGIN_ID, "There is no kalyan active Neo4j service." );
         }
 
         try
@@ -130,8 +128,7 @@ public class NeoSearchQuery implements ISearchQuery
                 @Override
                 public Boolean call( final GraphDatabaseService graphDb )
                 {
-                    final Iterable<PropertyContainer> matches = getMatchingNodesFromIndices(
-                            monitor, graphDb );
+                    final Iterable<PropertyContainer> matches = getMatchingNodesFromIndices( monitor, graphDb );
                     UiHelper.asyncExec( new Runnable()
                     {
                         @Override
@@ -145,8 +142,7 @@ public class NeoSearchQuery implements ISearchQuery
             }, "run search" ).get();
             if ( monitor.isCanceled() )
             {
-                return new Status( IStatus.CANCEL, Activator.PLUGIN_ID,
-                        "Cancelled." );
+                return new Status( IStatus.CANCEL, Activator.PLUGIN_ID, "Cancelled." );
             }
             else
             {
@@ -158,10 +154,8 @@ public class NeoSearchQuery implements ISearchQuery
             String message = ErrorMessage.getErrorMessage( e );
             if ( message.indexOf( "org.apache.lucene.index.CorruptIndexException: Unknown format version" ) != -1 )
             {
-                ErrorMessage.showDialog(
-                        "Search error",
-                        "The index can't be read as the Neo4j database "
-                                + "isn't compatible with this version of Neoclipse." );
+                ErrorMessage.showDialog( "Search error", "The index can't be read as the Neo4j database "
+                                                         + "isn't compatible with this version of Neoclipse." );
             }
             else
             {
@@ -171,8 +165,8 @@ public class NeoSearchQuery implements ISearchQuery
         return null;
     }
 
-    private Iterable<PropertyContainer> getMatchingNodesFromIndices(
-            final IProgressMonitor monitor, final GraphDatabaseService graphDb )
+    private Iterable<PropertyContainer> getMatchingNodesFromIndices( final IProgressMonitor monitor,
+            final GraphDatabaseService graphDb )
     {
         List<PropertyContainer> matches = new LinkedList<PropertyContainer>();
         IndexManager indexManager = graphDb.index();
@@ -191,14 +185,7 @@ public class NeoSearchQuery implements ISearchQuery
                 break;
             case QUERY:
                 String key = search.getKey();
-                if ( key.trim().isEmpty() )
-                {
-                    hits = nodeIndex.query( search.getValueOrQuery() );
-                }
-                else
-                {
-                    hits = nodeIndex.query( key, search.getValueOrQuery() );
-                }
+                hits = nodeIndex.query( key, search.getValueOrQuery() );
                 break;
             default:
                 hits = null;
@@ -222,8 +209,7 @@ public class NeoSearchQuery implements ISearchQuery
                 hits = relIndex.get( search.getKey(), search.getValueOrQuery() );
                 break;
             case QUERY:
-                hits = relIndex.query( search.getKey(),
-                        search.getValueOrQuery() );
+                hits = relIndex.query( search.getKey(), search.getValueOrQuery() );
                 break;
             default:
                 hits = null;
