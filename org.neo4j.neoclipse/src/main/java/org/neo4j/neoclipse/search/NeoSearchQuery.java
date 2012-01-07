@@ -118,7 +118,7 @@ public class NeoSearchQuery implements ISearchQuery
         final GraphDbServiceManager gsm = Activator.getDefault().getGraphDbServiceManager();
         if ( !gsm.isRunning() )
         {
-            return new Status( IStatus.ERROR, Activator.PLUGIN_ID, "There is no kalyan active Neo4j service." );
+            return new Status( IStatus.ERROR, Activator.PLUGIN_ID, "There is no active Neo4j service." );
         }
 
         try
