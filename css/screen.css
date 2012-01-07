@@ -1,0 +1,501 @@
+/* This file contains layout/font information, see the other CSS files for color information */
+/* The 960 Grid Framework is in 960.css */
+h1, h2, h3, h4, h5, h6,
+p, body
+{
+	margin:0;
+	padding:0;
+}
+@font-face {
+	font-family: 'LeagueGothicRegular';
+	src: url('fonts/League_Gothic-webfont.eot');
+	src: local('☺'), 
+		url('fonts/League_Gothic-webfont.woff') format('woff'), 
+		url('fonts/League_Gothic-webfont.ttf') format('truetype'), 
+		url('fonts/League_Gothic-webfont.svg#webfontOTINA1xY') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+
+body
+{	
+	font-size:14px;	
+	line-height:160%;
+}
+body, textarea
+{
+	font-family:Georgia, "Times New Roman", Times, serif;
+}
+h1, h2, h3, h4, h5, h6, 
+.menu, 
+#footer
+{
+	font-family:'LeagueGothicRegular', 'Arial Narrow', Arial, Helvetica;
+	
+}
+h1, h2, h3, h4, h5, h6
+{
+	line-height:100%;
+	font-weight:normal;
+}
+h1
+{
+	font-size:60px;
+}
+h2
+{
+	font-size:50px;
+}
+h3
+{
+	font-size:35px;
+}
+h4
+{
+	font-size:25px;
+}
+h5
+{
+	font-size:20px;
+}
+h6
+{
+	font-size:18px;
+}
+UL,OL
+{
+	margin-top:0;
+	margin-bottom:15px;
+}
+LI UL,
+LI OL
+{
+	margin-bottom:0;
+}
+blockquote
+{
+	margin-top:0;
+	margin-bottom:0;
+}
+p,
+h1, h2, h3, h4, h5, h6
+{
+	padding:0 0 15px 0;
+}
+h5, h6
+{
+	letter-spacing:0.5px;
+}
+a,
+a.active:hover
+{
+	outline:0;
+}
+a[name] {
+	position:relative;
+}
+#logo h1
+{
+	padding:0;
+}
+#logo a
+{
+	text-indent:-9999px;
+	display:block;
+	width:183px;
+	height:64px;
+}
+
+#header
+{
+	padding:10px 0 12px 0;
+	position:fixed;
+	top:0;
+	left:0;
+	width:100%;
+	z-index:20;
+}
+#footer
+{
+	position:fixed;
+	bottom:0;
+	left:0;
+	width:100%;
+	font-size:16px;
+	padding:8px 0 5px 0;
+	z-index:19;
+}
+#footer p
+{
+	padding:0;
+}
+#footer UL.social,
+#footer UL.social LI
+{
+	list-style-type:none;
+	margin:0;
+	padding:0;
+}
+#footer .social li
+{
+	display:inline;
+}
+#footer .social a
+{
+	display:block;
+	float:left;
+	padding:0 20px 0 0;
+}
+#footer UL.social LI:last-child a
+{
+	padding-right:0;
+}
+#footer a
+{
+	text-decoration:none;
+}
+
+.slider
+{
+	position:relative;
+}
+.slider .next,
+.slider .prev
+{
+	display:none;
+	cursor:pointer;
+	position:absolute;
+	top:44%;
+	opacity:0.85;
+	padding:10px 10px;
+	font-size:18px;
+	z-index:30;
+	text-indent:-9999px;
+	width:16px;
+	height:16px;
+}
+.slider .next
+{
+	right:0;
+}
+.slider .prev
+{
+	left:0;
+}
+.slider:hover a.next,
+.slider:hover a.prev
+{
+	display:block;
+}
+
+.promos
+{
+	padding:0 0 40px;
+}
+.menu-container
+{
+	position:relative;
+}
+UL.menu
+{
+	position:absolute;
+	right:0;	
+	display:inline;
+	margin:8px 0 0 0;
+	padding:8px 10px;
+}
+UL.menu LI
+{
+	display:inline;
+	list-style-type:none;
+}
+UL.menu LI a
+{
+	display:block;
+	float:left;
+	text-decoration:none;
+	font-size:20px;
+	padding:0 10px;
+}
+.section
+{
+	padding:125px 0 300px 0;
+}
+.boxed
+{
+	padding:20px 15px 5px 15px;
+}
+.rounded
+{
+	-moz-border-radius:10px;
+	-webkit-border-radius:10px;
+	border-radius:10px;
+}
+.left
+{
+	float:left;
+}
+.right
+{
+	float:right;
+}
+img.right
+{
+	padding:10px 0 10px 10px;
+}
+img.left
+{
+	padding:10px 10px 0 10px;
+}
+img.center
+{
+	padding:10px;
+	display:block;
+	margin:0 auto;
+}
+.end
+{
+	height:500px;
+}
+a img
+{
+	border:0;
+}
+.hidden,.alternate
+{
+	display:none;
+}
+
+.message
+{
+	font-weight:bold;
+}
+
+
+.section-heading h2
+{
+	padding:0 0 10px 0;
+	margin:0 0 20px 0;
+	text-transform:uppercase;
+}
+.blog-summary .post
+{
+	margin:0 0 15px;
+	padding:0 0 10px 0;
+}
+
+.fancydate .m,
+.fancydate .y
+{
+	font-size:14px;
+}
+.fancydate .d
+{
+	font-size:22px;
+}
+
+.meta
+{
+	font-size:12px;
+}
+.posttitle
+{
+	padding:0 0 5px 0;
+}
+.posttitle a
+{
+	text-decoration:none;
+}
+
+
+.portfolio-large .post
+{
+	margin-bottom:20px;
+	padding-bottom:20px;
+}
+
+.gallery .thumb
+{
+	margin-bottom:20px;
+}
+
+
+UL.clean,
+UL.clean LI
+{
+	list-style-type:none;
+	margin:0;
+	padding:0;
+}
+
+
+
+.standardForm input:focus,
+.standardForm textarea:focus,
+.standardForm .submit:hover
+{
+	outline:0;
+}
+.standardForm .textbox,
+.standardForm .textarea,
+.standardForm .submit
+{
+	padding:8px 5px;
+	font-weight:bold;
+	display:block;
+	margin:0 0 10px 0;
+}
+.standardForm .textbox
+{
+	width:70%;
+}
+.standardForm .textarea
+{
+	width:95%; /*100% breaks IE6*/
+	height:120px;
+	line-height:160%;
+}
+.standardForm .submit
+{
+	width:35%;
+	cursor:pointer;
+}
+
+.grid-demo p
+{
+	margin:0 0 20px 0;
+	padding:5px;
+	text-align:center;
+}
+
+code
+{
+	font-size:90%;
+}
+
+.centered
+{
+	text-align:center;
+}
+
+
+
+
+
+
+
+
+
+/**
+ * jQuery lightBox plugin
+ * This jQuery plugin was inspired and based on Lightbox 2 by Lokesh Dhakar (http://www.huddletogether.com/projects/lightbox2/)
+ * and adapted to me for use like a plugin from jQuery.
+ * @name jquery-lightbox-0.5.css
+ * @author Leandro Vieira Pinho - http://leandrovieira.com
+ * @version 0.5
+ * @date April 11, 2008
+ * @category jQuery plugin
+ * @copyright (c) 2008 Leandro Vieira Pinho (leandrovieira.com)
+ * @license CCAttribution-ShareAlike 2.5 Brazil - http://creativecommons.org/licenses/by-sa/2.5/br/deed.en_US
+ * @example Visit http://leandrovieira.com/projects/jquery/lightbox/ for more informations about this jQuery plugin
+ */
+#jquery-overlay {
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 90;
+	width: 100%;
+	height: 500px;
+}
+#jquery-lightbox {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	z-index: 100;
+	text-align: center;
+	line-height: 0;
+}
+#jquery-lightbox a img { border: none; }
+#lightbox-container-image-box {
+	position: relative;
+	background-color: #fff;
+	width: 250px;
+	height: 250px;
+	margin: 0 auto;
+}
+#lightbox-container-image { padding: 10px; }
+#lightbox-loading {
+	position: absolute;
+	top: 40%;
+	left: 0%;
+	height: 25%;
+	width: 100%;
+	text-align: center;
+	line-height: 0;
+}
+#lightbox-nav {
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 100%;
+	width: 100%;
+	z-index: 10;
+}
+#lightbox-container-image-box > #lightbox-nav { left: 0; }
+#lightbox-nav a { outline: none;}
+#lightbox-nav-btnPrev, #lightbox-nav-btnNext {
+	width: 49%;
+	height: 100%;
+	zoom: 1;
+	display: block;
+}
+#lightbox-nav-btnPrev { 
+	left: 0; 
+	float: left;
+}
+#lightbox-nav-btnNext { 
+	right: 0; 
+	float: right;
+}
+#lightbox-container-image-data-box {
+	font: 10px Verdana, Helvetica, sans-serif;
+	background-color: #fff;
+	margin: 0 auto;
+	line-height: 1.4em;
+	overflow: auto;
+	width: 100%;
+	padding: 0 10px 0;
+}
+#lightbox-container-image-data {
+	padding: 0 10px; 
+	color: #666; 
+}
+#lightbox-container-image-data #lightbox-image-details { 
+	width: 70%; 
+	float: left; 
+	text-align: left; 
+}	
+#lightbox-image-details-caption { font-weight: bold; }
+#lightbox-image-details-currentNumber {
+	display: block; 
+	clear: left; 
+	padding-bottom: 1.0em;	
+}			
+#lightbox-secNav-btnClose {
+	width: 66px; 
+	float: right;
+	padding-bottom: 0.7em;	
+}
+/* End of Lightbox Plugin */
+
+
+
+
+
+
+
+
+
+
+

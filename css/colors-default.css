@@ -1,0 +1,133 @@
+/* General style information */
+#logo a
+{
+	background:url(../images/logo.png) no-repeat left top;
+}
+
+body
+{	
+	
+	background:#fff url(../images/background_grid_01.gif);
+}
+
+body,
+.posttitle a
+{
+	color:#222;
+}
+
+a,
+a.active:hover,
+#footer,
+UL.menu LI a,
+.fancydate .m,
+.fancydate .y,
+.meta,
+.standardForm .textbox,
+.standardForm .textarea,
+.standardForm .submit
+{
+	color:#888;
+}
+
+
+a:hover,
+a.active,
+.posttitle a:hover,
+UL.menu LI a:hover,
+UL.menu LI a.active
+
+{
+	color:#c33;
+}
+#footer,
+UL.menu,
+.standardForm .submit
+{
+	background:#ececec;
+}
+
+.slider .next,
+.slider .prev,
+.boxed,
+.standardForm .textbox,
+.standardForm .textarea,
+.standardForm .submit,
+.grid-demo p
+{
+	background:#fff;
+}
+
+#header
+{
+	border-bottom:2px solid #f0f0f0;
+	background:#fafafa;
+}
+#footer
+{
+	border-top:1px solid #e0e0e0;
+}
+
+.slider .next
+{
+	background:#fff url(../images/arrow_right.png) no-repeat center center;
+}
+.slider .prev
+{
+	background:#fff url(../images/arrow_left.png) no-repeat center center;
+}
+
+UL.menu
+{
+	border:4px solid #fff;
+}
+
+.shadow
+{
+	-moz-box-shadow:0 0 5px #eee;
+	-webkit-box-shadow:0 0 5px #eee;
+	box-shadow:0 0 5px #eee;
+}
+.hovershadow:hover
+{
+	-moz-box-shadow:0 0 7px #ccc;
+	-webkit-box-shadow:0 0 7px #ccc;
+	box-shadow:0 0 7px #ccc;
+}
+.warning
+{
+	color:#f00;
+}
+.error
+{
+	color:#f90;
+}
+.success
+{
+	color:#390;
+}
+.section-heading h2
+{
+	border-bottom:2px solid #f0f0f0;
+}
+.blog-summary .post
+{
+	border-bottom:2px solid #f0f0f0;
+}
+.standardForm input:focus,
+.standardForm textarea:focus,
+.standardForm .submit:hover
+{
+	border-color:#e7e7e7;
+}
+.standardForm .textbox,
+.standardForm .textarea,
+.standardForm .submit,
+.rounded
+{
+	border:4px solid #f0f0f0;
+}
+.grid-demo p
+{
+	border:1px solid #ccc;
+}

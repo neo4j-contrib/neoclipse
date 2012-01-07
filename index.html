@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<!-- Theme Created by Cudazi for http://themeforest.net/user/cudazi/?ref=cudazi -->
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>Gridfolio - 960gs Based Single Page Portfolio by Cudazi</title>
+	
+	<!-- Stylesheets -->
+	<link type="text/css" rel="stylesheet" href="css/960.css" media="screen" />
+	<link type="text/css" rel="stylesheet" href="css/screen.css" media="screen" />
+	<link type="text/css" id="themeCSS" title="theme" rel="stylesheet" href="css/colors-default.css" media="screen" />
+	<!--
+		Uncomment out this color and comment out the default above to switch perminantly to 'dark'
+		<link type="text/css" title="dark" rel="stylesheet alternate" href="css/colors-dark.css" media="screen" />
+	-->
+	
+	<!-- Favicon -->
+    <link rel="shortcut icon" type="image/gif" href="images/favicon.gif" />
+
+	<!--[if lt IE 7]>
+	<script src="http://ie7-js.googlecode.com/svn/version/2.1(beta4)/IE7.js"></script>
+	<![endif]-->
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+	<script type="text/javascript" src="js/jcarousellite_1.0.1.min.js"></script>
+	<script type="text/javascript" src="js/jquery.lightbox-0.5.min.js"></script>
+	<script type="text/javascript" src="js/general.js"></script>
+</head>
+<body>
+	<a name="top" id="top"></a><!-- leave at the top for back to top link -->
+    
+    <div id="outer">
+		
+        <div id="header" class="clearfix shadow">
+            <div class="container_12">
+                <div class="grid_4" id="logo">
+                	<h1><a href="#top">GridFolio</a></h1><!-- set logo height, width and image in CSS -->
+                </div><!--//logo-->
+                <div class="grid_8 menu-container">
+                	<ul class="menu rounded shadow clearfix">
+                    	<li><a href="#top">home</a></li>
+                        <li><a href="#portfolio">portfolio</a></li>
+                        <li><a href="#gallery">gallery</a></li>
+                        <li><a href="blog.html">blog</a></li>
+                        <li><a href="#grid">grid</a></li>
+                        <li><a href="#team">team</a></li>
+                        <li><a href="#contact">contact</a></li>
+                    </ul>
+                </div><!--//menu-->
+            </div><!--//container_12-->
+    	</div><!--//header-->
+        
+        
+        
+        
+        
+    	<div class="section clearfix default">
+            <div class="container_12">
+               
+                <div class="grid_12">
+                	<div class="promos">
+	                	<a href="#portfolio"><img src="images/promo.png" alt="promotion item" /></a>
+                    </div>
+                </div><!--//grid_12-->
+
+
+                
+                <div class="clear"></div>
+                
+                <div class="grid_3 centered">
+                    <h3>WHO WE ARE</h3>
+                    <p>Gridfolio is a clean, 960 grid-based single page portfolio site, perfect for individuals or businesses.</p>
+                    <p><a href="#team">View Team Bios</a></p>
+                </div><!--//grid_3-->
+                <div class="grid_3 centered">
+                    <h3>WHY WE'RE DIFFERENT</h3>
+                    <p>Based on the 12 column 960.gs grid allows this site to have nearly unlimited layout options.</p>
+                    <p><a href="blog.html">Read our Blog</a></p>
+                </div><!--//grid_3-->
+                <div class="grid_3 centered">
+                    <h3>SEE OUR WORK</h3>
+                    <p>The sample portfolios include a thumbnail gallery layout or project sliders of any size with a lightbox.</p>
+                    <p><a href="#portfolio">Explore our Portfolio</a></p>
+                </div><!--//grid_3-->
+                <div class="grid_3 centered">
+                    <h3>MULTIPLE SKINS</h3>
+                    <p>Easy to customize with clear typography and a sliding single page make the site exciting.</p>
+                    <p>Choose a style: <a href="index.html" class="switch-to-dark">Dark</a> | <a href="index.html" class="switch-to-default">Default</a></p>
+                </div><!--//grid_3-->
+                
+                
+                
+            </div><!--//container_12-->
+    	</div><!--//section-->
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <a name="portfolio" id="portfolio"></a><!--//scroll to anchor-->
+    	<div class="section clearfix portfolio-large">
+            <div class="container_12">
+                <div class="grid_12">
+                	<div class="section-heading clearfix">
+                    	
+                		<h2>Portfolio</h2>
+                    </div><!--//section-heading-->
+                </div><!--//grid_12-->
+
+
+
+                    
+                    <!-- SLIDER // Duplicate this chunk of code and changed div ID and sldierID -->
+					<div class="post clearfix">
+                    	<div class="grid_8">
+                            <div id="slider_01" class="slider">
+								<a class="prev shadow"><span>&laquo;</span></a>
+								<a class="next shadow"><span>&raquo;</span></a>
+								<ul class="clean">
+									<li><a href="images/large_thumbs/03.jpg" title="You could link to a full-size image or link to an external link, etc..."><img class="shadow hovershadow" src="images/large_thumbs/03.jpg" alt="Sample Photo"  /></a></li>
+                                    <li><a href="images/large_thumbs/04.jpg" title="You could link to a full-size image or link to an external link, etc..."><img class="shadow hovershadow" src="images/large_thumbs/04.jpg" alt="Sample Photo"  /></a></li>
+								</ul>
+							</div>
+							<script type="text/javascript">
+							$(window).load(function() {
+								var sliderID = "#slider_01";
+								$(sliderID).jCarouselLite({
+									btnNext: sliderID + " .next",
+									btnPrev: sliderID + " .prev",
+									visible: 1
+								});
+							});
+							</script>
+                        </div><!--//grid_8-->
+                        <div class="grid_4">
+                            <p class="meta">Wedding Photography</p>
+                            <h3>Flexible Portfolio Slider</h3>
+                            <p>This is a sample portfolio item with a photo slider. Since this site is built on the 960 grid system, you can easily set the portfolio items to be any width, even in a grid-like format to showcase your work.</p>
+							<p>The slider is optional and easy to set up with included sample code.</p>
+                            <p><a href="http://example.com/">www.example.com</a></p>
+                        </div><!--//grid_4-->
+                    </div>
+					<!--// SLIDER -->
+					
+					
+					
+					<div class="clear"></div>
+					
+					
+					
+					<!-- SLIDER // Duplicate this chunk of code and changed div ID and sldierID -->
+					<div class="post clearfix">
+                    	<div class="grid_8">
+                            <div id="slider_02" class="slider">
+								<a class="prev shadow"><span>&laquo;</span></a>
+								<a class="next shadow"><span>&raquo;</span></a>
+								<ul class="clean">
+									<li><a href="images/large_thumbs/05.jpg" title="You could link to a full-size image or link to an external link, etc..."><img class="shadow hovershadow" src="images/large_thumbs/05.jpg" alt="Sample Photo"  /></a></li>
+                                    <li><a href="images/large_thumbs/06.jpg" title="You could link to a full-size image or link to an external link, etc..."><img class="shadow hovershadow" src="images/large_thumbs/06.jpg" alt="Sample Photo"  /></a></li>
+								</ul>
+							</div>
+							<script type="text/javascript">
+							$(window).load(function() {
+								var sliderID = "#slider_02";
+								$(sliderID).jCarouselLite({
+									btnNext: sliderID + " .next",
+									btnPrev: sliderID + " .prev",
+									visible: 1
+								});
+							});
+							</script>
+                        </div><!--//grid_8-->
+                        <div class="grid_4">
+                            <p class="meta">Wedding Photography</p>
+                            <h3>Easily Showcase Your Work</h3>
+                            <p>This is a sample portfolio item with a photo slider. Since this site is built on the 960 grid system, you can easily set the portfolio items to be any width, even in a grid-like format to showcase your work.</p>
+							<p>The slider is optional and easy to set up with included sample code.</p>
+                            <p><a href="http://example.com/">www.example.com</a></p>
+                        </div><!--//grid_4-->
+                    </div>
+					<!--// SLIDER -->
+					
+					
+					
+					<div class="clear"></div>
+					
+					
+					
+					<!-- SLIDER // Duplicate this chunk of code and changed div ID and sldierID -->
+					<div class="post clearfix">
+                    	<div class="grid_8">
+                            <div id="slider_03" class="slider">
+								<a class="prev shadow"><span>&laquo;</span></a>
+								<a class="next shadow"><span>&raquo;</span></a>
+								<ul class="clean">
+									<li><a href="images/large_thumbs/01.jpg" title="You could link to a full-size image or link to an external link, etc..."><img class="shadow hovershadow" src="images/large_thumbs/01.jpg" alt="Sample Photo"  /></a></li>
+                                    <li><a href="images/large_thumbs/02.jpg" title="You could link to a full-size image or link to an external link, etc..."><img class="shadow hovershadow" src="images/large_thumbs/02.jpg" alt="Sample Photo"  /></a></li>
+								</ul>
+							</div>
+							<script type="text/javascript">
+							$(window).load(function() {
+								var sliderID = "#slider_03";
+								$(sliderID).jCarouselLite({
+									btnNext: sliderID + " .next",
+									btnPrev: sliderID + " .prev",
+									visible: 1
+								});
+							});
+							</script>
+                        </div><!--//grid_8-->
+                        <div class="grid_4">
+                            <p class="meta">Wedding Photography</p>
+                            <h3>Fully Customizable Layout</h3>
+                            <p>This is a sample portfolio item with a photo slider. Since this site is built on the 960 grid system, you can easily set the portfolio items to be any width, even in a grid-like format to showcase your work.</p>
+							<p>The slider is optional and easy to set up with included sample code.</p>
+                            <p><a href="http://example.com/">www.example.com</a></p>
+                        </div><!--//grid_4-->
+                    </div>
+					<!--// SLIDER -->
+                    
+                
+                
+            </div><!--//container_12-->
+    	</div><!--//section-->
+        
+        
+        
+        
+        
+        
+        <a name="gallery" id="gallery"></a><!--//scroll to anchor-->
+    	<div class="section clearfix gallery">
+            <div class="container_12">
+                <div class="grid_12">
+                	<div class="section-heading clearfix">
+                		<h2>Gallery</h2>
+                    </div><!--//section-heading-->
+					<p><strong>Sample gallery layout:</strong> Images below are inside <code>&lt;div class='grid_2'&gt;&lt;/div&gt;</code> columns but could be divided into a wide variety of layouts including one, two, three, four or six columns of various widths. Lightbox included, just set the link to a full-sized image, the lightbox will size to fit!</p>
+                </div><!--//grid_12-->
+				
+                <div class="clear"></div>
+                
+                <div class="grid_2"><a title="Image used for demonstration purposes only." href="images/large_thumbs/01.jpg"><img class="thumb shadow hovershadow" src="images/small_thumbs/01.jpg" alt="Image used for demo purposes" /></a></div>
+                <div class="grid_2"><a title="Image used for demonstration purposes only." href="images/large_thumbs/02.jpg"><img class="thumb shadow hovershadow" src="images/small_thumbs/02.jpg" alt="Image used for demo purposes" /></a></div>
+                <div class="grid_2"><a title="Image used for demonstration purposes only." href="images/large_thumbs/03.jpg"><img class="thumb shadow hovershadow" src="images/small_thumbs/03.jpg" alt="Image used for demo purposes" /></a></div>
+                <div class="grid_2"><a title="Image used for demonstration purposes only." href="images/large_thumbs/04.jpg"><img class="thumb shadow hovershadow" src="images/small_thumbs/04.jpg" alt="Image used for demo purposes" /></a></div>
+                <div class="grid_2"><a title="Image used for demonstration purposes only." href="images/large_thumbs/05.jpg"><img class="thumb shadow hovershadow" src="images/small_thumbs/05.jpg" alt="Image used for demo purposes" /></a></div>
+                <div class="grid_2"><a title="Image used for demonstration purposes only." href="images/large_thumbs/06.jpg"><img class="thumb shadow hovershadow" src="images/small_thumbs/06.jpg" alt="Image used for demo purposes" /></a></div>
+				
+                <div class="clear"></div>
+                
+                <div class="grid_2"><a title="Image used for demonstration purposes only." href="images/large_thumbs/04.jpg"><img class="thumb shadow hovershadow" src="images/small_thumbs/04.jpg" alt="Image used for demo purposes" /></a></div>
+                <div class="grid_2"><a title="Image used for demonstration purposes only." href="images/large_thumbs/05.jpg"><img class="thumb shadow hovershadow" src="images/small_thumbs/05.jpg" alt="Image used for demo purposes" /></a></div>
+                <div class="grid_2"><a title="Image used for demonstration purposes only." href="images/large_thumbs/06.jpg"><img class="thumb shadow hovershadow" src="images/small_thumbs/06.jpg" alt="Image used for demo purposes" /></a></div>
+                <div class="grid_2"><a title="Image used for demonstration purposes only." href="images/large_thumbs/01.jpg"><img class="thumb shadow hovershadow" src="images/small_thumbs/01.jpg" alt="Image used for demo purposes" /></a></div>
+                <div class="grid_2"><a title="Image used for demonstration purposes only." href="images/large_thumbs/03.jpg"><img class="thumb shadow hovershadow" src="images/small_thumbs/03.jpg" alt="Image used for demo purposes" /></a></div>
+                <div class="grid_2"><a title="Image used for demonstration purposes only." href="images/large_thumbs/02.jpg"><img class="thumb shadow hovershadow" src="images/small_thumbs/02.jpg" alt="Image used for demo purposes" /></a></div>
+
+
+				
+            </div><!--//container_12-->
+    	</div><!--//section-->
+        
+        
+        
+        
+        
+        
+        
+        
+        <a name="blog" id="blog"></a><!--//scroll to anchor-->
+    	<div class="section clearfix blog-summary">
+            <div class="container_12">
+                <div class="grid_12">
+                	<div class="section-heading clearfix">
+                		<h2>Blog</h2>
+                    </div><!--//section-heading-->
+                </div><!--//grid_12-->
+                
+                
+                
+                	<div class="post clearfix">
+                        <div class="grid_2">
+                            <p class="fancydate">
+                                <span class="m">aug</span>
+                                <span class="d">03</span>
+                                <span class="y">2010</span>
+                            </p>
+                        </div><!--//grid_2-->
+                        <div class="grid_10">
+                            <h3 class="posttitle"><a href="index.html">Taking Quality Low Light Photos</a></h3>
+                            <p class="meta">Posted by <a href="index.html">Cudazi</a> in <a href="index.html">General</a>, <a href="index.html">Blog</a> with <a href="index.html">12 Comments</a></p>
+                            <div class="excerpt">
+                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer vel dui diam, tincidunt semper ligula. Donec in ultrices ligula. Sed velit ipsum, congue eget varius ut, scelerisque ullamcorper tortor. Quisque blandit nisi justo.</p>
+                            </div><!--//excerpt-->
+                        </div><!--//grid_10-->
+                    </div>
+                    
+                    
+                    
+                    <div class="post clearfix">
+                        <div class="grid_2">
+                            <p class="fancydate">
+                                <span class="m">jun</span>
+                                <span class="d">30</span>
+                                <span class="y">2010</span>
+                            </p>
+                        </div><!--//grid_2-->
+                        <div class="grid_10">
+                            <h3 class="posttitle"><a href="index.html">How to Build a CSS3 and HTML5 Photo Gallery</a></h3>
+                            <p class="meta">Posted by <a href="index.html">Cudazi</a> in <a href="index.html">General</a>, <a href="index.html">Blog</a> with <a href="index.html">12 Comments</a></p>
+                            <div class="excerpt">
+                                <p>Mauris felis felis, dictum vel adipiscing sed, pharetra in lorem. Cras euismod massa vel diam egestas hendrerit. Sed quis tellus mauris. Sed posuere ipsum at mauris viverra nec auctor tellus mollis. Nam eu tortor vitae turpis lobortis commodo.</p>
+                            </div><!--//excerpt-->
+                        </div><!--//grid_10-->
+                    </div>
+                    
+                    
+                    <div class="post clearfix">
+                        <div class="grid_2">
+                            <p class="fancydate">
+                                <span class="m">mar</span>
+                                <span class="d">22</span>
+                                <span class="y">2009</span>
+                            </p>
+                        </div><!--//grid_2-->
+                        <div class="grid_10">
+                            <h3 class="posttitle"><a href="index.html">10 Tips For Creating High Quality PHP Plugins</a></h3>
+                            <p class="meta">Posted by <a href="index.html">Cudazi</a> in <a href="index.html">General</a>, <a href="index.html">Blog</a> with <a href="index.html">12 Comments</a></p>
+                            <div class="excerpt">
+                                <p>Pellentesque quis augue sed nulla commodo egestas. Integer erat nisi, commodo vitae aliquet nec, suscipit nec orci. Maecenas mauris risus, elementum sed scelerisque semper, eleifend eget magna. Vestibulum quis purus ipsum. </p>
+                            </div><!--//excerpt-->
+                        </div><!--//grid_10-->
+                    </div>
+                	
+                
+				<!--
+                <div class="prefix_2 grid_10">
+                	<p><a href="index.html">View all posts from the Blog</a></p>
+                </div>
+                -->
+            </div><!--//container_12-->
+    	</div><!--//section-->
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <a name="grid" id="grid"></a><!--//scroll to anchor-->
+    	<div class="section clearfix default">
+            <div class="container_12">
+                <div class="grid_12">
+                	<div class="section-heading clearfix">
+                		<h2>960 Grid</h2>
+                    </div><!--//section-heading-->
+                    <p><strong>Built on the 12 column 960.gs grid system!</strong> - A few samples are provided below but <a href="http://960.gs/demo.html">explore the 960gs Demo Site</a> for more layout ideas!</p>
+                 </div>   
+                    
+                    <div class="grid-demo">
+                        <div class="clear"></div>
+                        <div class="grid_4">
+                            <p>
+                                300
+                            </p>
+                        </div>
+                        <!-- end .grid_4 -->
+                        <div class="grid_8">
+                            <p>
+                                620
+                            </p>
+                        </div>
+                        <!-- end .grid_8 -->
+                        <div class="clear"></div>
+                        <div class="grid_5">
+                            <p>
+                                380
+                            </p>
+                        </div>
+                        <!-- end .grid_5 -->
+                        <div class="grid_7">
+                            <p>
+                                540
+                            </p>
+                        </div>
+                        <!-- end .grid_7 -->
+                        <div class="clear"></div>
+                        <div class="grid_6">
+                            <p>
+                                460
+                            </p>
+                        </div>
+                        <!-- end .grid_6 -->
+                        <div class="grid_6">
+                            <p>
+                                460
+                            </p>
+                        </div>
+                        <!-- end .grid_6 -->
+                        <div class="clear"></div>
+                        
+                        
+                        <div class="grid_6 push_6">
+                            <div class="grid_1 alpha">
+                                <p>
+                                    60
+                                </p>
+                            </div>
+                            <!-- end .grid_1.alpha -->
+                            <div class="grid_5 omega">
+                                <p>
+                                    380
+                                </p>
+                            </div>
+                            <!-- end .grid_5.omega -->
+                            <div class="clear"></div>
+                            <div class="grid_3 alpha">
+                                <p>
+                                    220
+                                </p>
+                            </div>
+                            <!-- end .grid_3.alpha -->
+                            <div class="grid_3 omega">
+                                <p>
+                                    220
+                                </p>
+                            </div>
+                            <!-- end .grid_3.omega -->
+                            <div class="clear"></div>
+                        </div>
+                        
+                        
+                        
+                        <div class="grid_6 pull_6">
+                            <div class="grid_3 alpha">
+                                <p>
+                                    220
+                                </p>
+                            </div>
+                            <!-- end .grid_3.alpha -->
+                            <div class="grid_3 omega">
+                                <p>
+                                    220
+                                </p>
+                            </div>
+                            <!-- end .grid_3.omega -->
+                            <div class="clear"></div>
+                            <div class="grid_1 alpha">
+                                <p>
+                                    60
+                                </p>
+                            </div>
+                            <!-- end .grid_1.alpha -->
+                            <div class="grid_5 omega">
+                                <p>
+                                    380
+                                </p>
+                            </div>
+                            <!-- end .grid_5.omega -->
+                            <div class="clear"></div>
+                        </div>
+                    </div>
+					<div class="clear"></div>
+					
+            </div><!--//container_12-->
+    	</div><!--//section-->
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <a name="team" id="team"></a><!--//scroll to anchor-->
+    	<div class="section clearfix default">
+            <div class="container_12">
+                <div class="grid_12">
+                	<div class="section-heading clearfix">
+                		<h2>Our Team</h2>
+                    </div><!--//section-heading-->
+                                        
+					<p><strong>Our Motto: </strong>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur ipsum arcu, euismod aliquam hendrerit eu, laoreet at turpis. Mauris non tortor metus, et tempor elit. Integer quam neque, sodales a pellentesque vel, dignissim nec velit.</p>
+                    
+                    <div class="clear"></div>
+                    
+					<!-- note the alpha and omega classes when we're nested in the grid_12 already-->
+					<div class="grid_4 alpha">
+						<div class="shadow rounded centered boxed">
+                        	<img src="images/bios/03.gif" alt="bio" class="center" />
+							<h4>William Jones - Photographer</h4>
+                            <p>Featured in Photo Magazine, scaled Mt. Everest three times, avid knitter.</p>
+							<p><a href="index.html">@MyTwitter</a> / <a href="index.html">Facebook</a></p>
+						</div>
+					</div><!--//grid_6-->
+					
+					<div class="grid_4">
+						<div class="shadow rounded centered boxed">
+                        	<img src="images/bios/02.gif" alt="bio" class="center" />
+							<h4>Jack Jones - Naptime Scheduler</h4>
+							<p>Member of the left-handed design club, founder of the minimize button.</p>
+							<p><a href="index.html">@MyTwitter</a> / <a href="index.html">Facebook</a></p>
+						</div>
+					</div><!--//grid_6-->
+					
+					<div class="grid_4 omega">
+						<div class="shadow rounded centered boxed">
+                        	<img src="images/bios/01.gif" alt="bio" class="center" />
+							<h4>Mary Smith - Design/Layout</h4>
+							<p>Alergic to purple, updates Facebook while driving, forwards annoying emails.</p>
+							<p><a href="index.html">@MyTwitter</a> / <a href="index.html">Facebook</a></p>
+						</div>
+					</div>
+                    
+                </div><!--//grid_12-->
+                
+            </div><!--//container_12-->
+    	</div><!--//section-->
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        <a name="contact" id="contact"></a><!--//scroll to anchor-->
+    	<div class="section clearfix contact">
+            <div class="container_12">
+                <div class="grid_12">
+                	<div class="section-heading clearfix">
+                		<h2>Get in Touch</h2>
+                    </div><!--//section-heading-->
+                </div><!--//grid_12-->
+                
+                <div class="clear"></div>
+                
+                <div class="grid_6">
+					
+					<p><strong>Included contact form with PHP &amp; JavaScript validation!</strong></p>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. In hendrerit ipsum nec mauris lobortis ac cursus magna laoreet.</p>
+                    
+                    <h4>Eugene Location</h4>
+                    <div class="grid_3 alpha">
+                    	<p><strong>GridFolio Design</strong><br />
+                        10001 W. First Ave<br />
+                        Eugene, Oregon 55555</p>
+                    </div>
+                    <div class="grid_3 omega">
+                    	<p><strong>Gridfolio Photography</strong><br />
+                        50343 W. Third Street<br />
+                        Eugene, Oregon 55555
+                        </p>
+                    </div>
+                    <div class="clear"></div>
+                    
+                    <h4>Fargo Location</h4>
+                    <div class="grid_3 alpha">
+                    	<p><strong>GridFolio Animation</strong><br />
+                        10001 W. First Ave<br />
+                        Fargo, North Dakota</p>
+                    </div>
+                    <div class="grid_3 omega">
+                    	<p><strong>Gridfolio Widgets</strong><br />
+                        30021 W. Third Ave<br />
+                        Fargo, North Dakota
+                        </p>
+                    </div>
+                    <div class="clear"></div>
+                    
+                    
+                    <h4>We're Hiring!</h4>
+					<p>Send us an email with your best work to <a href="index.html">info@example.com</a></p>
+
+                </div><!--//grid_6-->
+                
+                <div class="grid_6">
+                	<h3>Contact Form</h3>
+                    <p>Fill out all fields and press send message.</p>
+                    <p id="contact-form-errror" class="message warning hidden">Name, valid email and message required.</p>
+                	<form action="sendmail.php" method="post" class="standardForm">
+                    	<label for="cf_name" class="hidden">Enter Your Name</label>
+                    		<input class="textbox rounded" type="text" id="cf_name" name="cf_name" value="Your Name" />
+                        <label for="cf_email" class="hidden">Enter Your Email Address</label>
+                        <input class="textbox rounded" type="text" id="cf_email" name="cf_email" value="Email" />
+                        <input class="hidden" type="text" id="email_2" name="email_2" value="" />
+                        <label for="cf_message" class="hidden">Enter Your Message</label>
+	                        <textarea class="textarea rounded" name="cf_message" id="cf_message">Enter a Message</textarea>
+                        
+                        <input class="submit rounded" type="submit" name="submit" id="cf_submit" value="Send Message" />
+                    </form>
+                </div><!--//grid_6-->
+                
+            </div><!--//container_12-->
+    	</div><!--//section-->
+        
+        
+        <div class="end"><!-- used to give extra space, to allow the last slide to fully rise to the browser top --></div>
+        
+        
+        <div id="footer" class="shadow">
+            <div class="container_12">
+            	<div class="grid_8">
+	            	<ul class="social">
+						<li><a href="#contact">hello@example.com</a></li>
+						<li><a href="#contact">555-444-5555</a></li>
+						<li><a href="#team">Follow on Twitter</a></li>
+                        <li><a href="http://cudazi.com/">Cudazi.com</a></li>
+                    </ul>
+					<!-- Add other text such as: <p>Thanks for visiting!</p> -->
+                </div>
+                <div class="grid_4">
+                	<ul class="social right">
+                        <li><a href="http://themeforest.net/user/cudazi/portfolio/?ref=cudazi">Buy Now!</a></li>
+						<li><a href="#top">Back to Top</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div><!--//outer-->
+    
+    </div><!--//outer-->
+    
+</body>
+</html>
