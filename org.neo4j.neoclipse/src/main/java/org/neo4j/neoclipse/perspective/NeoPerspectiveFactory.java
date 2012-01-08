@@ -22,6 +22,7 @@ import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
 import org.neo4j.neoclipse.connection.ConnectionsView;
+import org.neo4j.neoclipse.editor.SqlEditorView;
 import org.neo4j.neoclipse.reltype.RelationshipTypeView;
 import org.neo4j.neoclipse.view.NeoGraphViewPart;
 
@@ -55,6 +56,7 @@ public class NeoPerspectiveFactory implements IPerspectiveFactory
         // neo graph view
         IFolderLayout graph = layout.createFolder( GRAPH_AREA, IPageLayout.BOTTOM, 0.95f, editorArea );
         graph.addView( NeoGraphViewPart.ID );
+        graph.addView( SqlEditorView.ID );
         layout.getViewLayout( NeoGraphViewPart.ID ).setCloseable( false );
         // properties view
         IFolderLayout props = layout.createFolder( PROPERTIES_AREA, IPageLayout.BOTTOM, 0.75f, GRAPH_AREA );

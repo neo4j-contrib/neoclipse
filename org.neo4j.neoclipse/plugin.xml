@@ -32,6 +32,14 @@
              name="Connections"
              restorable="true">
       </view>
+       <view
+             allowMultiple="false"
+             category="org.neo4j.neoclipse"
+             class="org.neo4j.neoclipse.editor.SqlEditorView"
+             icon="icons/enabled/cypher_editor.gif"
+             id="org.neo4j.neoclipse.editor.SqlEditorView"
+             name="Cypher Editor">
+       </view>
    </extension>
    <extension
          point="org.eclipse.core.runtime.preferences">
@@ -65,7 +73,6 @@
             name="Neo4j">
       </perspective>
    </extension>
-   
     <extension
         id="org.neo4j.neoclipse.application"
         point="org.eclipse.core.runtime.applications">

@@ -533,4 +533,13 @@ public class GraphDbServiceManager
         return currentAlias;
     }
 
+    public GraphDatabaseService getGraphDb()
+    {
+        if ( !isRunning() )
+        {
+            throw new IllegalStateException( "There is no active Neo4j service." );
+        }
+        return lifecycle.graphDb();
+    }
+
 }

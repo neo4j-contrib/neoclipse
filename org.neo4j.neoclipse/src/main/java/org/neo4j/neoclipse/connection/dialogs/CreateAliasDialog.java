@@ -170,14 +170,14 @@ public class CreateAliasDialog extends TitleAreaDialog
             public void keyPressed( org.eclipse.swt.events.KeyEvent e )
             {
 
-                CreateAliasDialog.this.validate();
+                validate();
             };
 
             @Override
             public void keyReleased( org.eclipse.swt.events.KeyEvent e )
             {
 
-                CreateAliasDialog.this.validate();
+                validate();
             };
         } );
 
@@ -188,13 +188,13 @@ public class CreateAliasDialog extends TitleAreaDialog
             @Override
             public void keyReleased( KeyEvent arg0 )
             {
-                CreateAliasDialog.this.validate();
+                validate();
             }
 
             @Override
             public void keyPressed( KeyEvent arg0 )
             {
-                CreateAliasDialog.this.validate();
+                validate();
             }
         } );
         urlField.setPropertyChangeListener( new IPropertyChangeListener()
@@ -203,7 +203,7 @@ public class CreateAliasDialog extends TitleAreaDialog
             @Override
             public void propertyChange( PropertyChangeEvent event )
             {
-                CreateAliasDialog.this.validate();
+                validate();
 
             }
         } );

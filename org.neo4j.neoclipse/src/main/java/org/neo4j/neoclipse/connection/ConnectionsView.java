@@ -38,7 +38,7 @@ import org.eclipse.ui.part.ViewPart;
 import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.connection.actions.ForceStartHandler;
 import org.neo4j.neoclipse.connection.actions.NewAliasAction;
-import org.neo4j.neoclipse.connection.actions.NewEditorAction;
+import org.neo4j.neoclipse.connection.actions.SqlEditorAction;
 import org.neo4j.neoclipse.event.NeoclipseEvent;
 import org.neo4j.neoclipse.event.NeoclipseEventListener;
 import org.neo4j.neoclipse.event.NeoclipseListenerList;
@@ -76,7 +76,7 @@ public class ConnectionsView extends ViewPart implements NeoclipseEventListener
 
         IToolBarManager toolBarMgr = getViewSite().getActionBars().getToolBarManager();
         toolBarMgr.add( new NewAliasAction() );
-        toolBarMgr.add( new NewEditorAction() );
+        toolBarMgr.add( new SqlEditorAction() );
 
         _treeViewer.setUseHashlookup( true );
         _treeViewer.setContentProvider( new ConnectionTreeContentProvider() );
@@ -87,30 +87,44 @@ public class ConnectionsView extends ViewPart implements NeoclipseEventListener
         _treeViewer.addDoubleClickListener( new IDoubleClickListener()
         {
             @Override
-            public void doubleClick( DoubleClickEvent event )
+            public void doubleClick( final DoubleClickEvent event )
             {
-                IStructuredSelection selection = (IStructuredSelection) event.getSelection();
-                if ( selection != null )
+                UiHelper.asyncExec( new Runnable()
                 {
-                    Object selected = selection.getFirstElement();
-                    if ( selected instanceof Alias )
+                    @Override
+                    public void run()
                     {
-                        Alias alias = (Alias) selection.getFirstElement();
-                        startOrStopConnection( alias );
+                        IStructuredSelection selection = (IStructuredSelection) event.getSelection();
+                        if ( selection != null )
+                        {
+                            Object selected = selection.getFirstElement();
+                            if ( selected instanceof Alias )
+                            {
+                                Alias alias = (Alias) selection.getFirstElement();
+                                startOrStopConnection( alias );
+                            }
+                        }
                     }
-                }
+                } );
             }
         } );
 
         _treeViewer.addSelectionChangedListener( new ISelectionChangedListener()
         {
             @Override
-            public void selectionChanged( SelectionChangedEvent event )
+            public void selectionChanged( final SelectionChangedEvent event )
             {
-                refreshToolbar();
-                Activator.getDefault().fireServiceChangedEvent( GraphDbServiceStatus.DB_SELECT );
-
+                UiHelper.asyncExec( new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        refreshToolbar();
+                        Activator.getDefault().fireServiceChangedEvent( GraphDbServiceStatus.DB_SELECT );
+                    }
+                } );
             }
+
         } );
 
         // add context menu
@@ -172,11 +186,6 @@ public class ConnectionsView extends ViewPart implements NeoclipseEventListener
             }
         } );
 
-    }
-
-    public TreeViewer getTreeViewer()
-    {
-        return _treeViewer;
     }
 
     public Alias getSelectedAlias()
