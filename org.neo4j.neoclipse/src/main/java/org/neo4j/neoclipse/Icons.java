@@ -151,7 +151,7 @@ public enum Icons
     CYPHER_EDITOR_DISABLED( "cypher_editor_disabled", path( "disabled/cypher_editor.gif" ) ),
     FORCE_START_DISABLED( "force_start_disabled", path( "disabled/force_start.gif" ) ),
     FORCE_START_ENABLED( "force_start_enabled", path( "enabled/force_start.gif" ) ),
-    EXCEL( "excel", path( "enabled/excel.png" ) ),
+    CSV( "csv", path( "enabled/csv.gif" ) ),
     JSON( "json", path( "enabled/json.gif" ) ),
     XML( "xml", path( "enabled/xml.gif" ) ),
     EXECUTE_SQL( "executesql", path( "enabled/execute.gif" ) ),

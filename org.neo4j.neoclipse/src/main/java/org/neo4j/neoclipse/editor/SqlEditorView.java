@@ -46,6 +46,8 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.ui.part.ViewPart;
+import org.json.CDL;
+import org.json.JSONArray;
 import org.neo4j.cypher.javacompat.ExecutionEngine;
 import org.neo4j.cypher.javacompat.ExecutionResult;
 import org.neo4j.cypherdsl.result.JSONSerializer;
@@ -57,6 +59,7 @@ import org.neo4j.neoclipse.view.ErrorMessage;
 import org.neo4j.neoclipse.view.UiHelper;
 import org.xml.sax.InputSource;
 
+
 public class SqlEditorView extends ViewPart implements Listener
 {
 
@@ -66,7 +69,7 @@ public class SqlEditorView extends ViewPart implements Listener
     private CTabFolder tabFolder;
     private Label messageStatus;
     private ToolItem tltmExecuteCypherSql;
-    private ToolItem tltmExcel;
+    private ToolItem tltmCsv;
     private ToolItem tltmJson;
     private ToolItem tltmXml;
     private ExecutionResult executionResult;
@@ -121,11 +124,11 @@ public class SqlEditorView extends ViewPart implements Listener
         {
             ToolBar toolBar = new ToolBar( parent, SWT.FLAT | SWT.RIGHT );
             {
-                tltmExcel = new ToolItem( toolBar, SWT.PUSH );
-                tltmExcel.setEnabled( false );
-                tltmExcel.setToolTipText( "Export to Excel" );
-                tltmExcel.setImage( Icons.EXCEL.image() );
-                tltmExcel.addListener( SWT.Selection, this );
+                tltmCsv = new ToolItem( toolBar, SWT.PUSH );
+                tltmCsv.setEnabled( false );
+                tltmCsv.setToolTipText( "Export to CSV" );
+                tltmCsv.setImage( Icons.CSV.image() );
+                tltmCsv.addListener( SWT.Selection, this );
 
                 tltmJson = new ToolItem( toolBar, SWT.PUSH );
                 tltmJson.setEnabled( false );
@@ -242,7 +245,7 @@ public class SqlEditorView extends ViewPart implements Listener
 
     private void enableDisableToolBars( boolean flag )
     {
-        tltmExcel.setEnabled( flag );
+        tltmCsv.setEnabled( flag );
         tltmJson.setEnabled( flag );
         tltmXml.setEnabled( flag );
     }
@@ -329,16 +332,24 @@ public class SqlEditorView extends ViewPart implements Listener
         {
             executeCypherQuery( cypherQueryText.getText() );
         }
-        else if ( event.widget == tltmExcel )
+        else if ( event.widget == tltmCsv )
         {
-            String platform = SWT.getPlatform();
-            String extention = ".csv";
-            if ( platform.equals( "win32" ) || platform.equals( "wpf" ) )
+            try
             {
-                extention = ".xls";
+                String extention = ".csv";
+                File file = getFile( extention );
+                JSONArray array = new JSONArray( jsonString );
+                String csv = CDL.toString( array );
+                BufferedWriter out = new BufferedWriter( new FileWriter( file ) );
+                out.write( csv );
+                out.close();
+                ErrorMessage.showDialog( "CSV Export", "CSV file is created at " + file );
             }
-            ErrorMessage.showDialog( "CSV exporting problem", "Currently CSV export is not supported" );
-            // File file = getFile( extention );
+            catch ( Exception e )
+            {
+                ErrorMessage.showDialog( "CSV exporting problem", e );
+            }
+
         }
         else if ( event.widget == tltmJson )
         {
