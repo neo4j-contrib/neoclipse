@@ -22,10 +22,12 @@ import net.javacrumbs.json2xml.JsonXmlReader;
 
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ArrayNode;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
+import org.eclipse.osgi.service.datalocation.Location;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
@@ -36,10 +38,8 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
@@ -368,10 +368,6 @@ public class SqlEditorView extends ViewPart implements Listener
             try
             {
                 File file = getFile( ".xml" );
-                if ( file == null )
-                {
-                    return;
-                }
                 ByteArrayOutputStream out = new ByteArrayOutputStream();
                 Transformer transformer = TransformerFactory.newInstance().newTransformer();
                 InputSource source = new InputSource( new StringReader( "{\"root\":" + jsonString + "}" ) );
@@ -394,31 +390,17 @@ public class SqlEditorView extends ViewPart implements Listener
     private File getFile( String fileExtention )
     {
 
-        Display display = Display.getCurrent();
-        Shell shell = new Shell( display );
-        FileDialog dialog = new FileDialog( shell, SWT.SAVE | SWT.SHEET );
-        String startingDirectory = "/";
-        String platform = SWT.getPlatform();
-        if ( platform.equals( "win32" ) || platform.equals( "wpf" ) )
+        Location installLocation = Platform.getInstallLocation();
+        String startingDirectory = installLocation.getURL().getPath() + "neoclipse-workspace/data" + File.separator;
+        File dir = new File( startingDirectory );
+        if ( !dir.exists() )
         {
-            startingDirectory = "c:\\";
-        }
-        String[] filterNames = new String[] { fileExtention + " Files", "All Files (*)" };
-        dialog.setFilterNames( filterNames );
-        dialog.setFileName( System.currentTimeMillis() + "" );
-        dialog.setFilterPath( startingDirectory );
-        String[] filterExtensions = new String[] { fileExtention, "*" };
-        dialog.setFilterExtensions( filterExtensions );
-        String file = dialog.open();
-        if ( file != null )
-        {
-            file = file.trim();
-            if ( file.length() > 0 )
+            if ( !dir.mkdirs() )
             {
-                return new File( file );
+                throw new RuntimeException( "Could not create the directory: " + dir );
             }
         }
 
-        return null;
+        return new File( startingDirectory, System.currentTimeMillis() + fileExtention );
     }
 }
