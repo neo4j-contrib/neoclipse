@@ -1,27 +1,14 @@
 package org.neo4j.neoclipse.editor;
 
 import java.io.BufferedWriter;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileWriter;
-import java.io.StringReader;
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
-import javax.xml.transform.Result;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.sax.SAXSource;
-import javax.xml.transform.stream.StreamResult;
-
-import net.javacrumbs.json2xml.JsonXmlReader;
-
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.node.ArrayNode;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
@@ -48,16 +35,17 @@ import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.ui.part.ViewPart;
 import org.json.CDL;
 import org.json.JSONArray;
+import org.json.JSONObject;
+import org.json.XML;
 import org.neo4j.cypher.javacompat.ExecutionEngine;
 import org.neo4j.cypher.javacompat.ExecutionResult;
-import org.neo4j.cypherdsl.result.JSONSerializer;
 import org.neo4j.graphdb.GraphDatabaseService;
+import org.neo4j.graphdb.Node;
 import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.Icons;
 import org.neo4j.neoclipse.graphdb.GraphDbServiceManager;
 import org.neo4j.neoclipse.view.ErrorMessage;
 import org.neo4j.neoclipse.view.UiHelper;
-import org.xml.sax.InputSource;
 
 
 public class SqlEditorView extends ViewPart implements Listener
@@ -65,7 +53,7 @@ public class SqlEditorView extends ViewPart implements Listener
 
     public static final String ID = "org.neo4j.neoclipse.editor.SqlEditorView"; //$NON-NLS-1$
     private Text cypherQueryText;
-    private final LinkedList<ResultSet> resultSetList = new LinkedList<ResultSet>();
+    private final LinkedList<Map<String, Object>> resultSetList = new LinkedList<Map<String, Object>>();
     private CTabFolder tabFolder;
     private Label messageStatus;
     private ToolItem tltmExecuteCypherSql;
@@ -181,31 +169,48 @@ public class SqlEditorView extends ViewPart implements Listener
 
                     ExecutionEngine engine = new ExecutionEngine( graphDb );
                     executionResult = engine.execute( cypherQuery );
-                    // System.out.println( result.toString() );
-
-                    List<String> columns = executionResult.columns();
-
-                    JSONSerializer jsonSerializer = new JSONSerializer();
-                    ArrayNode arrayNode = jsonSerializer.toJSON( executionResult );
-                    jsonString = arrayNode.toString();
-                    Iterator<JsonNode> elements = arrayNode.getElements();
-                    while ( elements.hasNext() )
+                    // System.out.println( executionResult.toString() );
+                    while ( executionResult.iterator().hasNext() )
                     {
-                        JsonNode jsonNode = elements.next();
-                        ResultSet rs = new ResultSet();
-                        for ( String column : columns )
+                        Map<String, Object> resultMap = executionResult.iterator().next();
+                        LinkedHashMap<String, Object> newMap = new LinkedHashMap<String, Object>();
+                        for ( String key : resultMap.keySet() )
                         {
-                            JsonNode str = jsonNode.get( column );
-                            if ( str != null )
+                            Object objectNode = resultMap.get( key );
+                            if ( objectNode == null )
                             {
-                                String value = str.toString().replace( "\"", "" ).replace( "{", "" ).replace( "}", "" ).replace(
-                                        "\"_", "\"" );
-                                rs.addResults( column, value );
+                                continue;
                             }
+                            Object sb = null;
+                            if ( objectNode instanceof Node )
+                            {
+                                Node node = (Node) objectNode;
+                                Map<String, Object> oMap = new LinkedHashMap<String, Object>();
+                                oMap.put( "id", node.getId() );
+                                for ( String propertyName : node.getPropertyKeys() )
+                                {
+                                    boolean containsKey = oMap.containsKey( propertyName );
+                                    if ( containsKey )
+                                    {
+                                        throw new IllegalArgumentException( "Duplicate propertyName : " + propertyName
+                                                                            + " present in " + node.toString() );
+                                    }
+                                    oMap.put( propertyName, node.getProperty( propertyName ) );
+                                }
+                                sb = oMap;
+                            }
+                            else
+                            {
+                                sb = objectNode;
+                            }
+                            newMap.put( key, sb );
                         }
-                        resultSetList.add( rs );
+                        resultSetList.add( newMap );
                     }
 
+                    JSONArray jsonArray = new JSONArray( resultSetList );
+                    jsonString = jsonArray.toString();
+                    // System.out.println( jsonString );
                     {
                         String message = executionResult.toString().substring(
                                 executionResult.toString().lastIndexOf( "+" ) + 1 ).trim();
@@ -214,7 +219,7 @@ public class SqlEditorView extends ViewPart implements Listener
                             TableViewer tableViewer = new TableViewer( tabFolder, SWT.BORDER | SWT.V_SCROLL
                                                                                   | SWT.H_SCROLL | SWT.MULTI
                                                                                   | SWT.VIRTUAL | SWT.FULL_SELECTION );
-                            createColumns( tableViewer, columns );
+                            createColumns( tableViewer, executionResult.columns() );
                             tableViewer.setContentProvider( new ArrayContentProvider() );
                             Table table = tableViewer.getTable();
                             table.setHeaderVisible( true );
@@ -282,13 +287,74 @@ public class SqlEditorView extends ViewPart implements Listener
                 @Override
                 public String getText( Object element )
                 {
-                    ResultSet rs = (ResultSet) element;
-                    return rs.getListByKey( column );
+                    Map<String, Object> rs = (Map<String, Object>) element;
+                    Object value = rs.get( column );
+                    value = getPropertyValue( value );
+                    return value.toString().replace( "{", "" ).replace( "}", "" );
                 }
-
             } );
         }
 
+    }
+
+    private Object getPropertyValue( Object value )
+    {
+        if ( Map.class.isAssignableFrom( value.getClass() ) )
+        {
+            Map<String, Object> map = (Map<String, Object>) value;
+            StringBuilder sb = new StringBuilder();
+            int i = 0;
+            for ( String key : map.keySet() )
+            {
+                if ( i++ > 0 )
+                {
+                    sb.append( "," );
+                }
+                Object object = map.get( key );
+                sb.append( key + ":" + getPropertyValue( object ) );
+            }
+            return sb.toString();
+        }
+        else if ( value.getClass().isArray() )
+        {
+            String stringValue = "null";
+            Class eClass = value.getClass();
+
+            if ( eClass == byte[].class )
+            {
+                stringValue = Arrays.toString( (byte[]) value );
+            }
+            else if ( eClass == short[].class )
+            {
+                stringValue = Arrays.toString( (short[]) value );
+            }
+            else if ( eClass == int[].class )
+            {
+                stringValue = Arrays.toString( (int[]) value );
+            }
+            else if ( eClass == long[].class )
+            {
+                stringValue = Arrays.toString( (long[]) value );
+            }
+            else if ( eClass == char[].class )
+            {
+                stringValue = Arrays.toString( (char[]) value );
+            }
+            else if ( eClass == float[].class )
+            {
+                stringValue = Arrays.toString( (float[]) value );
+            }
+            else if ( eClass == double[].class )
+            {
+                stringValue = Arrays.toString( (double[]) value );
+            }
+            else if ( eClass == boolean[].class )
+            {
+                stringValue = Arrays.toString( (boolean[]) value );
+            }
+            return stringValue;
+        }
+        return value.toString();
     }
 
     private TableViewerColumn createTableViewerColumn( TableViewer tableViewer, String title, final int colNumber )
@@ -303,26 +369,6 @@ public class SqlEditorView extends ViewPart implements Listener
 
     }
 
-    private class ResultSet
-    {
-
-        private final Map<String, String> results = new LinkedHashMap<String, String>();
-
-        public void addResults( String key, String value )
-        {
-            this.results.put( key, value );
-        }
-
-        public String getListByKey( String key )
-        {
-            if ( results.isEmpty() )
-            {
-                return "";
-            }
-            return results.get( key );
-        }
-
-    }
 
     @Override
     public void handleEvent( Event event )
@@ -379,15 +425,11 @@ public class SqlEditorView extends ViewPart implements Listener
             try
             {
                 File file = getFile( ".xml" );
-                ByteArrayOutputStream out = new ByteArrayOutputStream();
-                Transformer transformer = TransformerFactory.newInstance().newTransformer();
-                InputSource source = new InputSource( new StringReader( "{\"root\":" + jsonString + "}" ) );
-                Result result = new StreamResult( out );
-                transformer.transform( new SAXSource( new JsonXmlReader( "neo4j", false ), source ), result );
-                String string = new String( out.toByteArray() );
+                JSONObject array = new JSONObject( "{\"node\":" + jsonString + "}" );
+                String xml = XML.toString( array, "neo4j" );
+                // System.out.println( xml );
                 BufferedWriter bw = new BufferedWriter( new FileWriter( file ) );
-                bw.write( string );
-                out.close();
+                bw.write( xml );
                 bw.close();
                 ErrorMessage.showDialog( "XML Export", "XML file is created at " + file );
             }
