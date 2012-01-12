@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -46,6 +47,7 @@ import org.neo4j.neoclipse.Icons;
 import org.neo4j.neoclipse.graphdb.GraphDbServiceManager;
 import org.neo4j.neoclipse.view.ErrorMessage;
 import org.neo4j.neoclipse.view.UiHelper;
+import org.neo4j.tooling.GlobalGraphOperations;
 
 
 public class SqlEditorView extends ViewPart implements Listener
@@ -62,6 +64,8 @@ public class SqlEditorView extends ViewPart implements Listener
     private ToolItem tltmXml;
     private ExecutionResult executionResult;
     private String jsonString;
+    private static boolean altKeyPressed = false;
+    private static boolean enterKeyPressed = false;
 
     public SqlEditorView()
     {
@@ -88,19 +92,46 @@ public class SqlEditorView extends ViewPart implements Listener
         }
 
         cypherQueryText = new Text( parent, SWT.BORDER | SWT.WRAP | SWT.V_SCROLL | SWT.MULTI );
+
         cypherQueryText.addKeyListener( new KeyListener()
         {
 
             @Override
-            public void keyReleased( KeyEvent arg0 )
+            public void keyReleased( KeyEvent keyEvent )
             {
-                validate();
+                if ( !validate() )
+                {
+                    return;
+                }
+
+                if ( altKeyPressed && keyEvent.keyCode == SWT.CR )
+                {
+                    enterKeyPressed = true;
+                }
+                else
+                {
+                    altKeyPressed = false;
+                }
+
+                if ( altKeyPressed && enterKeyPressed )
+                {
+                    executeCypherQuery();
+                    altKeyPressed = enterKeyPressed = false;
+                }
+
             }
 
             @Override
-            public void keyPressed( KeyEvent arg0 )
+            public void keyPressed( KeyEvent keyEvent )
             {
-                validate();
+                if ( !validate() )
+                {
+                    return;
+                }
+                if ( keyEvent.keyCode == SWT.ALT )
+                {
+                    altKeyPressed = true;
+                }
             }
         } );
         GridData gd_text = new GridData( SWT.FILL, SWT.CENTER, true, false, 1, 1 );
@@ -152,7 +183,7 @@ public class SqlEditorView extends ViewPart implements Listener
     }
 
 
-    private void executeCypherQuery( final String cypherSql )
+    private void executeCypherQuery( )
     {
         resultSetList.clear();
         UiHelper.asyncExec( new Runnable()
@@ -162,6 +193,11 @@ public class SqlEditorView extends ViewPart implements Listener
             {
                 try
                 {
+                    final String cypherSql = cypherQueryText.getText();
+                    if ( cypherSql == null || cypherSql.trim().isEmpty() )
+                    {
+                        return;
+                    }
                     String cypherQuery = cypherSql.replace( '\"', '\'' ).replace( '\n', ' ' );
 
                     final GraphDbServiceManager gsm = Activator.getDefault().getGraphDbServiceManager();
@@ -185,18 +221,7 @@ public class SqlEditorView extends ViewPart implements Listener
                             if ( objectNode instanceof Node )
                             {
                                 Node node = (Node) objectNode;
-                                Map<String, Object> oMap = new LinkedHashMap<String, Object>();
-                                oMap.put( "id", node.getId() );
-                                for ( String propertyName : node.getPropertyKeys() )
-                                {
-                                    boolean containsKey = oMap.containsKey( propertyName );
-                                    if ( containsKey )
-                                    {
-                                        throw new IllegalArgumentException( "Duplicate propertyName : " + propertyName
-                                                                            + " present in " + node.toString() );
-                                    }
-                                    oMap.put( propertyName, node.getProperty( propertyName ) );
-                                }
+                                Map<String, Object> oMap = extractToMap( node );
                                 sb = oMap;
                             }
                             else
@@ -244,6 +269,7 @@ public class SqlEditorView extends ViewPart implements Listener
                     ErrorMessage.showDialog( "Cypher Query problem", e );
                 }
             }
+
         } );
 
     }
@@ -255,7 +281,7 @@ public class SqlEditorView extends ViewPart implements Listener
         tltmXml.setEnabled( flag );
     }
 
-    private void validate()
+    private boolean validate()
     {
         boolean enableDisable = false;
 
@@ -265,6 +291,7 @@ public class SqlEditorView extends ViewPart implements Listener
         }
 
         tltmExecuteCypherSql.setEnabled( enableDisable );
+        return enableDisable;
     }
 
     @Override
@@ -315,6 +342,13 @@ public class SqlEditorView extends ViewPart implements Listener
             }
             return sb.toString();
         }
+        else if ( Entry.class.isAssignableFrom( value.getClass() ) )
+        {
+            Entry entry = (Entry) value;
+            StringBuilder sb = new StringBuilder();
+            sb.append( entry.getKey() + ":" + getPropertyValue( entry.getValue() ) );
+            return sb.toString();
+        }
         else if ( value.getClass().isArray() )
         {
             String stringValue = "null";
@@ -357,6 +391,23 @@ public class SqlEditorView extends ViewPart implements Listener
         return value.toString();
     }
 
+    private Map<String, Object> extractToMap( Node node )
+    {
+        Map<String, Object> oMap = new LinkedHashMap<String, Object>();
+        oMap.put( "id", node.getId() );
+        for ( String propertyName : node.getPropertyKeys() )
+        {
+            boolean containsKey = oMap.containsKey( propertyName );
+            if ( containsKey )
+            {
+                throw new IllegalArgumentException( "Duplicate propertyName : " + propertyName + " present in "
+                                                    + node.toString() );
+            }
+            oMap.put( propertyName, node.getProperty( propertyName ) );
+        }
+        return oMap;
+    }
+
     private TableViewerColumn createTableViewerColumn( TableViewer tableViewer, String title, final int colNumber )
     {
         final TableViewerColumn viewerColumn = new TableViewerColumn( tableViewer, SWT.NONE, colNumber );
@@ -376,7 +427,7 @@ public class SqlEditorView extends ViewPart implements Listener
 
         if ( event.widget == tltmExecuteCypherSql )
         {
-            executeCypherQuery( cypherQueryText.getText() );
+            executeCypherQuery();
         }
         else if ( event.widget == tltmCsv )
         {
