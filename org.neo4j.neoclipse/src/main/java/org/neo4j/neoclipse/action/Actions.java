@@ -123,7 +123,9 @@ public enum Actions
     RENAME( "Rename", Icons.RENAME_ENABLED, Icons.RENAME_DISABLED ),
     ADD_NODE_LABEL( "Add key to node labels", Icons.ADD_NODE_LABEL_ENABLED, Icons.ADD_NODE_LABEL_DISABLED ),
     NEW_CYPHER_EDITOR( "New Cypher Editor", Icons.CYPHER_EDITOR_ENABLED, Icons.CYPHER_EDITOR_DISABLED ),
-    FORCE_START( "Close other connection and start", Icons.FORCE_START_ENABLED, Icons.FORCE_START_DISABLED ), ;
+    FORCE_START( "Close other connection and start", Icons.FORCE_START_ENABLED, Icons.FORCE_START_DISABLED ),
+    EXPORT_XML( "ExportToXml", Icons.XML, Icons.XML ),
+    EXPORT_JSON( "ExportToJson", Icons.JSON, Icons.JSON ), ;
 
     private final String label;
     private final String tooltip;

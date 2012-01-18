@@ -27,6 +27,8 @@ import org.neo4j.neoclipse.action.connect.StartAction;
 import org.neo4j.neoclipse.action.connect.StopAction;
 import org.neo4j.neoclipse.connection.actions.DeleteAliasAction;
 import org.neo4j.neoclipse.connection.actions.EditAliasAction;
+import org.neo4j.neoclipse.connection.actions.ExportToJsonAction;
+import org.neo4j.neoclipse.connection.actions.ExportToXmlAction;
 import org.neo4j.neoclipse.connection.actions.ForceStartAction;
 import org.neo4j.neoclipse.connection.actions.NewAliasAction;
 import org.neo4j.neoclipse.graphdb.GraphDbServiceManager;
@@ -64,6 +66,9 @@ public class ConnectionTreeActionGroup extends ActionGroup
         if ( graphDbServiceManager.isRunning() && graphDbServiceManager.getCurrentAlias().equals( alias ) )
         {
             addAction( menu, new StopAction( neoGraphView ) );
+            addAction( menu, new ExportToXmlAction() );
+            addAction( menu, new ExportToJsonAction() );
+
         }
         else
         {

@@ -34,6 +34,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.neo4j.kernel.Config;
 import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.connection.Alias;
 import org.neo4j.neoclipse.connection.ConnectionsView;
@@ -72,6 +73,7 @@ public class CreateAliasDialog extends TitleAreaDialog
     private Text nameField;
     private DirectoryFieldEditor urlField;
     private Button autoConnectButton;
+    private Button allowUpgrade;
     private Text userField;
     private Text passwordField;
 
@@ -119,7 +121,8 @@ public class CreateAliasDialog extends TitleAreaDialog
             setTitle( "Edit connection" );
             Alias selectedAlias = Activator.getDefault().getConnectionsView().getSelectedAlias();
             nameField.setEnabled( false );
-            autoConnectButton.setVisible( false );
+            autoConnectButton.setEnabled( false );
+            allowUpgrade.setSelection( Boolean.parseBoolean( selectedAlias.getConfigurationByKey( Config.ALLOW_STORE_UPGRADE ) ) );
             nameField.setText( selectedAlias.getName() );
             urlField.setStringValue( selectedAlias.getUri() );
             userField.setText( ApplicationUtil.returnEmptyIfBlank( selectedAlias.getUserName() ) );
@@ -229,9 +232,14 @@ public class CreateAliasDialog extends TitleAreaDialog
         connectionPropertiesComposite.setLayoutData( data );
 
         autoConnectButton = new Button( connectionPropertiesComposite, SWT.CHECK );
-        GridData gd_autoLogonButton = new GridData( 158, SWT.DEFAULT );
+        GridData gd_autoLogonButton = new GridData( 108, SWT.DEFAULT );
         autoConnectButton.setLayoutData( gd_autoLogonButton );
         autoConnectButton.setText( "Auto Connect" );
+
+        allowUpgrade = new Button( connectionPropertiesComposite, SWT.CHECK );
+        GridData gd_allowUpgrade = new GridData( 128, SWT.DEFAULT );
+        allowUpgrade.setLayoutData( gd_allowUpgrade );
+        allowUpgrade.setText( Config.ALLOW_STORE_UPGRADE );
 
         Label label4 = new Label( nameGroup, SWT.WRAP );
         label4.setText( ( "User" ) );
@@ -273,12 +281,14 @@ public class CreateAliasDialog extends TitleAreaDialog
         {
             Alias alias = new Alias( nameField.getText(), urlField.getStringValue(), userField.getText(),
                     passwordField.getText() );
+            alias.addConfiguration( Config.ALLOW_STORE_UPGRADE, Boolean.toString( allowUpgrade.getSelection() ) );
             if ( type == Type.EDIT )
             {
                 Alias selectedAlias = Activator.getDefault().getConnectionsView().getSelectedAlias();
                 Activator.getDefault().getAliasManager().removeAlias( selectedAlias );
             }
             Activator.getDefault().getAliasManager().addAlias( alias );
+
             ConnectionsView connectionsView = Activator.getDefault().getConnectionsView();
             if ( autoConnectButton.getSelection() )
             {

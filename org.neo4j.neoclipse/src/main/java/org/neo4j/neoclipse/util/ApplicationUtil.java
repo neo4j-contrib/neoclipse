@@ -21,9 +21,14 @@ package org.neo4j.neoclipse.util;
 import java.io.File;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osgi.service.datalocation.Location;
+import org.neo4j.graphdb.Node;
 
 public class ApplicationUtil
 {
@@ -74,6 +79,90 @@ public class ApplicationUtil
     public static boolean isBlank( String string )
     {
         return ( string == null || string.trim().isEmpty() );
+    }
+
+    public static Map<String, Object> extractToMap( Node node )
+    {
+        Map<String, Object> oMap = new LinkedHashMap<String, Object>();
+        oMap.put( "id", node.getId() );
+        for ( String propertyName : node.getPropertyKeys() )
+        {
+            boolean containsKey = oMap.containsKey( propertyName );
+            if ( containsKey )
+            {
+                throw new IllegalArgumentException( "Duplicate propertyName : " + propertyName + " present in "
+                                                    + node.toString() );
+            }
+            oMap.put( propertyName, node.getProperty( propertyName ) );
+        }
+        return oMap;
+    }
+
+    public static Object getPropertyValue( Object value )
+    {
+        if ( Map.class.isAssignableFrom( value.getClass() ) )
+        {
+            Map<String, Object> map = (Map<String, Object>) value;
+            StringBuilder sb = new StringBuilder();
+            int i = 0;
+            for ( String key : map.keySet() )
+            {
+                if ( i++ > 0 )
+                {
+                    sb.append( "," );
+                }
+                Object object = map.get( key );
+                sb.append( key + ":" + getPropertyValue( object ) );
+            }
+            return sb.toString();
+        }
+        else if ( Entry.class.isAssignableFrom( value.getClass() ) )
+        {
+            Entry entry = (Entry) value;
+            StringBuilder sb = new StringBuilder();
+            sb.append( entry.getKey() + ":" + getPropertyValue( entry.getValue() ) );
+            return sb.toString();
+        }
+        else if ( value.getClass().isArray() )
+        {
+            String stringValue = "null";
+            Class eClass = value.getClass();
+
+            if ( eClass == byte[].class )
+            {
+                stringValue = Arrays.toString( (byte[]) value );
+            }
+            else if ( eClass == short[].class )
+            {
+                stringValue = Arrays.toString( (short[]) value );
+            }
+            else if ( eClass == int[].class )
+            {
+                stringValue = Arrays.toString( (int[]) value );
+            }
+            else if ( eClass == long[].class )
+            {
+                stringValue = Arrays.toString( (long[]) value );
+            }
+            else if ( eClass == char[].class )
+            {
+                stringValue = Arrays.toString( (char[]) value );
+            }
+            else if ( eClass == float[].class )
+            {
+                stringValue = Arrays.toString( (float[]) value );
+            }
+            else if ( eClass == double[].class )
+            {
+                stringValue = Arrays.toString( (double[]) value );
+            }
+            else if ( eClass == boolean[].class )
+            {
+                stringValue = Arrays.toString( (boolean[]) value );
+            }
+            return stringValue;
+        }
+        return value.toString();
     }
 
 }

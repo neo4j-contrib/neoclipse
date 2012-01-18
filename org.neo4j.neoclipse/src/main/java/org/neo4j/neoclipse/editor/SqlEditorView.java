@@ -1,21 +1,17 @@
 package org.neo4j.neoclipse.editor;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
-import org.eclipse.osgi.service.datalocation.Location;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
@@ -34,10 +30,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.ui.part.ViewPart;
-import org.json.CDL;
 import org.json.JSONArray;
-import org.json.JSONObject;
-import org.json.XML;
 import org.neo4j.cypher.javacompat.ExecutionEngine;
 import org.neo4j.cypher.javacompat.ExecutionResult;
 import org.neo4j.graphdb.GraphDatabaseService;
@@ -45,10 +38,10 @@ import org.neo4j.graphdb.Node;
 import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.Icons;
 import org.neo4j.neoclipse.graphdb.GraphDbServiceManager;
+import org.neo4j.neoclipse.util.ApplicationUtil;
+import org.neo4j.neoclipse.util.DataExportUtils;
 import org.neo4j.neoclipse.view.ErrorMessage;
 import org.neo4j.neoclipse.view.UiHelper;
-import org.neo4j.tooling.GlobalGraphOperations;
-
 
 public class SqlEditorView extends ViewPart implements Listener
 {
@@ -59,9 +52,9 @@ public class SqlEditorView extends ViewPart implements Listener
     private CTabFolder tabFolder;
     private Label messageStatus;
     private ToolItem tltmExecuteCypherSql;
-    private ToolItem tltmCsv;
-    private ToolItem tltmJson;
-    private ToolItem tltmXml;
+    private ToolItem exportCsv;
+    private ToolItem exportJson;
+    private ToolItem exportXml;
     private ExecutionResult executionResult;
     private String jsonString;
     private static boolean altKeyPressed = false;
@@ -143,23 +136,23 @@ public class SqlEditorView extends ViewPart implements Listener
         {
             ToolBar toolBar = new ToolBar( parent, SWT.FLAT | SWT.RIGHT );
             {
-                tltmCsv = new ToolItem( toolBar, SWT.PUSH );
-                tltmCsv.setEnabled( false );
-                tltmCsv.setToolTipText( "Export to CSV" );
-                tltmCsv.setImage( Icons.CSV.image() );
-                tltmCsv.addListener( SWT.Selection, this );
+                exportCsv = new ToolItem( toolBar, SWT.PUSH );
+                exportCsv.setEnabled( false );
+                exportCsv.setToolTipText( "Export to CSV" );
+                exportCsv.setImage( Icons.CSV.image() );
+                exportCsv.addListener( SWT.Selection, this );
 
-                tltmJson = new ToolItem( toolBar, SWT.PUSH );
-                tltmJson.setEnabled( false );
-                tltmJson.setToolTipText( "Export as Json" );
-                tltmJson.setImage( Icons.JSON.image() );
-                tltmJson.addListener( SWT.Selection, this );
+                exportJson = new ToolItem( toolBar, SWT.PUSH );
+                exportJson.setEnabled( false );
+                exportJson.setToolTipText( "Export as Json" );
+                exportJson.setImage( Icons.JSON.image() );
+                exportJson.addListener( SWT.Selection, this );
 
-                tltmXml = new ToolItem( toolBar, SWT.PUSH );
-                tltmXml.setEnabled( false );
-                tltmXml.setToolTipText( "Export as Xml" );
-                tltmXml.setImage( Icons.XML.image() );
-                tltmXml.addListener( SWT.Selection, this );
+                exportXml = new ToolItem( toolBar, SWT.PUSH );
+                exportXml.setEnabled( false );
+                exportXml.setToolTipText( "Export as Xml" );
+                exportXml.setImage( Icons.XML.image() );
+                exportXml.addListener( SWT.Selection, this );
             }
         }
         {
@@ -182,8 +175,7 @@ public class SqlEditorView extends ViewPart implements Listener
         }
     }
 
-
-    private void executeCypherQuery( )
+    private void executeCypherQuery()
     {
         resultSetList.clear();
         UiHelper.asyncExec( new Runnable()
@@ -210,25 +202,27 @@ public class SqlEditorView extends ViewPart implements Listener
                     {
                         Map<String, Object> resultMap = executionResult.iterator().next();
                         LinkedHashMap<String, Object> newMap = new LinkedHashMap<String, Object>();
-                        for ( String key : resultMap.keySet() )
+                        Set<Entry<String, Object>> entrySet = resultMap.entrySet();
+                        for ( Entry<String, Object> entry : entrySet )
                         {
-                            Object objectNode = resultMap.get( key );
+                            Object objectNode = entry.getValue();
                             if ( objectNode == null )
                             {
                                 continue;
                             }
+
                             Object sb = null;
                             if ( objectNode instanceof Node )
                             {
                                 Node node = (Node) objectNode;
-                                Map<String, Object> oMap = extractToMap( node );
+                                Map<String, Object> oMap = ApplicationUtil.extractToMap( node );
                                 sb = oMap;
                             }
                             else
                             {
                                 sb = objectNode;
                             }
-                            newMap.put( key, sb );
+                            newMap.put( entry.getKey(), sb );
                         }
                         resultSetList.add( newMap );
                     }
@@ -276,9 +270,9 @@ public class SqlEditorView extends ViewPart implements Listener
 
     private void enableDisableToolBars( boolean flag )
     {
-        tltmCsv.setEnabled( flag );
-        tltmJson.setEnabled( flag );
-        tltmXml.setEnabled( flag );
+        exportCsv.setEnabled( flag );
+        exportJson.setEnabled( flag );
+        exportXml.setEnabled( flag );
     }
 
     private boolean validate()
@@ -316,96 +310,12 @@ public class SqlEditorView extends ViewPart implements Listener
                 {
                     Map<String, Object> rs = (Map<String, Object>) element;
                     Object value = rs.get( column );
-                    value = getPropertyValue( value );
+                    value = ApplicationUtil.getPropertyValue( value );
                     return value.toString().replace( "{", "" ).replace( "}", "" );
                 }
             } );
         }
 
-    }
-
-    private Object getPropertyValue( Object value )
-    {
-        if ( Map.class.isAssignableFrom( value.getClass() ) )
-        {
-            Map<String, Object> map = (Map<String, Object>) value;
-            StringBuilder sb = new StringBuilder();
-            int i = 0;
-            for ( String key : map.keySet() )
-            {
-                if ( i++ > 0 )
-                {
-                    sb.append( "," );
-                }
-                Object object = map.get( key );
-                sb.append( key + ":" + getPropertyValue( object ) );
-            }
-            return sb.toString();
-        }
-        else if ( Entry.class.isAssignableFrom( value.getClass() ) )
-        {
-            Entry entry = (Entry) value;
-            StringBuilder sb = new StringBuilder();
-            sb.append( entry.getKey() + ":" + getPropertyValue( entry.getValue() ) );
-            return sb.toString();
-        }
-        else if ( value.getClass().isArray() )
-        {
-            String stringValue = "null";
-            Class eClass = value.getClass();
-
-            if ( eClass == byte[].class )
-            {
-                stringValue = Arrays.toString( (byte[]) value );
-            }
-            else if ( eClass == short[].class )
-            {
-                stringValue = Arrays.toString( (short[]) value );
-            }
-            else if ( eClass == int[].class )
-            {
-                stringValue = Arrays.toString( (int[]) value );
-            }
-            else if ( eClass == long[].class )
-            {
-                stringValue = Arrays.toString( (long[]) value );
-            }
-            else if ( eClass == char[].class )
-            {
-                stringValue = Arrays.toString( (char[]) value );
-            }
-            else if ( eClass == float[].class )
-            {
-                stringValue = Arrays.toString( (float[]) value );
-            }
-            else if ( eClass == double[].class )
-            {
-                stringValue = Arrays.toString( (double[]) value );
-            }
-            else if ( eClass == boolean[].class )
-            {
-                stringValue = Arrays.toString( (boolean[]) value );
-            }
-            return stringValue;
-        }
-        return value.toString();
-    }
-
-    private Map<String, Object> extractToMap( Node node )
-    {
-        Map<String, Object> oMap = new LinkedHashMap<String, Object>();
-        oMap.put( "id", node.getId() );
-        for ( String propertyName : node.getPropertyKeys() )
-        {
-            boolean containsKey = oMap.containsKey( propertyName );
-            if ( containsKey )
-            {
-                throw new IllegalArgumentException( "Duplicate propertyName : " + propertyName + " present in "
-                                                    + node.toString() );
-            }
-            oMap.put( propertyName, node.getProperty( propertyName ) );
-        }
-        return oMap;
     }
 
     private TableViewerColumn createTableViewerColumn( TableViewer tableViewer, String title, final int colNumber )
@@ -420,7 +330,6 @@ public class SqlEditorView extends ViewPart implements Listener
 
     }
 
-
     @Override
     public void handleEvent( Event event )
     {
@@ -429,59 +338,36 @@ public class SqlEditorView extends ViewPart implements Listener
         {
             executeCypherQuery();
         }
-        else if ( event.widget == tltmCsv )
+        else if ( event.widget == exportCsv )
         {
             try
             {
-                String extention = ".csv";
-                File file = getFile( extention );
-                JSONArray array = new JSONArray( jsonString );
-                String csv = CDL.toString( array );
-                BufferedWriter out = new BufferedWriter( new FileWriter( file ) );
-                out.write( csv );
-                out.close();
+                File file = DataExportUtils.exportToCsv( jsonString );
                 ErrorMessage.showDialog( "CSV Export", "CSV file is created at " + file );
             }
             catch ( Exception e )
             {
                 ErrorMessage.showDialog( "CSV exporting problem", e );
             }
-
         }
-        else if ( event.widget == tltmJson )
-        {
-            if ( executionResult != null )
-            {
-                try
-                {
-                    File file = getFile( ".json" );
-                    if ( file == null )
-                    {
-                        return;
-                    }
-                    BufferedWriter out = new BufferedWriter( new FileWriter( file ) );
-                    out.write( jsonString );
-                    out.close();
-                    ErrorMessage.showDialog( "Json Export", "Json file is created at " + file );
-                }
-                catch ( Exception e )
-                {
-                    ErrorMessage.showDialog( "Json exporting problem", e );
-                }
-            }
-
-        }
-        else if ( event.widget == tltmXml )
+        else if ( event.widget == exportJson )
         {
             try
             {
-                File file = getFile( ".xml" );
-                JSONObject array = new JSONObject( "{\"node\":" + jsonString + "}" );
-                String xml = XML.toString( array, "neo4j" );
-                // System.out.println( xml );
-                BufferedWriter bw = new BufferedWriter( new FileWriter( file ) );
-                bw.write( xml );
-                bw.close();
+                File file = DataExportUtils.exportToJson( jsonString );
+                ErrorMessage.showDialog( "Json Export", "Json file is created at " + file );
+            }
+            catch ( Exception e )
+            {
+                ErrorMessage.showDialog( "Json exporting problem", e );
+            }
+
+        }
+        else if ( event.widget == exportXml )
+        {
+            try
+            {
+                File file = DataExportUtils.exportToXml( jsonString );
                 ErrorMessage.showDialog( "XML Export", "XML file is created at " + file );
             }
             catch ( Exception e )
@@ -491,20 +377,4 @@ public class SqlEditorView extends ViewPart implements Listener
         }
     }
 
-    private File getFile( String fileExtention )
-    {
-
-        Location installLocation = Platform.getInstallLocation();
-        String startingDirectory = installLocation.getURL().getPath() + "neoclipse-workspace/data" + File.separator;
-        File dir = new File( startingDirectory );
-        if ( !dir.exists() )
-        {
-            if ( !dir.mkdirs() )
-            {
-                throw new RuntimeException( "Could not create the directory: " + dir );
-            }
-        }
-
-        return new File( startingDirectory, System.currentTimeMillis() + fileExtention );
-    }
 }

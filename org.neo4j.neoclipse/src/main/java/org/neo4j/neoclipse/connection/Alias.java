@@ -20,7 +20,10 @@ package org.neo4j.neoclipse.connection;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import org.dom4j.Element;
 import org.dom4j.tree.DefaultElement;
@@ -42,6 +45,10 @@ public class Alias
     /*package*/static final String URI = "uri";
     /*package*/static final String USER_NAME = "user-name";
     /*package*/static final String PASSWORD = "password";
+    /*package*/static final String CONFIGURATIONS = "configurations";
+    /*package*/static final String CONFIG = "config";
+    /*package*/static final String CONFIG_NAME = "name";
+    /*package*/static final String CONFIG_VALUE = "value";
 
     private final String name;
     private String uri;
@@ -90,7 +97,6 @@ public class Alias
         }
 
         createdTime = System.currentTimeMillis();
-
     }
 
     /**
@@ -114,8 +120,17 @@ public class Alias
             password = pass;
         }
 
-        // TODO Need to add Configuration
-
+        Element configurationsElement = root.element( CONFIGURATIONS );
+        if ( configurationsElement != null )
+        {
+            List<Element> elements = configurationsElement.elements( CONFIG );
+            for ( Element config : elements )
+            {
+                String configName = config.attributeValue( CONFIG_NAME );
+                String configValue = config.attributeValue( CONFIG_VALUE );
+                addConfiguration( configName, configValue );
+            }
+        }
     }
 
     public long getCreatedTime()
@@ -161,7 +176,19 @@ public class Alias
         root.addElement( URI ).setText( ApplicationUtil.returnEmptyIfBlank( uri ) );
         root.addElement( USER_NAME ).setText( ApplicationUtil.returnEmptyIfBlank( userName ) );
         root.addElement( PASSWORD ).setText( ApplicationUtil.returnEmptyIfBlank( password ) );
-        // TODO add configuration settings
+
+        if ( !configurationMap.isEmpty() )
+        {
+            Element configElement = root.addElement( CONFIGURATIONS );
+            Set<Entry<String, String>> entrySet = configurationMap.entrySet();
+            for ( Entry<String, String> entry : entrySet )
+            {
+                DefaultElement config = new DefaultElement( CONFIG );
+                config.addAttribute( CONFIG_NAME, ApplicationUtil.returnEmptyIfBlank( entry.getKey() ) );
+                config.addAttribute( CONFIG_VALUE, ApplicationUtil.returnEmptyIfBlank( entry.getValue() ) );
+                configElement.add( config );
+            }
+        }
         return root;
     }
 
@@ -224,5 +251,10 @@ public class Alias
             return false;
         }
         return true;
+    }
+
+    public String getConfigurationByKey( String key )
+    {
+        return configurationMap.get( key );
     }
 }
