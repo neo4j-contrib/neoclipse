@@ -44,5 +44,8 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer
         pref.setDefault( Preferences.CONNECTION_MODE,
                 GraphDbServiceMode.READ_WRITE_EMBEDDED.name() );
         pref.setDefault( Preferences.MAX_NODES, 500 );
+        pref.setDefault( Preferences.MAX_TRAVERSAL_DEPTH, 2 );
+
+
     }
 }

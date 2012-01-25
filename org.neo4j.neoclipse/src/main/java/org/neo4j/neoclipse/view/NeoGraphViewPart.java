@@ -28,6 +28,7 @@ import org.eclipse.core.runtime.Preferences.PropertyChangeEvent;
 import org.eclipse.draw2d.ChangeEvent;
 import org.eclipse.draw2d.ChangeListener;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
@@ -186,6 +187,13 @@ public class NeoGraphViewPart extends ViewPart implements IZoomableWorkbenchPart
         Activator.getDefault().getPluginPreferences().addPropertyChangeListener( new PreferenceChangeHandler() );
         PlatformUI.getWorkbench().getHelpSystem().setHelp( viewer.getControl(),
                 HelpContextConstants.NEO_GRAPH_VIEW_PART );
+
+        IPreferenceStore preferenceStore = Activator.getDefault().getPreferenceStore();
+        int maxTraversalDepth = preferenceStore.getInt( Preferences.MAX_TRAVERSAL_DEPTH );
+        if ( maxTraversalDepth > 0 )
+        {
+            traversalDepth = maxTraversalDepth;
+        }
     }
 
     /**
@@ -341,7 +349,7 @@ public class NeoGraphViewPart extends ViewPart implements IZoomableWorkbenchPart
             public void run()
             {
                 StringBuilder str = new StringBuilder( 64 );
-                str.append( "Traversal depth: " ).append( traversalDepth );
+                str.append( "Traversal depth: " ).append( getTraversalDepth() );
                 str.append( "   Nodes: " ).append( viewer.getGraphControl().getNodes().size() );
                 str.append( "   Relationships: " ).append( viewer.getGraphControl().getConnections().size() );
                 Activator.getDefault().setStatusLineMessage( str.toString() );
@@ -541,6 +549,7 @@ public class NeoGraphViewPart extends ViewPart implements IZoomableWorkbenchPart
                             {
                                 node = candidateNode;
                                 break;
+                                // setInput( node );
                             }
                             if ( tries++ > MAX_NODE_TRIES )
                             {

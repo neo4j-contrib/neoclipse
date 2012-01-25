@@ -36,6 +36,7 @@ public class PreferencePage extends AbstractPreferencePage
     private static final String HELP_ON_START_LABEL = "Show help view on startup";
     private RadioGroupFieldEditor connectionMode;
     private IntegerFieldEditor maxNodesField;
+    private IntegerFieldEditor maxTraversalDepthField;
 
     /**
      * Initializes the several input fields.
@@ -65,5 +66,10 @@ public class PreferencePage extends AbstractPreferencePage
                 "Maximum number of nodes", getFieldEditorParent(), 4 );
         maxNodesField.setEmptyStringAllowed( false );
         addField( maxNodesField );
+
+        maxTraversalDepthField = new IntegerFieldEditor( Preferences.MAX_TRAVERSAL_DEPTH, "Maximum number of nodes",
+                getFieldEditorParent(), 4 );
+        maxTraversalDepthField.setEmptyStringAllowed( false );
+        addField( maxTraversalDepthField );
     }
 }

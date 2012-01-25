@@ -53,4 +53,6 @@ public final class Preferences
      * Maximum number of nodes to show.
      */
     public static final String MAX_NODES = "maxNodes";
+
+    public static final String MAX_TRAVERSAL_DEPTH = "maxTraversalDepth";
 }

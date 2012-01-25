@@ -19,20 +19,16 @@
 package org.neo4j.neoclipse.connection.actions;
 
 import java.io.File;
-import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import org.json.JSONArray;
-import org.neo4j.graphdb.GraphDatabaseService;
-import org.neo4j.graphdb.Node;
 import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.action.Actions;
 import org.neo4j.neoclipse.connection.AbstractConnectionTreeAction;
 import org.neo4j.neoclipse.graphdb.GraphDbServiceManager;
-import org.neo4j.neoclipse.util.ApplicationUtil;
 import org.neo4j.neoclipse.util.DataExportUtils;
 import org.neo4j.neoclipse.view.ErrorMessage;
-import org.neo4j.tooling.GlobalGraphOperations;
 
 /**
  * @author Radhakrishna Kalyan
@@ -51,17 +47,9 @@ public class ExportToXmlAction extends AbstractConnectionTreeAction
     {
         try
         {
-            final LinkedList<Map<String, Object>> resultSetList = new LinkedList<Map<String, Object>>();
             final GraphDbServiceManager gsm = Activator.getDefault().getGraphDbServiceManager();
-            GraphDatabaseService graphDb = gsm.getGraphDb();
-            Iterable<Node> allNodes = GlobalGraphOperations.at( graphDb ).getAllNodes();
-            for ( Node node : allNodes )
-            {
-                Map<String, Object> extractToMap = ApplicationUtil.extractToMap( node );
-                resultSetList.add( extractToMap );
-            }
-
-            JSONArray jsonArray = new JSONArray( resultSetList );
+            final List<Map<String, Object>> resultSetList = gsm.getAllNodes();
+            final JSONArray jsonArray = new JSONArray( resultSetList );
             File file = DataExportUtils.exportToXml( jsonArray.toString() );
             ErrorMessage.showDialog( "XML Export", "XML file is created at " + file );
         }

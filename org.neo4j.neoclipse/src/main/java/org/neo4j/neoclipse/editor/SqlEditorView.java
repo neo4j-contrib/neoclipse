@@ -2,11 +2,8 @@ package org.neo4j.neoclipse.editor;
 
 import java.io.File;
 import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
@@ -31,10 +28,6 @@ import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.ui.part.ViewPart;
 import org.json.JSONArray;
-import org.neo4j.cypher.javacompat.ExecutionEngine;
-import org.neo4j.cypher.javacompat.ExecutionResult;
-import org.neo4j.graphdb.GraphDatabaseService;
-import org.neo4j.graphdb.Node;
 import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.Icons;
 import org.neo4j.neoclipse.graphdb.GraphDbServiceManager;
@@ -48,14 +41,12 @@ public class SqlEditorView extends ViewPart implements Listener
 
     public static final String ID = "org.neo4j.neoclipse.editor.SqlEditorView"; //$NON-NLS-1$
     private Text cypherQueryText;
-    private final LinkedList<Map<String, Object>> resultSetList = new LinkedList<Map<String, Object>>();
     private CTabFolder tabFolder;
     private Label messageStatus;
     private ToolItem tltmExecuteCypherSql;
     private ToolItem exportCsv;
     private ToolItem exportJson;
     private ToolItem exportXml;
-    private ExecutionResult executionResult;
     private String jsonString;
     private static boolean altKeyPressed = false;
     private static boolean enterKeyPressed = false;
@@ -106,9 +97,9 @@ public class SqlEditorView extends ViewPart implements Listener
                     altKeyPressed = false;
                 }
 
-                if ( altKeyPressed && enterKeyPressed )
+                if ( altKeyPressed && enterKeyPressed && validate() )
                 {
-                    executeCypherQuery();
+                    executeCypherQuery( cypherQueryText.getText() );
                     altKeyPressed = enterKeyPressed = false;
                 }
 
@@ -175,98 +166,7 @@ public class SqlEditorView extends ViewPart implements Listener
         }
     }
 
-    private void executeCypherQuery()
-    {
-        resultSetList.clear();
-        UiHelper.asyncExec( new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                try
-                {
-                    final String cypherSql = cypherQueryText.getText();
-                    if ( cypherSql == null || cypherSql.trim().isEmpty() )
-                    {
-                        return;
-                    }
-                    String cypherQuery = cypherSql.replace( '\"', '\'' ).replace( '\n', ' ' );
 
-                    final GraphDbServiceManager gsm = Activator.getDefault().getGraphDbServiceManager();
-                    GraphDatabaseService graphDb = gsm.getGraphDb();
-
-                    ExecutionEngine engine = new ExecutionEngine( graphDb );
-                    executionResult = engine.execute( cypherQuery );
-                    // System.out.println( executionResult.toString() );
-                    while ( executionResult.iterator().hasNext() )
-                    {
-                        Map<String, Object> resultMap = executionResult.iterator().next();
-                        LinkedHashMap<String, Object> newMap = new LinkedHashMap<String, Object>();
-                        Set<Entry<String, Object>> entrySet = resultMap.entrySet();
-                        for ( Entry<String, Object> entry : entrySet )
-                        {
-                            Object objectNode = entry.getValue();
-                            if ( objectNode == null )
-                            {
-                                continue;
-                            }
-
-                            Object sb = null;
-                            if ( objectNode instanceof Node )
-                            {
-                                Node node = (Node) objectNode;
-                                Map<String, Object> oMap = ApplicationUtil.extractToMap( node );
-                                sb = oMap;
-                            }
-                            else
-                            {
-                                sb = objectNode;
-                            }
-                            newMap.put( entry.getKey(), sb );
-                        }
-                        resultSetList.add( newMap );
-                    }
-
-                    JSONArray jsonArray = new JSONArray( resultSetList );
-                    jsonString = jsonArray.toString();
-                    // System.out.println( jsonString );
-                    {
-                        String message = executionResult.toString().substring(
-                                executionResult.toString().lastIndexOf( "+" ) + 1 ).trim();
-                        messageStatus.setText( message );
-                        {
-                            TableViewer tableViewer = new TableViewer( tabFolder, SWT.BORDER | SWT.V_SCROLL
-                                                                                  | SWT.H_SCROLL | SWT.MULTI
-                                                                                  | SWT.VIRTUAL | SWT.FULL_SELECTION );
-                            createColumns( tableViewer, executionResult.columns() );
-                            tableViewer.setContentProvider( new ArrayContentProvider() );
-                            Table table = tableViewer.getTable();
-                            table.setHeaderVisible( true );
-                            table.setLinesVisible( true );
-                            tableViewer.setInput( resultSetList );
-                            getSite().setSelectionProvider( tableViewer );
-                            CTabItem resultsTabItem = tabFolder.getSelection();
-                            if ( resultsTabItem == null )
-                            {
-                                resultsTabItem = new CTabItem( tabFolder, SWT.NONE );
-                                resultsTabItem.setText( "Results" );
-                                tabFolder.setSelection( resultsTabItem );
-                            }
-                            resultsTabItem.setControl( table );
-                        }
-                    }
-                    enableDisableToolBars( true );
-                }
-                catch ( Throwable e )
-                {
-                    enableDisableToolBars( false );
-                    ErrorMessage.showDialog( "Cypher Query problem", e );
-                }
-            }
-
-        } );
-
-    }
 
     private void enableDisableToolBars( boolean flag )
     {
@@ -336,7 +236,8 @@ public class SqlEditorView extends ViewPart implements Listener
 
         if ( event.widget == tltmExecuteCypherSql )
         {
-            executeCypherQuery();
+            executeCypherQuery( cypherQueryText.getText() );
+
         }
         else if ( event.widget == exportCsv )
         {
@@ -375,6 +276,57 @@ public class SqlEditorView extends ViewPart implements Listener
                 ErrorMessage.showDialog( "XML exporting problem", e );
             }
         }
+    }
+
+    private void executeCypherQuery( final String cypherSql )
+    {
+        UiHelper.asyncExec( new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                final GraphDbServiceManager gsm = Activator.getDefault().getGraphDbServiceManager();
+                try
+                {
+                    CypherResultSet cypherResultSet = gsm.executeCypher( cypherSql );
+                    displayResultSet( cypherResultSet );
+                }
+                catch ( Exception e )
+                {
+                    enableDisableToolBars( false );
+                    ErrorMessage.showDialog( "execute cypher query", e );
+                }
+            }
+
+        } );
+    }
+
+    private void displayResultSet( CypherResultSet cypherResultSet )
+    {
+        List<Map<String, Object>> resultSetList = cypherResultSet.getIterator();
+        List<String> columns = cypherResultSet.getColumns();
+
+        JSONArray jsonArray = new JSONArray( resultSetList );
+        jsonString = jsonArray.toString();
+        messageStatus.setText( cypherResultSet.getMessage() );
+        TableViewer tableViewer = new TableViewer( tabFolder, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL | SWT.MULTI
+                                                              | SWT.VIRTUAL | SWT.FULL_SELECTION );
+        createColumns( tableViewer, columns );
+        tableViewer.setContentProvider( new ArrayContentProvider() );
+        Table table = tableViewer.getTable();
+        table.setHeaderVisible( true );
+        table.setLinesVisible( true );
+        tableViewer.setInput( resultSetList );
+        getSite().setSelectionProvider( tableViewer );
+        CTabItem resultsTabItem = tabFolder.getSelection();
+        if ( resultsTabItem == null )
+        {
+            resultsTabItem = new CTabItem( tabFolder, SWT.NONE );
+            resultsTabItem.setText( "Results" );
+            tabFolder.setSelection( resultsTabItem );
+        }
+        resultsTabItem.setControl( table );
+        enableDisableToolBars( true );
     }
 
 }

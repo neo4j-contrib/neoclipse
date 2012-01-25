@@ -18,6 +18,13 @@
  */
 package org.neo4j.neoclipse.graphdb;
 
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -28,15 +35,22 @@ import java.util.logging.Logger;
 
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.neo4j.cypher.javacompat.ExecutionEngine;
+import org.neo4j.cypher.javacompat.ExecutionResult;
 import org.neo4j.graphdb.GraphDatabaseService;
+import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Transaction;
 import org.neo4j.kernel.EmbeddedGraphDatabase;
 import org.neo4j.kernel.EmbeddedReadOnlyGraphDatabase;
 import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.connection.Alias;
 import org.neo4j.neoclipse.connection.ConnectionMode;
+import org.neo4j.neoclipse.editor.CypherResultSet;
 import org.neo4j.neoclipse.preference.Preferences;
+import org.neo4j.neoclipse.util.ApplicationUtil;
 import org.neo4j.neoclipse.view.UiHelper;
+import org.neo4j.tooling.GlobalGraphOperations;
+
 
 /**
  * This manager controls the neo4j service.
@@ -473,6 +487,89 @@ public class GraphDbServiceManager
     }
 
     /**
+     * ExecuteCypher query.
+     * 
+     * @param cypherSql
+     * @return CypherResultSet
+     * @throws Exception
+     */
+    public CypherResultSet executeCypher( final String cypherSql ) throws Exception
+    {
+        return submitTask( new GraphCallable<CypherResultSet>()
+        {
+            @Override
+            public CypherResultSet call( GraphDatabaseService graphDb )
+            {
+                final String cypherQuery = cypherSql.replace( '\"', '\'' ).replace( '\n', ' ' );
+                ExecutionEngine engine = new ExecutionEngine( graphDb );
+                ExecutionResult result = engine.execute( cypherQuery );
+                final String message = result.toString().substring( result.toString().lastIndexOf( "+" ) + 1 ).trim();
+                final List<String> columns = result.columns();
+                final LinkedList<Map<String, Object>> resultList = new LinkedList<Map<String, Object>>();
+
+                final Iterator<Map<String, Object>> iterator = result.iterator();
+                while ( iterator.hasNext() )
+                {
+                    Map<String, Object> resultMap = iterator.next();
+                    LinkedHashMap<String, Object> newMap = new LinkedHashMap<String, Object>();
+                    Set<Entry<String, Object>> entrySet = resultMap.entrySet();
+                    for ( Entry<String, Object> entry : entrySet )
+                    {
+                        Object objectNode = entry.getValue();
+                        if ( objectNode == null )
+                        {
+                            continue;
+                        }
+
+                        Object obj = null;
+                        if ( objectNode instanceof Node )
+                        {
+                            Node node = (Node) objectNode;
+                            Map<String, Object> oMap = ApplicationUtil.extractToMap( node );
+                            obj = oMap;
+                        }
+                        else
+                        {
+                            obj = objectNode;
+                        }
+                        newMap.put( entry.getKey(), obj );
+                    }
+                    resultList.add( newMap );
+                }
+                return new CypherResultSet( resultList, columns, message );
+            }
+
+        }, "execute cypher query" ).get();
+    }
+
+    
+    /**
+     * getAllNodes
+     * 
+     * @return List<Map<String, Object>>
+     * @throws Exception
+     */
+    public List<Map<String, Object>> getAllNodes() throws Exception
+    {
+        return submitTask( new GraphCallable<List<Map<String, Object>>>()
+        {
+            @Override
+            public List<Map<String, Object>> call( GraphDatabaseService graphDb )
+            {
+                final LinkedList<Map<String, Object>> list = new LinkedList<Map<String, Object>>();
+                Iterable<Node> iterable = GlobalGraphOperations.at( graphDb ).getAllNodes();
+                for ( Node node : iterable )
+                {
+                    Map<String, Object> oMap = ApplicationUtil.extractToMap( node );
+                    list.add( oMap );
+                }
+                return list;
+            }
+
+        }, "get all nodes" ).get();
+    }
+
+    /**
      * Roll back transaction.
      * 
      * @return
@@ -532,14 +629,4 @@ public class GraphDbServiceManager
     {
         return currentAlias;
     }
-
-    public GraphDatabaseService getGraphDb()
-    {
-        if ( !isRunning() )
-        {
-            throw new IllegalStateException( "There is no active Neo4j service." );
-        }
-        return lifecycle.graphDb();
-    }
-
 }
