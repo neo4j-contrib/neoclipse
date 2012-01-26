@@ -636,6 +636,12 @@ public class NeoGraphViewPart extends ViewPart implements IZoomableWorkbenchPart
      */
     public int getTraversalDepth()
     {
+        IPreferenceStore preferenceStore = Activator.getDefault().getPreferenceStore();
+        int maxTraversalDepth = preferenceStore.getInt( Preferences.MAX_TRAVERSAL_DEPTH );
+        if ( maxTraversalDepth > 0 )
+        {
+            traversalDepth = maxTraversalDepth;
+        }
         return traversalDepth;
     }
 

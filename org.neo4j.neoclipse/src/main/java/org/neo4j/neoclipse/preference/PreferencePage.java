@@ -67,7 +67,7 @@ public class PreferencePage extends AbstractPreferencePage
         maxNodesField.setEmptyStringAllowed( false );
         addField( maxNodesField );
 
-        maxTraversalDepthField = new IntegerFieldEditor( Preferences.MAX_TRAVERSAL_DEPTH, "Maximum number of nodes",
+        maxTraversalDepthField = new IntegerFieldEditor( Preferences.MAX_TRAVERSAL_DEPTH, "Maximum Traversal Depth",
                 getFieldEditorParent(), 4 );
         maxTraversalDepthField.setEmptyStringAllowed( false );
         addField( maxTraversalDepthField );
