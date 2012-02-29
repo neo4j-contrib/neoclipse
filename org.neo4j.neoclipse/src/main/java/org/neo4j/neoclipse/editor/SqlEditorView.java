@@ -69,7 +69,7 @@ public class SqlEditorView extends ViewPart implements Listener
             {
                 tltmExecuteCypherSql = new ToolItem( toolBar, SWT.PUSH );
                 tltmExecuteCypherSql.setEnabled( false );
-                tltmExecuteCypherSql.setToolTipText( "Execute" );
+                tltmExecuteCypherSql.setToolTipText( "Execute (ALT+Enter)" );
                 tltmExecuteCypherSql.setImage( Icons.EXECUTE_SQL.image() );
                 tltmExecuteCypherSql.addListener( SWT.Selection, this );
             }
