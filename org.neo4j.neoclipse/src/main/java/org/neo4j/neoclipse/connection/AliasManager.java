@@ -42,6 +42,7 @@ import org.neo4j.neoclipse.util.XMLUtils;
 public class AliasManager
 {
 
+    private static final String ALIAS_FILE_NAME = "NeoDbAliases.xml";
     private final Set<Alias> aliases = new HashSet<Alias>();
     private final NeoclipseListenerList connectionListeners = new NeoclipseListenerList();
 
@@ -49,7 +50,9 @@ public class AliasManager
     {
         aliases.clear();
 
-        Element root = XMLUtils.readRoot( new File( ApplicationUtil.USER_ALIAS_FILE_NAME ) );
+
+        File aliasSettings = new File( ApplicationUtil.NEOCLIPSE_SETTINGS_DIR, ALIAS_FILE_NAME );
+        Element root = XMLUtils.readRoot( aliasSettings );
         if ( root != null )
         {
             List<Element> elements = root.elements( Alias.ALIAS );
@@ -75,8 +78,8 @@ public class AliasManager
         {
             root.add( alias.describeAsXml() );
         }
-
-        XMLUtils.save( root, new File( ApplicationUtil.USER_ALIAS_FILE_NAME ) );
+        File aliasSettings = new File( ApplicationUtil.NEOCLIPSE_SETTINGS_DIR, ALIAS_FILE_NAME );
+        XMLUtils.save( root, aliasSettings );
     }
 
     /**

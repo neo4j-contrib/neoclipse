@@ -19,54 +19,30 @@
 package org.neo4j.neoclipse.util;
 
 import java.io.File;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.osgi.service.datalocation.Location;
 import org.neo4j.graphdb.Node;
 
 public class ApplicationUtil
 {
 
-    /** Name of file that contains connection aliases. */
-    public static final String USER_ALIAS_FILE_NAME = dirInWorkspace( "settings" ) + File.separator
-                                                      + "NeoDbAliases.xml";
+    public static final String NEOCLIPSE_SETTINGS_DIR = System.getProperty( "user.home" ) + File.separator
+                                                        + ".neoclipse";
 
     public static File dirInWorkspace( final String... elements )
     {
-        Location workspace = Platform.getUserLocation();
-        if ( workspace == null )
-        {
-            throw new RuntimeException( "Can't find workspace." );
-        }
-        URL url = workspace.getDefault();
-        String path;
-        try
-        {
-            path = url.toURI().getPath();
-        }
-        catch ( URISyntaxException e )
-        {
-            // workaround for Windows
-            System.out.println( "Using path workaround for path: " + url );
-            path = url.getPath();
-        }
+        String path = NEOCLIPSE_SETTINGS_DIR;
         for ( String element : elements )
         {
             path += File.separator + element;
         }
         File dir = new File( path );
-        if ( !dir.exists() )
+        if ( !dir.exists() && !dir.mkdirs() )
         {
-            if ( !dir.mkdirs() )
-            {
-                throw new IllegalArgumentException( "Could not create directory: " + dir );
-            }
+            throw new IllegalArgumentException( "Could not create directory: " + dir );
         }
         return dir;
     }

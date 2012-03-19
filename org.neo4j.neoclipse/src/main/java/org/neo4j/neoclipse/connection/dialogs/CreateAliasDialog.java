@@ -240,6 +240,7 @@ public class CreateAliasDialog extends TitleAreaDialog
         GridData gd_allowUpgrade = new GridData( 128, SWT.DEFAULT );
         allowUpgrade.setLayoutData( gd_allowUpgrade );
         allowUpgrade.setText( Config.ALLOW_STORE_UPGRADE );
+        allowUpgrade.setSelection( true );
 
         Label label4 = new Label( nameGroup, SWT.WRAP );
         label4.setText( ( "User" ) );

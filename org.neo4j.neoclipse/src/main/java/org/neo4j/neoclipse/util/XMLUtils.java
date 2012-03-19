@@ -41,7 +41,9 @@ public class XMLUtils
     {
         try
         {
-            XMLWriter xmlWriter = new XMLWriter( new FileOutputStream( pFile ), OutputFormat.createPrettyPrint() );
+            pFile.getParentFile().mkdirs();
+            FileOutputStream fileOutputStream = new FileOutputStream( pFile );
+            XMLWriter xmlWriter = new XMLWriter( fileOutputStream, OutputFormat.createPrettyPrint() );
             xmlWriter.startDocument();
             xmlWriter.write( pRoot );
             xmlWriter.endDocument();
