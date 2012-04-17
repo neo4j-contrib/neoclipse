@@ -9,20 +9,19 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.osgi.service.datalocation.Location;
 import org.json.CDL;
 import org.json.JSONArray;
-import org.json.JSONObject;
 import org.json.XML;
 
 public class DataExportUtils
 {
 
-    public static File exportToXml( String jsonString ) throws Exception
+    public static File exportToXml( JSONArray jSONArray ) throws Exception
     {
         File file = getFile( ".xml" );
-        JSONObject array = new JSONObject( "{\"node\":" + jsonString + "}" );
-        String xml = XML.toString( array, "neo4j" );
-        // System.out.println( xml );
+        StringBuilder sb = new StringBuilder( "<rootnode>" );
+        sb.append( XML.toString( jSONArray, "node" ) );
+        sb.append( "</rootnode>" );
         BufferedWriter bw = new BufferedWriter( new FileWriter( file ) );
-        bw.write( xml );
+        bw.write( sb.toString() );
         bw.close();
         return file;
     }
@@ -38,11 +37,10 @@ public class DataExportUtils
         return file;
     }
 
-    public static File exportToCsv( String jsonString ) throws Exception
+    public static File exportToCsv( JSONArray jsonString ) throws Exception
     {
         File file = getFile( ".csv" );
-        JSONArray array = new JSONArray( jsonString );
-        String csv = CDL.toString( array );
+        String csv = CDL.toString( jsonString );
         BufferedWriter out = new BufferedWriter( new FileWriter( file ) );
         out.write( csv );
         out.close();

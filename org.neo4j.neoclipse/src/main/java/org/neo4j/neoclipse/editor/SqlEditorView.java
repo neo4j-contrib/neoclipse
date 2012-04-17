@@ -47,7 +47,7 @@ public class SqlEditorView extends ViewPart implements Listener
     private ToolItem exportCsv;
     private ToolItem exportJson;
     private ToolItem exportXml;
-    private String jsonString;
+    private JSONArray jsonString;
     private static boolean altKeyPressed = false;
     private static boolean enterKeyPressed = false;
 
@@ -255,7 +255,7 @@ public class SqlEditorView extends ViewPart implements Listener
         {
             try
             {
-                File file = DataExportUtils.exportToJson( jsonString );
+                File file = DataExportUtils.exportToJson( jsonString.toString() );
                 ErrorMessage.showDialog( "Json Export", "Json file is created at " + file );
             }
             catch ( Exception e )
@@ -307,7 +307,7 @@ public class SqlEditorView extends ViewPart implements Listener
         List<String> columns = cypherResultSet.getColumns();
 
         JSONArray jsonArray = new JSONArray( resultSetList );
-        jsonString = jsonArray.toString();
+        jsonString = jsonArray;
         messageStatus.setText( cypherResultSet.getMessage() );
         TableViewer tableViewer = new TableViewer( tabFolder, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL | SWT.MULTI
                                                               | SWT.VIRTUAL | SWT.FULL_SELECTION );

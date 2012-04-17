@@ -2,8 +2,8 @@
 <classpath>
 	<classpathentry kind="src" output="target/classes" path="src/main/java"/>
 	<classpathentry kind="src" output="target/test-classes" path="src/test/java"/>
+	<classpathentry exported="true" kind="lib" path="lib/json.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/scala-library-2.9.0-1.jar"/>
-	<classpathentry kind="lib" path="lib/json-20090211.jar"/>
 	<classpathentry kind="lib" path="lib/lucene-core-3.5.0.jar"/>
 	<classpathentry kind="lib" path="lib/neo4j-cypher-1.6.1.jar"/>
 	<classpathentry kind="lib" path="lib/neo4j-graph-algo-1.6.1.jar"/>

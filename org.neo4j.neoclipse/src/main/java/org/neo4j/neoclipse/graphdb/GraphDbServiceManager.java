@@ -46,6 +46,7 @@ import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.connection.Alias;
 import org.neo4j.neoclipse.connection.ConnectionMode;
 import org.neo4j.neoclipse.editor.CypherResultSet;
+import org.neo4j.neoclipse.editor.NodeWrapper;
 import org.neo4j.neoclipse.preference.Preferences;
 import org.neo4j.neoclipse.util.ApplicationUtil;
 import org.neo4j.neoclipse.view.UiHelper;
@@ -525,7 +526,7 @@ public class GraphDbServiceManager
                         if ( objectNode instanceof Node )
                         {
                             Node node = (Node) objectNode;
-                            Map<String, Object> oMap = ApplicationUtil.extractToMap( node );
+                            NodeWrapper oMap = ApplicationUtil.extractToNodeWrapper( node );
                             obj = oMap;
                         }
                         else
@@ -549,19 +550,19 @@ public class GraphDbServiceManager
      * @return List<Map<String, Object>>
      * @throws Exception
      */
-    public List<Map<String, Object>> getAllNodes() throws Exception
+    public List<NodeWrapper> getAllNodes() throws Exception
     {
-        return submitTask( new GraphCallable<List<Map<String, Object>>>()
+        return submitTask( new GraphCallable<List<NodeWrapper>>()
         {
             @Override
-            public List<Map<String, Object>> call( GraphDatabaseService graphDb )
+            public List<NodeWrapper> call( GraphDatabaseService graphDb )
             {
-                final LinkedList<Map<String, Object>> list = new LinkedList<Map<String, Object>>();
+                final LinkedList<NodeWrapper> list = new LinkedList<NodeWrapper>();
                 Iterable<Node> iterable = GlobalGraphOperations.at( graphDb ).getAllNodes();
                 for ( Node node : iterable )
                 {
-                    Map<String, Object> oMap = ApplicationUtil.extractToMap( node );
-                    list.add( oMap );
+                    NodeWrapper nodeWrapper = ApplicationUtil.extractToNodeWrapper( node );
+                    list.add( nodeWrapper );
                 }
                 return list;
             }
