@@ -14,11 +14,11 @@ import org.json.XML;
 public class DataExportUtils
 {
 
-    public static File exportToXml( JSONArray jSONArray ) throws Exception
+    public static File exportToXml( String jsonString ) throws Exception
     {
         File file = getFile( ".xml" );
         StringBuilder sb = new StringBuilder( "<rootnode>" );
-        sb.append( XML.toString( jSONArray, "node" ) );
+        sb.append( XML.toString( new JSONArray( jsonString ), "node" ) );
         sb.append( "</rootnode>" );
         BufferedWriter bw = new BufferedWriter( new FileWriter( file ) );
         bw.write( sb.toString() );
@@ -37,10 +37,10 @@ public class DataExportUtils
         return file;
     }
 
-    public static File exportToCsv( JSONArray jsonString ) throws Exception
+    public static File exportToCsv( String jsonString ) throws Exception
     {
         File file = getFile( ".csv" );
-        String csv = CDL.toString( jsonString );
+        String csv = CDL.toString( new JSONArray( jsonString ) );
         BufferedWriter out = new BufferedWriter( new FileWriter( file ) );
         out.write( csv );
         out.close();

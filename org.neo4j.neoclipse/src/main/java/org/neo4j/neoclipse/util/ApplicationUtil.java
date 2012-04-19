@@ -25,18 +25,32 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.json.JSONObject;
+import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.PropertyContainer;
 import org.neo4j.graphdb.Relationship;
 import org.neo4j.neoclipse.editor.NodeWrapper;
 import org.neo4j.neoclipse.editor.RelationshipWrapper;
 
+import com.google.gson.Gson;
+
 public class ApplicationUtil
 {
 
     public static final String NEOCLIPSE_SETTINGS_DIR = System.getProperty( "user.home" ) + File.separator
                                                         + ".neoclipse";
+
+    private static final Gson gson = new Gson();
+
+    public static String toJson( Object object )
+    {
+        return gson.toJson( object );
+    }
+
+    public static <T> T toJson( String json, Class<T> clazz )
+    {
+        return gson.fromJson( json, clazz );
+    }
 
     public static File dirInWorkspace( final String... elements )
     {
@@ -63,16 +77,16 @@ public class ApplicationUtil
         return ( string == null || string.trim().isEmpty() );
     }
 
-    public static NodeWrapper extractToNodeWrapper( Node node )
+    public static NodeWrapper extractToNodeWrapper( Node node, boolean includeRelation )
     {
 
         NodeWrapper nodeWrapper = new NodeWrapper( node.getId() );
         
         Map<String, Object> oMap = extractToMapFromProperties( node );
         nodeWrapper.setPropertyMap( oMap );
-        if ( node.hasRelationship() )
+        if ( node.hasRelationship() && includeRelation )
         {
-            for ( Relationship relationship : node.getRelationships() )
+            for ( Relationship relationship : node.getRelationships( Direction.OUTGOING ) )
             {
                 RelationshipWrapper rw = new RelationshipWrapper( relationship.getId() );
                 relationship.getType().name();
@@ -109,9 +123,9 @@ public class ApplicationUtil
             return "";
         }
         Class<? extends Object> valueClass = value.getClass();
-        if ( NodeWrapper.class.isAssignableFrom( valueClass ) )
+        if ( valueClass.isPrimitive() )
         {
-            return JSONObject.wrap( value ).toString();
+            return value.toString();
         }
         else if ( List.class.isAssignableFrom( valueClass ) )
         {
@@ -177,7 +191,7 @@ public class ApplicationUtil
             }
             return stringValue;
         }
-        return value.toString();
+        return toJson( value );
     }
 
 }

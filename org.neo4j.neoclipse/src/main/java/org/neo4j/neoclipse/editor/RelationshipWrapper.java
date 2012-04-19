@@ -41,26 +41,5 @@ public class RelationshipWrapper extends BaseWrapper
 
 
 
-    // @Override
-    // public String toString()
-    // {
-    // try
-    // {
-    // return JSONObject.valueToString( this );
-    // }
-    // catch ( JSONException e )
-    // {
-    // throw new RuntimeException( e );
-    // }
-    // // StringBuilder sb = new StringBuilder( "relation:{" );
-    // // sb.append( "endNodeId:" + endNodeId );
-    // // sb.append( ",relationship:" + relationshipType );
-    // // if ( !getPropertyMap().isEmpty() )
-    // // {
-    // // sb.append( "," + ApplicationUtil.getPropertyValue( getPropertyMap() )
-    // // );
-    // // }
-    // // return sb.toString() + "}";
-    // }
 
 }

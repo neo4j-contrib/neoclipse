@@ -27,7 +27,6 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.ui.part.ViewPart;
-import org.json.JSONArray;
 import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.Icons;
 import org.neo4j.neoclipse.graphdb.GraphDbServiceManager;
@@ -35,6 +34,7 @@ import org.neo4j.neoclipse.util.ApplicationUtil;
 import org.neo4j.neoclipse.util.DataExportUtils;
 import org.neo4j.neoclipse.view.ErrorMessage;
 import org.neo4j.neoclipse.view.UiHelper;
+
 
 public class SqlEditorView extends ViewPart implements Listener
 {
@@ -47,7 +47,7 @@ public class SqlEditorView extends ViewPart implements Listener
     private ToolItem exportCsv;
     private ToolItem exportJson;
     private ToolItem exportXml;
-    private JSONArray jsonString;
+    private String jsonString;
     private static boolean altKeyPressed = false;
     private static boolean enterKeyPressed = false;
 
@@ -211,7 +211,7 @@ public class SqlEditorView extends ViewPart implements Listener
                     Map<String, Object> rs = (Map<String, Object>) element;
                     Object value = rs.get( column );
                     value = ApplicationUtil.getPropertyValue( value );
-                    return value.toString().replace( "{", "" ).replace( "}", "" );
+                    return value.toString();
                 }
             } );
         }
@@ -294,7 +294,7 @@ public class SqlEditorView extends ViewPart implements Listener
                 catch ( Exception e )
                 {
                     enableDisableToolBars( false );
-                    ErrorMessage.showDialog( "execute cypher query", e );
+                    ErrorMessage.showDialog( "execute cypher query", e.getMessage() );
                 }
             }
 
@@ -306,8 +306,7 @@ public class SqlEditorView extends ViewPart implements Listener
         List<Map<String, Object>> resultSetList = cypherResultSet.getIterator();
         List<String> columns = cypherResultSet.getColumns();
 
-        JSONArray jsonArray = new JSONArray( resultSetList );
-        jsonString = jsonArray;
+        jsonString = ApplicationUtil.toJson( resultSetList );
         messageStatus.setText( cypherResultSet.getMessage() );
         TableViewer tableViewer = new TableViewer( tabFolder, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL | SWT.MULTI
                                                               | SWT.VIRTUAL | SWT.FULL_SELECTION );

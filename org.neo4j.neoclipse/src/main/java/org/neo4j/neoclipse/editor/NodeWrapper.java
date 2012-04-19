@@ -1,7 +1,9 @@
 package org.neo4j.neoclipse.editor;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
+
+import org.neo4j.neoclipse.util.ApplicationUtil;
 
 public class NodeWrapper extends BaseWrapper
 {
@@ -9,7 +11,7 @@ public class NodeWrapper extends BaseWrapper
     private static final long serialVersionUID = 1L;
 
 
-    private List<RelationshipWrapper> relation = new LinkedList<RelationshipWrapper>();
+    private List<RelationshipWrapper> relation = new ArrayList<RelationshipWrapper>();
 
     public NodeWrapper()
     {
@@ -38,26 +40,10 @@ public class NodeWrapper extends BaseWrapper
     }
 
 
-    // @Override
-    // public String toString()
-    // {
-    // try
-    // {
-    // return JSONObject.valueToString( this );
-    // }
-    // catch ( JSONException e )
-    // {
-    // throw new RuntimeException( e );
-    // }
-    // // StringBuilder sb = new StringBuilder( "node:{id:" + getId() );
-    // // sb.append( ",relations:{" + ApplicationUtil.getPropertyValue(
-    // // relation ) + "}" );
-    // // if ( !getPropertyMap().isEmpty() )
-    // // {
-    // // sb.append( "," + ApplicationUtil.getPropertyValue( getPropertyMap() )
-    // // );
-    // // }
-    // // return sb.toString() + "}";
-    // }
+    @Override
+    public String toString()
+    {
+        return ApplicationUtil.toJson( this );
+    }
 
 }

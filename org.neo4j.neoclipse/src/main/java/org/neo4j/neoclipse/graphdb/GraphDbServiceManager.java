@@ -501,6 +501,10 @@ public class GraphDbServiceManager
             @Override
             public CypherResultSet call( GraphDatabaseService graphDb )
             {
+                if ( !isRunning() )
+                {
+                    throw new RuntimeException( "Please start the graphdb." );
+                }
                 final String cypherQuery = cypherSql.replace( '\"', '\'' ).replace( '\n', ' ' );
                 ExecutionEngine engine = new ExecutionEngine( graphDb );
                 ExecutionResult result = engine.execute( cypherQuery );
@@ -526,7 +530,7 @@ public class GraphDbServiceManager
                         if ( objectNode instanceof Node )
                         {
                             Node node = (Node) objectNode;
-                            NodeWrapper oMap = ApplicationUtil.extractToNodeWrapper( node );
+                            NodeWrapper oMap = ApplicationUtil.extractToNodeWrapper( node, true );
                             obj = oMap;
                         }
                         else
@@ -561,7 +565,7 @@ public class GraphDbServiceManager
                 Iterable<Node> iterable = GlobalGraphOperations.at( graphDb ).getAllNodes();
                 for ( Node node : iterable )
                 {
-                    NodeWrapper nodeWrapper = ApplicationUtil.extractToNodeWrapper( node );
+                    NodeWrapper nodeWrapper = ApplicationUtil.extractToNodeWrapper( node, true );
                     list.add( nodeWrapper );
                 }
                 return list;

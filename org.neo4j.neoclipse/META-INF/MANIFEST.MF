@@ -18,6 +18,7 @@ Bundle-ClassPath: .,
  lib/neo4j-kernel-1.6.1.jar,
  lib/neo4j-lucene-index-1.6.1.jar,
  lib/neo4j-udc-1.6.1.jar,
+ lib/gson-2.1.jar,
  lib/json.jar
 Import-Package: org.eclipse.core.commands.common,
  org.eclipse.core.runtime,
