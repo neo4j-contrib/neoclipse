@@ -5,13 +5,13 @@
 	<classpathentry exported="true" kind="lib" path="lib/neo4j-rest-graphdb-1.7-SNAPSHOT.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jackson-core-asl-1.9.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jackson-mapper-asl-1.9.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jersey-client-1.9.1.jar" sourcepath="C:/Users/Koosie/.m2/repository/com/sun/jersey/jersey-client/1.9.1/jersey-client-1.9.1-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jersey-client-1.9.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jersey-core-1.9.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/neo4j-graph-matching-1.7.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/neo4j-cypher-1.7.jar" sourcepath="C:/Users/Koosie/.m2/repository/org/neo4j/neo4j-cypher/1.7/neo4j-cypher-1.7-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/neo4j-cypher-1.7.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/neo4j-graph-algo-1.7.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/neo4j-jmx-1.7.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/neo4j-kernel-1.7.jar" sourcepath="C:/Users/Koosie/.m2/repository/org/neo4j/neo4j-kernel/1.7/neo4j-kernel-1.7-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/neo4j-kernel-1.7.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/neo4j-lucene-index-1.7.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/neo4j-udc-1.7.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/json.jar"/>
