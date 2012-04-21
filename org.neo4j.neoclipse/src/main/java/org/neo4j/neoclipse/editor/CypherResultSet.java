@@ -1,6 +1,7 @@
 package org.neo4j.neoclipse.editor;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -12,10 +13,10 @@ public class CypherResultSet implements Serializable
      */
     private static final long serialVersionUID = 1L;
     private final List<Map<String, Object>> iterator;
-    private final List<String> columns;
+    private final Collection<String> columns;
     private final String message;
 
-    public CypherResultSet( List<Map<String, Object>> resultsList, List<String> columns, String message )
+    public CypherResultSet( List<Map<String, Object>> resultsList, Collection<String> columns, String message )
     {
         this.iterator = resultsList;
         this.columns = columns;
@@ -27,7 +28,7 @@ public class CypherResultSet implements Serializable
         return iterator;
     }
 
-    public List<String> getColumns()
+    public Collection<String> getColumns()
     {
         return columns;
     }

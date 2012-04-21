@@ -293,8 +293,9 @@ public class SqlEditorView extends ViewPart implements Listener
                 }
                 catch ( Exception e )
                 {
+                    e.printStackTrace();
                     enableDisableToolBars( false );
-                    ErrorMessage.showDialog( "execute cypher query", e.getMessage() );
+                    ErrorMessage.showDialog( "execute cypher query", e );
                 }
             }
 
@@ -304,10 +305,10 @@ public class SqlEditorView extends ViewPart implements Listener
     private void displayResultSet( CypherResultSet cypherResultSet )
     {
         List<Map<String, Object>> resultSetList = cypherResultSet.getIterator();
-        List<String> columns = cypherResultSet.getColumns();
+        Collection<String> columns = cypherResultSet.getColumns();
 
         jsonString = ApplicationUtil.toJson( resultSetList );
-        messageStatus.setText( cypherResultSet.getMessage() );
+        messageStatus.setText( cypherResultSet.getMessage() != null ? cypherResultSet.getMessage() : "" );
         TableViewer tableViewer = new TableViewer( tabFolder, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL | SWT.MULTI
                                                               | SWT.VIRTUAL | SWT.FULL_SELECTION );
         createColumns( tableViewer, columns );
