@@ -294,13 +294,25 @@ public class NeoGraphMenu
         gc.fillRectangle( image.getBounds() );
         gc.dispose();
         RELTYPES_DEFAULT_IMG = ImageDescriptor.createFromImage( image );
-        Action dummyAction = new Action( "(disabled)" )
+        Action dummyAction = new Action( "Select two nodes to create a relationship between them" )
         {
         };
         dummyAction.setEnabled( false );
         addRelMenuMgrFake.add( dummyAction );
+        dummyAction = new Action( "Select at least one node to create an end node" )
+        {
+        };
+        dummyAction.setEnabled( false );
         addOutNodeMenuMgrFake.add( dummyAction );
+        dummyAction = new Action( "Select at least one node to create a start node" )
+        {
+        };
+        dummyAction.setEnabled( false );
         addInNodeMenuMgrFake.add( dummyAction );
+        dummyAction = new Action( "Select a single node to add a loop" )
+        {
+        };
+        dummyAction.setEnabled( false );
         addLoopMenuMgrFake.add( dummyAction );
     }
 
