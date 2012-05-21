@@ -66,7 +66,6 @@ import org.neo4j.neoclipse.help.HelpContextConstants;
 import org.neo4j.neoclipse.preference.Preferences;
 import org.neo4j.neoclipse.property.NeoPropertySheetPage;
 import org.neo4j.neoclipse.reltype.RelationshipTypeView;
-import org.neo4j.tooling.GlobalGraphOperations;
 
 /**
  * This class is a view that shows the contents of a Neo database as a graph of
@@ -539,7 +538,7 @@ public class NeoGraphViewPart extends ViewPart implements IZoomableWorkbenchPart
                     {
                         // so, find a more friendly node if possible!
                         int tries = 0;
-                        for ( Node candidateNode : GlobalGraphOperations.at( graphDb ).getAllNodes() )
+                        for ( Node candidateNode : graphDb.getAllNodes() )
                         {
                             if ( node.equals( candidateNode ) )
                             {
@@ -851,8 +850,11 @@ public class NeoGraphViewPart extends ViewPart implements IZoomableWorkbenchPart
             }
             else if ( event.getStatus() == GraphDbServiceStatus.STOPPING )
             {
+                if ( browserHistory != null )
+                {
                 browserHistory.clear();
                 updateNavStatus();
+                }
                 menu.setEnabledSyncAction( false );
                 menu.setEnabledStartAction( true );
                 menu.setEnabledStopAction( false );

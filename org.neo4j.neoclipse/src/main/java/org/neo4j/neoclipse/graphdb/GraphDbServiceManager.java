@@ -18,6 +18,9 @@
  */
 package org.neo4j.neoclipse.graphdb;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -46,10 +49,11 @@ import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.connection.Alias;
 import org.neo4j.neoclipse.connection.ConnectionMode;
 import org.neo4j.neoclipse.editor.CypherResultSet;
+import org.neo4j.neoclipse.editor.NodeWrapper;
 import org.neo4j.neoclipse.preference.Preferences;
 import org.neo4j.neoclipse.util.ApplicationUtil;
 import org.neo4j.neoclipse.view.UiHelper;
-import org.neo4j.tooling.GlobalGraphOperations;
+import org.neo4j.rest.graphdb.RestGraphDatabase;
 
 
 /**
@@ -93,14 +97,10 @@ public class GraphDbServiceManager
                 {
                 case REMOTE:
                 {
-                    // UN- COMMENT BELOW COMMENTED LINES WHEN REST IS SUPPORTED
-                    throw new UnsupportedOperationException( "Currently remote connections are not supported." );
-                    // graphDb = new RestGraphDatabase( currentAlias.getUri(),
-                    // currentAlias.getUserName(),
-                    // currentAlias.getPassword() );
-                    // logInfo(
-                    // "connected to remote neo4j using neo4j rest api." );
-                    // break;
+                    graphDb = new RestGraphDatabase( currentAlias.getUri(), currentAlias.getUserName(),
+                            currentAlias.getPassword() );
+                    logInfo( "connected to remote neo4j using neo4j rest api." );
+                    break;
 
                 }
                 case LOCAL:
@@ -500,14 +500,31 @@ public class GraphDbServiceManager
             @Override
             public CypherResultSet call( GraphDatabaseService graphDb )
             {
+                if ( !isRunning() )
+                {
+                    throw new RuntimeException( "Please start the graphdb." );
+                }
                 final String cypherQuery = cypherSql.replace( '\"', '\'' ).replace( '\n', ' ' );
-                ExecutionEngine engine = new ExecutionEngine( graphDb );
-                ExecutionResult result = engine.execute( cypherQuery );
-                final String message = result.toString().substring( result.toString().lastIndexOf( "+" ) + 1 ).trim();
-                final List<String> columns = result.columns();
-                final LinkedList<Map<String, Object>> resultList = new LinkedList<Map<String, Object>>();
+                String message = null;
+                Iterator<Map<String, Object>> iterator = null;
+                List<String> columns = new ArrayList<String>();
+                //
+                if ( currentAlias.getConnectionMode() != ConnectionMode.REMOTE )
+                {
+                    ExecutionEngine engine = new ExecutionEngine( graphDb );
+                    ExecutionResult result = engine.execute( cypherQuery );
+                    message = result.toString().substring( result.toString().lastIndexOf( "+" ) + 1 ).trim();
+                    columns = result.columns();
+                    iterator = result.iterator();
+                }
+                else if ( currentAlias.getConnectionMode() == ConnectionMode.REMOTE )
+                {
+                    Iterable<Map<String, Object>> execute = ( (RestGraphDatabase) graphDb ).execute( cypherQuery,
+                            new HashMap<String, Object>() );
+                    iterator = execute.iterator();
+                }
 
-                final Iterator<Map<String, Object>> iterator = result.iterator();
+                final LinkedList<Map<String, Object>> resultList = new LinkedList<Map<String, Object>>();
                 while ( iterator.hasNext() )
                 {
                     Map<String, Object> resultMap = iterator.next();
@@ -515,6 +532,10 @@ public class GraphDbServiceManager
                     Set<Entry<String, Object>> entrySet = resultMap.entrySet();
                     for ( Entry<String, Object> entry : entrySet )
                     {
+                        if ( !columns.contains( entry.getKey() ) )
+                        {
+                            columns.add( entry.getKey() );
+                        } 
                         Object objectNode = entry.getValue();
                         if ( objectNode == null )
                         {
@@ -525,7 +546,7 @@ public class GraphDbServiceManager
                         if ( objectNode instanceof Node )
                         {
                             Node node = (Node) objectNode;
-                            Map<String, Object> oMap = ApplicationUtil.extractToMap( node );
+                            NodeWrapper oMap = ApplicationUtil.extractToNodeWrapper( node, true );
                             obj = oMap;
                         }
                         else
@@ -539,6 +560,13 @@ public class GraphDbServiceManager
                 return new CypherResultSet( resultList, columns, message );
             }
 
+            private List<String> getColumns( String cypherQuery )
+            {
+                int indexOf = cypherQuery.toLowerCase().indexOf( "return" );
+                String[] columns = cypherQuery.substring( indexOf + 7 ).split( "," );
+                return Arrays.asList( columns );
+            }
+
         }, "execute cypher query" ).get();
     }
 
@@ -549,19 +577,19 @@ public class GraphDbServiceManager
      * @return List<Map<String, Object>>
      * @throws Exception
      */
-    public List<Map<String, Object>> getAllNodes() throws Exception
+    public List<NodeWrapper> getAllNodes() throws Exception
     {
-        return submitTask( new GraphCallable<List<Map<String, Object>>>()
+        return submitTask( new GraphCallable<List<NodeWrapper>>()
         {
             @Override
-            public List<Map<String, Object>> call( GraphDatabaseService graphDb )
+            public List<NodeWrapper> call( GraphDatabaseService graphDb )
             {
-                final LinkedList<Map<String, Object>> list = new LinkedList<Map<String, Object>>();
-                Iterable<Node> iterable = GlobalGraphOperations.at( graphDb ).getAllNodes();
+                final LinkedList<NodeWrapper> list = new LinkedList<NodeWrapper>();
+                Iterable<Node> iterable =  graphDb.getAllNodes();
                 for ( Node node : iterable )
                 {
-                    Map<String, Object> oMap = ApplicationUtil.extractToMap( node );
-                    list.add( oMap );
+                    NodeWrapper nodeWrapper = ApplicationUtil.extractToNodeWrapper( node, true );
+                    list.add( nodeWrapper );
                 }
                 return list;
             }

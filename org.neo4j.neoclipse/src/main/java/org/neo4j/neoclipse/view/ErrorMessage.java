@@ -22,7 +22,8 @@ import org.eclipse.jface.dialogs.MessageDialog;
 
 public class ErrorMessage
 {
-    private static final int MAX_DEPTH = 10;
+    private static final int MAX_DEPTH = 1; // Increase this depth in case you
+                                            // want more details.
 
     public static String getErrorMessage( final Throwable exception )
     {

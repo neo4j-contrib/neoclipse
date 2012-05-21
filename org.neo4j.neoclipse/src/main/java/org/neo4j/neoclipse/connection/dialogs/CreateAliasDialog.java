@@ -34,7 +34,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.neo4j.kernel.Config;
+import org.neo4j.kernel.configuration.Config;
 import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.connection.Alias;
 import org.neo4j.neoclipse.connection.ConnectionsView;
@@ -240,6 +240,7 @@ public class CreateAliasDialog extends TitleAreaDialog
         GridData gd_allowUpgrade = new GridData( 128, SWT.DEFAULT );
         allowUpgrade.setLayoutData( gd_allowUpgrade );
         allowUpgrade.setText( Config.ALLOW_STORE_UPGRADE );
+        allowUpgrade.setSelection( true );
 
         Label label4 = new Label( nameGroup, SWT.WRAP );
         label4.setText( ( "User" ) );
