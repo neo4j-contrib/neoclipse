@@ -20,13 +20,13 @@ package org.neo4j.neoclipse.connection.actions;
 
 import java.io.File;
 import java.util.List;
-import java.util.Map;
 
-import org.json.JSONArray;
 import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.action.Actions;
 import org.neo4j.neoclipse.connection.AbstractConnectionTreeAction;
+import org.neo4j.neoclipse.editor.NodeWrapper;
 import org.neo4j.neoclipse.graphdb.GraphDbServiceManager;
+import org.neo4j.neoclipse.util.ApplicationUtil;
 import org.neo4j.neoclipse.util.DataExportUtils;
 import org.neo4j.neoclipse.view.ErrorMessage;
 
@@ -48,9 +48,8 @@ public class ExportToJsonAction extends AbstractConnectionTreeAction
         try
         {
             final GraphDbServiceManager gsm = Activator.getDefault().getGraphDbServiceManager();
-            final List<Map<String, Object>> resultSetList = gsm.getAllNodes();
-            final JSONArray jsonArray = new JSONArray( resultSetList );
-            File file = DataExportUtils.exportToJson( jsonArray.toString() );
+            final List<NodeWrapper> resultSetList = gsm.getAllNodes();
+            File file = DataExportUtils.exportToJson( ApplicationUtil.toJson( resultSetList ) );
             ErrorMessage.showDialog( "Json Export", "Json file is created at " + file );
         }
         catch ( Exception e )

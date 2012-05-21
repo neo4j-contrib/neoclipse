@@ -19,54 +19,50 @@
 package org.neo4j.neoclipse.util;
 
 import java.io.File;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.osgi.service.datalocation.Location;
+import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.PropertyContainer;
+import org.neo4j.graphdb.Relationship;
+import org.neo4j.neoclipse.editor.NodeWrapper;
+import org.neo4j.neoclipse.editor.RelationshipWrapper;
+
+import com.google.gson.Gson;
 
 public class ApplicationUtil
 {
 
-    /** Name of file that contains connection aliases. */
-    public static final String USER_ALIAS_FILE_NAME = dirInWorkspace( "settings" ) + File.separator
-                                                      + "NeoDbAliases.xml";
+    public static final String NEOCLIPSE_SETTINGS_DIR = System.getProperty( "user.home" ) + File.separator
+                                                        + ".neoclipse";
+
+    private static final Gson gson = new Gson();
+
+    public static String toJson( Object object )
+    {
+        return gson.toJson( object );
+    }
+
+    public static <T> T toJson( String json, Class<T> clazz )
+    {
+        return gson.fromJson( json, clazz );
+    }
 
     public static File dirInWorkspace( final String... elements )
     {
-        Location workspace = Platform.getUserLocation();
-        if ( workspace == null )
-        {
-            throw new RuntimeException( "Can't find workspace." );
-        }
-        URL url = workspace.getDefault();
-        String path;
-        try
-        {
-            path = url.toURI().getPath();
-        }
-        catch ( URISyntaxException e )
-        {
-            // workaround for Windows
-            System.out.println( "Using path workaround for path: " + url );
-            path = url.getPath();
-        }
+        String path = NEOCLIPSE_SETTINGS_DIR;
         for ( String element : elements )
         {
             path += File.separator + element;
         }
         File dir = new File( path );
-        if ( !dir.exists() )
+        if ( !dir.exists() && !dir.mkdirs() )
         {
-            if ( !dir.mkdirs() )
-            {
-                throw new IllegalArgumentException( "Could not create directory: " + dir );
-            }
+            throw new IllegalArgumentException( "Could not create directory: " + dir );
         }
         return dir;
     }
@@ -81,88 +77,121 @@ public class ApplicationUtil
         return ( string == null || string.trim().isEmpty() );
     }
 
-    public static Map<String, Object> extractToMap( Node node )
+    public static NodeWrapper extractToNodeWrapper( Node node, boolean includeRelation )
+    {
+
+        NodeWrapper nodeWrapper = new NodeWrapper( node.getId() );
+        
+        Map<String, Object> oMap = extractToMapFromProperties( node );
+        nodeWrapper.setPropertyMap( oMap );
+        if ( node.hasRelationship() && includeRelation )
+        {
+            for ( Relationship relationship : node.getRelationships( Direction.OUTGOING ) )
+            {
+                RelationshipWrapper rw = new RelationshipWrapper( relationship.getId() );
+                relationship.getType().name();
+                rw.setEndNodeId( relationship.getEndNode().getId()  );
+                rw.setPropertyMap( extractToMapFromProperties( relationship ) );
+                rw.setRelationshipType( relationship.getType().name() );
+                nodeWrapper.addRelation( rw );
+            }
+        }
+        
+        return nodeWrapper;
+    }
+
+    private static Map<String, Object> extractToMapFromProperties( PropertyContainer propertyContainer )
     {
         Map<String, Object> oMap = new LinkedHashMap<String, Object>();
-        oMap.put( "id", node.getId() );
-        for ( String propertyName : node.getPropertyKeys() )
+        for ( String propertyName : propertyContainer.getPropertyKeys() )
         {
             boolean containsKey = oMap.containsKey( propertyName );
             if ( containsKey )
             {
-                throw new IllegalArgumentException( "Duplicate propertyName : " + propertyName + " present in "
-                                                    + node.toString() );
+                throw new IllegalArgumentException( "Duplicate propertyName : " + propertyName );
             }
-            oMap.put( propertyName, node.getProperty( propertyName ) );
+            oMap.put( propertyName, propertyContainer.getProperty( propertyName ) );
         }
         return oMap;
     }
 
-    public static Object getPropertyValue( Object value )
+    @SuppressWarnings( "unchecked" )
+    public static String getPropertyValue( Object value )
     {
-        if ( Map.class.isAssignableFrom( value.getClass() ) )
+        if ( value == null )
+        {
+            return "";
+        }
+        Class<? extends Object> valueClass = value.getClass();
+        if ( valueClass.isPrimitive() )
+        {
+            return value.toString();
+        }
+        else if ( List.class.isAssignableFrom( valueClass ) )
+        {
+            StringBuilder sb = new StringBuilder();
+            for ( Object obj : (List<?>) value )
+            {
+                sb.append( getPropertyValue( obj ) );
+            }
+            return sb.toString();
+        }
+        else if ( Map.class.isAssignableFrom( valueClass ) )
         {
             Map<String, Object> map = (Map<String, Object>) value;
             StringBuilder sb = new StringBuilder();
-            int i = 0;
-            for ( String key : map.keySet() )
+            for ( Entry<String, Object> entry : map.entrySet() )
             {
-                if ( i++ > 0 )
-                {
-                    sb.append( "," );
-                }
-                Object object = map.get( key );
-                sb.append( key + ":" + getPropertyValue( object ) );
+                sb.append( getPropertyValue( entry ) );
             }
             return sb.toString();
         }
-        else if ( Entry.class.isAssignableFrom( value.getClass() ) )
+        else if ( Entry.class.isAssignableFrom( valueClass ) )
         {
-            Entry entry = (Entry) value;
+            Entry<Object, Object> entry = (Entry<Object, Object>) value;
             StringBuilder sb = new StringBuilder();
-            sb.append( entry.getKey() + ":" + getPropertyValue( entry.getValue() ) );
+            sb.append( "," + entry.getKey() + ":" + getPropertyValue( entry.getValue() ) );
             return sb.toString();
         }
-        else if ( value.getClass().isArray() )
+        else if ( valueClass.isArray() )
         {
             String stringValue = "null";
-            Class eClass = value.getClass();
 
-            if ( eClass == byte[].class )
+            if ( valueClass == byte[].class )
             {
                 stringValue = Arrays.toString( (byte[]) value );
             }
-            else if ( eClass == short[].class )
+            else if ( valueClass == short[].class )
             {
                 stringValue = Arrays.toString( (short[]) value );
             }
-            else if ( eClass == int[].class )
+            else if ( valueClass == int[].class )
             {
                 stringValue = Arrays.toString( (int[]) value );
             }
-            else if ( eClass == long[].class )
+            else if ( valueClass == long[].class )
             {
                 stringValue = Arrays.toString( (long[]) value );
             }
-            else if ( eClass == char[].class )
+            else if ( valueClass == char[].class )
             {
                 stringValue = Arrays.toString( (char[]) value );
             }
-            else if ( eClass == float[].class )
+            else if ( valueClass == float[].class )
             {
                 stringValue = Arrays.toString( (float[]) value );
             }
-            else if ( eClass == double[].class )
+            else if ( valueClass == double[].class )
             {
                 stringValue = Arrays.toString( (double[]) value );
             }
-            else if ( eClass == boolean[].class )
+            else if ( valueClass == boolean[].class )
             {
                 stringValue = Arrays.toString( (boolean[]) value );
             }
             return stringValue;
         }
-        return value.toString();
+        return toJson( value );
     }
 
 }
