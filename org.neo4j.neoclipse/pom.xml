@@ -5,38 +5,16 @@
   <parent>
     <artifactId>neoclipse</artifactId>
     <groupId>org.neo4j</groupId>
-    <version>1.6</version>
+    <version>1.8-SNAPSHOT</version>
+    <relativePath>..</relativePath>
   </parent>
   <groupId>org.neo4j</groupId>
   <artifactId>org.neo4j.neoclipse</artifactId>
-  <version>1.6</version>
+  <version>1.8-SNAPSHOT</version>
   <name>Neoclipse</name>
 
   <properties>
     <license-text.header>ApacheLicense-2.0-header.txt</license-text.header>
   </properties>
 
-  <dependencies>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.neo4j</groupId>
-      <artifactId>neo4j</artifactId>
-      <version>1.6.M03</version>
-      <type>pom</type>
-      <scope>compile</scope>
-    </dependency>
-  </dependencies>
-  <build>
-    <resources>
-      <resource>
-        <directory>${basedir}</directory>
-        <includes>
-          <include>plugin.xml</include>
-        </includes>
-      </resource>
-    </resources>
-  </build>
 </project>
