@@ -135,12 +135,12 @@ public class Application extends WorkbenchAdvisor implements IApplication
             IWorkbenchHelpSystem helpSystem = PlatformUI.getWorkbench().getHelpSystem();
             helpSystem.displayDynamicHelp();
 
-            NeoGraphViewPart graphView = (NeoGraphViewPart) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(
-                    NeoGraphViewPart.ID );
-            if ( graphView != null )
-            {
-                graphView.setFocus();
-            }
+//            NeoGraphViewPart graphView = (NeoGraphViewPart) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(
+//                    NeoGraphViewPart.ID );
+//            if ( graphView != null )
+//            {
+//                graphView.setFocus();
+//            }
         }
     }
 }

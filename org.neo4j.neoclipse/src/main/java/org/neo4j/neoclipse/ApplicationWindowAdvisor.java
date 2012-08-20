@@ -75,7 +75,7 @@ public class ApplicationWindowAdvisor extends WorkbenchWindowAdvisor
         super.postWindowOpen();
         IWorkbenchWindowConfigurer configurer = getWindowConfigurer();
         ICoolBarManager coolBar = configurer.getActionBarConfigurer().getCoolBarManager();
-        coolBar.removeAll();
+//        coolBar.removeAll();
         actionBarAdvisor.fillCoolBar( coolBar );
         coolBar.update( true );
     }
