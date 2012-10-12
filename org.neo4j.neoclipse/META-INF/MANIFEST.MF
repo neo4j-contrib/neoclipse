@@ -62,4 +62,5 @@ Import-Package: org.eclipse.core.commands.common,
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.help,
- org.eclipse.core.resources
+ org.eclipse.core.resources,
+ org.eclipse.e4.ui.workbench.addons.swt
