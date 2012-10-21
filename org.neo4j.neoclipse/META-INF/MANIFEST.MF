@@ -2,30 +2,33 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Neoclipse
 Bundle-SymbolicName: org.neo4j.neoclipse;singleton:=true
-Bundle-Version: 1.6
+Bundle-Version: 1.8
 Bundle-Activator: org.neo4j.neoclipse.Activator
 Bundle-Vendor: Neo4j.org
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ClassPath: .,
- lib/geronimo-jta_1.1_spec-1.1.1.jar,
  lib/dom4j.jar,
- lib/scala-library-2.9.0-1.jar,
- lib/lucene-core-3.5.0.jar,
+ lib/geronimo-jta_1.1_spec-1.1.1.jar,
  lib/gson-2.1.jar,
+ lib/jackson-core-asl-1.9.9.jar,
+ lib/jackson-mapper-asl-1.9.9.jar,
+ lib/jersey-client-1.14.jar,
+ lib/jersey-core-1.14.jar,
  lib/json.jar,
- lib/neo4j-cypher-1.7.jar,
- lib/neo4j-graph-algo-1.7.jar,
- lib/neo4j-jmx-1.7.jar,
- lib/neo4j-kernel-1.7.jar,
- lib/neo4j-lucene-index-1.7.jar,
- lib/neo4j-udc-1.7.jar,
- lib/neo4j-graph-matching-1.7.jar,
- lib/jersey-client-1.9.1.jar,
- lib/jersey-core-1.9.jar,
- lib/jackson-core-asl-1.9.1.jar,
- lib/jackson-mapper-asl-1.9.1.jar,
- lib/neo4j-rest-graphdb-1.7-SNAPSHOT.jar
+ lib/lucene-core-3.5.0.jar,
+ lib/neo4j-cypher-1.8.jar,
+ lib/neo4j-graph-algo-1.8.jar,
+ lib/neo4j-graph-matching-1.8.jar,
+ lib/neo4j-jmx-1.8.jar,
+ lib/neo4j-kernel-1.8.jar,
+ lib/neo4j-lucene-index-1.8.jar,
+ lib/neo4j-rest-graphdb-1.7-SNAPSHOT.jar,
+ lib/neo4j-shell-1.8.jar,
+ lib/neo4j-udc-1.8.jar,
+ lib/org.apache.servicemix.bundles.jline-0.9.94_1.jar,
+ lib/scala-library-2.9.1-1.jar,
+ lib/server-api-1.8.jar
 Import-Package: org.eclipse.core.commands.common,
  org.eclipse.core.runtime,
  org.eclipse.core.runtime.preferences,
@@ -62,5 +65,4 @@ Import-Package: org.eclipse.core.commands.common,
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.help,
- org.eclipse.core.resources,
- org.eclipse.e4.ui.workbench.addons.swt
+ org.eclipse.core.resources
