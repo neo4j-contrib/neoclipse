@@ -1,0 +1,10 @@
+The Neoclipse database tool
+===========================
+
+Eclipse build setup instructions
+--------------------------------
+
+- install Eclipse Juno 3.8 - version from http://download.eclipse.org/eclipse/downloads/drops/R-3.8-201206081200/[here]
+- install GEF and ZEST from Eclipse->Help->Install New Software-> all available sites
+- restart eclipse
+- open eclipse
