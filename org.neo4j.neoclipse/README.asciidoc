@@ -7,4 +7,8 @@ Eclipse build setup instructions
 - install Eclipse Juno 3.8 - version from http://download.eclipse.org/eclipse/downloads/drops/R-3.8-201206081200/[here]
 - install GEF and ZEST from Eclipse->Help->Install New Software-> all available sites
 - restart eclipse
-- open eclipse
+    `git clone git://github.com/neo4j/neoclipse.git`
+- checkout branch JUNO
+    `git checkout -b juno origin/juno`
+- File->Import->existing project into workspace->point to your checked-out code under `org.neo4j.neoclipse/.project`
+- run Neoclipse from inside Eclispe by running `neoclipse.product`
