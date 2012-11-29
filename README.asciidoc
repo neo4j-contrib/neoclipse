@@ -1,26 +1,27 @@
+Neoclipse - a graph tool for Neo4j
+==================================
+
 Steps To Compile Neoclipse
+--------------------------
 
 Below are the baby steps telling how to compile neoclipse code from github.
 
-Step1: Download the Juno 3.8 version of eclipse from (Choose the platform accordingly) 
-http://www.oracle.com/technetwork/developer-tools/eclipse/downloads/index.html
+. Download the Juno 3.8 version of eclipse from (Choose the platform accordingly) http://www.oracle.com/technetwork/developer-tools/eclipse/downloads/index.html
 
-Step2: Extract to a known location (i.e. /home/eclipse or c:/eclipse).
-Step3: Browse to http://github.com. Make sure you have every thing set up with respect to use github (i.e. git application, github account etc.)
-
+. Extract to a known location (i.e. /home/eclipse or c:/eclipse).
+. Browse to http://github.com. Make sure you have every thing set up with respect to use github (i.e. git application, github account etc.)
 Now scroll to the bottom of the page and find Applications. Download the github application that suites your OS.
 i.e. Mac: http://mac.github.com
     Win: http://windows.github.com
 
-Step4: Install the github application.
-Step5: Login to the application with your credentials.
-Step6: Go to https://github.com/neo4j/neoclipse
-Step7: Fork the repository.
-Step8: Using github application (which you just installed), clone the forked repository (neoclipse). Check the help section of the application if you need to understand how to do cloning. 
-Step9: After cloning is done, run the eclipse application. 
-Step10: There are various ways to import project i.e. you can use import from git or as existing java project option or install github eclipse plugin etc.
- 
-Anyway for simplicity I have used this approach: 
+. Install the github application.
+. Login to the application with your credentials.
+. Go to https://github.com/neo4j/neoclipse
+. Fork the repository.
+. Using github application (which you just installed), clone the forked repository (neoclipse). Check the help section of the application if you need to understand how to do cloning. 
+. After cloning is done, run the eclipse application. 
+. There are various ways to import project i.e. you can use import from git or as existing java project option or install github eclipse plugin etc.
+ Anyway for simplicity I have used this approach: 
 Right click in the project explorer window and import as java project. To find out how to import please visit
 http://agile.csc.ncsu.edu/SEMaterials/tutorials/import_export/
 
@@ -28,10 +29,10 @@ Please choose the cloned neoclipse directory while importing.
 
 If you are interested to work only with the neoclipse java code then org.neo4j.neoclipse directory is the right place. If you want to work on the help or documentation section then org.neo4j.neoclipse.doc is the right place. 
 
-Step11: Now every thing should be right with no compilation errors. Open the plugin.xml from org.neo4j.neoclipse and click on "Launch an Eclipse application"
+. Now every thing should be right with no compilation errors. Open the plugin.xml from org.neo4j.neoclipse and click on "Launch an Eclipse application"
 Now neoclipse should be running.
 
-Step12: Now you have environment setup. Please go through the code and try to analyze it. 
+. Now you have environment setup. Please go through the code and try to analyze it. 
 If you
 •	Need any new feature 
 •	Find any issues or bugs or even slightest bad code  
@@ -44,4 +45,4 @@ You are most welcome to add new functionalities. We will appreciate and love to 
 
 We always lived, are living and will continue living in a network of interconnected things but seldom realize it. Use Neo4j to create the realization and Neoclipse to bring the realization to visualization. 
 
-Thank you for reading my post.
+Thank you for reading this README.
