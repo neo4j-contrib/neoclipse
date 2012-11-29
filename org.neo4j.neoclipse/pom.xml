@@ -5,12 +5,12 @@
   <parent>
     <artifactId>neoclipse</artifactId>
     <groupId>org.neo4j</groupId>
-    <version>1.8-SNAPSHOT</version>
+    <version>1.8</version>
     <relativePath>..</relativePath>
   </parent>
   <groupId>org.neo4j</groupId>
   <artifactId>org.neo4j.neoclipse</artifactId>
-  <version>1.8-SNAPSHOT</version>
+  <version>1.8</version>
   <name>Neoclipse</name>
 
   <properties>

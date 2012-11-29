@@ -2,26 +2,28 @@
 <classpath>
 	<classpathentry kind="src" output="target/classes" path="src/main/java"/>
 	<classpathentry kind="src" output="target/test-classes" path="src/test/java"/>
-	<classpathentry exported="true" kind="lib" path="lib/neo4j-rest-graphdb-1.7-SNAPSHOT.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jackson-core-asl-1.9.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jackson-mapper-asl-1.9.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jersey-client-1.9.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jersey-core-1.9.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/neo4j-graph-matching-1.7.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/neo4j-cypher-1.7.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/neo4j-graph-algo-1.7.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/neo4j-jmx-1.7.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/neo4j-kernel-1.7.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/neo4j-lucene-index-1.7.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/neo4j-udc-1.7.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/json.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/gson-2.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/scala-library-2.9.0-1.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/lucene-core-3.5.0.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 	<classpathentry kind="con" path="org.maven.ide.eclipse.MAVEN2_CLASSPATH_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
-	<classpathentry kind="lib" path="lib/geronimo-jta_1.1_spec-1.1.1.jar"/>
+	<classpathentry kind="lib" path="lib/jackson-core-asl-1.9.9.jar"/>
+	<classpathentry kind="lib" path="lib/jackson-mapper-asl-1.9.9.jar"/>
+	<classpathentry kind="lib" path="lib/jersey-client-1.14.jar"/>
+	<classpathentry kind="lib" path="lib/jersey-core-1.14.jar"/>
+	<classpathentry kind="lib" path="lib/neo4j-cypher-1.8.jar"/>
+	<classpathentry kind="lib" path="lib/neo4j-graph-algo-1.8.jar"/>
+	<classpathentry kind="lib" path="lib/neo4j-graph-matching-1.8.jar"/>
+	<classpathentry kind="lib" path="lib/neo4j-jmx-1.8.jar"/>
+	<classpathentry kind="lib" path="lib/neo4j-kernel-1.8.jar"/>
+	<classpathentry kind="lib" path="lib/neo4j-lucene-index-1.8.jar"/>
+	<classpathentry kind="lib" path="lib/neo4j-shell-1.8.jar"/>
+	<classpathentry kind="lib" path="lib/neo4j-udc-1.8.jar"/>
+	<classpathentry kind="lib" path="lib/org.apache.servicemix.bundles.jline-0.9.94_1.jar"/>
+	<classpathentry kind="lib" path="lib/scala-library-2.9.1-1.jar"/>
+	<classpathentry kind="lib" path="lib/server-api-1.8.jar"/>
 	<classpathentry kind="lib" path="lib/dom4j.jar"/>
+	<classpathentry kind="lib" path="lib/neo4j-rest-graphdb-1.7-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="lib/json.jar"/>
+	<classpathentry kind="lib" path="lib/lucene-core-3.5.0.jar"/>
+	<classpathentry kind="lib" path="lib/gson-2.1.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

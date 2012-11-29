@@ -1,0 +1,30 @@
+!SESSION 2012-10-21 22:09:41.846 -----------------------------------------------
+eclipse.buildId=unknown
+java.version=1.6.0_37
+java.vendor=Apple Inc.
+BootLoader constants: OS=macosx, ARCH=x86_64, WS=cocoa, NL=en_US
+Framework arguments:  -application org.neo4j.neoclipse.application
+Command-line arguments:  -application org.neo4j.neoclipse.application -data /Users/PriyaKalyan/github/neo4j/neoclipse/org.neo4j.neoclipse -dev file:/Users/PriyaKalyan/Documents/workspace/.metadata/.plugins/org.eclipse.pde.core/org.neo4j.neoclipse.neoclipseProduct/dev.properties -os macosx -ws cocoa -arch x86_64 -consoleLog
+
+!ENTRY org.eclipse.ui 4 4 2012-10-21 22:09:47.828
+!MESSAGE Unable to instantiate help UI
+!SESSION 2012-10-21 22:39:05.708 -----------------------------------------------
+eclipse.buildId=unknown
+java.version=1.6.0_37
+java.vendor=Apple Inc.
+BootLoader constants: OS=macosx, ARCH=x86_64, WS=cocoa, NL=en_US
+Framework arguments:  -application org.neo4j.neoclipse.application
+Command-line arguments:  -application org.neo4j.neoclipse.application -data /Users/PriyaKalyan/github/neo4j/neoclipse/org.neo4j.neoclipse -dev file:/Users/PriyaKalyan/Documents/workspace/.metadata/.plugins/org.eclipse.pde.core/org.neo4j.neoclipse.neoclipseProduct/dev.properties -os macosx -ws cocoa -arch x86_64 -consoleLog
+
+!ENTRY org.eclipse.ui 4 4 2012-10-21 22:39:13.028
+!MESSAGE Unable to instantiate help UI
+!SESSION 2012-10-21 22:43:42.249 -----------------------------------------------
+eclipse.buildId=unknown
+java.version=1.6.0_37
+java.vendor=Apple Inc.
+BootLoader constants: OS=macosx, ARCH=x86_64, WS=cocoa, NL=en_US
+Framework arguments:  -application org.neo4j.neoclipse.application
+Command-line arguments:  -application org.neo4j.neoclipse.application -data /Users/PriyaKalyan/github/neo4j/neoclipse/org.neo4j.neoclipse -dev file:/Users/PriyaKalyan/Documents/workspace/.metadata/.plugins/org.eclipse.pde.core/org.neo4j.neoclipse.neoclipseProduct/dev.properties -os macosx -ws cocoa -arch x86_64 -consoleLog
+
+!ENTRY org.eclipse.ui 4 4 2012-10-21 22:43:49.998
+!MESSAGE Unable to instantiate help UI
