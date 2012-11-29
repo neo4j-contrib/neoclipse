@@ -26,9 +26,9 @@ Right click in the project explorer window and import as java project. To find o
 http://agile.csc.ncsu.edu/SEMaterials/tutorials/import_export/
 +
 Please choose the cloned neoclipse directory while importing. 
-
-If you are interested to work only with the neoclipse java code then org.neo4j.neoclipse directory is the right place. If you want to work on the help or documentation section then org.neo4j.neoclipse.doc is the right place. 
 +
+If you are interested to work only with the neoclipse java code then org.neo4j.neoclipse directory is the right place. If you want to work on the help or documentation section then org.neo4j.neoclipse.doc is the right place. 
+
 
 . Now every thing should be right with no compilation errors. Open the plugin.xml from org.neo4j.neoclipse and click on `Launch an Eclipse application`
 Now neoclipse should be running.
