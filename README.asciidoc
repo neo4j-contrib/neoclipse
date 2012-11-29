@@ -1,8 +1,10 @@
-Neoclipse - a graph tool for Neo4j
-==================================
+== Neoclipse - a graph tool for Neo4j
 
-Steps To Compile Neoclipse
---------------------------
+=== Introduction
+
+Neoclipse is a tool to view, edit and explore http://neo4j.org[Neo4j] databases. See the https://github.com/neo4j/neoclipse/wiki[Wiki] for more details.
+
+=== Steps To Compile Neoclipse
 
 Below are the baby steps telling how to compile neoclipse code from github.
 
