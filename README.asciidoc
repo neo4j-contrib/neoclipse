@@ -4,6 +4,8 @@
 
 Neoclipse is a tool to view, edit and explore http://neo4j.org[Neo4j] databases. See the https://github.com/neo4j/neoclipse/wiki[Wiki] for more details.
 
+Download Neoclipse https://github.com/neo4j/neoclipse/downloads[here].
+
 For a tutorial, see https://vimeo.com/12014944[this intro video].
 
 === Steps To Compile Neoclipse
