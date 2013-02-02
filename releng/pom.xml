@@ -8,19 +8,8 @@
     <version>1.9.1-SNAPSHOT</version>
     <relativePath>..</relativePath>
   </parent>
-  <artifactId>org.neo4j.neoclipse</artifactId>
-  <packaging>eclipse-plugin</packaging>
-  <name>Neoclipse</name>
-
-  <properties>
-    <license-text.header>ApacheLicense-2.0-header.txt</license-text.header>
-  </properties>
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.eclipse.tycho</groupId>
-        <artifactId>tycho-maven-plugin</artifactId>
-      </plugin>
-    </plugins>
-  </build>
+  <groupId>org.neo4j.neoclipse.targets</groupId>
+  <artifactId>default</artifactId>
+  <packaging>eclipse-target-definition</packaging>
+  <name>Neoclipse Target Platform (Default)</name>
 </project>
