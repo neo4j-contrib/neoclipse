@@ -1,2 +1,2 @@
-Please refer to this page for more information:
-http://wiki.neo4j.org/content/Neoclipse
+Please refer to this page for more information about Neo4j:
+http://neo4j.org
