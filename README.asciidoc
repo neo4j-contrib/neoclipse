@@ -4,7 +4,9 @@
 
 Neoclipse is a tool to view, edit and explore http://neo4j.org[Neo4j] databases. See the https://github.com/neo4j/neoclipse/wiki[Wiki] for more details.
 
-Download Neoclipse https://github.com/neo4j/neoclipse/downloads[here].
+http://dist.neo4j.org/neoclipse-1.9-macosx.carbon.x86.zip[Neoclipse 1.9 - OSX download]
+
+Download pre-Neo4j 1.9 builds Neoclipse https://github.com/neo4j/neoclipse/downloads[here].
 
 For a tutorial, see https://vimeo.com/12014944[this intro video].
 
