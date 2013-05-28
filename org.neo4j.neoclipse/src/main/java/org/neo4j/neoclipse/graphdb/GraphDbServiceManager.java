@@ -54,6 +54,7 @@ import org.neo4j.neoclipse.preference.Preferences;
 import org.neo4j.neoclipse.util.ApplicationUtil;
 import org.neo4j.neoclipse.view.UiHelper;
 import org.neo4j.rest.graphdb.RestGraphDatabase;
+import org.neo4j.rest.graphdb.query.RestCypherQueryEngine;
 
 
 /**
@@ -519,7 +520,7 @@ public class GraphDbServiceManager
                 }
                 else if ( currentAlias.getConnectionMode() == ConnectionMode.REMOTE )
                 {
-                    Iterable<Map<String, Object>> execute = ( (RestGraphDatabase) graphDb ).execute( cypherQuery,
+                    Iterable<Map<String, Object>> execute = new RestCypherQueryEngine(( (RestGraphDatabase) graphDb ).getRestAPI()).query(cypherQuery,
                             new HashMap<String, Object>() );
                     iterator = execute.iterator();
                 }
