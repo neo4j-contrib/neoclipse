@@ -4,17 +4,19 @@
 
 Neoclipse is a tool to view, edit and explore http://neo4j.org[Neo4j] databases. See the https://github.com/neo4j/neoclipse/wiki[Wiki] for more details.
 
-http://dist.neo4j.org.s3.amazonaws.com/neoclipse-1.9-linux.gtk.x86.zip[Neoclipse 1.9 - Linux x86 download]
+==== Download
 
-http://dist.neo4j.org.s3.amazonaws.com/neoclipse-1.9-linux.gtk.x86_64.zip[Neoclipse 1.9 - Linux x86 64bit download]
+http://dist.neo4j.org.s3.amazonaws.com/neoclipse-1.9-linux.gtk.x86.zip[Neoclipse 1.9 - Linux x86]
 
-http://dist.neo4j.org.s3.amazonaws.com/neoclipse-1.9-macosx.cocoa.x86.zip[Neoclipse 1.9 - OSX download]
+http://dist.neo4j.org.s3.amazonaws.com/neoclipse-1.9-linux.gtk.x86_64.zip[Neoclipse 1.9 - Linux x86 64bit]
 
-http://dist.neo4j.org.s3.amazonaws.com/neoclipse-1.9-macosx.cocoa.x86_64.zip[Neoclipse 1.9 - OSX 64bit download]
+http://dist.neo4j.org.s3.amazonaws.com/neoclipse-1.9-macosx.cocoa.x86.zip[Neoclipse 1.9 - OSX]
 
-http://dist.neo4j.org.s3.amazonaws.com/neoclipse-1.9-win32.win32.x86.zip[Neoclipse 1.9 - Windows download]
+http://dist.neo4j.org.s3.amazonaws.com/neoclipse-1.9-macosx.cocoa.x86_64.zip[Neoclipse 1.9 - OSX 64bit]
 
-http://dist.neo4j.org.s3.amazonaws.com/neoclipse-1.9-win32.win32.x86_64.zip[Neoclipse 1.9 - Widnows 64bit download]
+http://dist.neo4j.org.s3.amazonaws.com/neoclipse-1.9-win32.win32.x86.zip[Neoclipse 1.9 - Windows]
+
+http://dist.neo4j.org.s3.amazonaws.com/neoclipse-1.9-win32.win32.x86_64.zip[Neoclipse 1.9 - Widnows 64bit]
 
 Download pre-Neo4j 1.9 builds Neoclipse https://github.com/neo4j/neoclipse/downloads[here].
 
