@@ -61,6 +61,7 @@ import org.neo4j.neoclipse.graphdb.GraphDbServiceEventListener;
 import org.neo4j.neoclipse.graphdb.GraphDbServiceManager;
 import org.neo4j.neoclipse.graphdb.GraphDbServiceMode;
 import org.neo4j.neoclipse.graphdb.GraphDbServiceStatus;
+import org.neo4j.neoclipse.graphdb.GraphDbUtil;
 import org.neo4j.neoclipse.graphdb.GraphRunnable;
 import org.neo4j.neoclipse.help.HelpContextConstants;
 import org.neo4j.neoclipse.preference.Preferences;
@@ -81,10 +82,6 @@ public class NeoGraphViewPart extends ViewPart implements IZoomableWorkbenchPart
      * The Eclipse view ID.
      */
     public static final String ID = "org.neo4j.neoclipse.view.NeoGraphViewPart";
-    /**
-     * Max number of nodes to try to find a better starting point.
-     */
-    private static final int MAX_NODE_TRIES = 1000;
     /**
      * The property sheet page.
      */
@@ -311,20 +308,8 @@ public class NeoGraphViewPart extends ViewPart implements IZoomableWorkbenchPart
             {
                 return (Node) node;
             }
-            return Activator.getDefault().getGraphDbServiceManager().submitTask( new GraphCallable<Node>()
-            {
-                @Override
-                public Node call( final GraphDatabaseService graphDb )
-                {
-                    Node refNode = graphDb.getReferenceNode();
-                    if ( refNode != null )
-                    {
-                        return refNode;
-                    }
-                    throw new NotFoundException( "No current node could be found." );
-                }
-            }, "get current node" ).get();
-        }
+        	return Activator.getDefault().getGraphDbServiceManager().getAnyReferenceNode();
+       }
         catch ( Exception e )
         {
             throw new NotFoundException( "No current node could be found." );
@@ -498,15 +483,8 @@ public class NeoGraphViewPart extends ViewPart implements IZoomableWorkbenchPart
     {
         try
         {
-            Activator.getDefault().getGraphDbServiceManager().executeTask( new GraphRunnable()
-            {
-                @Override
-                public void run( final GraphDatabaseService graphDb )
-                {
-                    Node node = graphDb.getReferenceNode();
-                    setInput( node );
-                }
-            }, "show reference node" );
+            Node node = Activator.getDefault().getGraphDbServiceManager().getAnyReferenceNode();
+            setInput( node );
         }
         catch ( Exception e )
         {
@@ -523,50 +501,17 @@ public class NeoGraphViewPart extends ViewPart implements IZoomableWorkbenchPart
     {
         try
         {
-            final GraphDbServiceManager gsm = Activator.getDefault().getGraphDbServiceManager();
-            gsm.submitTask( new GraphRunnable()
+            GraphDbServiceManager gsm = Activator.getDefault().getGraphDbServiceManager();
+			Node node = gsm.getAnyReferenceNode();
+            setInput( node );
+            gsm.submitDisplayTask( new Runnable()
             {
                 @Override
-                public void run( final GraphDatabaseService graphDb )
+                public void run()
                 {
-                    if ( graphDb == null )
-                    {
-                        return;
-                    }
-                    Node node = graphDb.getReferenceNode();
-                    if ( !node.hasRelationship() )
-                    {
-                        // so, find a more friendly node if possible!
-                        int tries = 0;
-                        for ( Node candidateNode : graphDb.getAllNodes() )
-                        {
-                            if ( node.equals( candidateNode ) )
-                            {
-                                continue;
-                            }
-                            if ( candidateNode.hasRelationship() )
-                            {
-                                node = candidateNode;
-                                break;
-                                // setInput( node );
-                            }
-                            if ( tries++ > MAX_NODE_TRIES )
-                            {
-                                break;
-                            }
-                        }
-                    }
-                    setInput( node );
-                    gsm.submitDisplayTask( new Runnable()
-                    {
-                        @Override
-                        public void run()
-                        {
-                            NeoGraphViewPart.this.refreshStatusBar();
-                        }
-                    }, "refresh statusbar" );
+                    NeoGraphViewPart.this.refreshStatusBar();
                 }
-            }, "show some node" );
+            }, "refresh statusbar" );
         }
         catch ( Exception e )
         {

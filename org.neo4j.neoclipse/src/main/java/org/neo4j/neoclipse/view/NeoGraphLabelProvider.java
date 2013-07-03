@@ -136,12 +136,7 @@ ITableLabelProvider, ITableColorProvider, InputChangeListener
                         @Override
                         public Boolean call( final GraphDatabaseService graphDb )
                         {
-                            Node referenceNode = graphDb.getReferenceNode();
-                            if ( referenceNode == null )
-                            {
-                                return false;
-                            }
-                            return referenceNode.equals( node );
+                            return node.getId() == 0;
                         }
                     }, "is ref node" ).get();
         }
