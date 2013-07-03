@@ -666,8 +666,21 @@ public class GraphDbServiceManager
         if ( result.isEmpty() ) {
             throw new IllegalStateException( "No suitable reference node found in graph" );
         }
-        Number id = (Number) result.get( 0 ).get( "id" );
-        return lifecycle.graphDb().getNodeById( id.longValue() );
+        final long id = ((Number) result.get( 0 ).get( "id" )).longValue();
+        return getNodeById( id );
+    }
+
+    public Node getNodeById( final long id )
+    {
+        return executeTask( new GraphCallable<Node>()
+        {
+
+            @Override
+            public Node call( GraphDatabaseService graphDb )
+            {
+                return graphDb.getNodeById( id );
+            }
+        }, "retrieving node with id "+id );
     }
 
     public boolean isRemote()
