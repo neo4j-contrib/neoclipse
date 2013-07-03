@@ -669,4 +669,9 @@ public class GraphDbServiceManager
         Number id = (Number) result.get( 0 ).get( "id" );
         return lifecycle.graphDb().getNodeById( id.longValue() );
     }
+
+    public boolean isRemote()
+    {
+        return currentAlias.getConnectionMode() == ConnectionMode.REMOTE;
+    }
 }

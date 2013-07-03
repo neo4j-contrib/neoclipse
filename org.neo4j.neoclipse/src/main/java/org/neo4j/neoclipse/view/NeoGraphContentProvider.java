@@ -170,7 +170,7 @@ public class NeoGraphContentProvider implements
         }
         final int depth = view.getTraversalDepth();
         int max = preferenceStore.getInt( Preferences.MAX_NODES );
-        return traverser.getNodes( node, relDirList, depth, max ).toArray();
+        return traverser.getNodes( node, relDirList, depth, max, nsm ).toArray();
     }
 
     @Override
