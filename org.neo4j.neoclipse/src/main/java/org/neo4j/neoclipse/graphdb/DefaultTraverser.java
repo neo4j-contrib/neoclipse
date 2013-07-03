@@ -28,63 +28,40 @@ import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.NotFoundException;
 import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.RelationshipType;
-import org.neo4j.graphdb.ReturnableEvaluator;
-import org.neo4j.graphdb.StopEvaluator;
-import org.neo4j.graphdb.TraversalPosition;
-import org.neo4j.graphdb.Traverser;
-import org.neo4j.graphdb.Traverser.Order;
+import org.neo4j.graphdb.traversal.Evaluators;
+import org.neo4j.graphdb.traversal.TraversalDescription;
+import org.neo4j.kernel.Traversal;
 import org.neo4j.neoclipse.reltype.DirectedRelationship;
 import org.neo4j.neoclipse.reltype.RelationshipTypeHashSet;
+import org.neo4j.rest.graphdb.traversal.RestTraversal;
 
 public class DefaultTraverser implements TraversalStrategy
 {
     private final Set<RelationshipType> relTypes = new RelationshipTypeHashSet();
 
     @Override
-    public Collection<Node> getNodes( final Node node, final int depth,
-            final int nodeLimit )
-            {
-        // TODO Auto-generated method stub
-        return null;
-            }
-
-    @Override
     public Collection<Node> getNodes( final Node node,
             final Collection<? extends DirectedRelationship> directedRels,
-            final int depth, final int nodeLimit )
+            final int depth, final int nodeLimit, GraphDbServiceManager gsm )
             {
         List<Node> nodes = new ArrayList<Node>();
-        relTypes.clear();
-        List<Object> traverseTypes = new ArrayList<Object>();
-        for ( DirectedRelationship directedRel : directedRels )
-        {
-            if ( !directedRel.hasDirection() )
-            {
-                continue;
-            }
-            relTypes.add( directedRel.getRelType() );
-            traverseTypes.add( directedRel.getRelType() );
-            traverseTypes.add( directedRel.getDirection() );
-        }
-        if ( traverseTypes.isEmpty() )
+        if ( directedRels.isEmpty() )
         {
             nodes.add( node );
             return nodes;
         }
-        Object[] relDirListArray = traverseTypes.toArray();
         try
         {
-            Traverser trav = node.traverse( Order.BREADTH_FIRST,
-                    new StopEvaluator()
+            TraversalDescription description = gsm.isRemote() ? RestTraversal.description().maxDepth( depth ) : Traversal.description().evaluator( Evaluators.toDepth( depth ) ); 
+            description.breadthFirst().evaluator( Evaluators.all() );
+            relTypes.clear();
+            for ( DirectedRelationship directedRel : directedRels )
             {
-                @Override
-                public boolean isStopNode(
-                        final TraversalPosition currentPos )
-                {
-                    return currentPos.depth() >= depth;
-                }
-            }, ReturnableEvaluator.ALL, relDirListArray );
-            for ( Node currentNode : trav )
+                Direction d = directedRel.hasDirection() ?  directedRel.getDirection() : Direction.BOTH;
+                description.relationships( directedRel.getRelType(), d );
+                relTypes.add( directedRel.getRelType() );
+            }
+            for ( Node currentNode : description.traverse( node ).nodes() )
             {
                 if ( nodes.size() >= nodeLimit )
                 {
@@ -100,7 +77,7 @@ public class DefaultTraverser implements TraversalStrategy
             // just return an empty array then
         }
         return nodes;
-            }
+    }
 
     @Override
     public Collection<Relationship> getRelationships( final Node start,

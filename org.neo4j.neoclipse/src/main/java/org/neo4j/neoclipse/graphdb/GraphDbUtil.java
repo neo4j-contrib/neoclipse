@@ -33,6 +33,7 @@ import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.NotFoundException;
 import org.neo4j.graphdb.PropertyContainer;
 import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.RelationshipType;
@@ -256,7 +257,7 @@ public class GraphDbUtil
                 if ( container instanceof Node )
                 {
                     Node node = (Node) container;
-                    if ( node.equals( graphDb.getReferenceNode() ) )
+                    if ( node.getId() == 0 )
                     {
                         boolean confirmed = MessageDialog.openConfirm( null,
                                 CONFIRM_DELETE_TITLE,

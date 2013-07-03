@@ -26,11 +26,9 @@ import org.neo4j.neoclipse.reltype.DirectedRelationship;
 
 public interface TraversalStrategy
 {
-    Collection<Node> getNodes( Node node, int depth, int nodeLimit );
-
     Collection<Node> getNodes( Node node,
             Collection<? extends DirectedRelationship> directedRels, int depth,
-            int nodeLimit );
+            int nodeLimit, GraphDbServiceManager gsm );
 
     Collection<Relationship> getRelationships( Node start, Node end );
 }
