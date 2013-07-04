@@ -66,7 +66,8 @@ import org.neo4j.rest.graphdb.query.RestCypherQueryEngine;
  */
 public class GraphDbServiceManager
 {
-    private static final String FIND_REFERENCE_NODE_STATEMENT = "START n=node(*) MATCH n--() RETURN id(n) as id LIMIT 1";
+    private static final String FIND_REFERENCE_NODE_WITH_RELS_STATEMENT = "START n=node(*) MATCH n--() RETURN id(n) as id LIMIT 1";
+    private static final String FIND_REFERENCE_NODE_STATEMENT = "START n=node(*) RETURN id(n) as id LIMIT 1";
     private static final String NEOCLIPSE_PACKAGE = "org.neo4j.neoclipse.";
     private static Logger logger = Logger.getLogger( GraphDbServiceManager.class.getName() );
     private Alias currentAlias;
@@ -662,9 +663,12 @@ public class GraphDbServiceManager
 
     public Node getAnyReferenceNode() throws Exception
     {
-        List<Map<String, Object>> result = executeCypher( FIND_REFERENCE_NODE_STATEMENT ).getIterator();
+        List<Map<String, Object>> result = executeCypher( FIND_REFERENCE_NODE_WITH_RELS_STATEMENT ).getIterator();
         if ( result.isEmpty() ) {
-            throw new IllegalStateException( "No suitable reference node found in graph" );
+            result = executeCypher( FIND_REFERENCE_NODE_STATEMENT ).getIterator();
+        }
+        if ( result.isEmpty() ) {
+            return null;
         }
         final long id = ((Number) result.get( 0 ).get( "id" )).longValue();
         return getNodeById( id );
