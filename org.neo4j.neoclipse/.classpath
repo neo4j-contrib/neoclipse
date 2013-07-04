@@ -1,74 +1,76 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry exported="true" kind="lib" path="lib/antlr-2.7.7.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/asm-3.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/asm-analysis-3.2.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/asm-commons-3.2.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/asm-tree-3.2.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/asm-util-3.2.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/bcprov-jdk16-140.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/blueprints-core-1.2.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/blueprints-neo4j-graph-1.2.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/commons-beanutils-1.8.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/commons-beanutils-core-1.8.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/commons-collections-3.2.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/commons-configuration-1.6.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/commons-digester-1.8.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/commons-io-1.4.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/commons-lang-2.4.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/commons-logging-1.1.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/concurrentlinkedhashmap-lru-1.3.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/dom4j-1.6.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/geronimo-jta_1.1_spec-1.1.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/gremlin-groovy-1.5.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/gremlin-java-1.5.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/groovy-1.8.5.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/gson-2.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/hamcrest-core-1.3.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jackson-core-asl-1.9.7.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jackson-jaxrs-1.9.7.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jackson-mapper-asl-1.9.7.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/janino-2.5.10.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jansi-1.5.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jersey-client-1.4.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jersey-core-1.4.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jersey-server-1.4.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jettison-1.3.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jetty-6.1.25.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jetty-util-6.1.25.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jline-0.9.94.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/json-20090211.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jsr311-api-1.1.2.r612.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/junit-4.11.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/logback-access-0.9.30.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/logback-classic-0.9.30.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/logback-core-0.9.30.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/lucene-core-3.6.2.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/neo4j-cypher-1.9.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/neo4j-cypher-plugin-1.9.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/neo4j-graph-algo-1.9.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/neo4j-graph-matching-1.9.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/neo4j-gremlin-plugin-1.9.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/neo4j-jmx-1.9.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/neo4j-kernel-1.9-tests.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/neo4j-kernel-1.9.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/neo4j-lucene-index-1.9.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/neo4j-rest-graphdb-1.9.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/neo4j-server-1.9.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/neo4j-shell-1.9.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/neo4j-udc-1.9.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/org.apache.servicemix.bundles.jline-0.9.94_1.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/pipes-1.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/rhino-1.7R3.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/rrd4j-2.0.7.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/scala-library-2.10.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/server-api-1.9.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/servlet-api-2.5-20081211.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/slf4j-api-1.6.2.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/stax-api-1.0.1.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" output="target/classes" path="src/main/java"/>
 	<classpathentry kind="src" output="target/test-classes" path="src/test/java"/>
+	<classpathentry kind="lib" path="lib/antlr-2.7.7.jar"/>
+	<classpathentry kind="lib" path="lib/asm-3.1.jar"/>
+	<classpathentry kind="lib" path="lib/asm-analysis-3.2.jar"/>
+	<classpathentry kind="lib" path="lib/asm-commons-3.2.jar"/>
+	<classpathentry kind="lib" path="lib/asm-tree-3.2.jar"/>
+	<classpathentry kind="lib" path="lib/asm-util-3.2.jar"/>
+	<classpathentry kind="lib" path="lib/bcprov-jdk16-140.jar"/>
+	<classpathentry kind="lib" path="lib/blueprints-core-1.2.jar"/>
+	<classpathentry kind="lib" path="lib/blueprints-neo4j-graph-1.2.jar"/>
+	<classpathentry kind="lib" path="lib/commons-beanutils-1.8.0.jar"/>
+	<classpathentry kind="lib" path="lib/commons-beanutils-core-1.8.0.jar"/>
+	<classpathentry kind="lib" path="lib/commons-collections-3.2.1.jar"/>
+	<classpathentry kind="lib" path="lib/commons-configuration-1.6.jar"/>
+	<classpathentry kind="lib" path="lib/commons-digester-1.8.1.jar"/>
+	<classpathentry kind="lib" path="lib/commons-io-1.4.jar"/>
+	<classpathentry kind="lib" path="lib/commons-lang-2.4.jar"/>
+	<classpathentry kind="lib" path="lib/commons-logging-1.1.1.jar"/>
+	<classpathentry kind="lib" path="lib/concurrentlinkedhashmap-lru-1.3.1.jar"/>
+	<classpathentry kind="lib" path="lib/dom4j-1.6.1.jar"/>
+	<classpathentry kind="lib" path="lib/geronimo-jta_1.1_spec-1.1.1.jar"/>
+	<classpathentry kind="lib" path="lib/gremlin-groovy-1.5.jar"/>
+	<classpathentry kind="lib" path="lib/gremlin-java-1.5.jar"/>
+	<classpathentry kind="lib" path="lib/groovy-1.8.5.jar"/>
+	<classpathentry kind="lib" path="lib/gson-2.0.jar"/>
+	<classpathentry kind="lib" path="lib/hamcrest-core-1.3.jar"/>
+	<classpathentry kind="lib" path="lib/jackson-core-asl-1.9.7.jar"/>
+	<classpathentry kind="lib" path="lib/jackson-jaxrs-1.9.7.jar"/>
+	<classpathentry kind="lib" path="lib/jackson-mapper-asl-1.9.7.jar"/>
+	<classpathentry kind="lib" path="lib/janino-2.5.10.jar"/>
+	<classpathentry kind="lib" path="lib/jansi-1.5.jar"/>
+	<classpathentry kind="lib" path="lib/jcl-over-slf4j-1.6.1.jar"/>
+	<classpathentry kind="lib" path="lib/jersey-client-1.9.jar"/>
+	<classpathentry kind="lib" path="lib/jersey-core-1.9.jar"/>
+	<classpathentry kind="lib" path="lib/jersey-multipart-1.9.jar"/>
+	<classpathentry kind="lib" path="lib/jersey-server-1.9.jar"/>
+	<classpathentry kind="lib" path="lib/jettison-1.3.jar"/>
+	<classpathentry kind="lib" path="lib/jetty-6.1.25.jar"/>
+	<classpathentry kind="lib" path="lib/jetty-util-6.1.25.jar"/>
+	<classpathentry kind="lib" path="lib/jline-0.9.94.jar"/>
+	<classpathentry kind="lib" path="lib/json-20090211.jar"/>
+	<classpathentry kind="lib" path="lib/jsr311-api-1.1.2.r612.jar"/>
+	<classpathentry kind="lib" path="lib/junit-4.11.jar"/>
+	<classpathentry kind="lib" path="lib/logback-access-0.9.30.jar"/>
+	<classpathentry kind="lib" path="lib/logback-classic-0.9.30.jar"/>
+	<classpathentry kind="lib" path="lib/logback-core-0.9.30.jar"/>
+	<classpathentry kind="lib" path="lib/lucene-core-3.6.2.jar"/>
+	<classpathentry kind="lib" path="lib/neo4j-cypher-1.9.1.jar"/>
+	<classpathentry kind="lib" path="lib/neo4j-cypher-plugin-1.9.1.jar"/>
+	<classpathentry kind="lib" path="lib/neo4j-graph-algo-1.9.1.jar"/>
+	<classpathentry kind="lib" path="lib/neo4j-graph-matching-1.9.1.jar"/>
+	<classpathentry kind="lib" path="lib/neo4j-gremlin-plugin-1.9.1.jar"/>
+	<classpathentry kind="lib" path="lib/neo4j-jmx-1.9.1.jar"/>
+	<classpathentry kind="lib" path="lib/neo4j-kernel-1.9.1-tests.jar"/>
+	<classpathentry kind="lib" path="lib/neo4j-kernel-1.9.1.jar"/>
+	<classpathentry kind="lib" path="lib/neo4j-lucene-index-1.9.1.jar"/>
+	<classpathentry kind="lib" path="lib/neo4j-rest-graphdb-1.9.jar"/>
+	<classpathentry kind="lib" path="lib/neo4j-server-1.9.1.jar"/>
+	<classpathentry kind="lib" path="lib/neo4j-shell-1.9.1.jar"/>
+	<classpathentry kind="lib" path="lib/neo4j-udc-1.9.1.jar"/>
+	<classpathentry kind="lib" path="lib/org.apache.servicemix.bundles.jline-0.9.94_1.jar"/>
+	<classpathentry kind="lib" path="lib/pipes-1.0.jar"/>
+	<classpathentry kind="lib" path="lib/rhino-1.7R3.jar"/>
+	<classpathentry kind="lib" path="lib/rrd4j-2.0.7.jar"/>
+	<classpathentry kind="lib" path="lib/scala-library-2.10.0.jar"/>
+	<classpathentry kind="lib" path="lib/server-api-1.9.1.jar"/>
+	<classpathentry kind="lib" path="lib/servlet-api-2.5-20081211.jar"/>
+	<classpathentry kind="lib" path="lib/slf4j-api-1.6.2.jar"/>
+	<classpathentry kind="lib" path="lib/stax-api-1.0.1.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
