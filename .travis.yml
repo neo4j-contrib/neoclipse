@@ -1,0 +1,5 @@
+jdk:
+  - oraclejdk7
+language: java
+install: true
+script: mvn verify --batch-mode
