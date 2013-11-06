@@ -27,6 +27,7 @@
           </execution>
           <execution>
             <id>archive-products</id>
+            <phase>pre-integration-test</phase>
             <goals>
               <goal>archive-products</goal>
             </goals>
@@ -47,6 +48,31 @@
             <win32>zip</win32>
           </formats>
         </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>1.7</version>
+        <executions>
+          <execution>
+            <id>extract-rootfiles</id>
+            <phase>package</phase>
+            <configuration>
+              <target>
+                <unzip src="${maven.dependency.org.neo4j.org.neo4j.neoclipse.eclipse-plugin.path}"
+                       dest="target/products/neoclipse/">
+                  <patternset>
+                    <include name="LICENSE.txt"/>
+                    <include name="NOTICE.txt"/>
+                    <include name="README.txt"/>
+                  </patternset>
+                </unzip>
+              </target>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
