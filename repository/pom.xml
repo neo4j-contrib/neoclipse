@@ -60,12 +60,32 @@
               <target>
                 <unzip src="${maven.dependency.org.neo4j.org.neo4j.neoclipse.eclipse-plugin.path}"
                        dest="target/products/neoclipse/">
-                  <patternset>
+                  <patternset id="rootfiles">
                     <include name="LICENSE.txt"/>
                     <include name="NOTICE.txt"/>
                     <include name="README.txt"/>
                   </patternset>
                 </unzip>
+                <copy todir="target/products/neoclipse/" enablemultiplemappings="true">
+                  <fileset dir="target/products/neoclipse/">
+                    <patternset refid="rootfiles"/>
+                  </fileset>
+                  <compositemapper>
+                    <!--
+                        To find all products' root folders, run:
+                        find repository/target/products/neoclipse/ -mindepth 3 -maxdepth 3 -type d
+                    -->
+                    <globmapper from="*" to="hpux/gtk/ia64_32/neoclipse-${project.version}/*"/>
+                    <globmapper from="*" to="linux/gtk/ppc64/neoclipse-${project.version}/*"/>
+                    <globmapper from="*" to="linux/gtk/x86/neoclipse-${project.version}/*"/>
+                    <globmapper from="*" to="linux/gtk/x86_64/neoclipse-${project.version}/*"/>
+                    <globmapper from="*" to="macosx/carbon/x86/neoclipse-${project.version}/*"/>
+                    <globmapper from="*" to="macosx/cocoa/x86/neoclipse-${project.version}/*"/>
+                    <globmapper from="*" to="macosx/cocoa/x86_64/neoclipse-${project.version}/*"/>
+                    <globmapper from="*" to="win32/win32/x86/neoclipse-${project.version}/*"/>
+                    <globmapper from="*" to="win32/win32/x86_64/neoclipse-${project.version}/*"/>
+                  </compositemapper>
+                </copy>
               </target>
             </configuration>
             <goals>
