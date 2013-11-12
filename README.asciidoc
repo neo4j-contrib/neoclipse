@@ -1,5 +1,7 @@
 == Neoclipse - a graph tool for Neo4j
 
+image:https://travis-ci.org/neo4j-contrib/neoclipse.png["Build Status", link="https://travis-ci.org/neo4j-contrib/neoclipse"]
+
 === Introduction
 
 Neoclipse is a tool to view, edit and explore http://neo4j.org[Neo4j] databases. See the https://github.com/neo4j/neoclipse/wiki[Wiki] for more details.
