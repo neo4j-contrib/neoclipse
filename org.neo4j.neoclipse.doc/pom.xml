@@ -5,12 +5,18 @@
   <parent>
     <artifactId>neoclipse</artifactId>
     <groupId>org.neo4j</groupId>
-    <version>1.8</version>
+    <version>1.9.1-SNAPSHOT</version>
     <relativePath>..</relativePath>
   </parent>
-  <groupId>org.neo4j</groupId>
   <artifactId>org.neo4j.neoclipse.doc</artifactId>
-  <version>1.8</version>
   <name>Neoclipse Documentation Plugin</name>
-  <!--  packaging>eclipse-plugin</packaging -->
+  <packaging>eclipse-plugin</packaging>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>tycho-maven-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
 </project>

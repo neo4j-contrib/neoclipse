@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <artifactId>neoclipse</artifactId>
+    <groupId>org.neo4j</groupId>
+    <version>1.9.1-SNAPSHOT</version>
+    <relativePath>..</relativePath>
+  </parent>
+  <groupId>org.neo4j.neoclipse.targets</groupId>
+  <artifactId>repository</artifactId>
+  <packaging>eclipse-repository</packaging>
+  <name>Neoclipse P2 Repository</name>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>tycho-p2-director-plugin</artifactId>
+        <version>${tycho.version}</version>
+        <executions>
+          <execution>
+            <id>materialize-products</id>
+            <goals>
+              <goal>materialize-products</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>archive-products</id>
+            <phase>pre-integration-test</phase>
+            <goals>
+              <goal>archive-products</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <products>
+            <product>
+              <id>neoclipse</id>
+              <archiveFileName>neoclipse-${project.version}</archiveFileName>
+              <rootFolder>neoclipse-${project.version}</rootFolder>
+            </product>
+          </products>
+          <formats>
+            <linux>tar.gz</linux>
+            <macosx>tar.gz</macosx>
+            <hpux>tar.gz</hpux>
+            <win32>zip</win32>
+          </formats>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>1.7</version>
+        <executions>
+          <execution>
+            <id>extract-rootfiles</id>
+            <phase>package</phase>
+            <configuration>
+              <target>
+                <unzip src="${maven.dependency.org.neo4j.org.neo4j.neoclipse.eclipse-plugin.path}"
+                       dest="target/products/neoclipse/">
+                  <patternset id="rootfiles">
+                    <include name="LICENSE.txt"/>
+                    <include name="NOTICE.txt"/>
+                    <include name="README.txt"/>
+                  </patternset>
+                </unzip>
+                <copy todir="target/products/neoclipse/" enablemultiplemappings="true">
+                  <fileset dir="target/products/neoclipse/">
+                    <patternset refid="rootfiles"/>
+                  </fileset>
+                  <compositemapper>
+                    <!--
+                        To find all products' root folders, run:
+                        find repository/target/products/neoclipse/ -mindepth 3 -maxdepth 3 -type d
+                    -->
+                    <globmapper from="*" to="hpux/gtk/ia64_32/neoclipse-${project.version}/*"/>
+                    <globmapper from="*" to="linux/gtk/ppc64/neoclipse-${project.version}/*"/>
+                    <globmapper from="*" to="linux/gtk/x86/neoclipse-${project.version}/*"/>
+                    <globmapper from="*" to="linux/gtk/x86_64/neoclipse-${project.version}/*"/>
+                    <globmapper from="*" to="macosx/carbon/x86/neoclipse-${project.version}/*"/>
+                    <globmapper from="*" to="macosx/cocoa/x86/neoclipse-${project.version}/*"/>
+                    <globmapper from="*" to="macosx/cocoa/x86_64/neoclipse-${project.version}/*"/>
+                    <globmapper from="*" to="win32/win32/x86/neoclipse-${project.version}/*"/>
+                    <globmapper from="*" to="win32/win32/x86_64/neoclipse-${project.version}/*"/>
+                  </compositemapper>
+                </copy>
+              </target>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>

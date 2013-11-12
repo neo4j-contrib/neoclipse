@@ -85,42 +85,6 @@
             </run>
         </application>
     </extension> 
-    <extension id="neoclipseProduct" point="org.eclipse.core.runtime.products">
-     <product name="Neoclipse" application="org.neo4j.neoclipse.application" description="Neoclipse Workbench">
-        <property
-              name="appName"
-              value="Neoclipse">
-        </property>
-        <property
-              name="startupForegroundColor"
-              value="FFFFFF">
-        </property>
-        <property
-              name="startupMessageRect"
-              value="7,250,441,20">
-        </property>
-        <property
-              name="startupProgressRect"
-              value="0,280,455,15">
-        </property>
-        <property
-              name="preferenceCustomization"
-              value="plugin_customization.ini">
-        </property>
-        <property
-              name="aboutImage"
-              value="icons/splash.png">
-        </property>
-        <property
-              name="windowImages"
-              value="icons/obj16/neo-16.png,icons/obj16/neo-32.png,icons/obj16/neo-48.png,icons/obj16/neo-64.png,icons/obj16/neo-128.png">
-        </property>
-        <property
-              name="aboutText"
-              value="Neoclipse provides an easy to use GUI frontend to the Neo4j graph-oriented database.&#x0A;&#x0A;This software is realeased under the Neo4j Software License for Neoclipse Version 1.0.">
-        </property>
-    </product>
-  </extension>
     <extension
           point="org.eclipse.search.searchPages">
        <page
