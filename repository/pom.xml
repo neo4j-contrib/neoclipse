@@ -79,7 +79,6 @@
                     <globmapper from="*" to="linux/gtk/ppc64/neoclipse-${project.version}/*"/>
                     <globmapper from="*" to="linux/gtk/x86/neoclipse-${project.version}/*"/>
                     <globmapper from="*" to="linux/gtk/x86_64/neoclipse-${project.version}/*"/>
-                    <globmapper from="*" to="macosx/carbon/x86/neoclipse-${project.version}/*"/>
                     <globmapper from="*" to="macosx/cocoa/x86/neoclipse-${project.version}/*"/>
                     <globmapper from="*" to="macosx/cocoa/x86_64/neoclipse-${project.version}/*"/>
                     <globmapper from="*" to="win32/win32/x86/neoclipse-${project.version}/*"/>
