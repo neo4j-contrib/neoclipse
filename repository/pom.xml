@@ -93,6 +93,19 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>target-platform-configuration</artifactId>
+        <configuration>
+          <pomDependencies>consider</pomDependencies>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
+  <dependencies>
+    <dependency>
+      <groupId>org.neo4j.neoclipse</groupId>
+      <artifactId>org.neo4j.neoclipse.dependencies</artifactId>
+    </dependency>
+  </dependencies>
 </project>

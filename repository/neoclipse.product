@@ -195,15 +195,22 @@ conditions in this Agreement.
    </license>
 
    <plugins>
+      <plugin id="ch.qos.logback.classic"/>
+      <plugin id="ch.qos.logback.core"/>
+      <plugin id="ch.qos.logback.slf4j" fragment="true"/>
+      <plugin id="com.google.gson"/>
       <plugin id="com.ibm.icu"/>
       <plugin id="javax.activation"/>
       <plugin id="javax.servlet"/>
       <plugin id="javax.servlet.jsp"/>
       <plugin id="javax.xml"/>
       <plugin id="org.apache.ant"/>
+      <plugin id="org.apache.commons.codec"/>
       <plugin id="org.apache.commons.el"/>
+      <plugin id="org.apache.commons.jxpath"/>
       <plugin id="org.apache.commons.logging"/>
       <plugin id="org.apache.jasper"/>
+      <plugin id="org.apache.log4j"/>
       <plugin id="org.apache.lucene"/>
       <plugin id="org.apache.lucene.analysis"/>
       <plugin id="org.apache.lucene.core"/>
@@ -336,10 +343,14 @@ conditions in this Agreement.
       <plugin id="org.eclipse.xsd"/>
       <plugin id="org.eclipse.zest.core"/>
       <plugin id="org.eclipse.zest.layouts"/>
+      <plugin id="org.jdom"/>
       <plugin id="org.mortbay.jetty.server"/>
       <plugin id="org.mortbay.jetty.util"/>
       <plugin id="org.neo4j.neoclipse"/>
       <plugin id="org.neo4j.neoclipse.doc"/>
+      <plugin id="org.neo4j.neoclipse.dependencies" version="1.9.1"/>
+      <plugin id="org.slf4j.api"/>
+      <plugin id="org.slf4j.jcl"/>
    </plugins>
 
    <configurations>

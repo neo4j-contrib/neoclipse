@@ -23,4 +23,10 @@
       </plugin>
     </plugins>
   </build>
+  <dependencies>
+    <dependency>
+      <groupId>org.neo4j.neoclipse</groupId>
+      <artifactId>org.neo4j.neoclipse.dependencies</artifactId>
+    </dependency>
+  </dependencies>
 </project>
