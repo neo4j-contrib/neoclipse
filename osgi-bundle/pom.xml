@@ -40,6 +40,7 @@
             <Import-Package>!com.sun.*,!sun.*,!ch.qos.logback.*,!org.apache.commons.logging,!org.apache.log.*,!org.apache.avalon.framework.logger.*,!org.neo4j.kernel.ha.*,!nu.xom,!org.osgi.service.blueprint.*,!javax.jms.*,!javax.mail.*,*</Import-Package>
             <_exportcontents>*</_exportcontents>
             <_nouses>true</_nouses>
+            <_include>src/main/resources/META-INF/MANIFEST.MF</_include>
           </instructions>
         </configuration>
       </plugin>
