@@ -5,13 +5,14 @@
   <parent>
     <groupId>org.neo4j.build</groupId>
     <artifactId>parent-central</artifactId>
-    <version>35</version>
+    <version>40</version>
+    <relativePath/>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.neo4j</groupId>
   <artifactId>neoclipse</artifactId>
   <name>Neoclipse Project</name>
-  <version>1.9.5-SNAPSHOT</version>
+  <version>1.9.5</version>
   <packaging>pom</packaging>
   <modules>
     <module>releng</module>
