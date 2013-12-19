@@ -5,7 +5,7 @@
   <parent>
     <artifactId>neoclipse</artifactId>
     <groupId>org.neo4j</groupId>
-    <version>1.9.1-SNAPSHOT</version>
+    <version>1.9.5-SNAPSHOT</version>
     <relativePath>..</relativePath>
   </parent>
   <groupId>org.neo4j.neoclipse.targets</groupId>
@@ -93,6 +93,19 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>target-platform-configuration</artifactId>
+        <configuration>
+          <pomDependencies>consider</pomDependencies>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
+  <dependencies>
+    <dependency>
+      <groupId>org.neo4j.neoclipse</groupId>
+      <artifactId>org.neo4j.neoclipse.dependencies</artifactId>
+    </dependency>
+  </dependencies>
 </project>

@@ -5,7 +5,7 @@
   <parent>
     <artifactId>neoclipse</artifactId>
     <groupId>org.neo4j</groupId>
-    <version>1.9.1-SNAPSHOT</version>
+    <version>1.9.5-SNAPSHOT</version>
     <relativePath>..</relativePath>
   </parent>
   <artifactId>org.neo4j.neoclipse</artifactId>
@@ -23,4 +23,10 @@
       </plugin>
     </plugins>
   </build>
+  <dependencies>
+    <dependency>
+      <groupId>org.neo4j.neoclipse</groupId>
+      <artifactId>org.neo4j.neoclipse.dependencies</artifactId>
+    </dependency>
+  </dependencies>
 </project>

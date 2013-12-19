@@ -11,7 +11,7 @@
   <groupId>org.neo4j</groupId>
   <artifactId>neoclipse</artifactId>
   <name>Neoclipse Project</name>
-  <version>1.9.1-SNAPSHOT</version>
+  <version>1.9.5-SNAPSHOT</version>
   <packaging>pom</packaging>
   <modules>
     <module>releng</module>
@@ -99,7 +99,19 @@
       <plugin>
         <groupId>org.eclipse.tycho</groupId>
         <artifactId>target-platform-configuration</artifactId>
+        <configuration>
+          <pomDependencies>consider</pomDependencies>
+        </configuration>
       </plugin>
     </plugins>
   </build>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.neo4j.neoclipse</groupId>
+        <artifactId>org.neo4j.neoclipse.dependencies</artifactId>
+        <version>1.9.5</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 </project>
