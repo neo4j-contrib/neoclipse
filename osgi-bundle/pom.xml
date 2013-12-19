@@ -5,7 +5,7 @@
   <groupId>org.neo4j.neoclipse</groupId>
   <artifactId>org.neo4j.neoclipse.dependencies</artifactId>
   <packaging>bundle</packaging>
-  <version>1.9.1</version>
+  <version>1.9.5</version>
   <name>Neo4J OSGi Wrapper</name>
 
   <repositories>

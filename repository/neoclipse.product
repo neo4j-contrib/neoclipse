@@ -348,7 +348,7 @@ conditions in this Agreement.
       <plugin id="org.mortbay.jetty.util"/>
       <plugin id="org.neo4j.neoclipse"/>
       <plugin id="org.neo4j.neoclipse.doc"/>
-      <plugin id="org.neo4j.neoclipse.dependencies" version="1.9.1"/>
+      <plugin id="org.neo4j.neoclipse.dependencies" version="1.9.5"/>
       <plugin id="org.slf4j.api"/>
       <plugin id="org.slf4j.jcl"/>
    </plugins>

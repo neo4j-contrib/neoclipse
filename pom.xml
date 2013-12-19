@@ -110,7 +110,7 @@
       <dependency>
         <groupId>org.neo4j.neoclipse</groupId>
         <artifactId>org.neo4j.neoclipse.dependencies</artifactId>
-        <version>1.9.1</version>
+        <version>1.9.5</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
