@@ -4,27 +4,32 @@ image:https://travis-ci.org/neo4j-contrib/neoclipse.png["Build Status", link="ht
 
 === Introduction
 
-Neoclipse is a tool to view, edit and explore http://neo4j.org[Neo4j] databases. See the https://github.com/neo4j/neoclipse/wiki[Wiki] for more details.
-
-==== Download
-
-==== Neoclipse for Neo4j 1.9.1
-
-http://dist.neo4j.org/neoclipse/neoclipse-1.9.1-linux.gtk.x86.tar.gz[Neoclipse - Linux x86]
-
-http://dist.neo4j.org/neoclipse/neoclipse-1.9.1-linux.gtk.x86_64.tar.gz[Neoclipse - Linux x86 64bit]
-
-http://dist.neo4j.org/neoclipse/neoclipse-1.9.1-macosx.cocoa.x86.tar.gz[Neoclipse - OSX]
-
-http://dist.neo4j.org/neoclipse/neoclipse-1.9.1-macosx.cocoa.x86_64.tar.gz[Neoclipse - OSX 64bit]
-
-http://dist.neo4j.org/neoclipse/neoclipse-1.9.1-win32.win32.x86.zip[Neoclipse - Windows]
-
-http://dist.neo4j.org/neoclipse/neoclipse-1.9.1-win32.win32.x86_64.zip[Neoclipse - Widnows 64bit]
-
-Download pre-Neo4j 1.9 builds Neoclipse https://github.com/neo4j/neoclipse/downloads[here].
+Neoclipse is a tool to view, edit and explore http://neo4j.org[Neo4j] databases. See the https://github.com/neo4j-contrib/neoclipse/wiki[Wiki] for more details.
 
 For a tutorial, see https://vimeo.com/12014944[this intro video].
+
+
+=== Download
+
+==== Neoclipse 1.9.5
+
+* http://dist.neo4j.org/neoclipse/neoclipse-1.9.5-win32.win32.x86_64.zip[Windows, for 64bit Java]
+* http://dist.neo4j.org/neoclipse/neoclipse-1.9.5-win32.win32.x86.zip[Windows, for 32bit Java]
+* http://dist.neo4j.org/neoclipse/neoclipse-1.9.5-macosx.cocoa.x86_64.tar.gz[OSX 64bit]
+* http://dist.neo4j.org/neoclipse/neoclipse-1.9.5-macosx.cocoa.x86.tar.gz[OSX 32bit]
+* http://dist.neo4j.org/neoclipse/neoclipse-1.9.5-linux.gtk.x86_64.tar.gz[Linux 64bit]
+* http://dist.neo4j.org/neoclipse/neoclipse-1.9.5-linux.gtk.x86.tar.gz[Linux 32bit]
+* http://dist.neo4j.org/neoclipse/neoclipse-1.9.5-linux.gtk.ppc64.tar.gz[Linux PPC 64bit]
+* http://dist.neo4j.org/neoclipse/neoclipse-1.9.5-hpux.gtk.ia64_32.tar.gz[HPUX]
+
+==== Neoclipse 1.9.1
+
+* http://dist.neo4j.org/neoclipse/neoclipse-1.9.1-linux.gtk.x86.tar.gz[Neoclipse - Linux x86]
+* http://dist.neo4j.org/neoclipse/neoclipse-1.9.1-linux.gtk.x86_64.tar.gz[Neoclipse - Linux x86 64bit]
+* http://dist.neo4j.org/neoclipse/neoclipse-1.9.1-macosx.cocoa.x86.tar.gz[Neoclipse - OSX]
+* http://dist.neo4j.org/neoclipse/neoclipse-1.9.1-macosx.cocoa.x86_64.tar.gz[Neoclipse - OSX 64bit]
+* http://dist.neo4j.org/neoclipse/neoclipse-1.9.1-win32.win32.x86.zip[Neoclipse - Windows]
+* http://dist.neo4j.org/neoclipse/neoclipse-1.9.1-win32.win32.x86_64.zip[Neoclipse - Widnows 64bit]
 
 === Get the code
 
