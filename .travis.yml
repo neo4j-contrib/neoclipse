@@ -2,4 +2,4 @@ jdk:
   - oraclejdk7
 language: java
 install: true
-script: mvn verify --batch-mode
+script: mvn -f osgi-bundle/pom.xml install && mvn verify --batch-mode
