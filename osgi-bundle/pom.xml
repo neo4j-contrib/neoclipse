@@ -140,11 +140,6 @@
       <artifactId>neo4j-shell</artifactId>
       <version>${project.version}</version>
     </dependency>
-    <dependency>
-      <groupId>com.tinkerpop</groupId>
-      <artifactId>pipes</artifactId>
-      <version>1.0</version>
-    </dependency>
   </dependencies>
   <dependencyManagement>
     <dependencies>
