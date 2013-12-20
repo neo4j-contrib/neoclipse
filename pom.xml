@@ -12,7 +12,7 @@
   <groupId>org.neo4j</groupId>
   <artifactId>neoclipse</artifactId>
   <name>Neoclipse Project</name>
-  <version>1.9.5</version>
+  <version>2.0.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <modules>
     <module>releng</module>
