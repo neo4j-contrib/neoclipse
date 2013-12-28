@@ -16,7 +16,6 @@
 <unit id="org.eclipse.emf.feature.group" version="0.0.0"/>
 <unit id="org.eclipse.equinox.executable.feature.group" version="0.0.0"/>
 <unit id="org.eclipse.wst.web_core.feature.feature.group" version="0.0.0"/>
-<unit id="org.junit" version="0.0.0"/>
 <repository location="http://download.eclipse.org/releases/indigo"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
