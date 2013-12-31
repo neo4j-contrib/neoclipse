@@ -111,7 +111,10 @@ public class GraphDbServiceManager
                 {
                     GraphDatabaseBuilder databaseBuilder = new GraphDatabaseFactory().newEmbeddedDatabaseBuilder( currentAlias
                             .getUri() );
+                    Boolean allowStoreUpgrade = Boolean.parseBoolean( currentAlias
+                            .getConfigurationByKey( GraphDatabaseSettings.allow_store_upgrade.name() ) );
                     graphDb = databaseBuilder.setConfig( GraphDatabaseSettings.read_only, Boolean.toString( isReadOnlyMode() ) )
+                            .setConfig( GraphDatabaseSettings.allow_store_upgrade, allowStoreUpgrade.toString() )
                             .newGraphDatabase();
                     logInfo( isReadOnlyMode() ? "connected to embedded read-only neo4j" : "connected to embedded neo4j" );
                     break;
