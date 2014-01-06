@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Neoclipse" uid="neoclipse" id="org.neo4j.neoclipse.neoclipseProduct" application="org.neo4j.neoclipse.application" version="1.9.5" useFeatures="false" includeLaunchers="true">
+<product name="Neoclipse" uid="neoclipse" id="org.neo4j.neoclipse.neoclipseProduct" application="org.neo4j.neoclipse.application" version="2.0.0.qualifier" useFeatures="false" includeLaunchers="true">
 
    <aboutInfo>
       <image path="icons/splash.png"/>
@@ -347,8 +347,8 @@ conditions in this Agreement.
       <plugin id="org.mortbay.jetty.server"/>
       <plugin id="org.mortbay.jetty.util"/>
       <plugin id="org.neo4j.neoclipse"/>
+      <plugin id="org.neo4j.neoclipse.dependencies" version="2.0.0"/>
       <plugin id="org.neo4j.neoclipse.doc"/>
-      <plugin id="org.neo4j.neoclipse.dependencies" version="1.9.5"/>
       <plugin id="org.slf4j.api"/>
       <plugin id="org.slf4j.jcl"/>
    </plugins>

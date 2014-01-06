@@ -12,7 +12,7 @@
   <groupId>org.neo4j</groupId>
   <artifactId>neoclipse</artifactId>
   <name>Neoclipse Project</name>
-  <version>1.9.5</version>
+  <version>2.0.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <modules>
     <module>releng</module>
@@ -90,6 +90,11 @@
             </environments>
           </configuration>
         </plugin>
+        <plugin>
+          <groupId>org.eclipse.tycho</groupId>
+          <artifactId>tycho-versions-plugin</artifactId>
+          <version>${tycho.version}</version>
+        </plugin>
       </plugins>
     </pluginManagement>
     <plugins>
@@ -111,7 +116,7 @@
       <dependency>
         <groupId>org.neo4j.neoclipse</groupId>
         <artifactId>org.neo4j.neoclipse.dependencies</artifactId>
-        <version>1.9.5</version>
+        <version>2.0.0</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

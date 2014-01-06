@@ -43,8 +43,9 @@ import org.neo4j.cypher.javacompat.ExecutionResult;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Transaction;
-import org.neo4j.kernel.EmbeddedGraphDatabase;
-import org.neo4j.kernel.EmbeddedReadOnlyGraphDatabase;
+import org.neo4j.graphdb.factory.GraphDatabaseBuilder;
+import org.neo4j.graphdb.factory.GraphDatabaseFactory;
+import org.neo4j.graphdb.factory.GraphDatabaseSettings;
 import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.connection.Alias;
 import org.neo4j.neoclipse.connection.ConnectionMode;
@@ -108,17 +109,14 @@ public class GraphDbServiceManager
                 }
                 case LOCAL:
                 {
-                    if ( isReadOnlyMode() )
-                    {
-                        graphDb = new EmbeddedReadOnlyGraphDatabase( currentAlias.getUri(),
-                                currentAlias.getConfigurationMap() );
-                        logInfo( "connected to embedded read-only neo4j" );
-                    }
-                    else
-                    {
-                        graphDb = new EmbeddedGraphDatabase( currentAlias.getUri(), currentAlias.getConfigurationMap() );
-                        logInfo( "connected to embedded neo4j" );
-                    }
+                    GraphDatabaseBuilder databaseBuilder = new GraphDatabaseFactory().newEmbeddedDatabaseBuilder( currentAlias
+                            .getUri() );
+                    Boolean allowStoreUpgrade = Boolean.parseBoolean( currentAlias
+                            .getConfigurationByKey( GraphDatabaseSettings.allow_store_upgrade.name() ) );
+                    graphDb = databaseBuilder.setConfig( GraphDatabaseSettings.read_only, Boolean.toString( isReadOnlyMode() ) )
+                            .setConfig( GraphDatabaseSettings.allow_store_upgrade, allowStoreUpgrade.toString() )
+                            .newGraphDatabase();
+                    logInfo( isReadOnlyMode() ? "connected to embedded read-only neo4j" : "connected to embedded neo4j" );
                     break;
                 }
                 default:
@@ -682,7 +680,10 @@ public class GraphDbServiceManager
             @Override
             public Node call( GraphDatabaseService graphDb )
             {
-                return graphDb.getNodeById( id );
+                Transaction tx = graphDb.beginTx();
+                Node nodeById = graphDb.getNodeById( id );
+                tx.success();
+                return nodeById;
             }
         }, "retrieving node with id "+id );
     }

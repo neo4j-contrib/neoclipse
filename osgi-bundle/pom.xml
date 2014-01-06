@@ -11,7 +11,7 @@
   <groupId>org.neo4j.neoclipse</groupId>
   <artifactId>org.neo4j.neoclipse.dependencies</artifactId>
   <packaging>bundle</packaging>
-  <version>1.9.5</version>
+  <version>2.0.0</version>
   <name>Neo4J OSGi Wrapper</name>
 
   <repositories>
@@ -58,11 +58,6 @@
       <groupId>dom4j</groupId>
       <artifactId>dom4j</artifactId>
       <version>1.6.1</version>
-    </dependency>
-    <dependency>
-      <groupId>org.neo4j.server.plugin</groupId>
-      <artifactId>neo4j-cypher-plugin</artifactId>
-      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>pull-parser</groupId>
@@ -155,14 +150,14 @@
       <artifactId>janino</artifactId>
       <version>2.5.10</version>
     </dependency>
+    <dependency>
+    	<groupId>org.neo4j</groupId>
+    	<artifactId>neo4j-cypher</artifactId>
+    	<version>${project.version}</version>
+    </dependency>
   </dependencies>
   <dependencyManagement>
     <dependencies>
-      <dependency>
-        <groupId>org.neo4j</groupId>
-        <artifactId>neo4j-cypher</artifactId>
-        <version>${project.version}</version>
-      </dependency>
       <dependency>
         <groupId>org.neo4j</groupId>
         <artifactId>neo4j</artifactId>
