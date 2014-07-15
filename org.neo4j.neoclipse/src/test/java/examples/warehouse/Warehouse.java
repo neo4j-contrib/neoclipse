@@ -86,7 +86,7 @@ public class Warehouse extends NeoclipseExample
         Node vehicle = neo.createNode();
         vehicle.setProperty( "name", name );
         vehicle.setProperty( "cost", cost );
-        neo.getReferenceNode().createRelationshipTo( vehicle,
+        referenceNode.createRelationshipTo( vehicle,
             WarehouseRels.VEHICLE );
         return vehicle;
     }
@@ -110,7 +110,7 @@ public class Warehouse extends NeoclipseExample
     {
         Node warehouse = neo.createNode();
         warehouse.setProperty( "name", name );
-        neo.getReferenceNode().createRelationshipTo( warehouse,
+        referenceNode.createRelationshipTo( warehouse,
             WarehouseRels.WAREHOUSE );
         return warehouse;
     }
@@ -130,7 +130,7 @@ public class Warehouse extends NeoclipseExample
         try
         {
             System.out.println( "Product components list" );
-            Traverser vehicles = neo.getReferenceNode().traverse(
+            Traverser vehicles = referenceNode.traverse(
                 Traverser.Order.BREADTH_FIRST, StopEvaluator.DEPTH_ONE,
                 ReturnableEvaluator.ALL_BUT_START_NODE, WarehouseRels.VEHICLE,
                 Direction.OUTGOING );
@@ -185,7 +185,7 @@ public class Warehouse extends NeoclipseExample
         try
         {
             System.out.println( "Pricelist:" );
-            Traverser vehicles = neo.getReferenceNode().traverse(
+            Traverser vehicles = referenceNode.traverse(
                 Traverser.Order.BREADTH_FIRST, StopEvaluator.DEPTH_ONE,
                 ReturnableEvaluator.ALL_BUT_START_NODE, WarehouseRels.VEHICLE,
                 Direction.OUTGOING );
@@ -225,7 +225,7 @@ public class Warehouse extends NeoclipseExample
         try
         {
             System.out.println( "Inventory list" );
-            Traverser warehouses = neo.getReferenceNode().traverse(
+            Traverser warehouses = referenceNode.traverse(
                 Traverser.Order.BREADTH_FIRST, StopEvaluator.DEPTH_ONE,
                 ReturnableEvaluator.ALL_BUT_START_NODE,
                 WarehouseRels.WAREHOUSE, Direction.OUTGOING );

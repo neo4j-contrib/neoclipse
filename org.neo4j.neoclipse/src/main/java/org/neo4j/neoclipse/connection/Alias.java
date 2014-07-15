@@ -25,8 +25,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.dom4j.Element;
-import org.dom4j.tree.DefaultElement;
 import org.neo4j.neoclipse.util.ApplicationUtil;
 
 /**
@@ -104,13 +102,13 @@ public class Alias
      * 
      * @param root
      */
-    public Alias( Element root )
+    public Alias( Map<String,Object> root )
     {
-        name = root.elementText( NAME );
-        uri = root.elementText( URI );
+        name = (String) root.get( NAME );
+        uri = (String) root.get( URI );
         connectionMode = ConnectionMode.getValue( uri );
-        String user = root.elementText( USER_NAME );
-        String pass = root.elementText( PASSWORD );
+        String user = (String) root.get( USER_NAME );
+        String pass = (String) root.get( PASSWORD );
         if ( !ApplicationUtil.isBlank( user ) )
         {
             userName = user;
@@ -120,17 +118,7 @@ public class Alias
             password = pass;
         }
 
-        Element configurationsElement = root.element( CONFIGURATIONS );
-        if ( configurationsElement != null )
-        {
-            List<Element> elements = configurationsElement.elements( CONFIG );
-            for ( Element config : elements )
-            {
-                String configName = config.attributeValue( CONFIG_NAME );
-                String configValue = config.attributeValue( CONFIG_VALUE );
-                addConfiguration( configName, configValue );
-            }
-        }
+        this.configurationMap.putAll( (Map<String, String>) root.get( CONFIGURATIONS ));
     }
 
     public long getCreatedTime()
@@ -169,25 +157,17 @@ public class Alias
      * 
      * @return
      */
-    public Element describeAsXml()
+    public Map describeAsJson()
     {
-        DefaultElement root = new DefaultElement( ALIAS );
-        root.addElement( NAME ).setText( ApplicationUtil.returnEmptyIfBlank( name ) );
-        root.addElement( URI ).setText( ApplicationUtil.returnEmptyIfBlank( uri ) );
-        root.addElement( USER_NAME ).setText( ApplicationUtil.returnEmptyIfBlank( userName ) );
-        root.addElement( PASSWORD ).setText( ApplicationUtil.returnEmptyIfBlank( password ) );
+        Map<String,Object> root = new HashMap<String,Object>( );
+        root.put( NAME, ApplicationUtil.returnEmptyIfBlank( name ) );
+        root.put( URI , ApplicationUtil.returnEmptyIfBlank( uri ) );
+        root.put( USER_NAME , ApplicationUtil.returnEmptyIfBlank( userName ) );
+        root.put( PASSWORD , ApplicationUtil.returnEmptyIfBlank( password ) );
 
         if ( !configurationMap.isEmpty() )
         {
-            Element configElement = root.addElement( CONFIGURATIONS );
-            Set<Entry<String, String>> entrySet = configurationMap.entrySet();
-            for ( Entry<String, String> entry : entrySet )
-            {
-                DefaultElement config = new DefaultElement( CONFIG );
-                config.addAttribute( CONFIG_NAME, ApplicationUtil.returnEmptyIfBlank( entry.getKey() ) );
-                config.addAttribute( CONFIG_VALUE, ApplicationUtil.returnEmptyIfBlank( entry.getValue() ) );
-                configElement.add( config );
-            }
+            root.put( CONFIGURATIONS, configurationMap );
         }
         return root;
     }

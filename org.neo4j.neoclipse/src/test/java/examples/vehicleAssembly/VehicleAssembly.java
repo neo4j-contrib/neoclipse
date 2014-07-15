@@ -73,7 +73,7 @@ public class VehicleAssembly extends NeoclipseExample
         Node vehicle = neo.createNode();
         vehicle.setProperty( "name", name );
         vehicle.setProperty( "cost", cost );
-        neo.getReferenceNode().createRelationshipTo( vehicle,
+        referenceNode.createRelationshipTo( vehicle,
             VehicleRels.VEHICLE );
         return vehicle;
     }
@@ -100,7 +100,7 @@ public class VehicleAssembly extends NeoclipseExample
         try
         {
             System.out.println( "Product components list" );
-            for ( Relationship vehicleRel : neo.getReferenceNode()
+            for ( Relationship vehicleRel : referenceNode
                 .getRelationships( Direction.OUTGOING ) )
             {
                 Node vehicle = vehicleRel.getEndNode();
@@ -138,7 +138,7 @@ public class VehicleAssembly extends NeoclipseExample
         try
         {
             System.out.println( "Pricelist:" );
-            for ( Relationship vehicles : neo.getReferenceNode()
+            for ( Relationship vehicles : referenceNode
                 .getRelationships( Direction.OUTGOING ) )
             {
                 Node vehicle = vehicles.getEndNode();

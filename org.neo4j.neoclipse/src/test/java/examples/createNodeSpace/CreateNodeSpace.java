@@ -29,6 +29,7 @@ import examples.NeoclipseExample;
 public class CreateNodeSpace extends NeoclipseExample
 {
     private static final String NAME = "NAME";
+    private static Node referenceNode;
 
     @BeforeClass
     public static void copyIcons()
@@ -42,7 +43,7 @@ public class CreateNodeSpace extends NeoclipseExample
         Transaction tx = neo.beginTx();
         try
         {
-            Node referenceNode = neo.getReferenceNode();
+            referenceNode = neo.createNode();
             Node peter = neo.createNode();
             peter.setProperty( NAME, "Peter" );
             peter.setProperty( "int-test", 7 );

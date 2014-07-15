@@ -39,6 +39,7 @@ import examples.NeoclipseExample;
 public class Animals extends NeoclipseExample
 {
     private static final String NAME = "NAME";
+    private static Node referenceNode;
 
     @BeforeClass
     public static void copyIcons()
@@ -52,7 +53,7 @@ public class Animals extends NeoclipseExample
         Transaction tx = neo.beginTx();
         try
         {
-            Node referenceNode = neo.getReferenceNode();
+            referenceNode = neo.createNode();
             Node animal = createNode( "Animal", AnimalRels.ANIMAL,
                     referenceNode );
             Node pet = createNode( "Pet", AnimalRels.CATEGORY, animal );

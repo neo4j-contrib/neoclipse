@@ -35,6 +35,7 @@ import examples.NeoclipseExample;
 public class Matrix extends NeoclipseExample
 {
     private static Node neoNode;
+    private static Node referenceNode;
 
     @BeforeClass
     public static void copyIcons()
@@ -48,7 +49,7 @@ public class Matrix extends NeoclipseExample
         Transaction tx = neo.beginTx();
         try
         {
-            Node referenceNode = neo.getReferenceNode();
+            referenceNode = neo.createNode();
             Node thomas = neo.createNode();
             thomas.setProperty( "name", "Thomas Anderson" );
             thomas.setProperty( "age", 29 );

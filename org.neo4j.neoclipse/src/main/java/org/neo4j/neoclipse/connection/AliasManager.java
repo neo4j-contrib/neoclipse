@@ -19,19 +19,26 @@
 package org.neo4j.neoclipse.connection;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
-import org.dom4j.Element;
-import org.dom4j.tree.DefaultElement;
 import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.event.NeoclipseEventListener;
 import org.neo4j.neoclipse.event.NeoclipseListenerList;
 import org.neo4j.neoclipse.graphdb.GraphDbServiceManager;
 import org.neo4j.neoclipse.util.ApplicationUtil;
-import org.neo4j.neoclipse.util.XMLUtils;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonIOException;
+import com.google.gson.JsonSyntaxException;
 
 /**
  * Maintains the list of Neo4JConnection Alias
@@ -42,44 +49,44 @@ import org.neo4j.neoclipse.util.XMLUtils;
 public class AliasManager
 {
 
-    private static final String ALIAS_FILE_NAME = "NeoDbAliases.xml";
+    private static final String ALIAS_FILE_NAME = "NeoDbAliases.json";
     private final Set<Alias> aliases = new HashSet<Alias>();
     private final NeoclipseListenerList connectionListeners = new NeoclipseListenerList();
 
-    public void loadAliases()
+    public void loadAliases() throws FileNotFoundException
     {
         aliases.clear();
 
 
         File aliasSettings = new File( ApplicationUtil.NEOCLIPSE_SETTINGS_DIR, ALIAS_FILE_NAME );
-        Element root = XMLUtils.readRoot( aliasSettings );
-        if ( root != null )
-        {
-            List<Element> elements = root.elements( Alias.ALIAS );
-            if ( root.getName().equals( Alias.ALIASES ) )
+        if (!aliasSettings.exists()) return;
+        Object aliases = new Gson().fromJson( new FileReader(aliasSettings), Object.class );
+        if (aliases instanceof Collection) {
+            for ( Map alias : (Collection<Map>)aliases )
             {
-                for ( Element aliasElement : elements )
-                {
-                    addAlias( new Alias( aliasElement ) );
-                }
+                addAlias(new Alias(alias));
             }
-
+        }
+        if (aliases instanceof Map) {
+            addAlias(new Alias((Map<String, Object>) aliases));
         }
     }
 
     /**
      * Saves all the Aliases to the users preferences
+     * @throws IOException 
+     * @throws JsonIOException 
      * 
      */
-    public void saveAliases()
+    public void saveAliases() throws JsonIOException, IOException
     {
-        DefaultElement root = new DefaultElement( Alias.ALIASES );
+        List<Map> data = new ArrayList<>();
         for ( Alias alias : aliases )
         {
-            root.add( alias.describeAsXml() );
+            data.add( alias.describeAsJson() );
         }
         File aliasSettings = new File( ApplicationUtil.NEOCLIPSE_SETTINGS_DIR, ALIAS_FILE_NAME );
-        XMLUtils.save( root, aliasSettings );
+        new Gson().toJson( data, new FileWriter( aliasSettings ));
     }
 
     /**

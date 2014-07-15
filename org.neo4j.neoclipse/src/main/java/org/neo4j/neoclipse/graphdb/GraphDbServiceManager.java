@@ -43,6 +43,8 @@ import org.neo4j.cypher.javacompat.ExecutionResult;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Transaction;
+import org.neo4j.graphdb.factory.GraphDatabaseFactory;
+import org.neo4j.graphdb.factory.GraphDatabaseSettings;
 import org.neo4j.kernel.EmbeddedGraphDatabase;
 import org.neo4j.kernel.EmbeddedReadOnlyGraphDatabase;
 import org.neo4j.neoclipse.Activator;
@@ -110,13 +112,15 @@ public class GraphDbServiceManager
                 {
                     if ( isReadOnlyMode() )
                     {
-                        graphDb = new EmbeddedReadOnlyGraphDatabase( currentAlias.getUri(),
-                                currentAlias.getConfigurationMap() );
+                        graphDb = new GraphDatabaseFactory().newEmbeddedDatabaseBuilder( currentAlias.getUri() )
+                                .setConfig( currentAlias.getConfigurationMap() )
+                                .setConfig( GraphDatabaseSettings.read_only, "true")
+                                .newGraphDatabase();
                         logInfo( "connected to embedded read-only neo4j" );
                     }
                     else
                     {
-                        graphDb = new EmbeddedGraphDatabase( currentAlias.getUri(), currentAlias.getConfigurationMap() );
+                        graphDb = new GraphDatabaseFactory().newEmbeddedDatabaseBuilder( currentAlias.getUri() ).setConfig( currentAlias.getConfigurationMap() ).newGraphDatabase();
                         logInfo( "connected to embedded neo4j" );
                     }
                     break;
@@ -255,8 +259,14 @@ public class GraphDbServiceManager
             if ( lifecycle != null )
             {
                 graphDb = lifecycle.graphDb();
+            } else {
+                throw new RuntimeException("No lifecycle in TaskWrapper");
             }
-            return callable.call( graphDb );
+            try (Transaction tx = graphDb.beginTx()) {
+                T result = callable.call( graphDb );
+                tx.success();
+                return result;
+            }
         }
     }
 
@@ -278,9 +288,14 @@ public class GraphDbServiceManager
             if ( lifecycle != null )
             {
                 graphDb = lifecycle.graphDb();
+            } else {
+                throw new RuntimeException("No lifecycle in RunnableWrapper");
             }
             logFine( "running: " + name );
-            runnable.run( graphDb );
+            try (Transaction tx = graphDb.beginTx()) {
+                runnable.run( graphDb );
+                tx.success();
+            }
             logFine( "finished running: " + name );
         }
     }
@@ -396,14 +411,21 @@ public class GraphDbServiceManager
     public void executeTask( final GraphRunnable runnable, final String info )
     {
         logFine( "starting: " + info );
-        runnable.run( lifecycle.graphDb() );
+        try (Transaction tx = lifecycle.graphDb().beginTx()) {
+            runnable.run( lifecycle.graphDb() );
+            tx.success();
+        }
         logFine( "finishing: " + info );
     }
 
     public <T> T executeTask( final GraphCallable<T> callable, final String info )
     {
         logFine( "calling: " + info );
-        return callable.call( lifecycle.graphDb() );
+        try (Transaction tx = lifecycle.graphDb().beginTx()) {
+            T result = callable.call( lifecycle.graphDb() );
+            tx.success();
+            return result;
+        }
     }
 
     public void stopExecutingTasks()
@@ -588,11 +610,13 @@ public class GraphDbServiceManager
             public List<NodeWrapper> call( GraphDatabaseService graphDb )
             {
                 final LinkedList<NodeWrapper> list = new LinkedList<NodeWrapper>();
-                Iterable<Node> iterable =  graphDb.getAllNodes();
-                for ( Node node : iterable )
-                {
-                    NodeWrapper nodeWrapper = ApplicationUtil.extractToNodeWrapper( node, true );
-                    list.add( nodeWrapper );
+                try (Transaction tx = graphDb.beginTx()) {
+                    Iterable<Node> iterable =  graphDb.getAllNodes();
+                    for ( Node node : iterable )
+                    {
+                        NodeWrapper nodeWrapper = ApplicationUtil.extractToNodeWrapper( node, true );
+                        list.add( nodeWrapper );
+                    }
                 }
                 return list;
             }

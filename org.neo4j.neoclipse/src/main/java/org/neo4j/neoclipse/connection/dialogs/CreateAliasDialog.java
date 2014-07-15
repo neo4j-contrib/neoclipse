@@ -34,6 +34,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.neo4j.graphdb.factory.GraphDatabaseSettings;
 import org.neo4j.kernel.configuration.Config;
 import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.connection.Alias;
@@ -122,7 +123,7 @@ public class CreateAliasDialog extends TitleAreaDialog
             Alias selectedAlias = Activator.getDefault().getConnectionsView().getSelectedAlias();
             nameField.setEnabled( false );
             autoConnectButton.setEnabled( false );
-            allowUpgrade.setSelection( Boolean.parseBoolean( selectedAlias.getConfigurationByKey( Config.ALLOW_STORE_UPGRADE ) ) );
+            allowUpgrade.setSelection( Boolean.parseBoolean( selectedAlias.getConfigurationByKey( GraphDatabaseSettings.allow_store_upgrade.name() ) ) );
             nameField.setText( selectedAlias.getName() );
             urlField.setStringValue( selectedAlias.getUri() );
             userField.setText( ApplicationUtil.returnEmptyIfBlank( selectedAlias.getUserName() ) );
@@ -239,7 +240,7 @@ public class CreateAliasDialog extends TitleAreaDialog
         allowUpgrade = new Button( connectionPropertiesComposite, SWT.CHECK );
         GridData gd_allowUpgrade = new GridData( 128, SWT.DEFAULT );
         allowUpgrade.setLayoutData( gd_allowUpgrade );
-        allowUpgrade.setText( Config.ALLOW_STORE_UPGRADE );
+        allowUpgrade.setText(GraphDatabaseSettings.allow_store_upgrade.name());
         allowUpgrade.setSelection( true );
 
         Label label4 = new Label( nameGroup, SWT.WRAP );
@@ -282,7 +283,7 @@ public class CreateAliasDialog extends TitleAreaDialog
         {
             Alias alias = new Alias( nameField.getText(), urlField.getStringValue(), userField.getText(),
                     passwordField.getText() );
-            alias.addConfiguration( Config.ALLOW_STORE_UPGRADE, Boolean.toString( allowUpgrade.getSelection() ) );
+            alias.addConfiguration( GraphDatabaseSettings.allow_store_upgrade.name(), Boolean.toString( allowUpgrade.getSelection() ) );
             if ( type == Type.EDIT )
             {
                 Alias selectedAlias = Activator.getDefault().getConnectionsView().getSelectedAlias();

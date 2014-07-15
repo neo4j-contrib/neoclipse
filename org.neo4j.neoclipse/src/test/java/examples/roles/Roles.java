@@ -78,7 +78,7 @@ public class Roles extends NeoclipseExample
 
     private static Node createTopLevelGroup( final String name )
     {
-        return createNode( name, RoleRels.ROOT, neo.getReferenceNode() );
+        return createNode( name, RoleRels.ROOT, referenceNode );
     }
 
     private static Node createGroup( final String name,
@@ -162,7 +162,6 @@ public class Roles extends NeoclipseExample
         try
         {
             System.out.println( "All groups:" );
-            Node referenceNode = neo.getReferenceNode();
             Traverser traverser = referenceNode.traverse(
                 Traverser.Order.BREADTH_FIRST, StopEvaluator.END_OF_GRAPH,
                 ReturnableEvaluator.ALL_BUT_START_NODE, RoleRels.ROOT,
@@ -186,7 +185,6 @@ public class Roles extends NeoclipseExample
         try
         {
             System.out.println( "All members:" );
-            Node referenceNode = neo.getReferenceNode();
             Traverser traverser = referenceNode.traverse(
                 Traverser.Order.BREADTH_FIRST, StopEvaluator.END_OF_GRAPH,
                 ReturnableEvaluator.ALL_BUT_START_NODE, RoleRels.ROOT,

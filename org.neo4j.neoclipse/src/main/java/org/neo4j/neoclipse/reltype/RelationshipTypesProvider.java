@@ -32,6 +32,7 @@ import org.neo4j.graphdb.DynamicRelationshipType;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.NotFoundException;
 import org.neo4j.graphdb.RelationshipType;
+import org.neo4j.graphdb.Transaction;
 import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.event.NeoclipseEvent;
 import org.neo4j.neoclipse.event.NeoclipseEventListener;
@@ -130,7 +131,9 @@ IStructuredContentProvider
                         public Set<RelationshipType> call(
                                 final GraphDatabaseService graphDb )
                                 {
-                            return GraphDbUtil.getRelationshipTypesFromDb( graphDb );
+                                try (Transaction tx = graphDb.beginTx()) {
+                                    return GraphDbUtil.getRelationshipTypesFromDb( graphDb );
+                                }
                                 }
                     }, "get relationship types" ).get();
         }

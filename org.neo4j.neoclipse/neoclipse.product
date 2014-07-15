@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Neoclipse" uid="Neoclipse" id="org.neo4j.neoclipse.neoclipseProduct" application="org.neo4j.neoclipse.application" version="1.8" useFeatures="false" includeLaunchers="true">
+<product name="Neoclipse" uid="Neoclipse" id="org.neo4j.neoclipse.neoclipseProduct" application="org.neo4j.neoclipse.application" version="2.1" useFeatures="false" includeLaunchers="true">
 
    <aboutInfo>
       <image path="icons/splash.png"/>
@@ -36,6 +36,7 @@ This software is realeased under the Neo4j Software License for Neoclipse Versio
          <bmp/>
       </win>
    </launcher>
+
 
    <vm>
    </vm>
@@ -197,6 +198,7 @@ conditions in this Agreement.
    <plugins>
       <plugin id="com.ibm.icu"/>
       <plugin id="javax.activation"/>
+      <plugin id="javax.el"/>
       <plugin id="javax.servlet"/>
       <plugin id="javax.servlet.jsp"/>
       <plugin id="javax.xml"/>
@@ -204,6 +206,7 @@ conditions in this Agreement.
       <plugin id="org.apache.commons.el"/>
       <plugin id="org.apache.commons.logging"/>
       <plugin id="org.apache.jasper"/>
+      <plugin id="org.apache.jasper.glassfish"/>
       <plugin id="org.apache.lucene"/>
       <plugin id="org.apache.lucene.analysis"/>
       <plugin id="org.apache.lucene.core"/>
@@ -280,6 +283,13 @@ conditions in this Agreement.
       <plugin id="org.eclipse.help.ui"/>
       <plugin id="org.eclipse.help.webapp"/>
       <plugin id="org.eclipse.jem.util"/>
+      <plugin id="org.eclipse.jetty.continuation"/>
+      <plugin id="org.eclipse.jetty.http"/>
+      <plugin id="org.eclipse.jetty.io"/>
+      <plugin id="org.eclipse.jetty.security"/>
+      <plugin id="org.eclipse.jetty.server"/>
+      <plugin id="org.eclipse.jetty.servlet"/>
+      <plugin id="org.eclipse.jetty.util"/>
       <plugin id="org.eclipse.jface"/>
       <plugin id="org.eclipse.jface.databinding"/>
       <plugin id="org.eclipse.jface.text"/>

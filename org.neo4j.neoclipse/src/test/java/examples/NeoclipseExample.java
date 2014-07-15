@@ -29,6 +29,9 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.neo4j.graphdb.GraphDatabaseService;
+import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.Transaction;
+import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 import org.neo4j.kernel.EmbeddedGraphDatabase;
 
 /**
@@ -56,6 +59,7 @@ public abstract class NeoclipseExample
      * Local Neo4j instance.
      */
     protected static GraphDatabaseService neo;
+    protected static Node referenceNode;
 
     @BeforeClass
     public static void startNeo()
@@ -65,7 +69,11 @@ public abstract class NeoclipseExample
         {
             deleteDir( file );
         }
-        neo = new EmbeddedGraphDatabase( file.getAbsolutePath() );
+        neo = new GraphDatabaseFactory().newEmbeddedDatabase( file.getAbsolutePath() );
+        try (Transaction tx = neo.beginTx()) {
+            referenceNode = neo.createNode();
+            tx.success();
+        }
     }
 
     /**
