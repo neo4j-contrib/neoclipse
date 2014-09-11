@@ -20,8 +20,10 @@ package org.neo4j.neoclipse.connection;
 
 import java.io.File;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.dom4j.Element;
@@ -42,7 +44,7 @@ import org.neo4j.neoclipse.util.XMLUtils;
 public class AliasManager
 {
 
-    private static final String ALIAS_FILE_NAME = "NeoDbAliases.xml";
+    private static final String ALIAS_FILE_NAME = "NeoDbAliases.json";
     private final Set<Alias> aliases = new HashSet<Alias>();
     private final NeoclipseListenerList connectionListeners = new NeoclipseListenerList();
 
@@ -52,18 +54,16 @@ public class AliasManager
 
 
         File aliasSettings = new File( ApplicationUtil.NEOCLIPSE_SETTINGS_DIR, ALIAS_FILE_NAME );
-        Element root = XMLUtils.readRoot( aliasSettings );
+        
+        Map root = XMLUtils.readRoot( aliasSettings );
         if ( root != null )
         {
-            List<Element> elements = root.elements( Alias.ALIAS );
-            if ( root.getName().equals( Alias.ALIASES ) )
+            Set aliasKeys = root.keySet();
+            for ( Object aliaskey : aliasKeys )
             {
-                for ( Element aliasElement : elements )
-                {
-                    addAlias( new Alias( aliasElement ) );
-                }
+                addAlias( new Alias( (Map) root.get(aliaskey) ) );
             }
-
+       
         }
     }
 
@@ -73,10 +73,10 @@ public class AliasManager
      */
     public void saveAliases()
     {
-        DefaultElement root = new DefaultElement( Alias.ALIASES );
+        Map root = new HashMap( );
         for ( Alias alias : aliases )
         {
-            root.add( alias.describeAsXml() );
+            root.put( alias.getName(), alias.describeAsXml() );
         }
         File aliasSettings = new File( ApplicationUtil.NEOCLIPSE_SETTINGS_DIR, ALIAS_FILE_NAME );
         XMLUtils.save( root, aliasSettings );

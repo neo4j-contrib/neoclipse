@@ -18,15 +18,15 @@
  */
 package org.neo4j.neoclipse.util;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.util.Map;
 
-import org.dom4j.DocumentException;
-import org.dom4j.Element;
-import org.dom4j.io.OutputFormat;
-import org.dom4j.io.SAXReader;
-import org.dom4j.io.XMLWriter;
 import org.neo4j.neoclipse.view.ErrorMessage;
+
+import com.google.gson.Gson;
 
 /**
  * Helper class for reading and writing XML files
@@ -36,19 +36,17 @@ import org.neo4j.neoclipse.view.ErrorMessage;
  */
 public class XMLUtils
 {
-
-    public static void save( Element pRoot, File pFile )
+	public static Gson gson = new Gson();
+    
+    public static void save( Object pRoot, File pFile )
     {
         try
         {
-            pFile.getParentFile().mkdirs();
-            FileOutputStream fileOutputStream = new FileOutputStream( pFile );
-            XMLWriter xmlWriter = new XMLWriter( fileOutputStream, OutputFormat.createPrettyPrint() );
-            xmlWriter.startDocument();
-            xmlWriter.write( pRoot );
-            xmlWriter.endDocument();
-            xmlWriter.flush();
-            xmlWriter.close();
+        	pFile.getParentFile().mkdirs();
+            BufferedOutputStream fileOutputStream = new BufferedOutputStream(new FileOutputStream( pFile ));
+            fileOutputStream.write(gson.toJson(pRoot).getBytes());
+            fileOutputStream.close();
+            
         }
         catch ( Exception e )
         {
@@ -57,18 +55,18 @@ public class XMLUtils
 
     }
 
-    public static Element readRoot( File pFile )
+    public static Map<String, Object> readRoot( File pFile )
     {
+    	System.out.println(String.format("Loading settings from file %s" , pFile));
         if ( !pFile.exists() )
         {
             return null;
         }
         try
         {
-            SAXReader reader = new SAXReader();
-            return reader.read( pFile ).getRootElement();
+            return gson.fromJson(new FileReader(pFile),	 Map.class);
         }
-        catch ( DocumentException e )
+        catch ( Exception e )
         {
             ErrorMessage.showDialog( "Cannot load: " + pFile.getAbsolutePath(), e );
         }

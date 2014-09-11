@@ -2,30 +2,31 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Neoclipse
 Bundle-SymbolicName: org.neo4j.neoclipse;singleton:=true
-Bundle-Version: 2.0.0.qualifier
+Bundle-Version: 2.1.4.qualifier
 Bundle-Activator: org.neo4j.neoclipse.Activator
 Bundle-Vendor: Neo4j.org
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ClassPath: .
 Require-Bundle: org.eclipse.zest.core;bundle-version="1.3.0",
  org.eclipse.zest.layouts;bundle-version="1.1.0",
  org.eclipse.search;bundle-version="3.7.0",
  org.eclipse.ui.views.properties.tabbed;bundle-version="3.5.200",
  org.eclipse.gef;bundle-version="3.7.1",
- org.eclipse.core.runtime;bundle-version="3.7.0"
+ org.eclipse.core.runtime;bundle-version="3.7.0",
+ org.apache.xerces;bundle-version="2.9.0"
 Import-Package: com.google.gson;version="[2.1.0,2.2.0)",
  org.dom4j;version="1.6.1",
  org.dom4j.io;version="1.6.1",
  org.dom4j.tree;version="1.6.1",
  org.json;version="1.0.0",
- org.neo4j.cypher.javacompat;version="2.0.0",
- org.neo4j.graphdb;version="2.0.0",
- org.neo4j.graphdb.config;version="2.0.0",
- org.neo4j.graphdb.factory;version="2.0.0",
- org.neo4j.graphdb.index;version="2.0.0",
- org.neo4j.graphdb.traversal;version="2.0.0",
- org.neo4j.kernel;version="2.0.0",
- org.neo4j.rest.graphdb;version="2.0.0",
- org.neo4j.rest.graphdb.query;version="2.0.0",
- org.neo4j.rest.graphdb.traversal;version="2.0.0"
+ org.neo4j.cypher.javacompat;version="2.1.4",
+ org.neo4j.graphdb;version="2.1.4",
+ org.neo4j.graphdb.config;version="2.1.4",
+ org.neo4j.graphdb.factory;version="2.1.4",
+ org.neo4j.graphdb.index;version="2.1.4",
+ org.neo4j.graphdb.traversal;version="2.1.4",
+ org.neo4j.kernel;version="2.1.4",
+ org.neo4j.rest.graphdb;version="2.1.4",
+ org.neo4j.rest.graphdb.query;version="2.1.4",
+ org.neo4j.rest.graphdb.traversal;version="2.1.4"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
