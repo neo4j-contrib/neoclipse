@@ -25,8 +25,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.dom4j.Element;
-import org.dom4j.tree.DefaultElement;
 import org.neo4j.neoclipse.util.ApplicationUtil;
 
 /**

@@ -55,54 +55,11 @@
 
   <dependencies>
     <dependency>
-      <groupId>dom4j</groupId>
-      <artifactId>dom4j</artifactId>
-      <version>1.6.1</version>
-    </dependency>
-    <dependency>
 		<groupId>com.google.code.gson</groupId>
 		<artifactId>gson</artifactId>
 		<version>2.2.4</version>
-		</dependency>
-	<dependency>
-      <groupId>jaxen</groupId>
-      <artifactId>jaxen</artifactId>
-      <version>1.1.6</version>
-      <type>bundle</type>
-      <exclusions>
-        <exclusion>
-          <groupId>com.io7m.xom</groupId>
-          <artifactId>xom</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>xmlpull</groupId>
-      <artifactId>xmlpull</artifactId>
-      <version>1.1.3.1</version>
-    </dependency>
-    <dependency>
-      <groupId>relaxngDatatype</groupId>
-      <artifactId>relaxngDatatype</artifactId>
-      <version>20020414</version>
-    </dependency>
-    <dependency>
-		<groupId>pull-parser</groupId>
-		<artifactId>pull-parser</artifactId>
-		<version>2.1.10</version>
 	</dependency>
-    
-    <dependency>
-      <groupId>joda-time</groupId>
-      <artifactId>joda-time</artifactId>
-      <version>2.3</version>
-    </dependency>
-    <dependency>
-      <groupId>org.joda</groupId>
-      <artifactId>joda-convert</artifactId>
-      <version>1.5</version>
-    </dependency>
-    <dependency>
+	<dependency>
       <groupId>org.neo4j</groupId>
       <artifactId>neo4j</artifactId>
     </dependency>
@@ -138,6 +95,10 @@
         <exclusion>
           <artifactId>neo4j</artifactId>
           <groupId>org.neo4j</groupId>
+        </exclusion>
+        <exclusion>
+        	<artifactId>neo4j-management</artifactId>
+        	<groupId>org.neo4j</groupId>
         </exclusion>
       </exclusions>
     </dependency>

@@ -22,12 +22,9 @@ import java.io.File;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.dom4j.Element;
-import org.dom4j.tree.DefaultElement;
 import org.neo4j.neoclipse.Activator;
 import org.neo4j.neoclipse.event.NeoclipseEventListener;
 import org.neo4j.neoclipse.event.NeoclipseListenerList;
