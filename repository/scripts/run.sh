@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_11.jdk/Contents/Home
+export JAVA_HOME=`/usr/libexec/java_home -v '1.7+'`
 LAUNCHER_JAR=plugins/org.eclipse.equinox.launcher_1.2.0.v20110502.jar
 
 java \
