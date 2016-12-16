@@ -67,7 +67,7 @@ import org.neo4j.rest.graphdb.query.RestCypherQueryEngine;
  */
 public class GraphDbServiceManager
 {
-    private static final String FIND_REFERENCE_NODE_WITH_RELS_STATEMENT = "START n=node(*) MATCH n--() RETURN id(n) as id LIMIT 1";
+    private static final String FIND_REFERENCE_NODE_WITH_RELS_STATEMENT = "START n=node(*) MATCH (n)--() RETURN id(n) as id LIMIT 1";
     private static final String FIND_REFERENCE_NODE_STATEMENT = "START n=node(*) RETURN id(n) as id LIMIT 1";
     private static final String NEOCLIPSE_PACKAGE = "org.neo4j.neoclipse.";
     private static Logger logger = Logger.getLogger( GraphDbServiceManager.class.getName() );
